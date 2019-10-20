@@ -1,10 +1,11 @@
 {
-  "name": "tidal-hifi-electron",
+  "name": "tidal-hifi",
   "version": "0.1.0",
   "description": "Tidal on Electron with widevine(hifi) support",
-  "main": "main.js",
+  "main": "src/main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder -c ./build/electron-builder.yml"
   },
   "keywords": [
     "electron",
@@ -13,13 +14,14 @@
     "linux"
   ],
   "author": "Rick van Lieshout <info@rickvanlieshout.com> (http://rickvanlieshout.com)",
-  "license": "ISC",
+  "license": "MIT",
   "dependencies": {
-    "electron": "https://github.com/castlabs/electron-releases#v6.0.9-wvvmp",
     "hotkeys-js": "^3.7.1"
   },
   "devDependencies": {
     "@mastermindzh/prettier-config": "^1.0.0",
+    "electron": "https://github.com/castlabs/electron-releases#v6.0.12-wvvmp",
+    "electron-builder": "^21.2.0",
     "electron-reload": "^1.5.0",
     "prettier": "^1.18.2"
   },

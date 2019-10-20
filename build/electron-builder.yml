@@ -1,0 +1,17 @@
+appId: com.rickvanlieshout.tidal-hifi
+snap:
+  plugs:
+    - default
+    - screen-inhibit-control
+linux:
+  category: Audio
+  target:
+    - pacman
+    - tar.gz
+    - deb
+    - AppImage
+    - snap
+mac:
+  category: public.app-category.entertainment
+win:
+  target: msi

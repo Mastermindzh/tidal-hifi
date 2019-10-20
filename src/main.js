@@ -1,4 +1,4 @@
-const { app, globalShortcut, BrowserWindow, process } = require("electron");
+const { app, BrowserWindow } = require("electron");
 const path = require("path");
 const tidalUrl = "https://listen.tidal.com";
 let mainWindow;
@@ -6,9 +6,11 @@ let mainWindow;
 /**
  * Enable live reload in development builds
  */
-require("electron-reload")(__dirname, {
-  electron: require(`${__dirname}/node_modules/electron`),
-});
+if (!app.isPackaged) {
+  require("electron-reload")(`${__dirname}`, {
+    electron: require(`${__dirname}/../node_modules/electron`),
+  });
+}
 
 function createWindow(options = {}) {
   // Create the browser window.
@@ -25,6 +27,8 @@ function createWindow(options = {}) {
     },
   });
 
+  mainWindow.setMenuBarVisibility(false);
+
   // load the Tidal website
   mainWindow.loadURL(tidalUrl);
 
@@ -38,9 +42,10 @@ function createWindow(options = {}) {
 }
 
 function addGlobalShortcuts() {
-  globalShortcut.register("Control+A", () => {
-    mainWindow.webContents.send("getPlayInfo");
-  });
+  // globalShortcut.register("Control+A", () => {
+  //   dialog.showErrorBox("test", "test");
+  //   // mainWindow.webContents.send("getPlayInfo");
+  // });
 }
 
 // This method will be called when Electron has finished
