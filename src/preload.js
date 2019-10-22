@@ -1,6 +1,12 @@
 const { setTitle, getTitle } = require("./scripts/window-functions");
 const { dialog } = require("electron").remote;
 const hotkeys = require("./scripts/hotkeys");
+const mediaKeys = require("./scripts/media-keys");
+const notifier = require("node-notifier");
+const { ipcRenderer } = require("electron");
+const { app } = require("electron").remote;
+const { downloadFile } = require("./scripts/download");
+const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 
 const elements = {
   play: '*[data-test="play"]',
@@ -18,19 +24,55 @@ const elements = {
   block: '[class="blockButton"]',
   account: '*[data-test^="profile-image-button"]',
   settings: '*[data-test^="open-settings"]',
+  media: '*[data-test="current-media-imagery"]',
+  image: '*[class^="image--"]',
 
+  /**
+   * Get an element from the dom
+   * @param {*} key key in elements object to fetch
+   */
   get: function(key) {
     return window.document.querySelector(this[key.toLowerCase()]);
   },
 
-  getText: function(key) {
-    return this.get(key).textContent;
+  /**
+   * Get the icon of the current song
+   */
+  getSongIcon: function() {
+    const figure = this.get("media");
+
+    if (figure) {
+      const mediaElement = figure.querySelector(this["image"]);
+      if (mediaElement) {
+        return mediaElement.src;
+      }
+    }
+
+    return "";
   },
 
+  /**
+   * Shorthand function to get the text of a dom element
+   * @param {*} key key in elements object to fetch
+   */
+  getText: function(key) {
+    const element = this.get(key);
+    return element ? element.textContent : "";
+  },
+
+  /**
+   * Shorthand function to click a dom element
+   * @param {*} key key in elements object to fetch
+   */
   click: function(key) {
     this.get(key).click();
     return this;
   },
+
+  /**
+   * Shorthand function to focus a dom element
+   * @param {*} key key in elements object to fetch
+   */
   focus: function(key) {
     return this.get(key).focus();
   },
@@ -141,25 +183,65 @@ function handleLogout() {
  */
 function addIPCEventListeners() {
   window.addEventListener("DOMContentLoaded", () => {
-    const { ipcRenderer } = require("electron");
-
-    ipcRenderer.on("getPlayInfo", (event, col) => {
+    ipcRenderer.on("getPlayInfo", () => {
       alert(`${elements.getText("title")} - ${elements.getText("artists")}`);
+    });
+
+    ipcRenderer.on("globalEvent", (event, args) => {
+      switch (args) {
+        case mediaKeys.playPause:
+          playPause();
+          break;
+        case mediaKeys.next:
+          elements.click("next");
+          break;
+        case mediaKeys.previous:
+          elements.click("previous");
+          break;
+      }
     });
   });
 }
 
 /**
- * Update window title
+ * Watch for song changes and update title + notify
  */
 setInterval(function() {
   const title = elements.getText("title");
   const artists = elements.getText("artists");
   const songDashArtistTitle = `${title} - ${artists}`;
+
   if (getTitle() !== songDashArtistTitle) {
     setTitle(songDashArtistTitle);
+
+    const image = elements.getSongIcon();
+
+    const options = {
+      title,
+      message: artists,
+    };
+    new Promise((resolve, reject) => {
+      if (image.startsWith("http")) {
+        downloadFile(image, notificationPath).then(
+          () => {
+            options.icon = notificationPath;
+            resolve();
+          },
+          () => {
+            reject();
+          }
+        );
+      } else {
+        reject();
+      }
+    }).then(
+      () => {
+        notifier.notify(options);
+      },
+      () => {}
+    );
   }
-}, 1000);
+}, 200);
 
 addHotKeys();
 addIPCEventListeners();

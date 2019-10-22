@@ -5,7 +5,9 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder -c ./build/electron-builder.yml"
+    "build": "electron-builder -c ./build/electron-builder.yml",
+    "build-wl": "electron-builder -c ./build/electron-builder.yml -wl",
+    "build-mac": "electron-builder -c ./build/electron-builder.yml -m"
   },
   "keywords": [
     "electron",
@@ -16,11 +18,13 @@
   "author": "Rick van Lieshout <info@rickvanlieshout.com> (http://rickvanlieshout.com)",
   "license": "MIT",
   "dependencies": {
-    "hotkeys-js": "^3.7.1"
+    "hotkeys-js": "^3.7.1",
+    "node-notifier": "^6.0.0",
+    "request": "^2.88.0"
   },
   "devDependencies": {
     "@mastermindzh/prettier-config": "^1.0.0",
-    "electron": "https://github.com/castlabs/electron-releases#v6.0.12-wvvmp",
+    "electron": "https://github.com/castlabs/electron-releases#v6.1.0-wvvmp",
     "electron-builder": "^21.2.0",
     "electron-reload": "^1.5.0",
     "prettier": "^1.18.2"

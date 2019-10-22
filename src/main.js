@@ -1,6 +1,7 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, globalShortcut } = require("electron");
 const path = require("path");
 const tidalUrl = "https://listen.tidal.com";
+const mediaKeys = require("./scripts/media-keys");
 let mainWindow;
 
 /**
@@ -19,6 +20,8 @@ function createWindow(options = {}) {
     y: options.y,
     width: 1024,
     height: 800,
+    icon: "./../build/icon.png",
+    tray: true,
     backgroundColor: options.backgroundColor,
     webPreferences: {
       affinity: "window",
@@ -42,10 +45,11 @@ function createWindow(options = {}) {
 }
 
 function addGlobalShortcuts() {
-  // globalShortcut.register("Control+A", () => {
-  //   dialog.showErrorBox("test", "test");
-  //   // mainWindow.webContents.send("getPlayInfo");
-  // });
+  Object.values(mediaKeys).forEach((key) => {
+    globalShortcut.register(key, () => {
+      mainWindow.webContents.send("globalKey", key);
+    });
+  });
 }
 
 // This method will be called when Electron has finished

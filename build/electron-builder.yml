@@ -1,4 +1,6 @@
 appId: com.rickvanlieshout.tidal-hifi
+electronDownload: 
+    mirror:  https://github.com/castlabs/electron-releases/releases/download/v
 snap:
   plugs:
     - default
