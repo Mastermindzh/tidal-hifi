@@ -3,6 +3,7 @@ const path = require("path");
 const tidalUrl = "https://listen.tidal.com";
 const mediaKeys = require("./scripts/media-keys");
 let mainWindow;
+let icon = path.join(__dirname, "../assets/icon.png");
 
 /**
  * Enable live reload in development builds
@@ -20,7 +21,7 @@ function createWindow(options = {}) {
     y: options.y,
     width: 1024,
     height: 800,
-    icon: "./../build/icon.png",
+    icon,
     tray: true,
     backgroundColor: options.backgroundColor,
     webPreferences: {
