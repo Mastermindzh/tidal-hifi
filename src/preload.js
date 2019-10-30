@@ -4,6 +4,7 @@ const { settings } = require("./scripts/settings");
 const { ipcRenderer } = require("electron");
 const { app } = require("electron").remote;
 const { downloadFile } = require("./scripts/download");
+const statuses = require("./constants/statuses");
 const hotkeys = require("./scripts/hotkeys");
 const globalEvents = require("./constants/globalEvents");
 const notifier = require("node-notifier");
@@ -211,12 +212,27 @@ function addIPCEventListeners() {
 }
 
 /**
+ * Update the current status of tidal (e.g playing or paused)
+ */
+function updateStatus() {
+  const play = elements.get("play");
+  let status = statuses.paused;
+  // if play button is NOT visible tidal is playing
+  if (!play) {
+    status = statuses.playing;
+  }
+  ipcRenderer.send("update-status", status);
+}
+
+/**
  * Watch for song changes and update title + notify
  */
 setInterval(function() {
   const title = elements.getText("title");
   const artists = elements.getText("artists");
   const songDashArtistTitle = `${title} - ${artists}`;
+
+  updateStatus();
 
   if (getTitle() !== songDashArtistTitle) {
     setTitle(songDashArtistTitle);

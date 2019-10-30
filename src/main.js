@@ -83,3 +83,7 @@ app.on("activate", function() {
 ipcMain.on("update-info", (event, arg) => {
   mediaInfoModule.update(arg);
 });
+
+ipcMain.on("update-status", (event, arg) => {
+  mediaInfoModule.updateStatus(arg);
+});

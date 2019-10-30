@@ -40,7 +40,7 @@ When I started this project there weren't any Linux apps that offered Tidal's "h
 
 ## Integrations
 
-- [i3 blocks config]() - My dotfiles where I use this app to fetch currently playing music
+- [i3 blocks config](https://github.com/Mastermindzh/dotfiles/commit/9714b2fa1d670108ce811d5511fd3b7a43180647) - My dotfiles where I use this app to fetch currently playing music (direct commit)
 
 ## Why not extend existing projects?
 
