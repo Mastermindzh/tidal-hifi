@@ -1,8 +1,13 @@
-const { app, BrowserWindow, globalShortcut } = require("electron");
+const { app, BrowserWindow, globalShortcut, ipcMain } = require("electron");
+const { settings } = require("./scripts/settings");
+const { addTray, refreshTray } = require("./scripts/tray");
+
 const path = require("path");
 const tidalUrl = "https://listen.tidal.com";
-const trayModule = require("./scripts/tray");
-const mediaKeysModule = require("./scripts/mediaKeys");
+const expressModule = require("./scripts/express");
+const mediaKeys = require("./constants/mediaKeys");
+const mediaInfoModule = require("./scripts/mediaInfo");
+
 let mainWindow;
 let icon = path.join(__dirname, "../assets/icon.png");
 
@@ -47,9 +52,9 @@ function createWindow(options = {}) {
 }
 
 function addGlobalShortcuts() {
-  Object.values(mediaKeysModule).forEach((key) => {
-    globalShortcut.register(key, () => {
-      mainWindow.webContents.send("globalKey", key);
+  Object.keys(mediaKeys).forEach((key) => {
+    globalShortcut.register(`${key}`, () => {
+      mainWindow.webContents.send("globalEvent", `${mediaKeys[key]}`);
     });
   });
 }
@@ -58,11 +63,11 @@ function addGlobalShortcuts() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
-  // window with white backround
   createWindow();
   addGlobalShortcuts();
-  trayModule.addTray({ icon });
-  trayModule.refreshTray();
+  addTray({ icon });
+  refreshTray();
+  settings.api && expressModule.run(mainWindow);
 });
 
 app.on("activate", function() {
@@ -71,4 +76,10 @@ app.on("activate", function() {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+// IPC
+
+ipcMain.on("update-info", (event, arg) => {
+  mediaInfoModule.update(arg);
 });

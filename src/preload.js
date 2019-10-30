@@ -1,11 +1,12 @@
 const { setTitle, getTitle } = require("./scripts/window-functions");
 const { dialog } = require("electron").remote;
-const hotkeys = require("./scripts/hotkeys");
-const mediaKeysModule = require("./scripts/mediaKeys");
-const notifier = require("node-notifier");
+const { settings } = require("./scripts/settings");
 const { ipcRenderer } = require("electron");
 const { app } = require("electron").remote;
 const { downloadFile } = require("./scripts/download");
+const hotkeys = require("./scripts/hotkeys");
+const globalEvents = require("./constants/globalEvents");
+const notifier = require("node-notifier");
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 
 const elements = {
@@ -189,14 +190,20 @@ function addIPCEventListeners() {
 
     ipcRenderer.on("globalEvent", (event, args) => {
       switch (args) {
-        case mediaKeysModule.playPause:
+        case globalEvents.playPause:
           playPause();
           break;
-        case mediaKeysModule.next:
+        case globalEvents.next:
           elements.click("next");
           break;
-        case mediaKeysModule.previous:
+        case globalEvents.previous:
           elements.click("previous");
+          break;
+        case globalEvents.play:
+          elements.click("play");
+          break;
+        case globalEvents.pause:
+          elements.click("pause");
           break;
       }
     });
@@ -236,7 +243,8 @@ setInterval(function() {
       }
     }).then(
       () => {
-        notifier.notify(options);
+        ipcRenderer.send("update-info", options);
+        settings.notifications && notifier.notify(options);
       },
       () => {}
     );
