@@ -1,7 +1,8 @@
 const { app, BrowserWindow, globalShortcut } = require("electron");
 const path = require("path");
 const tidalUrl = "https://listen.tidal.com";
-const mediaKeys = require("./scripts/media-keys");
+const trayModule = require("./scripts/tray");
+const mediaKeysModule = require("./scripts/mediaKeys");
 let mainWindow;
 let icon = path.join(__dirname, "../assets/icon.png");
 
@@ -46,7 +47,7 @@ function createWindow(options = {}) {
 }
 
 function addGlobalShortcuts() {
-  Object.values(mediaKeys).forEach((key) => {
+  Object.values(mediaKeysModule).forEach((key) => {
     globalShortcut.register(key, () => {
       mainWindow.webContents.send("globalKey", key);
     });
@@ -60,6 +61,8 @@ app.on("ready", () => {
   // window with white backround
   createWindow();
   addGlobalShortcuts();
+  trayModule.addTray({ icon });
+  trayModule.refreshTray();
 });
 
 app.on("activate", function() {

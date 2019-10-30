@@ -1,7 +1,7 @@
-const mediaKeys = {
+const mediaKeysModule = {
   play: "MediaPlayPause",
   next: "MediaNextTrack",
   previous: "MediaPreviousTrack",
 };
 
-module.exports = mediaKeys;
+module.exports = mediaKeysModule;

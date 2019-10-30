@@ -1,7 +1,7 @@
 const { setTitle, getTitle } = require("./scripts/window-functions");
 const { dialog } = require("electron").remote;
 const hotkeys = require("./scripts/hotkeys");
-const mediaKeys = require("./scripts/media-keys");
+const mediaKeysModule = require("./scripts/mediaKeys");
 const notifier = require("node-notifier");
 const { ipcRenderer } = require("electron");
 const { app } = require("electron").remote;
@@ -189,13 +189,13 @@ function addIPCEventListeners() {
 
     ipcRenderer.on("globalEvent", (event, args) => {
       switch (args) {
-        case mediaKeys.playPause:
+        case mediaKeysModule.playPause:
           playPause();
           break;
-        case mediaKeys.next:
+        case mediaKeysModule.next:
           elements.click("next");
           break;
-        case mediaKeys.previous:
+        case mediaKeysModule.previous:
           elements.click("previous");
           break;
       }
