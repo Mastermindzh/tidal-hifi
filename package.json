@@ -18,6 +18,7 @@
   "author": "Rick van Lieshout <info@rickvanlieshout.com> (http://rickvanlieshout.com)",
   "license": "MIT",
   "dependencies": {
+    "express": "^4.17.1",
     "hotkeys-js": "^3.7.1",
     "node-notifier": "^6.0.0",
     "request": "^2.88.0"

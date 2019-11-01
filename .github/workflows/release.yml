@@ -1,0 +1,49 @@
+name: Release CI
+
+on:
+  push:
+    branches:
+      - master
+      - develop
+jobs:
+  build_on_linux:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
+        with:
+          node-version: 12
+      - run: npm install
+      - run: npm run build
+      - uses: actions/upload-artifact@master
+        with:
+          name: linux-builds
+          path: dist/
+
+  build_on_mac:
+    runs-on: macOS-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
+        with:
+          node-version: 12
+      - run: npm install
+      - run: npm run build
+      - uses: actions/upload-artifact@master
+        with:
+          name: mac-builds
+          path: dist/
+
+  build_on_win:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
+        with:
+          node-version: 12
+      - run: npm install
+      - run: npm run build
+      - uses: actions/upload-artifact@master
+        with:
+          name: windows-builds
+          path: dist/
