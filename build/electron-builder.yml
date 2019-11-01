@@ -1,6 +1,6 @@
 appId: com.rickvanlieshout.tidal-hifi
-electronDownload: 
-    mirror:  https://github.com/castlabs/electron-releases/releases/download/v
+electronDownload:
+  mirror: https://github.com/castlabs/electron-releases/releases/download/v
 snap:
   plugs:
     - default
@@ -8,7 +8,7 @@ snap:
 linux:
   category: Audio
   target:
-    - pacman
+    # - pacman
     - tar.gz
     - deb
     - AppImage
