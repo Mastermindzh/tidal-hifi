@@ -1,6 +1,6 @@
 <h1>
 Tidal-hifi
-<img src = "./build/icon.png" height="30" align="right" />
+<img src = "./build/icon.png" height="40" align="right" />
 </h1>
 
 The web version of [listen.tidal.com](listen.tidal.com) running in electron with hifi support thanks to widevine.
@@ -14,6 +14,7 @@ The web version of [listen.tidal.com](listen.tidal.com) running in electron with
 - [Installation](#installation)
   - [Using releases](#using-releases)
   - [Using source](#using-source)
+- [features](#features)
 - [Integrations](#integrations)
 - [Why](#why)
 - [Why not extend existing projects?](#why-not-extend-existing-projects)
@@ -35,6 +36,15 @@ To install and work with the code on this project follow these steps:
 - cd tidal-hifi
 - npm install
 - npm start
+
+## features
+
+- HiFi playback
+- Notifications
+- Shortcuts ([source](https://defkey.com/tidal-desktop-shortcuts))
+- API for status and playback
+- [Settings feature](./docs/settings.png) to disable certain functionality.
+- Tray player (coming soon)
 
 ## Integrations
 

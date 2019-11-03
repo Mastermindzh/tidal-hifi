@@ -1,5 +1,12 @@
 const { app, BrowserWindow, globalShortcut, ipcMain } = require("electron");
-const { settings, store } = require("./scripts/settings");
+const {
+  settings,
+  store,
+  createSettingsWindow,
+  showSettingsWindow,
+  closeSettingsWindow,
+  hideSettingsWindow,
+} = require("./scripts/settings");
 const { addTray, refreshTray } = require("./scripts/tray");
 
 const path = require("path");
@@ -7,6 +14,7 @@ const tidalUrl = "https://listen.tidal.com";
 const expressModule = require("./scripts/express");
 const mediaKeys = require("./constants/mediaKeys");
 const mediaInfoModule = require("./scripts/mediaInfo");
+const globalEvents = require("./constants/globalEvents");
 
 let mainWindow;
 let icon = path.join(__dirname, "../assets/icon.png");
@@ -34,10 +42,11 @@ function createWindow(options = {}) {
       affinity: "window",
       preload: path.join(__dirname, "preload.js"),
       plugins: true,
+      devTools: !app.isPackaged,
     },
   });
 
-  mainWindow.setMenuBarVisibility(false);
+  mainWindow.setMenuBarVisibility(store.get(settings.menuBar));
 
   // load the Tidal website
   mainWindow.loadURL(tidalUrl);
@@ -47,7 +56,8 @@ function createWindow(options = {}) {
 
   // Emitted when the window is closed.
   mainWindow.on("closed", function() {
-    mainWindow = null;
+    closeSettingsWindow();
+    app.quit();
   });
   mainWindow.on("resize", () => {
     let { width, height } = mainWindow.getBounds();
@@ -69,6 +79,7 @@ function addGlobalShortcuts() {
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
   createWindow();
+  createSettingsWindow();
   addGlobalShortcuts();
   addTray({ icon });
   refreshTray();
@@ -85,10 +96,24 @@ app.on("activate", function() {
 
 // IPC
 
-ipcMain.on("update-info", (event, arg) => {
+ipcMain.on(globalEvents.updateInfo, (event, arg) => {
   mediaInfoModule.update(arg);
 });
 
-ipcMain.on("update-status", (event, arg) => {
+ipcMain.on(globalEvents.hideSettings, (event, arg) => {
+  hideSettingsWindow();
+});
+ipcMain.on(globalEvents.showSettings, (event, arg) => {
+  showSettingsWindow();
+});
+
+ipcMain.on(globalEvents.updateStatus, (event, arg) => {
   mediaInfoModule.updateStatus(arg);
+});
+ipcMain.on(globalEvents.storeChanged, (event, arg) => {
+  mainWindow.setMenuBarVisibility(store.get(settings.menuBar));
+});
+
+ipcMain.on(globalEvents.error, (event, arg) => {
+  console.log(event);
 });

@@ -11,6 +11,8 @@
 const settings = {
   notifications: "notifications",
   api: "api",
+  menuBar: "menuBar",
+  playBackControl: "playBackControl",
   apiSettings: {
     root: "apiSettings",
     port: "apiSettings.port",

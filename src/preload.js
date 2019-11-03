@@ -9,6 +9,7 @@ const hotkeys = require("./scripts/hotkeys");
 const globalEvents = require("./constants/globalEvents");
 const notifier = require("node-notifier");
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
+let currentSong = "";
 
 const elements = {
   play: '*[data-test="play"]',
@@ -146,6 +147,10 @@ function addHotKeys() {
   hotkeys.add("control+r", function() {
     elements.click("repeat");
   });
+
+  hotkeys.add("control+/", function() {
+    ipcRenderer.send(globalEvents.showSettings);
+  });
 }
 
 /**
@@ -185,10 +190,6 @@ function handleLogout() {
  */
 function addIPCEventListeners() {
   window.addEventListener("DOMContentLoaded", () => {
-    ipcRenderer.on("getPlayInfo", () => {
-      alert(`${elements.getText("title")} - ${elements.getText("artists")}`);
-    });
-
     ipcRenderer.on("globalEvent", (event, args) => {
       switch (args) {
         case globalEvents.playPause:
@@ -221,7 +222,7 @@ function updateStatus() {
   if (!play) {
     status = statuses.playing;
   }
-  ipcRenderer.send("update-status", status);
+  ipcRenderer.send(globalEvents.updateStatus, status);
 }
 
 /**
@@ -237,33 +238,36 @@ setInterval(function() {
   if (getTitle() !== songDashArtistTitle) {
     setTitle(songDashArtistTitle);
 
-    const image = elements.getSongIcon();
+    if (currentSong !== songDashArtistTitle) {
+      currentSong = songDashArtistTitle;
+      const image = elements.getSongIcon();
 
-    const options = {
-      title,
-      message: artists,
-    };
-    new Promise((resolve, reject) => {
-      if (image.startsWith("http")) {
-        downloadFile(image, notificationPath).then(
-          () => {
-            options.icon = notificationPath;
-            resolve();
-          },
-          () => {
-            reject();
-          }
-        );
-      } else {
-        reject();
-      }
-    }).then(
-      () => {
-        ipcRenderer.send("update-info", options);
-        store.get(settings.notifications) && notifier.notify(options);
-      },
-      () => {}
-    );
+      const options = {
+        title,
+        message: artists,
+      };
+      new Promise((resolve, reject) => {
+        if (image.startsWith("http")) {
+          downloadFile(image, notificationPath).then(
+            () => {
+              options.icon = notificationPath;
+              resolve();
+            },
+            () => {
+              reject();
+            }
+          );
+        } else {
+          reject();
+        }
+      }).then(
+        () => {
+          ipcRenderer.send(globalEvents.updateInfo, options);
+          store.get(settings.notifications) && notifier.notify(options);
+        },
+        () => {}
+      );
+    }
   }
 }, 200);
 
