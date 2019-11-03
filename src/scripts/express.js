@@ -1,6 +1,6 @@
 const express = require("express");
 const { mediaInfo } = require("./mediaInfo");
-const settingsModule = require("./settings");
+const { store, settings } = require("./settings");
 const globalEvents = require("./../constants/globalEvents");
 const statuses = require("./../constants/statuses");
 
@@ -47,7 +47,7 @@ expressModule.run = function(mainWindow) {
     });
   });
 
-  expressApp.listen(settingsModule.settings.apiSettings.port, () => {});
+  expressApp.listen(store.get(settings.apiSettings.port), () => {});
 };
 
 module.exports = expressModule;

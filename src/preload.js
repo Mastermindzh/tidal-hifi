@@ -1,6 +1,6 @@
 const { setTitle, getTitle } = require("./scripts/window-functions");
 const { dialog } = require("electron").remote;
-const { settings } = require("./scripts/settings");
+const { store, settings } = require("./scripts/settings");
 const { ipcRenderer } = require("electron");
 const { app } = require("electron").remote;
 const { downloadFile } = require("./scripts/download");
@@ -260,7 +260,7 @@ setInterval(function() {
     }).then(
       () => {
         ipcRenderer.send("update-info", options);
-        settings.notifications && notifier.notify(options);
+        store.get(settings.notifications) && notifier.notify(options);
       },
       () => {}
     );

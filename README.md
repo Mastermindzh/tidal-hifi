@@ -1,17 +1,21 @@
-<img src = "./build/icon.png" height="50" style="float:right; margin-top: 29px;" />
-# Tidal-hifi
+<h1>
+Tidal-hifi
+<img src = "./build/icon.png" height="30" align="right" />
+</h1>
 
 The web version of [listen.tidal.com](listen.tidal.com) running in electron with hifi support thanks to widevine.
 
 ![tidal-hifi preview](./docs/preview.png)
+
+## Table of contents
 
 <!-- toc -->
 
 - [Installation](#installation)
   - [Using releases](#using-releases)
   - [Using source](#using-source)
-- [Why](#why)
 - [Integrations](#integrations)
+- [Why](#why)
 - [Why not extend existing projects?](#why-not-extend-existing-projects)
 - [Special thanks to..](#special-thanks-to)
 
@@ -32,15 +36,15 @@ To install and work with the code on this project follow these steps:
 - npm install
 - npm start
 
+## Integrations
+
+- [i3 blocks config](https://github.com/Mastermindzh/dotfiles/commit/9714b2fa1d670108ce811d5511fd3b7a43180647) - My dotfiles where I use this app to fetch currently playing music (direct commit)
+
 ## Why
 
 I moved from Spotify over to Tidal and found Linux support to be lacking.
 
 When I started this project there weren't any Linux apps that offered Tidal's "hifi" options nor any scripts to control it.
-
-## Integrations
-
-- [i3 blocks config](https://github.com/Mastermindzh/dotfiles/commit/9714b2fa1d670108ce811d5511fd3b7a43180647) - My dotfiles where I use this app to fetch currently playing music (direct commit)
 
 ## Why not extend existing projects?
 
@@ -49,7 +53,7 @@ Whilst there are a handful of projects attempting to run Tidal on Electron they 
 - Lack of a maintainers/developers. (no hotfixes, no issues being handled etc)
 - Most are simple web wrappers, not my cup of tea.
 - Some are DE oriented. I want this to work on WM's too.
-- None have widevine working at the moment and that is really the hardest part..
+- None have widevine working at the moment
 
 Sometimes it's just easier to start over, cover my own needs and then making it available to the public :)
 

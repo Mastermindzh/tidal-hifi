@@ -1,5 +1,5 @@
 const { app, BrowserWindow, globalShortcut, ipcMain } = require("electron");
-const { settings } = require("./scripts/settings");
+const { settings, store } = require("./scripts/settings");
 const { addTray, refreshTray } = require("./scripts/tray");
 
 const path = require("path");
@@ -49,6 +49,11 @@ function createWindow(options = {}) {
   mainWindow.on("closed", function() {
     mainWindow = null;
   });
+  mainWindow.on("resize", () => {
+    let { width, height } = mainWindow.getBounds();
+
+    store.set(settings.windowBounds.root, { width, height });
+  });
 }
 
 function addGlobalShortcuts() {
@@ -67,7 +72,7 @@ app.on("ready", () => {
   addGlobalShortcuts();
   addTray({ icon });
   refreshTray();
-  settings.api && expressModule.run(mainWindow);
+  store.get(settings.api) && expressModule.run(mainWindow);
 });
 
 app.on("activate", function() {
