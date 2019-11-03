@@ -31,6 +31,9 @@
             <!-- Tab 2 -->
             <input type="radio" name="tabset" id="tab2" />
             <label for="tab2">Api</label>
+            <!-- Tab 3 -->
+            <input type="radio" name="tabset" id="tab3" />
+            <label for="tab3">About</label>
 
             <div class="tab-panels">
                 <section id="general" class="tab-panel">
@@ -98,7 +101,16 @@
                     </div>
                     <button onClick="restart()">Restart Tidal-hifi</button>
                 </section>
+                <section id="general" class="tab-panel">
+                  <div class="section">
+                    <img style="width: 100px; height: auto; display: block; margin: 0 auto; margin-bottom: 20px; margin-top: 20px;" src = "./icon.png">
+                    <p style="max-width: 350px; display:block; margin: 0 auto; text-align: center;">
+                      <a href ="javascript:openExternal('https://github.com/Mastermindzh/tidal-hifi');">Tidal-hifi</a> is made by <a href ="javascript:openExternal('https://www.rickvanlieshout.com')">Rick van Lieshout</a>.<br />
+                      It uses <a href="javascript:openExternal('https://castlabs.com/');">castlabs</a> versions of Electron for widevine support.
+                    </p>
 
+                  </div>
+                </section>
             </div>
         </div>
     </div>
@@ -222,6 +234,7 @@
 
     .body::-webkit-scrollbar-track {
         -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
         border-radius: 5px;
         background-color: 2a2a2a;
     }
@@ -234,6 +247,7 @@
     .body::-webkit-scrollbar-thumb {
         border-radius: 10px;
         -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
+        box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
         background-color: #5a5a5a;
     }
     /* Tabs */
@@ -383,5 +397,4 @@
       background-color: rgba(229,238,255,.3);
     }
 </style>
-
 </html>

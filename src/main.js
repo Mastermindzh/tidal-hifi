@@ -8,6 +8,7 @@ const {
   hideSettingsWindow,
 } = require("./scripts/settings");
 const { addTray, refreshTray } = require("./scripts/tray");
+const { addMenu } = require("./scripts/menu");
 
 const path = require("path");
 const tidalUrl = "https://listen.tidal.com";
@@ -79,6 +80,7 @@ function addGlobalShortcuts() {
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
   createWindow();
+  addMenu();
   createSettingsWindow();
   addGlobalShortcuts();
   addTray({ icon });

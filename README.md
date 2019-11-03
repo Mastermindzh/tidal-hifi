@@ -43,8 +43,8 @@ To install and work with the code on this project follow these steps:
 - Notifications
 - Shortcuts ([source](https://defkey.com/tidal-desktop-shortcuts))
 - API for status and playback
-- [Settings feature](./docs/settings.png) to disable certain functionality.
-- Tray player (coming soon)
+- [Settings feature](./docs/settings.png) to disable certain functionality. (`ctrl+/`)
+- Tray(/mini) player (coming soon)
 
 ## Integrations
 

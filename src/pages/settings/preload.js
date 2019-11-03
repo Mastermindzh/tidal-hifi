@@ -20,6 +20,14 @@ function refreshSettings() {
 }
 
 /**
+ * Open an url in the default browsers
+ */
+window.openExternal = function(url) {
+  const { shell } = require("electron");
+  shell.openExternal(url);
+};
+
+/**
  * hide the settings window
  */
 window.hide = function() {
@@ -56,6 +64,10 @@ window.addEventListener("DOMContentLoaded", () => {
 
   ipcRenderer.on("refreshData", () => {
     refreshSettings();
+  });
+
+  ipcRenderer.on("goToTab", (event, tab) => {
+    document.getElementById(tab).click();
   });
 
   notifications = get("notifications");

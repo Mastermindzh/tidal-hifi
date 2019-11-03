@@ -10,7 +10,7 @@ const store = new Store({
     notifications: true,
     api: true,
     playBackControl: true,
-    menuBar: false,
+    menuBar: true,
     apiSettings: {
       port: 47836,
     },
@@ -52,7 +52,9 @@ settingsModule.createSettingsWindow = function() {
   settingsModule.settingsWindow = settingsWindow;
 };
 
-settingsModule.showSettingsWindow = function() {
+settingsModule.showSettingsWindow = function(tab = "tab1") {
+  settingsWindow.webContents.send("goToTab", tab);
+
   // refresh data just before showing the window
   settingsWindow.webContents.send("refreshData");
   settingsWindow.show();
