@@ -7,12 +7,9 @@ snap:
     - screen-inhibit-control
 linux:
   category: Audio
+  icon: ./assets/icon.png
   target:
-    # - pacman
-    - tar.gz
     - deb
-    - AppImage
-    - snap
 mac:
   category: public.app-category.entertainment
 win:
