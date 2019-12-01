@@ -6,8 +6,9 @@
   "scripts": {
     "start": "electron .",
     "build": "electron-builder -c ./build/electron-builder.yml",
-    "build:snap": "electron-builder -c ./build/electron-builder.snap.yml",
-    "build:arch": "electron-builder -c ./build/electron-builder.pacman.yml",
+    "build-deb": "electron-builder -c ./build/electron-builder.deb.yml",
+    "build-snap": "electron-builder -c ./build/electron-builder.snap.yml",
+    "build-arch": "electron-builder -c ./build/electron-builder.pacman.yml",
     "build-wl": "electron-builder -c ./build/electron-builder.yml -wl",
     "build-mac": "electron-builder -c ./build/electron-builder.yml -m"
   },

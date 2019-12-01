@@ -1,0 +1,6 @@
+extends: ./build/electron-builder.yml
+linux:
+  category: Audio
+  icon: ./assets/icon.png
+  target:
+    - deb
