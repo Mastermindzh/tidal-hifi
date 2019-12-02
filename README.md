@@ -28,6 +28,14 @@ The web version of [listen.tidal.com](listen.tidal.com) running in electron with
 
 Various packaged versions of the software are available on the [releases](https://github.com/Mastermindzh/tidal-hifi/releases) tab.
 
+### Arch Linux
+
+Arch Linux users can use the AUR to install tidal-hifi:
+
+```sh
+trizen tidal-hifi
+```
+
 ### Using source
 
 To install and work with the code on this project follow these steps:

@@ -1,2 +1,9 @@
 node_modules
 dist
+
+# ignore all build files except for the .desktop and PKGBUILD files
+build/linux/arch/*
+!build/linux/arch/PKGBUILD
+!build/linux/arch/.SRCINFO
+!build/linux/arch/tidal-hifi.desktop
+!build/linux/arch/install.sh
