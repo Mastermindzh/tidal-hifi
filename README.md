@@ -58,6 +58,9 @@ To install and work with the code on this project follow these steps:
 
 - [i3 blocks config](https://github.com/Mastermindzh/dotfiles/commit/9714b2fa1d670108ce811d5511fd3b7a43180647) - My dotfiles where I use this app to fetch currently playing music (direct commit)
 
+### Known bugs
+- [Last.fm login doesn't work](https://github.com/Mastermindzh/tidal-hifi/issues/4).
+
 ## Why
 
 I moved from Spotify over to Tidal and found Linux support to be lacking.
