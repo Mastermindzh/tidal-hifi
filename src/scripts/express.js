@@ -53,7 +53,7 @@ expressModule.run = function(mainWindow) {
   if (store.get(settings.api)) {
     let port = store.get(settings.apiSettings.port);
 
-    expressInstance = expressApp.listen(port, () => {});
+    expressInstance = expressApp.listen(port, "127.0.0.1", () => {});
     expressInstance.on("error", function(e) {
       let message = e.code;
       if (e.code === "EADDRINUSE") {
