@@ -7,6 +7,7 @@
     "start": "electron .",
     "build": "electron-builder -c ./build/electron-builder.yml",
     "build-deb": "electron-builder -c ./build/electron-builder.deb.yml",
+    "build-rpm": "electron-builder -c ./build/electron-builder.rpm.yml",
     "build-snap": "electron-builder -c ./build/electron-builder.snap.yml",
     "build-arch": "electron-builder -c ./build/electron-builder.pacman.yml",
     "build-wl": "electron-builder -c ./build/electron-builder.yml -wl",
@@ -21,6 +22,7 @@
   "author": "Rick van Lieshout <info@rickvanlieshout.com> (http://rickvanlieshout.com)",
   "license": "MIT",
   "dependencies": {
+    "electron-installer-flatpak": "^0.8.0",
     "electron-store": "^5.1.0",
     "express": "^4.17.1",
     "hotkeys-js": "^3.7.1",

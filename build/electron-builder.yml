@@ -11,6 +11,7 @@ linux:
     # - pacman
     - tar.gz
     - deb
+    - rpm
     - AppImage
     - snap
 mac:
