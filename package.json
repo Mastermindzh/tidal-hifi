@@ -22,7 +22,6 @@
   "author": "Rick van Lieshout <info@rickvanlieshout.com> (http://rickvanlieshout.com)",
   "license": "MIT",
   "dependencies": {
-    "electron-installer-flatpak": "^0.8.0",
     "electron-store": "^5.1.0",
     "express": "^4.17.1",
     "hotkeys-js": "^3.7.1",
