@@ -1,4 +1,4 @@
-_<h1>
+<h1>
 Tidal-hifi
 <img src = "./build/icon.png" height="40" align="right" />
 </h1>
