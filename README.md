@@ -13,6 +13,7 @@ The web version of [listen.tidal.com](listen.tidal.com) running in electron with
 
 - [Installation](#installation)
   - [Using releases](#using-releases)
+    - [Snap install](#snap-install)
   - [Using source](#using-source)
 - [features](#features)
 - [Integrations](#integrations)
@@ -27,6 +28,20 @@ The web version of [listen.tidal.com](listen.tidal.com) running in electron with
 ### Using releases
 
 Various packaged versions of the software are available on the [releases](https://github.com/Mastermindzh/tidal-hifi/releases) tab.
+
+#### Snap install
+
+To install with `snap` you need to download the pre-packaged snap-package from this repository, found under releases:
+
+1) Download: 
+```sh 
+wget <URI> #for instance: https://github.com/Mastermindzh/tidal-hifi/releases/download/1.0/tidal-hifi_1.0.0_amd64.snap
+```
+
+2) Install: 
+```sh
+snap install --dangerous <path> #for instance: tidal-hifi_1.0.0_amd64.snap
+```
 
 ### Arch Linux
 
