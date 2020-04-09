@@ -35,12 +35,12 @@ To install with `snap` you need to download the pre-packaged snap-package from t
 
 1) Download: 
 ```sh 
-wget <path_to_snap_package>
+wget <URI> #for instance: https://github.com/Mastermindzh/tidal-hifi/releases/download/1.0/tidal-hifi_1.0.0_amd64.snap
 ```
 
 2) Install: 
 ```sh
-snap install --dangerous <package>
+snap install --dangerous <path> #for instance: tidal-hifi_1.0.0_amd64.snap
 ```
 
 ### Arch Linux
