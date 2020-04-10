@@ -1,17 +1,17 @@
 {
   "name": "tidal-hifi",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Tidal on Electron with widevine(hifi) support",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "build": "electron-builder -c ./build/electron-builder.yml",
-    "build-deb": "electron-builder -c ./build/electron-builder.deb.yml",
-    "build-rpm": "electron-builder -c ./build/electron-builder.rpm.yml",
-    "build-snap": "electron-builder -c ./build/electron-builder.snap.yml",
-    "build-arch": "electron-builder -c ./build/electron-builder.pacman.yml",
-    "build-wl": "electron-builder -c ./build/electron-builder.yml -wl",
-    "build-mac": "electron-builder -c ./build/electron-builder.yml -m"
+    "build": "electron-builder --publish=never -c ./build/electron-builder.yml",
+    "build-deb": "electron-builder --publish=never -c ./build/electron-builder.deb.yml",
+    "build-rpm": "electron-builder --publish=never -c ./build/electron-builder.rpm.yml",
+    "build-snap": "electron-builder --publish=never -c ./build/electron-builder.snap.yml",
+    "build-arch": "npm run build-without-release -c ./build/electron-builder.pacman.yml",
+    "build-wl": "electron-builder --publish=never -c ./build/electron-builder.yml -wl",
+    "build-mac": "electron-builder --publish=never -c ./build/electron-builder.yml -m"
   },
   "keywords": [
     "electron",
