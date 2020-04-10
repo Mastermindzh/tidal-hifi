@@ -22,18 +22,18 @@
   "author": "Rick van Lieshout <info@rickvanlieshout.com> (http://rickvanlieshout.com)",
   "license": "MIT",
   "dependencies": {
-    "electron-store": "^5.1.0",
+    "electron-store": "^5.1.1",
     "express": "^4.17.1",
-    "hotkeys-js": "^3.7.1",
+    "hotkeys-js": "^3.7.6",
     "node-notifier": "^6.0.0",
-    "request": "^2.88.0"
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "@mastermindzh/prettier-config": "^1.0.0",
-    "electron": "https://github.com/castlabs/electron-releases#v6.1.0-wvvmp",
+    "electron": "git+https://github.com/castlabs/electron-releases.git#v6.1.0-wvvmp",
     "electron-builder": "^21.2.0",
     "electron-reload": "^1.5.0",
-    "prettier": "^1.18.2"
+    "prettier": "^2.0.4"
   },
   "prettier": "@mastermindzh/prettier-config"
 }
