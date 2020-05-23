@@ -32,7 +32,7 @@ jobs:
       - uses: actions/upload-artifact@master
         with:
           name: mac-builds
-          path: dist/
+          path: ./dist/
 
   build_on_win:
     runs-on: windows-latest
