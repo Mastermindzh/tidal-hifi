@@ -31,8 +31,8 @@
   },
   "devDependencies": {
     "@mastermindzh/prettier-config": "^1.0.0",
-    "electron": "git+https://github.com/castlabs/electron-releases.git#v6.1.0-wvvmp",
-    "electron-builder": "^21.2.0",
+    "electron": "git+https://github.com/castlabs/electron-releases.git#v9.3.0-wvvmp",
+    "electron-builder": "^22.8.0",
     "electron-reload": "^1.5.0",
     "prettier": "^2.0.4"
   },
