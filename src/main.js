@@ -44,6 +44,7 @@ function createWindow(options = {}) {
       preload: path.join(__dirname, "preload.js"),
       plugins: true,
       devTools: !app.isPackaged,
+      sandbox: true, // incidentally work around Electron lack of support for window.opener; needed for popup OAuth token callbacks (e.g. last.fm) to work
     },
   });
 
