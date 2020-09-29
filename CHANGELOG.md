@@ -8,3 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - updated to electron 8.0.0
 - Added a beta-version of the mpris service
+
+- Bugfixes:
+  - icon on gnome not showing in launcher
+  - app not remembering size on startup

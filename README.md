@@ -33,12 +33,14 @@ Various packaged versions of the software are available on the [releases](https:
 
 To install with `snap` you need to download the pre-packaged snap-package from this repository, found under releases:
 
-1) Download: 
-```sh 
+1. Download:
+
+```sh
 wget <URI> #for instance: https://github.com/Mastermindzh/tidal-hifi/releases/download/1.0/tidal-hifi_1.0.0_amd64.snap
 ```
 
-2) Install: 
+2. Install:
+
 ```sh
 snap install --dangerous <path> #for instance: tidal-hifi_1.0.0_amd64.snap
 ```
@@ -67,13 +69,13 @@ To install and work with the code on this project follow these steps:
 - Shortcuts ([source](https://defkey.com/tidal-desktop-shortcuts))
 - API for status and playback
 - [Settings feature](./docs/settings.png) to disable certain functionality. (`ctrl+/`)
-- Tray(/mini) player (coming soon)
 
 ## Integrations
 
 - [i3 blocks config](https://github.com/Mastermindzh/dotfiles/commit/9714b2fa1d670108ce811d5511fd3b7a43180647) - My dotfiles where I use this app to fetch currently playing music (direct commit)
 
 ### Known bugs
+
 - [Last.fm login doesn't work](https://github.com/Mastermindzh/tidal-hifi/issues/4).
 
 ## Why

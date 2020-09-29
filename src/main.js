@@ -34,8 +34,8 @@ function createWindow(options = {}) {
   mainWindow = new BrowserWindow({
     x: options.x,
     y: options.y,
-    width: 1024,
-    height: 800,
+    width: store && store.get(settings.windowBounds.width),
+    height: store && store.get(settings.windowBounds.height),
     icon,
     tray: true,
     backgroundColor: options.backgroundColor,
