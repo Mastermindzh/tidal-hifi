@@ -25,16 +25,16 @@
     "electron-store": "^5.1.1",
     "express": "^4.17.1",
     "hotkeys-js": "^3.7.6",
-    "mpris-service": "^2.1.0",
     "node-notifier": "^6.0.0",
     "request": "^2.88.2"
   },
   "devDependencies": {
     "@mastermindzh/prettier-config": "^1.0.0",
-    "electron": "git+https://github.com/castlabs/electron-releases.git#v9.3.0-wvvmp",
-    "electron-builder": "^22.8.0",
+    "electron": "git+https://github.com/castlabs/electron-releases.git#v6.1.0-wvvmp",
+    "electron-builder": "^21.2.0",
     "electron-reload": "^1.5.0",
-    "prettier": "^2.0.4"
+    "prettier": "^2.0.4",
+    "dot-prop": ">=4.2.1"
   },
   "prettier": "@mastermindzh/prettier-config"
 }
