@@ -17,12 +17,13 @@ function refreshSettings() {
   api.checked = store.get(settings.api);
   port.value = store.get(settings.apiSettings.port);
   menuBar.checked = store.get(settings.menuBar);
+  mpris.checked = store.get(settings.mpris);
 }
 
 /**
  * Open an url in the default browsers
  */
-window.openExternal = function(url) {
+window.openExternal = function (url) {
   const { shell } = require("electron");
   shell.openExternal(url);
 };
@@ -30,14 +31,14 @@ window.openExternal = function(url) {
 /**
  * hide the settings window
  */
-window.hide = function() {
+window.hide = function () {
   ipcRenderer.send(globalEvents.hideSettings);
 };
 
 /**
  * Restart tidal-hifi after changes
  */
-window.restart = function() {
+window.restart = function () {
   const remote = require("electron").remote;
   remote.app.relaunch();
   remote.app.exit(0);
@@ -52,7 +53,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function addInputListener(source, key) {
-    source.addEventListener("input", function(event, data) {
+    source.addEventListener("input", function (event, data) {
       if (this.value === "on") {
         store.set(key, source.checked);
       } else {
@@ -66,7 +67,7 @@ window.addEventListener("DOMContentLoaded", () => {
     refreshSettings();
   });
 
-  ipcRenderer.on("goToTab", (event, tab) => {
+  ipcRenderer.on("goToTab", (_, tab) => {
     document.getElementById(tab).click();
   });
 
@@ -75,6 +76,7 @@ window.addEventListener("DOMContentLoaded", () => {
   api = get("apiCheckbox");
   port = get("port");
   menuBar = get("menuBar");
+  mpris = get("mprisCheckbox");
 
   refreshSettings();
 
@@ -83,4 +85,5 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(api, settings.api);
   addInputListener(port, settings.apiSettings.port);
   addInputListener(menuBar, settings.menuBar);
+  addInputListener(mpris, settings.mpris);
 });

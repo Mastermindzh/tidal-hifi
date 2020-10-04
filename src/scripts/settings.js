@@ -14,7 +14,7 @@ const store = new Store({
     apiSettings: {
       port: 47836,
     },
-
+    mpris: false,
     windowBounds: { width: 800, height: 600 },
   },
 });
@@ -25,7 +25,7 @@ const settingsModule = {
   settingsWindow,
 };
 
-settingsModule.createSettingsWindow = function() {
+settingsModule.createSettingsWindow = function () {
   settingsWindow = new BrowserWindow({
     width: 500,
     height: 600,
@@ -52,18 +52,18 @@ settingsModule.createSettingsWindow = function() {
   settingsModule.settingsWindow = settingsWindow;
 };
 
-settingsModule.showSettingsWindow = function(tab = "tab1") {
+settingsModule.showSettingsWindow = function (tab = "general") {
   settingsWindow.webContents.send("goToTab", tab);
 
   // refresh data just before showing the window
   settingsWindow.webContents.send("refreshData");
   settingsWindow.show();
 };
-settingsModule.hideSettingsWindow = function() {
+settingsModule.hideSettingsWindow = function () {
   settingsWindow.hide();
 };
 
-settingsModule.closeSettingsWindow = function() {
+settingsModule.closeSettingsWindow = function () {
   settingsWindow = null;
 };
 

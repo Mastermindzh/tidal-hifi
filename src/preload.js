@@ -292,7 +292,7 @@ setInterval(function () {
   }
 }, 200);
 
-if (process.platform === "linux") {
+if (process.platform === "linux" && store.get(settings.mpris)) {
   try {
     const Player = require("mpris-service");
     player = Player({

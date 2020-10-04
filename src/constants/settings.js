@@ -17,6 +17,7 @@ const settings = {
     root: "apiSettings",
     port: "apiSettings.port",
   },
+  mpris: "mpris",
   windowBounds: {
     root: "windowBounds",
     width: "windowBounds.width",
