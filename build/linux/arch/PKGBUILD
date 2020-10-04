@@ -15,8 +15,8 @@ provides=("$_pkgname")
 
 source=("https://github.com/Mastermindzh/tidal-hifi/archive/$pkgver.zip"
         "${_pkgname}.desktop")
-sha512sums=('b855f6530b945e4b0f7891c04a8b0279cf642d9cfcf180b8ded629a85743899ac431d3de87fcecb605fae82e1df2dc86d0a72c3cc85d426bf8fe08b41630c299'
-            'fa5fa918ea890baa5f500db3153a6eff3d63966528ffa3349acda3ea02fbecb1ea78a1ba1d23ef7402de2228fc0a483252e0b7e72c73cfb25ed401bedaf856f5')
+sha512sums=('099c4a7d0700ff0e1ddd464e0bf1417454010b16e4f19dec51be6b47314b53979e467e999bb9f106de75162087535e7cf7492b8c2f4af0fa3d45501d48653f32'
+            '35f38ac308b871c1822d7f6f760f2fb54c3748cf769822cb0f0dfb90f0f5754ba9316da5e903a0d2e9839de3a43ec76f238f3f2e44021956fa1da19142081349')
 
 cdToPkg(){
     cd "tidal-hifi-$pkgver"
