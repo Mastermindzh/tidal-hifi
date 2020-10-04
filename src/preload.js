@@ -1,5 +1,5 @@
 const { setTitle, getTitle } = require("./scripts/window-functions");
-const { dialog } = require("electron").remote;
+const { dialog, process } = require("electron").remote;
 const { store, settings } = require("./scripts/settings");
 const { ipcRenderer } = require("electron");
 const { app } = require("electron").remote;
@@ -10,6 +10,7 @@ const globalEvents = require("./constants/globalEvents");
 const notifier = require("node-notifier");
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 let currentSong = "";
+// let player;
 
 const elements = {
   play: '*[data-test="play"]',
@@ -34,14 +35,14 @@ const elements = {
    * Get an element from the dom
    * @param {*} key key in elements object to fetch
    */
-  get: function(key) {
+  get: function (key) {
     return window.document.querySelector(this[key.toLowerCase()]);
   },
 
   /**
    * Get the icon of the current song
    */
-  getSongIcon: function() {
+  getSongIcon: function () {
     const figure = this.get("media");
 
     if (figure) {
@@ -58,7 +59,7 @@ const elements = {
    * Shorthand function to get the text of a dom element
    * @param {*} key key in elements object to fetch
    */
-  getText: function(key) {
+  getText: function (key) {
     const element = this.get(key);
     return element ? element.textContent : "";
   },
@@ -67,7 +68,7 @@ const elements = {
    * Shorthand function to click a dom element
    * @param {*} key key in elements object to fetch
    */
-  click: function(key) {
+  click: function (key) {
     this.get(key).click();
     return this;
   },
@@ -76,7 +77,7 @@ const elements = {
    * Shorthand function to focus a dom element
    * @param {*} key key in elements object to fetch
    */
-  focus: function(key) {
+  focus: function (key) {
     return this.get(key).focus();
   },
 };
@@ -100,55 +101,55 @@ function playPause() {
  * https://defkey.com/tidal-desktop-shortcuts
  */
 function addHotKeys() {
-  hotkeys.add("Control+p", function() {
+  hotkeys.add("Control+p", function () {
     elements.click("account").click("settings");
   });
-  hotkeys.add("Control+l", function() {
+  hotkeys.add("Control+l", function () {
     handleLogout();
   });
 
-  hotkeys.add("Control+h", function() {
+  hotkeys.add("Control+h", function () {
     elements.click("home");
   });
 
-  hotkeys.add("backspace", function() {
+  hotkeys.add("backspace", function () {
     elements.click("back");
   });
 
-  hotkeys.add("shift+backspace", function() {
+  hotkeys.add("shift+backspace", function () {
     elements.click("forward");
   });
 
-  hotkeys.add("control+f", function() {
+  hotkeys.add("control+f", function () {
     elements.focus("search");
   });
 
-  hotkeys.add("control+u", function() {
+  hotkeys.add("control+u", function () {
     // reloading window without cache should show the update bar if applicable
     window.location.reload(true);
   });
 
-  hotkeys.add("control+left", function() {
+  hotkeys.add("control+left", function () {
     elements.click("previous");
   });
 
-  hotkeys.add("control+right", function() {
+  hotkeys.add("control+right", function () {
     elements.click("next");
   });
 
-  hotkeys.add("control+right", function() {
+  hotkeys.add("control+right", function () {
     elements.click("next");
   });
 
-  hotkeys.add("control+s", function() {
+  hotkeys.add("control+s", function () {
     elements.click("shuffle");
   });
 
-  hotkeys.add("control+r", function() {
+  hotkeys.add("control+r", function () {
     elements.click("repeat");
   });
 
-  hotkeys.add("control+/", function() {
+  hotkeys.add("control+/", function () {
     ipcRenderer.send(globalEvents.showSettings);
   });
 }
@@ -169,7 +170,7 @@ function handleLogout() {
       buttons: logoutOptions,
       defaultId: 2,
     },
-    function(response) {
+    function (response) {
       if (logoutOptions.indexOf("Yes, please") == response) {
         for (i = 0; i < window.localStorage.length; i++) {
           key = window.localStorage.key(i);
@@ -216,19 +217,28 @@ function addIPCEventListeners() {
  * Update the current status of tidal (e.g playing or paused)
  */
 function updateStatus() {
-  const play = elements.get("play");
-  let status = statuses.paused;
-  // if play button is NOT visible tidal is playing
-  if (!play) {
+  let pause = elements.get("pause");
+  let status;
+
+  // if pause button is visible tidal is playing
+  if (pause) {
     status = statuses.playing;
+  } else {
+    status = statuses.paused;
   }
-  ipcRenderer.send(globalEvents.updateStatus, status);
+
+  if (status) {
+    ipcRenderer.send(globalEvents.updateStatus, status);
+    // if (player) {
+    //   player.playbackStatus = status == statuses.paused ? "Paused" : "Playing";
+    // }
+  }
 }
 
 /**
  * Watch for song changes and update title + notify
  */
-setInterval(function() {
+setInterval(function () {
   const title = elements.getText("title");
   const artists = elements.getText("artists");
   const songDashArtistTitle = `${title} - ${artists}`;
@@ -264,12 +274,75 @@ setInterval(function() {
         () => {
           ipcRenderer.send(globalEvents.updateInfo, options);
           store.get(settings.notifications) && notifier.notify(options);
+
+          // if (player) {
+          //   player.metadata = {
+          //     ...player.metadata,
+          //     ...{
+          //       "xesam:title": title,
+          //       "xesam:artist": [artists],
+          //       "mpris:artUrl": image,
+          //     },
+          //   };
+          // }
         },
         () => {}
       );
     }
   }
 }, 200);
+
+// if (process.platform === "linux" && store.get(settings.mpris)) {
+//   try {
+//     const Player = require("mpris-service");
+//     player = Player({
+//       name: "tidal-hifi",
+//       identity: "tidal-hifi",
+//       supportedUriSchemes: ["file"],
+//       supportedMimeTypes: [
+//         "audio/mpeg",
+//         "audio/flac",
+//         "audio/x-flac",
+//         "application/ogg",
+//         "audio/wav",
+//       ],
+//       supportedInterfaces: ["player"],
+//       desktopEntry: "tidal-hifi",
+//     });
+
+//     // Events
+//     var events = {
+//       next: "next",
+//       previous: "previous",
+//       pause: "pause",
+//       playpause: "playpause",
+//       stop: "stop",
+//       play: "play",
+//       loopStatus: "repeat",
+//       shuffle: "shuffle",
+//       seek: "seek",
+//     };
+//     Object.keys(events).forEach(function (eventName) {
+//       player.on(eventName, function () {
+//         const eventValue = events[eventName];
+//         switch (events[eventValue]) {
+//           case events.playpause:
+//             playPause();
+//             break;
+
+//           default:
+//             elements.click(eventValue);
+//         }
+//       });
+//     });
+
+//     player.on("quit", function () {
+//       app.quit();
+//     });
+//   } catch (exception) {
+//     console.log("player api not working");
+//   }
+// }
 
 addHotKeys();
 addIPCEventListeners();

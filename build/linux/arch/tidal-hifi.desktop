@@ -10,3 +10,4 @@ Terminal=false
 Type=Application
 Categories=Network;Application;Audio;Video
 StartupWMClass=tidal-hifi
+X-PulseAudio-Properties=media.role=music
