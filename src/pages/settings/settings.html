@@ -26,14 +26,19 @@
     <div class="body">
         <div class="tabset">
             <!-- Tab 1 -->
-            <input type="radio" name="tabset" id="tab1" checked />
-            <label for="tab1">General</label>
+            <input type="radio" name="tabset" id="general" checked />
+            <label for="general">General</label>
             <!-- Tab 2 -->
-            <input type="radio" name="tabset" id="tab2" />
-            <label for="tab2">Api</label>
-            <!-- Tab 3 -->
-            <input type="radio" name="tabset" id="tab3" />
-            <label for="tab3">About</label>
+            <input type="radio" name="tabset" id="api" />
+            <label for="api">Api</label>
+
+            <!-- Integrations tab -->
+            <input type="radio" name="tabset" id="integrations" />
+            <label for="integrations">Integrations</label>
+
+            <!-- about tab -->
+            <input type="radio" name="tabset" id="about" />
+            <label for="about">About</label>
 
             <div class="tab-panels">
                 <section id="general" class="tab-panel">
@@ -101,7 +106,29 @@
                     </div>
                     <button onClick="restart()">Restart Tidal-hifi</button>
                 </section>
-                <section id="general" class="tab-panel">
+                <section id="integrations" class="tab-panel">
+                  <div class="section">
+                      <h3>integrations</h3>
+                      <p style="margin-bottom: 15px;">
+                          Tidal-hifi is extensible trough the use of integrations. You can enable or disable integrations here
+                          <br />
+                          * not all integrations require restarting but some do, your best bet is to restart :)
+                      </p>
+                      <!-- disabled until the 403 with mpris-service/dbus is fixed  -->
+                      <!-- <div class="option">
+                          <h4>mpris-player</h4>
+                          <p>
+                              Whether to enable the mpris media player controls for Linux systems
+                          </p>
+                          <label class="switch">
+                              <input id="mprisCheckbox" type="checkbox">
+                              <span class="slider round"></span>
+                          </label>
+                      </div> -->
+                      <button onClick="restart()">Restart Tidal-hifi</button>
+                  </div>
+              </section>
+                <section id="about" class="tab-panel">
                   <div class="section">
                     <img style="width: 100px; height: auto; display: block; margin: 0 auto; margin-bottom: 20px; margin-top: 20px;" src = "./icon.png">
                     <p style="max-width: 350px; display:block; margin: 0 auto; text-align: center;">
@@ -170,12 +197,18 @@
 
     .exitWindow {
         border: none;
+        outline: none;
         text-decoration: none;
         font-size: 1.4rem;
         float: right;
         margin-right: 15px;
         height: 50px;
         line-height: 50px;
+    }
+
+    .exitWindow:focus {
+      border: none;
+      outline: none;
     }
 
     .exitWindow svg {
@@ -263,7 +296,9 @@
 
     .tabset > input:first-child:checked ~ .tab-panels > .tab-panel:first-child,
     .tabset > input:nth-child(3):checked ~ .tab-panels > .tab-panel:nth-child(2),
-    .tabset > input:nth-child(5):checked ~ .tab-panels > .tab-panel:nth-child(3) {
+    .tabset > input:nth-child(5):checked ~ .tab-panels > .tab-panel:nth-child(3),
+    .tabset > input:nth-child(7):checked ~ .tab-panels > .tab-panel:nth-child(4)
+     {
         display: block;
     }
 

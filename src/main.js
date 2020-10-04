@@ -34,8 +34,8 @@ function createWindow(options = {}) {
   mainWindow = new BrowserWindow({
     x: options.x,
     y: options.y,
-    width: 1024,
-    height: 800,
+    width: store && store.get(settings.windowBounds.width),
+    height: store && store.get(settings.windowBounds.height),
     icon,
     tray: true,
     backgroundColor: options.backgroundColor,
@@ -43,7 +43,7 @@ function createWindow(options = {}) {
       affinity: "window",
       preload: path.join(__dirname, "preload.js"),
       plugins: true,
-      devTools: !app.isPackaged,
+      devTools: true, // I like tinkering, others might too
     },
   });
 
@@ -56,7 +56,7 @@ function createWindow(options = {}) {
   mainWindow.webContents.once("did-finish-load", () => {});
 
   // Emitted when the window is closed.
-  mainWindow.on("closed", function() {
+  mainWindow.on("closed", function () {
     closeSettingsWindow();
     app.quit();
   });
@@ -88,7 +88,7 @@ app.on("ready", () => {
   store.get(settings.api) && expressModule.run(mainWindow);
 });
 
-app.on("activate", function() {
+app.on("activate", function () {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) {

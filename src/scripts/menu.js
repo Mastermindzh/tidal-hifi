@@ -89,18 +89,18 @@ const mainMenu = [
   {
     label: "About",
     click() {
-      showSettingsWindow("tab3");
+      showSettingsWindow("about");
     },
   },
 ];
 
 const menuModule = { mainMenu };
 
-menuModule.getMenu = function() {
+menuModule.getMenu = function () {
   return Menu.buildFromTemplate(mainMenu);
 };
 
-menuModule.addMenu = function() {
+menuModule.addMenu = function () {
   Menu.setApplicationMenu(menuModule.getMenu());
 };
 

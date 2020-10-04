@@ -14,6 +14,20 @@ linux:
     - rpm
     - AppImage
     - snap
+    - freebsd
+  executableName: tidal-hifi
+  desktop:
+    Encoding: UTF-8
+    Name: tidal-hifi
+    GenericName: tidal-hifi
+    Comment: The web version of listen.tidal.com running in electron with hifi support thanks to widevine.
+    Icon: assets/icon.png
+    StartupNotify: true
+    Terminal: false
+    Type: Application
+    Categories: Network;Application;Audio;Video
+    StartupWMClass: tidal-hifi
+    X-PulseAudio-Properties: media.role=music
 mac:
   category: public.app-category.entertainment
 win:
