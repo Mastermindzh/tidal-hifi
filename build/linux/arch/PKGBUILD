@@ -33,7 +33,7 @@ build() {
     cdToPkg
 
     # We are not using the systems Electron as we need castlab's Electron.
-    npx electron-builder --linux dir
+    npm run build-arch
 }
 
 package() {
