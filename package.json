@@ -20,6 +20,7 @@
     "linux"
   ],
   "author": "Rick van Lieshout <info@rickvanlieshout.com> (http://rickvanlieshout.com)",
+  "homepage": "https://github.com/Mastermindzh/tidal-hifi",
   "license": "MIT",
   "dependencies": {
     "electron-store": "^5.1.1",
