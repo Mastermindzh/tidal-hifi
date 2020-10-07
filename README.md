@@ -95,7 +95,12 @@ Whilst there are a handful of projects attempting to run Tidal on Electron they 
 
 Sometimes it's just easier to start over, cover my own needs and then making it available to the public :)
 
-## Special thanks to..
+## Special thanks to...
 
 - [Castlabs](https://castlabs.com/)
   For maintaining Electron with Widevine CDM installation, Verified Media Path (VMP), and persistent licenses (StorageID)
+
+## Buy me a coffee? Please don't
+
+Instead spend some money on a charity I care for: [kwf.nl](secure.kwf.nl/donation)
+Inspired by [haydenjames' issue](https://github.com/Mastermindzh/tidal-hifi/issues/27#issuecomment-704198429)

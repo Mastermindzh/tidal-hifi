@@ -18,6 +18,7 @@ const settings = {
     port: "apiSettings.port",
   },
   mpris: "mpris",
+  trayIcon: "trayIcon",
   windowBounds: {
     root: "windowBounds",
     width: "windowBounds.width",

@@ -83,8 +83,7 @@ app.on("ready", () => {
   addMenu();
   createSettingsWindow();
   addGlobalShortcuts();
-  addTray({ icon });
-  refreshTray();
+  store.get(settings.trayIcon) && addTray({ icon }) && refreshTray();
   store.get(settings.api) && expressModule.run(mainWindow);
 });
 

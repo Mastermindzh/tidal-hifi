@@ -14,6 +14,7 @@ const store = new Store({
     apiSettings: {
       port: 47836,
     },
+    trayIcon: true,
     mpris: false,
     windowBounds: { width: 800, height: 600 },
   },
