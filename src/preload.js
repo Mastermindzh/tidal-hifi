@@ -10,7 +10,7 @@ const globalEvents = require("./constants/globalEvents");
 const notifier = require("node-notifier");
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 let currentSong = "";
-// let player;
+let player;
 
 const elements = {
   play: '*[data-test="play"]',
@@ -229,9 +229,9 @@ function updateStatus() {
 
   if (status) {
     ipcRenderer.send(globalEvents.updateStatus, status);
-    // if (player) {
-    //   player.playbackStatus = status == statuses.paused ? "Paused" : "Playing";
-    // }
+    if (player) {
+      player.playbackStatus = status == statuses.paused ? "Paused" : "Playing";
+    }
   }
 }
 
@@ -275,16 +275,16 @@ setInterval(function () {
           ipcRenderer.send(globalEvents.updateInfo, options);
           store.get(settings.notifications) && notifier.notify(options);
 
-          // if (player) {
-          //   player.metadata = {
-          //     ...player.metadata,
-          //     ...{
-          //       "xesam:title": title,
-          //       "xesam:artist": [artists],
-          //       "mpris:artUrl": image,
-          //     },
-          //   };
-          // }
+          if (player) {
+            player.metadata = {
+              ...player.metadata,
+              ...{
+                "xesam:title": title,
+                "xesam:artist": [artists],
+                "mpris:artUrl": image,
+              },
+            };
+          }
         },
         () => {}
       );
@@ -292,57 +292,57 @@ setInterval(function () {
   }
 }, 200);
 
-// if (process.platform === "linux" && store.get(settings.mpris)) {
-//   try {
-//     const Player = require("mpris-service");
-//     player = Player({
-//       name: "tidal-hifi",
-//       identity: "tidal-hifi",
-//       supportedUriSchemes: ["file"],
-//       supportedMimeTypes: [
-//         "audio/mpeg",
-//         "audio/flac",
-//         "audio/x-flac",
-//         "application/ogg",
-//         "audio/wav",
-//       ],
-//       supportedInterfaces: ["player"],
-//       desktopEntry: "tidal-hifi",
-//     });
+if (process.platform === "linux" && store.get(settings.mpris)) {
+  try {
+    const Player = require("mpris-service");
+    player = Player({
+      name: "tidal-hifi",
+      identity: "tidal-hifi",
+      supportedUriSchemes: ["file"],
+      supportedMimeTypes: [
+        "audio/mpeg",
+        "audio/flac",
+        "audio/x-flac",
+        "application/ogg",
+        "audio/wav",
+      ],
+      supportedInterfaces: ["player"],
+      desktopEntry: "tidal-hifi",
+    });
 
-//     // Events
-//     var events = {
-//       next: "next",
-//       previous: "previous",
-//       pause: "pause",
-//       playpause: "playpause",
-//       stop: "stop",
-//       play: "play",
-//       loopStatus: "repeat",
-//       shuffle: "shuffle",
-//       seek: "seek",
-//     };
-//     Object.keys(events).forEach(function (eventName) {
-//       player.on(eventName, function () {
-//         const eventValue = events[eventName];
-//         switch (events[eventValue]) {
-//           case events.playpause:
-//             playPause();
-//             break;
+    // Events
+    var events = {
+      next: "next",
+      previous: "previous",
+      pause: "pause",
+      playpause: "playpause",
+      stop: "stop",
+      play: "play",
+      loopStatus: "repeat",
+      shuffle: "shuffle",
+      seek: "seek",
+    };
+    Object.keys(events).forEach(function (eventName) {
+      player.on(eventName, function () {
+        const eventValue = events[eventName];
+        switch (events[eventValue]) {
+          case events.playpause:
+            playPause();
+            break;
 
-//           default:
-//             elements.click(eventValue);
-//         }
-//       });
-//     });
+          default:
+            elements.click(eventValue);
+        }
+      });
+    });
 
-//     player.on("quit", function () {
-//       app.quit();
-//     });
-//   } catch (exception) {
-//     console.log("player api not working");
-//   }
-// }
+    player.on("quit", function () {
+      app.quit();
+    });
+  } catch (exception) {
+    console.log("player api not working");
+  }
+}
 
 addHotKeys();
 addIPCEventListeners();
