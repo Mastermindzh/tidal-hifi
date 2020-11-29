@@ -18,7 +18,7 @@ function refreshSettings() {
   port.value = store.get(settings.apiSettings.port);
   menuBar.checked = store.get(settings.menuBar);
   trayIcon.checked = store.get(settings.trayIcon);
-  // mpris.checked = store.get(settings.mpris);
+  mpris.checked = store.get(settings.mpris);
 }
 
 /**
@@ -78,7 +78,7 @@ window.addEventListener("DOMContentLoaded", () => {
   port = get("port");
   menuBar = get("menuBar");
   trayIcon = get("trayIcon");
-  // mpris = get("mprisCheckbox");
+  mpris = get("mprisCheckbox");
 
   refreshSettings();
 
@@ -88,5 +88,5 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(port, settings.apiSettings.port);
   addInputListener(menuBar, settings.menuBar);
   addInputListener(trayIcon, settings.trayIcon);
-  // addInputListener(mpris, settings.mpris);
+  addInputListener(mpris, settings.mpris);
 });
