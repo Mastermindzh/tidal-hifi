@@ -19,6 +19,7 @@ function refreshSettings() {
   menuBar.checked = store.get(settings.menuBar);
   trayIcon.checked = store.get(settings.trayIcon);
   mpris.checked = store.get(settings.mpris);
+  enableCustomHotkeys.checked = store.get(settings.enableCustomHotkeys);
 }
 
 /**
@@ -79,6 +80,7 @@ window.addEventListener("DOMContentLoaded", () => {
   menuBar = get("menuBar");
   trayIcon = get("trayIcon");
   mpris = get("mprisCheckbox");
+  enableCustomHotkeys = get("enableCustomHotkeys");
 
   refreshSettings();
 
@@ -89,4 +91,5 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(menuBar, settings.menuBar);
   addInputListener(trayIcon, settings.trayIcon);
   addInputListener(mpris, settings.mpris);
+  addInputListener(enableCustomHotkeys, settings.enableCustomHotkeys);
 });

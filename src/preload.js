@@ -29,7 +29,7 @@ const elements = {
   account: '*[data-test^="profile-image-button"]',
   settings: '*[data-test^="open-settings"]',
   media: '*[data-test="current-media-imagery"]',
-  image: '*[class^="image--"]',
+  image: "img",
 
   /**
    * Get an element from the dom
@@ -101,55 +101,38 @@ function playPause() {
  * https://defkey.com/tidal-desktop-shortcuts
  */
 function addHotKeys() {
-  hotkeys.add("Control+p", function () {
-    elements.click("account").click("settings");
-  });
-  hotkeys.add("Control+l", function () {
-    handleLogout();
-  });
+  if (store.get(settings.enableCustomHotkeys)) {
+    hotkeys.add("Control+p", function () {
+      elements.click("account").click("settings");
+    });
+    hotkeys.add("Control+l", function () {
+      handleLogout();
+    });
 
-  hotkeys.add("Control+h", function () {
-    elements.click("home");
-  });
+    hotkeys.add("Control+h", function () {
+      elements.click("home");
+    });
 
-  hotkeys.add("backspace", function () {
-    elements.click("back");
-  });
+    hotkeys.add("backspace", function () {
+      elements.click("back");
+    });
 
-  hotkeys.add("shift+backspace", function () {
-    elements.click("forward");
-  });
+    hotkeys.add("shift+backspace", function () {
+      elements.click("forward");
+    });
 
-  hotkeys.add("control+f", function () {
-    elements.focus("search");
-  });
+    hotkeys.add("control+u", function () {
+      // reloading window without cache should show the update bar if applicable
+      window.location.reload(true);
+    });
 
-  hotkeys.add("control+u", function () {
-    // reloading window without cache should show the update bar if applicable
-    window.location.reload(true);
-  });
+    hotkeys.add("control+r", function () {
+      elements.click("repeat");
+    });
+  }
 
-  hotkeys.add("control+left", function () {
-    elements.click("previous");
-  });
-
-  hotkeys.add("control+right", function () {
-    elements.click("next");
-  });
-
-  hotkeys.add("control+right", function () {
-    elements.click("next");
-  });
-
-  hotkeys.add("control+s", function () {
-    elements.click("shuffle");
-  });
-
-  hotkeys.add("control+r", function () {
-    elements.click("repeat");
-  });
-
-  hotkeys.add("control+/", function () {
+  // always add the hotkey for the settings window
+  hotkeys.add("control+=", function () {
     ipcRenderer.send(globalEvents.showSettings);
   });
 }
@@ -264,11 +247,13 @@ setInterval(function () {
               resolve();
             },
             () => {
-              reject();
+              // if the image can't be downloaded then continue without it
+              resolve();
             }
           );
         } else {
-          reject();
+          // if the image can't be found on the page continue without it
+          resolve();
         }
       }).then(
         () => {

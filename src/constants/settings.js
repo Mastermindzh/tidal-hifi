@@ -18,6 +18,7 @@ const settings = {
     port: "apiSettings.port",
   },
   mpris: "mpris",
+  enableCustomHotkeys: "enableCustomHotkeys",
   trayIcon: "trayIcon",
   windowBounds: {
     root: "windowBounds",

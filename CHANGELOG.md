@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.0.0
+
+### Breaking changes
+
+- Changed settings hotkey from "ctrl+/" to "ctrl+=" to avoid a conflict with the default Tidal hotkeys
+
+## Other changes
+
+- Added a setting to disable custom hotkeys
+- Fixed the bug that backwards would register 3 times. (Twice due to a duplicate block of code + once from the default tidal hotkey)
+
 ## 1.3.0
 
 -- re-enabled mpris-service wit the electron downloader fixes

@@ -66,9 +66,9 @@ To install and work with the code on this project follow these steps:
 
 - HiFi playback
 - Notifications
-- Shortcuts ([source](https://defkey.com/tidal-desktop-shortcuts))
+- Custom hotkeys ([source](https://defkey.com/tidal-desktop-shortcuts))
 - API for status and playback
-- [Settings feature](./docs/settings.png) to disable certain functionality. (`ctrl+/`)
+- [Settings feature](./docs/settings.png) to disable certain functionality. (`ctrl+=`)
 
 ## Integrations
 
