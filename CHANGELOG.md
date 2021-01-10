@@ -13,7 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Other changes
 
 - Added a setting to disable custom hotkeys
-- Fixed the bug that backwards would register 3 times. (Twice due to a duplicate block of code + once from the default tidal hotkey)
+- Fixed the bug that the previous song hotkey would register 3 times. (Twice due to a duplicate block of code + once from the default tidal hotkey)
 
 ## 1.3.0
 

@@ -14,12 +14,18 @@ The web version of [listen.tidal.com](listen.tidal.com) running in electron with
 - [Installation](#installation)
   - [Using releases](#using-releases)
     - [Snap install](#snap-install)
+  - [Arch Linux](#arch-linux)
   - [Using source](#using-source)
 - [features](#features)
 - [Integrations](#integrations)
+  - [Known bugs](#known-bugs)
 - [Why](#why)
 - [Why not extend existing projects?](#why-not-extend-existing-projects)
-- [Special thanks to..](#special-thanks-to)
+- [Special thanks to...](#special-thanks-to)
+- [Buy me a coffee? Please don't](#buy-me-a-coffee-please-dont)
+- [Images](#images)
+  - [settings window](#settings-window)
+  - [user setups](#user-setups)
 
 <!-- tocstop -->
 
@@ -104,3 +110,14 @@ Sometimes it's just easier to start over, cover my own needs and then making it 
 
 Instead spend some money on a charity I care for: [kwf.nl](secure.kwf.nl/donation).
 Inspired by [haydenjames' issue](https://github.com/Mastermindzh/tidal-hifi/issues/27#issuecomment-704198429)
+
+## Images
+
+### settings window
+
+![settings window](./docs/settings-preview.png)
+
+### user setups
+
+Some of our users are kind enough to share their usage pictures.
+If you want to see them or possibly even add one please do so in the following issue: [#3 - image thread](https://github.com/Mastermindzh/tidal-hifi/issues/3).
