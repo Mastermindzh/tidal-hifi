@@ -75,7 +75,6 @@ To install and work with the code on this project follow these steps:
 - Custom hotkeys ([source](https://defkey.com/tidal-desktop-shortcuts))
 - API for status and playback
 - [Settings feature](./docs/settings.png) to disable certain functionality. (`ctrl+=`)
-- Discord RPC (Shows Browsing, Playing with button to track)
 
 ## Integrations
 
