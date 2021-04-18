@@ -1,4 +1,5 @@
 const { app, BrowserWindow, globalShortcut, ipcMain } = require("electron");
+const discordrpc = require("discord-rpc");
 const {
   settings,
   store,
@@ -9,7 +10,7 @@ const {
 } = require("./scripts/settings");
 const { addTray, refreshTray } = require("./scripts/tray");
 const { addMenu } = require("./scripts/menu");
-
+const clientId = '833403231153029210';
 const path = require("path");
 const tidalUrl = "https://listen.tidal.com";
 const expressModule = require("./scripts/express");
@@ -28,6 +29,18 @@ if (!app.isPackaged) {
     electron: require(`${__dirname}/../node_modules/electron`),
   });
 }
+
+const rpc = new discordrpc.Client({ transport: 'ipc' });
+
+rpc.on('ready', () => {
+  rpc.setActivity({
+    details: `Browsing Tidal`,
+    largeImageKey: 'large',
+    instance: false,
+  })
+});
+
+rpc.login({ clientId }).catch(console.error);
 
 function createWindow(options = {}) {
   // Create the browser window.
@@ -100,6 +113,28 @@ app.on("activate", function () {
 ipcMain.on(globalEvents.updateInfo, (event, arg) => {
   mediaInfoModule.update(arg);
 });
+
+setInterval(() => {
+  if(mediaInfoModule.mediaInfo.status == 'paused') {
+    rpc.setActivity({
+      details: `Browsing Tidal`,
+      largeImageKey: 'large',
+      largeImageText: 'Tidal HiFi 2.0.0',
+      instance: false,
+    });
+  } else {
+    rpc.setActivity({
+      details: `Listening to ${mediaInfoModule.mediaInfo.title}`,
+      state: `Artist: ${mediaInfoModule.mediaInfo.artist}`,
+      largeImageKey: 'large',
+      largeImageText: 'Tidal HiFi 2.0.0',
+      buttons: [
+        { label: "Play on Tidal", url: mediaInfoModule.mediaInfo.url }
+      ],
+      instance: false,
+    });
+  }
+}, 15e3);
 
 ipcMain.on(globalEvents.hideSettings, (event, arg) => {
   hideSettingsWindow();
