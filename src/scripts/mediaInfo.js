@@ -5,6 +5,7 @@ const mediaInfo = {
   artist: "",
   icon: "",
   status: statuses.paused,
+  url: ""
 };
 const mediaInfoModule = {
   mediaInfo,
@@ -17,6 +18,7 @@ mediaInfoModule.update = function(arg) {
   mediaInfo.title = propOrDefault(arg.title);
   mediaInfo.artist = propOrDefault(arg.message);
   mediaInfo.icon = propOrDefault(arg.icon);
+  mediaInfo.url = propOrDefault(arg.url);
 };
 
 /**
