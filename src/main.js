@@ -125,7 +125,7 @@ setInterval(() => {
   } else {
     rpc.setActivity({
       details: `Listening to ${mediaInfoModule.mediaInfo.title}`,
-      state: `Artist: ${mediaInfoModule.mediaInfo.artist}`,
+      state: mediaInfoModule.mediaInfo.artist,
       largeImageKey: 'large',
       largeImageText: 'Tidal HiFi 2.0.0',
       buttons: [
