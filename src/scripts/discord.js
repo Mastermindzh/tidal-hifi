@@ -7,32 +7,29 @@ const discordModule = [];
 let discord;
 let rpc;
 
+const idleStatus = {
+    details: `Browsing Tidal`,
+    largeImageKey: 'tidal-hifi-icon',
+    largeImageText: 'Tidal HiFi 2.0.0',
+    instance: false,
+}
+
 discordModule.initRPC = function () {
     rpc = new discordrpc.Client({ transport: 'ipc' });
     rpc.login({ clientId }).catch(console.error);
     discordModule.rpc = rpc;
 
     rpc.on('ready', () => {
-        rpc.setActivity({
-            details: `Browsing Tidal`,
-            largeImageKey: 'tidal-hifi-icon',
-            largeImageText: 'Tidal HiFi 2.0.0',
-            instance: false,
-        });
+        rpc.setActivity(idleStatus);
     })
 
     discord = setInterval(() => {
         if (mediaInfoModule.mediaInfo.status == 'paused' && rpc) {
-            rpc.setActivity({
-                details: `Browsing Tidal`,
-                largeImageKey: 'tidal-hifi-icon',
-                largeImageText: 'Tidal HiFi 2.0.0',
-                instance: false,
-            });
+            rpc.setActivity(idleStatus);
         } else if (rpc) {
             rpc.setActivity({
                 details: `Listening to ${mediaInfoModule.mediaInfo.title}`,
-                state: `Artist: ${mediaInfoModule.mediaInfo.artist}`,
+                state: mediaInfoModule.mediaInfo.artist,
                 largeImageKey: 'tidal-hifi-icon',
                 largeImageText: 'Tidal HiFi 2.0.0',
                 buttons: [
