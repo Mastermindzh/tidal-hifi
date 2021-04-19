@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.1.1
+
+- The discord integration now doesn't send an update every 15 seconds it sends an update whenever the media info changes
+- consolidated updating the media info changes with the status changes into a single global event
+
 ## 2.1.0
 
 - [Mar0xy](https://github.com/Mar0xy) added Discord integration.

@@ -7,7 +7,6 @@ const globalEvents = {
   updateInfo: "update-info",
   hideSettings: "hideSettings",
   showSettings: "showSettings",
-  updateStatus: "update-status",
   storeChanged: "storeChanged",
   error: "error",
 };
