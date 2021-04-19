@@ -17,7 +17,6 @@ const mediaInfoModule = require("./scripts/mediaInfo");
 const discordModule = require("./scripts/discord");
 const globalEvents = require("./constants/globalEvents");
 
-
 let mainWindow;
 let icon = path.join(__dirname, "../assets/icon.png");
 
@@ -98,7 +97,6 @@ app.on("activate", function () {
 });
 
 // IPC
-
 ipcMain.on(globalEvents.updateInfo, (event, arg) => {
   mediaInfoModule.update(arg);
 });
@@ -110,15 +108,12 @@ ipcMain.on(globalEvents.showSettings, (event, arg) => {
   showSettingsWindow();
 });
 
-ipcMain.on(globalEvents.updateStatus, (event, arg) => {
-  mediaInfoModule.updateStatus(arg);
-});
 ipcMain.on(globalEvents.storeChanged, (event, arg) => {
   mainWindow.setMenuBarVisibility(store.get(settings.menuBar));
 
-  if(store.get(settings.enableDiscord) && !discordModule.rpc) {
+  if (store.get(settings.enableDiscord) && !discordModule.rpc) {
     discordModule.initRPC();
-  } else if(!store.get(settings.enableDiscord) && discordModule.rpc) {
+  } else if (!store.get(settings.enableDiscord) && discordModule.rpc) {
     discordModule.unRPC();
   }
 });
