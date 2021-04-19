@@ -35,7 +35,7 @@ discordModule.unRPC = function () {
 
 ipcMain.on(globalEvents.updateStatus, (event, arg) => {
 
-    if(mediaInfoModule.mediaInfo.status == "playing" && isPaused) title = undefined;
+    if(mediaInfoModule.mediaInfo.status == "playing" && isPaused && rpc) title = undefined;
 
     if (mediaInfoModule.mediaInfo.status == "playing" && mediaInfoModule.mediaInfo.title != title && rpc) {
         isPaused ? isPaused = false : isPaused = true;
