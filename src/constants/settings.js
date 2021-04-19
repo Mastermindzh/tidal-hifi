@@ -20,6 +20,7 @@ const settings = {
   mpris: "mpris",
   enableCustomHotkeys: "enableCustomHotkeys",
   trayIcon: "trayIcon",
+  enableDiscord: "enableDiscord",
   windowBounds: {
     root: "windowBounds",
     width: "windowBounds.width",

@@ -9,13 +9,14 @@ const {
 } = require("./scripts/settings");
 const { addTray, refreshTray } = require("./scripts/tray");
 const { addMenu } = require("./scripts/menu");
-
 const path = require("path");
 const tidalUrl = "https://listen.tidal.com";
 const expressModule = require("./scripts/express");
 const mediaKeys = require("./constants/mediaKeys");
 const mediaInfoModule = require("./scripts/mediaInfo");
+const discordModule = require("./scripts/discord");
 const globalEvents = require("./constants/globalEvents");
+
 
 let mainWindow;
 let icon = path.join(__dirname, "../assets/icon.png");
@@ -85,6 +86,7 @@ app.on("ready", () => {
   addGlobalShortcuts();
   store.get(settings.trayIcon) && addTray({ icon }) && refreshTray();
   store.get(settings.api) && expressModule.run(mainWindow);
+  store.get(settings.enableDiscord) && discordModule.initRPC();
 });
 
 app.on("activate", function () {
@@ -113,6 +115,12 @@ ipcMain.on(globalEvents.updateStatus, (event, arg) => {
 });
 ipcMain.on(globalEvents.storeChanged, (event, arg) => {
   mainWindow.setMenuBarVisibility(store.get(settings.menuBar));
+
+  if(store.get(settings.enableDiscord) && !discordModule.rpc) {
+    discordModule.initRPC();
+  } else if(!store.get(settings.enableDiscord) && discordModule.rpc) {
+    discordModule.unRPC();
+  }
 });
 
 ipcMain.on(globalEvents.error, (event, arg) => {

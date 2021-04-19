@@ -12,13 +12,14 @@ const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 let currentSong = "";
 let player;
 
+
 const elements = {
   play: '*[data-test="play"]',
   pause: '*[data-test="pause"]',
   next: '*[data-test="next"]',
   previous: 'button[data-test="previous"]',
   title: '*[data-test^="footer-track-title"]',
-  artists: '*[class^="mediaArtists"]',
+  artists: '*[class^="css-14o5h2y"]',
   home: '*[data-test="menu--home"]',
   back: '[class^="backwardButton"]',
   forward: '[class^="forwardButton"]',
@@ -30,6 +31,7 @@ const elements = {
   settings: '*[data-test^="open-settings"]',
   media: '*[data-test="current-media-imagery"]',
   image: "img",
+  url: 'a[href*="/track/"]',
 
   /**
    * Get an element from the dom
@@ -223,6 +225,7 @@ function updateStatus() {
  */
 setInterval(function () {
   const title = elements.getText("title");
+  const url = elements.get("url").href.replace(/[^0-9]/g, '');
   const artists = elements.getText("artists");
   const songDashArtistTitle = `${title} - ${artists}`;
 
@@ -238,6 +241,7 @@ setInterval(function () {
       const options = {
         title,
         message: artists,
+        url: `https://tidal.com/browse/track/${url}`
       };
       new Promise((resolve, reject) => {
         if (image.startsWith("http")) {
