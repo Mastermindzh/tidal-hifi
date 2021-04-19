@@ -1,5 +1,4 @@
 const { app, BrowserWindow, globalShortcut, ipcMain } = require("electron");
-const discordrpc = require("discord-rpc");
 const {
   settings,
   store,
@@ -10,15 +9,18 @@ const {
 } = require("./scripts/settings");
 const { addTray, refreshTray } = require("./scripts/tray");
 const { addMenu } = require("./scripts/menu");
-const clientId = '833403231153029210';
 const path = require("path");
 const tidalUrl = "https://listen.tidal.com";
 const expressModule = require("./scripts/express");
 const mediaKeys = require("./constants/mediaKeys");
 const mediaInfoModule = require("./scripts/mediaInfo");
 const globalEvents = require("./constants/globalEvents");
+const discordrpc = require("discord-rpc");
+const clientId = '833617820704440341';
 
 let mainWindow;
+let discord;
+let rpc;
 let icon = path.join(__dirname, "../assets/icon.png");
 
 /**
@@ -29,18 +31,6 @@ if (!app.isPackaged) {
     electron: require(`${__dirname}/../node_modules/electron`),
   });
 }
-
-const rpc = new discordrpc.Client({ transport: 'ipc' });
-
-rpc.on('ready', () => {
-  rpc.setActivity({
-    details: `Browsing Tidal`,
-    largeImageKey: 'large',
-    instance: false,
-  })
-});
-
-rpc.login({ clientId }).catch(console.error);
 
 function createWindow(options = {}) {
   // Create the browser window.
@@ -88,6 +78,42 @@ function addGlobalShortcuts() {
   });
 }
 
+function initDiscordRPC() {
+  rpc = new discordrpc.Client({ transport: 'ipc' });
+  rpc.login({ clientId }).catch(console.error);
+  
+  rpc.on('ready', () => {
+    rpc.setActivity({
+      details: `Browsing Tidal`,
+      largeImageKey: 'tidal-hifi-icon',
+      largeImageText: 'Tidal HiFi 2.0.0',
+      instance: false,
+    });
+  })
+
+  discord = setInterval(() => {
+    if(mediaInfoModule.mediaInfo.status == 'paused' && rpc) {
+      rpc.setActivity({
+        details: `Browsing Tidal`,
+        largeImageKey: 'tidal-hifi-icon',
+        largeImageText: 'Tidal HiFi 2.0.0',
+        instance: false,
+      });
+    } else if(rpc) {
+      rpc.setActivity({
+        details: `Listening to ${mediaInfoModule.mediaInfo.title}`,
+        state: `Artist: ${mediaInfoModule.mediaInfo.artist}`,
+        largeImageKey: 'tidal-hifi-icon',
+        largeImageText: 'Tidal HiFi 2.0.0',
+        buttons: [
+          { label: "Play on Tidal", url: mediaInfoModule.mediaInfo.url }
+        ],
+        instance: false,
+      });
+    }
+  }, 15e3);
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -98,6 +124,7 @@ app.on("ready", () => {
   addGlobalShortcuts();
   store.get(settings.trayIcon) && addTray({ icon }) && refreshTray();
   store.get(settings.api) && expressModule.run(mainWindow);
+  store.get(settings.enableDiscord) && initDiscordRPC();
 });
 
 app.on("activate", function () {
@@ -114,28 +141,6 @@ ipcMain.on(globalEvents.updateInfo, (event, arg) => {
   mediaInfoModule.update(arg);
 });
 
-setInterval(() => {
-  if(mediaInfoModule.mediaInfo.status == 'paused') {
-    rpc.setActivity({
-      details: `Browsing Tidal`,
-      largeImageKey: 'large',
-      largeImageText: 'Tidal HiFi 2.0.0',
-      instance: false,
-    });
-  } else {
-    rpc.setActivity({
-      details: `Listening to ${mediaInfoModule.mediaInfo.title}`,
-      state: mediaInfoModule.mediaInfo.artist,
-      largeImageKey: 'large',
-      largeImageText: 'Tidal HiFi 2.0.0',
-      buttons: [
-        { label: "Play on Tidal", url: mediaInfoModule.mediaInfo.url }
-      ],
-      instance: false,
-    });
-  }
-}, 15e3);
-
 ipcMain.on(globalEvents.hideSettings, (event, arg) => {
   hideSettingsWindow();
 });
@@ -148,6 +153,15 @@ ipcMain.on(globalEvents.updateStatus, (event, arg) => {
 });
 ipcMain.on(globalEvents.storeChanged, (event, arg) => {
   mainWindow.setMenuBarVisibility(store.get(settings.menuBar));
+
+  if(store.get(settings.enableDiscord) && !rpc) {
+    initDiscordRPC();
+  } else if(!store.get(settings.enableDiscord) && rpc) {
+    clearInterval(discord);
+    rpc.clearActivity();
+    rpc.destroy();
+    rpc = false;
+  }
 });
 
 ipcMain.on(globalEvents.error, (event, arg) => {
