@@ -1,4 +1,4 @@
-const { setTitle, getTitle } = require("./scripts/window-functions");
+const { setTitle } = require("./scripts/window-functions");
 const { dialog, process } = require("electron").remote;
 const { store, settings } = require("./scripts/settings");
 const { ipcRenderer } = require("electron");
@@ -11,6 +11,7 @@ const notifier = require("node-notifier");
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 let currentSong = "";
 let player;
+let currentPlayStatus = statuses.paused;
 
 const elements = {
   play: '*[data-test="play"]',
@@ -18,7 +19,7 @@ const elements = {
   next: '*[data-test="next"]',
   previous: 'button[data-test="previous"]',
   title: '*[data-test^="footer-track-title"]',
-  artists: '*[class^="css-14o5h2y"]',
+  artists: '*[data-test^="grid-item-detail-text-title-artist"]',
   home: '*[data-test="menu--home"]',
   back: '[class^="backwardButton"]',
   forward: '[class^="forwardButton"]',
@@ -200,9 +201,9 @@ function addIPCEventListeners() {
 /**
  * Update the current status of tidal (e.g playing or paused)
  */
-function updateStatus() {
+function getCurrentlyPlayingStatus() {
   let pause = elements.get("pause");
-  let status;
+  let status = undefined;
 
   // if pause button is visible tidal is playing
   if (pause) {
@@ -210,11 +211,29 @@ function updateStatus() {
   } else {
     status = statuses.paused;
   }
+  return status;
+}
 
-  if (status) {
-    ipcRenderer.send(globalEvents.updateStatus, status);
+/**
+ * Update Tidal-hifi's media info
+ *
+ * @param {*} options
+ */
+function updateMediaInfo(options, notify) {
+  if (options) {
+    ipcRenderer.send(globalEvents.updateInfo, options);
+    store.get(settings.notifications) && notify && notifier.notify(options);
+
     if (player) {
-      player.playbackStatus = status == statuses.paused ? "Paused" : "Playing";
+      player.metadata = {
+        ...player.metadata,
+        ...{
+          "xesam:title": options.title,
+          "xesam:artist": [options.artists],
+          "mpris:artUrl": options.image,
+        },
+      };
+      player.playbackStatus = options.status == statuses.paused ? "Paused" : "Playing";
     }
   }
 }
@@ -227,56 +246,47 @@ setInterval(function () {
   const url = elements.get("url").href.replace(/[^0-9]/g, "");
   const artists = elements.getText("artists");
   const songDashArtistTitle = `${title} - ${artists}`;
+  const currentStatus = getCurrentlyPlayingStatus();
+  const options = {
+    title,
+    message: artists,
+    status: currentStatus,
+    url: `https://tidal.com/browse/track/${url}`,
+  };
 
-  updateStatus();
+  const playStatusChanged = currentStatus !== currentPlayStatus;
+  const titleOrArtistChanged = currentSong !== songDashArtistTitle;
 
-  if (getTitle() !== songDashArtistTitle) {
+  if (titleOrArtistChanged || playStatusChanged) {
+    // update title and play info with new info
     setTitle(songDashArtistTitle);
+    currentSong = songDashArtistTitle;
+    currentPlayStatus = currentStatus;
 
-    if (currentSong !== songDashArtistTitle) {
-      currentSong = songDashArtistTitle;
-      const image = elements.getSongIcon();
+    const image = elements.getSongIcon();
 
-      const options = {
-        title,
-        message: artists,
-        url: `https://tidal.com/browse/track/${url}`,
-      };
-      new Promise((resolve, reject) => {
-        if (image.startsWith("http")) {
-          downloadFile(image, notificationPath).then(
-            () => {
-              options.icon = notificationPath;
-              resolve();
-            },
-            () => {
-              // if the image can't be downloaded then continue without it
-              resolve();
-            }
-          );
-        } else {
-          // if the image can't be found on the page continue without it
-          resolve();
-        }
-      }).then(
-        () => {
-          ipcRenderer.send(globalEvents.updateInfo, options);
-          store.get(settings.notifications) && notifier.notify(options);
-
-          if (player) {
-            player.metadata = {
-              ...player.metadata,
-              ...{
-                "xesam:title": title,
-                "xesam:artist": [artists],
-                "mpris:artUrl": image,
-              },
-            };
+    new Promise((resolve) => {
+      if (image.startsWith("http")) {
+        downloadFile(image, notificationPath).then(
+          () => {
+            options.icon = notificationPath;
+            resolve();
+          },
+          () => {
+            // if the image can't be downloaded then continue without it
+            resolve();
           }
-        },
-        () => {}
-      );
-    }
+        );
+      } else {
+        // if the image can't be found on the page continue without it
+        resolve();
+      }
+    }).then(
+      () => {
+        updateMediaInfo(options, titleOrArtistChanged);
+      },
+      () => {}
+    );
   }
 }, 200);
 
