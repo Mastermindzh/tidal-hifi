@@ -20,6 +20,7 @@ function refreshSettings() {
   trayIcon.checked = store.get(settings.trayIcon);
   mpris.checked = store.get(settings.mpris);
   enableCustomHotkeys.checked = store.get(settings.enableCustomHotkeys);
+  enableDiscord.checked = store.get(settings.enableDiscord);
 }
 
 /**
@@ -81,6 +82,7 @@ window.addEventListener("DOMContentLoaded", () => {
   trayIcon = get("trayIcon");
   mpris = get("mprisCheckbox");
   enableCustomHotkeys = get("enableCustomHotkeys");
+  enableDiscord = get("enableDiscord");
 
   refreshSettings();
 
@@ -92,4 +94,5 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(trayIcon, settings.trayIcon);
   addInputListener(mpris, settings.mpris);
   addInputListener(enableCustomHotkeys, settings.enableCustomHotkeys);
+  addInputListener(enableDiscord, settings.enableDiscord);
 });
