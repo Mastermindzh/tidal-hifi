@@ -14,13 +14,11 @@ const tidalUrl = "https://listen.tidal.com";
 const expressModule = require("./scripts/express");
 const mediaKeys = require("./constants/mediaKeys");
 const mediaInfoModule = require("./scripts/mediaInfo");
+const discordModule = require("./scripts/discord");
 const globalEvents = require("./constants/globalEvents");
-const discordrpc = require("discord-rpc");
-const clientId = '833617820704440341';
+
 
 let mainWindow;
-let discord;
-let rpc;
 let icon = path.join(__dirname, "../assets/icon.png");
 
 /**
@@ -78,42 +76,6 @@ function addGlobalShortcuts() {
   });
 }
 
-function initDiscordRPC() {
-  rpc = new discordrpc.Client({ transport: 'ipc' });
-  rpc.login({ clientId }).catch(console.error);
-  
-  rpc.on('ready', () => {
-    rpc.setActivity({
-      details: `Browsing Tidal`,
-      largeImageKey: 'tidal-hifi-icon',
-      largeImageText: 'Tidal HiFi 2.0.0',
-      instance: false,
-    });
-  })
-
-  discord = setInterval(() => {
-    if(mediaInfoModule.mediaInfo.status == 'paused' && rpc) {
-      rpc.setActivity({
-        details: `Browsing Tidal`,
-        largeImageKey: 'tidal-hifi-icon',
-        largeImageText: 'Tidal HiFi 2.0.0',
-        instance: false,
-      });
-    } else if(rpc) {
-      rpc.setActivity({
-        details: `Listening to ${mediaInfoModule.mediaInfo.title}`,
-        state: `Artist: ${mediaInfoModule.mediaInfo.artist}`,
-        largeImageKey: 'tidal-hifi-icon',
-        largeImageText: 'Tidal HiFi 2.0.0',
-        buttons: [
-          { label: "Play on Tidal", url: mediaInfoModule.mediaInfo.url }
-        ],
-        instance: false,
-      });
-    }
-  }, 15e3);
-}
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -124,7 +86,7 @@ app.on("ready", () => {
   addGlobalShortcuts();
   store.get(settings.trayIcon) && addTray({ icon }) && refreshTray();
   store.get(settings.api) && expressModule.run(mainWindow);
-  store.get(settings.enableDiscord) && initDiscordRPC();
+  store.get(settings.enableDiscord) && discordModule.initRPC();
 });
 
 app.on("activate", function () {
@@ -154,13 +116,10 @@ ipcMain.on(globalEvents.updateStatus, (event, arg) => {
 ipcMain.on(globalEvents.storeChanged, (event, arg) => {
   mainWindow.setMenuBarVisibility(store.get(settings.menuBar));
 
-  if(store.get(settings.enableDiscord) && !rpc) {
-    initDiscordRPC();
-  } else if(!store.get(settings.enableDiscord) && rpc) {
-    clearInterval(discord);
-    rpc.clearActivity();
-    rpc.destroy();
-    rpc = false;
+  if(store.get(settings.enableDiscord) && !discordModule.rpc) {
+    discordModule.initRPC();
+  } else if(!store.get(settings.enableDiscord) && discordModule.rpc) {
+    discordModule.unRPC();
   }
 });
 
