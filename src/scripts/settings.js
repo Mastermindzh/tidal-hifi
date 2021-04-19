@@ -17,6 +17,7 @@ const store = new Store({
     trayIcon: true,
     mpris: false,
     enableCustomHotkeys: false,
+    enableDiscord: false,
     windowBounds: { width: 800, height: 600 },
   },
 });
