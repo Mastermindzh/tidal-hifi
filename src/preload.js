@@ -12,7 +12,6 @@ const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 let currentSong = "";
 let player;
 
-
 const elements = {
   play: '*[data-test="play"]',
   pause: '*[data-test="pause"]',
@@ -157,8 +156,8 @@ function handleLogout() {
     },
     function (response) {
       if (logoutOptions.indexOf("Yes, please") == response) {
-        for (i = 0; i < window.localStorage.length; i++) {
-          key = window.localStorage.key(i);
+        for (let i = 0; i < window.localStorage.length; i++) {
+          const key = window.localStorage.key(i);
           if (key.startsWith("_TIDAL_activeSession")) {
             window.localStorage.removeItem(key);
             i = window.localStorage.length + 1;
@@ -225,7 +224,7 @@ function updateStatus() {
  */
 setInterval(function () {
   const title = elements.getText("title");
-  const url = elements.get("url").href.replace(/[^0-9]/g, '');
+  const url = elements.get("url").href.replace(/[^0-9]/g, "");
   const artists = elements.getText("artists");
   const songDashArtistTitle = `${title} - ${artists}`;
 
@@ -241,7 +240,7 @@ setInterval(function () {
       const options = {
         title,
         message: artists,
-        url: `https://tidal.com/browse/track/${url}`
+        url: `https://tidal.com/browse/track/${url}`,
       };
       new Promise((resolve, reject) => {
         if (image.startsWith("http")) {

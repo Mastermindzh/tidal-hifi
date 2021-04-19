@@ -1,6 +1,6 @@
 {
   "name": "tidal-hifi",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Tidal on Electron with widevine(hifi) support",
   "main": "src/main.js",
   "scripts": {
@@ -28,7 +28,7 @@
     "express": "^4.17.1",
     "hotkeys-js": "^3.7.6",
     "mpris-service": "^2.1.0",
-    "node-notifier": "^6.0.0",
+    "node-notifier": "^9.0.1",
     "request": "^2.88.2"
   },
   "devDependencies": {
