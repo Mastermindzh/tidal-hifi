@@ -12,6 +12,10 @@ const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 let currentSong = "";
 let player;
 let currentPlayStatus = statuses.paused;
+let sduration;
+let barvalue;
+let updatecurrent = false;
+let oldcurrent;
 
 const elements = {
   play: '*[data-test="play"]',
@@ -32,6 +36,9 @@ const elements = {
   media: '*[data-test="current-media-imagery"]',
   image: "img",
   url: 'a[href*="/track/"]',
+  current: '*[data-test="current-time"]',
+  duration: '*[data-test="duration-time"]',
+  bar: '*[data-test="progress-bar"]',
 
   /**
    * Get an element from the dom
@@ -245,6 +252,9 @@ setInterval(function () {
   const title = elements.getText("title");
   const url = elements.get("url").href.replace(/[^0-9]/g, "");
   const artists = elements.getText("artists");
+  const current = elements.getText("current");
+  const duration = elements.getText("duration");
+  const barval = elements.get("bar").getAttribute("aria-valuenow");
   const songDashArtistTitle = `${title} - ${artists}`;
   const currentStatus = getCurrentlyPlayingStatus();
   const options = {
@@ -252,16 +262,45 @@ setInterval(function () {
     message: artists,
     status: currentStatus,
     url: `https://tidal.com/browse/track/${url}`,
+    current: current,
+    duration: duration,
   };
 
   const playStatusChanged = currentStatus !== currentPlayStatus;
+  const durationChanged = duration !== sduration;
+  const barvalChanged = barval !== barvalue;
   const titleOrArtistChanged = currentSong !== songDashArtistTitle;
 
-  if (titleOrArtistChanged || playStatusChanged) {
+  if (titleOrArtistChanged || playStatusChanged || durationChanged || barvalChanged || updatecurrent) {
     // update title and play info with new info
     setTitle(songDashArtistTitle);
     currentSong = songDashArtistTitle;
     currentPlayStatus = currentStatus;
+
+    // check progress bar value and make sure current stays up to date after switch
+    if(barvalue != barval) {
+      barvalue = barval;
+      oldcurrent = options.current;
+      updatecurrent = true;
+    }
+
+    if(updatecurrent) {
+      if(options.current == oldcurrent && currentStatus != "paused") return;
+      oldcurrent = options.current;
+      updatecurrent = false;
+    }
+
+    // make sure current is set to 0 if title changes
+    if(titleOrArtistChanged) {
+      options.current = "0:00";
+      barvalue = barval;
+    }
+
+    if(durationChanged) {
+      options.duration = duration;
+      options.current = current;
+      sduration = duration;
+    }
 
     const image = elements.getSongIcon();
 
