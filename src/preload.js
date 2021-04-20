@@ -276,7 +276,7 @@ setInterval(function () {
     currentPlayStatus = currentStatus;
 
     // check progress bar value and make sure current stays up to date after switch
-    if(barvalue != barval) {
+    if(barvalue != barval && !titleOrArtistChanged) {
       barvalue = barval;
       oldcurrent = options.current;
       options.duration = duration;
