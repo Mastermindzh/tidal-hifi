@@ -1,21 +1,33 @@
 const discordrpc = require("discord-rpc");
-const { ipcMain } = require("electron");
-const electron = require("electron");
+const { app, ipcMain } = require("electron");
 const globalEvents = require("../constants/globalEvents");
 const clientId = "833617820704440341";
 const mediaInfoModule = require("./mediaInfo");
 const discordModule = [];
+
+function timeToSeconds(timeArray) {
+  let minutes = (timeArray[0] * 1);
+  let seconds = (minutes * 60) + (timeArray[1] * 1);
+  return seconds;
+}
 
 let rpc;
 const observer = (event, arg) => {
   if (mediaInfoModule.mediaInfo.status == "paused" && rpc) {
     rpc.setActivity(idleStatus);
   } else if (rpc) {
+    let csec = timeToSeconds(mediaInfoModule.mediaInfo.current.split(":"));
+    let dsec = timeToSeconds(mediaInfoModule.mediaInfo.duration.split(":"));
+    const date = new Date();
+    let now = date.getTime() / 1000 | 0;
+    let remaining = date.setSeconds(date.getSeconds() + (dsec - csec));
     rpc.setActivity({
       ...idleStatus,
       ...{
         details: `Listening to ${mediaInfoModule.mediaInfo.title}`,
         state: mediaInfoModule.mediaInfo.artist,
+        startTimestamp: parseInt(now),
+        endTimestamp: parseInt(remaining),
         buttons: [{ label: "Play on Tidal", url: mediaInfoModule.mediaInfo.url }],
       },
     });
@@ -25,7 +37,7 @@ const observer = (event, arg) => {
 const idleStatus = {
   details: `Browsing Tidal`,
   largeImageKey: "tidal-hifi-icon",
-  largeImageText: `Tidal HiFi ${electron.app.getVersion()}`,
+  largeImageText: `Tidal HiFi ${app.getVersion()}`,
   instance: false,
 };
 

@@ -6,6 +6,8 @@ const mediaInfo = {
   icon: "",
   status: statuses.paused,
   url: "",
+  current: "",
+  duration: ""
 };
 const mediaInfoModule = {
   mediaInfo,
@@ -20,6 +22,8 @@ mediaInfoModule.update = function (arg) {
   mediaInfo.icon = propOrDefault(arg.icon);
   mediaInfo.url = propOrDefault(arg.url);
   mediaInfo.status = propOrDefault(arg.status);
+  mediaInfo.current = propOrDefault(arg.current);
+  mediaInfo.duration = propOrDefault(arg.duration);
 };
 
 /**
