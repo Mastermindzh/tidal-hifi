@@ -12,7 +12,6 @@ const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 let currentSong = "";
 let player;
 let currentPlayStatus = statuses.paused;
-let sduration;
 let barvalue;
 let updatecurrent = false;
 let oldcurrent;
@@ -267,11 +266,10 @@ setInterval(function () {
   };
 
   const playStatusChanged = currentStatus !== currentPlayStatus;
-  const durationChanged = duration !== sduration;
   const barvalChanged = barval !== barvalue;
   const titleOrArtistChanged = currentSong !== songDashArtistTitle;
 
-  if (titleOrArtistChanged || playStatusChanged || durationChanged || barvalChanged || updatecurrent) {
+  if (titleOrArtistChanged || playStatusChanged || barvalChanged || updatecurrent) {
     // update title and play info with new info
     setTitle(songDashArtistTitle);
     currentSong = songDashArtistTitle;
@@ -281,6 +279,7 @@ setInterval(function () {
     if(barvalue != barval) {
       barvalue = barval;
       oldcurrent = options.current;
+      options.duration = duration;
       updatecurrent = true;
     }
 
@@ -295,12 +294,6 @@ setInterval(function () {
       options.current = "0:00";
       oldcurrent = options.current;
       barvalue = barval;
-    }
-
-    if(durationChanged) {
-      options.duration = duration;
-      options.current = current;
-      sduration = duration;
     }
 
     const image = elements.getSongIcon();
