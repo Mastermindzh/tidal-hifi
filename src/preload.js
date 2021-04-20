@@ -277,30 +277,30 @@ setInterval(function () {
     currentSong = songDashArtistTitle;
     currentPlayStatus = currentStatus;
 
+    // check progress bar value and make sure current stays up to date after switch
+    if(barvalue != barval) {
+      barvalue = barval;
+      oldcurrent = options.current;
+      updatecurrent = true;
+    }
+
+    if(updatecurrent) {
+      if(options.current == oldcurrent && currentStatus != "paused") return;
+      oldcurrent = options.current;
+      updatecurrent = false;
+    }
+
     // make sure current is set to 0 if title changes
-    if (titleOrArtistChanged) {
+    if(titleOrArtistChanged) {
       options.current = "0:00";
       oldcurrent = options.current;
       barvalue = barval;
-    } else {
-      // check progress bar value and make sure current stays up to date after switch
-      if (barvalue != barval) {
-        barvalue = barval;
-        oldcurrent = options.current;
-        updatecurrent = true;
-      }
+    }
 
-      if (updatecurrent) {
-        if (options.current == oldcurrent && currentStatus != "paused") return;
-        oldcurrent = options.current;
-        updatecurrent = false;
-      }
-
-      if (durationChanged) {
-        options.duration = duration;
-        options.current = current;
-        sduration = duration;
-      }
+    if(durationChanged) {
+      options.duration = duration;
+      options.current = current;
+      sduration = duration;
     }
 
     const image = elements.getSongIcon();
