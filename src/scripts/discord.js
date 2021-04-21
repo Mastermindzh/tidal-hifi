@@ -36,7 +36,7 @@ const observer = (event, arg) => {
       rpc.setActivity({
         ...idleStatus,
         ...{
-          details: `Listening to ${mediaInfoModule.mediaInfo.title}`,
+          details: `Watching ${mediaInfoModule.mediaInfo.title}`,
           state: mediaInfoModule.mediaInfo.artist,
           startTimestamp: parseInt(now),
           endTimestamp: parseInt(remaining),
