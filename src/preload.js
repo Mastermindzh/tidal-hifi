@@ -35,7 +35,6 @@ const elements = {
   settings: '*[data-test^="open-settings"]',
   media: '*[data-test="current-media-imagery"]',
   image: "img",
-  url: 'a[href*="/track/"]',
   current: '*[data-test="current-time"]',
   duration: '*[data-test="duration-time"]',
   bar: '*[data-test="progress-bar"]',
