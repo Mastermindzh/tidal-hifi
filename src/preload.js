@@ -250,7 +250,6 @@ function updateMediaInfo(options, notify) {
  */
 setInterval(function () {
   const title = elements.getText("title");
-  //const id = elements.get("url").href.replace(/[^0-9]/g, "");
   const artists = elements.getText("artists");
   const current = elements.getText("current");
   const duration = elements.getText("duration");
@@ -285,12 +284,12 @@ setInterval(function () {
     }
 
     // Video/Song check if it's a video return URL as undefined due to it not having an id.
-    switch(elements.get("url")) {
+    switch(elements.get("title").querySelector("a")) {
       case null:
         currentURL = undefined;
         break;
       default:
-        const id = elements.get("url").href.replace(/[^0-9]/g, "");
+        const id = elements.get("title").querySelector("a").href.replace(/[^0-9]/g, "");
         currentURL = `https://tidal.com/browse/track/${id}`;
         break;
     }
