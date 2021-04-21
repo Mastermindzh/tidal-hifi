@@ -21,16 +21,28 @@ const observer = (event, arg) => {
     const date = new Date();
     let now = date.getTime() / 1000 | 0;
     let remaining = date.setSeconds(date.getSeconds() + (dsec - csec));
-    rpc.setActivity({
-      ...idleStatus,
-      ...{
-        details: `Listening to ${mediaInfoModule.mediaInfo.title}`,
-        state: mediaInfoModule.mediaInfo.artist,
-        startTimestamp: parseInt(now),
-        endTimestamp: parseInt(remaining),
-        buttons: [{ label: "Play on Tidal", url: mediaInfoModule.mediaInfo.url }],
-      },
-    });
+    if (mediaInfoModule.mediaInfo.url) {
+      rpc.setActivity({
+        ...idleStatus,
+        ...{
+          details: `Listening to ${mediaInfoModule.mediaInfo.title}`,
+          state: mediaInfoModule.mediaInfo.artist,
+          startTimestamp: parseInt(now),
+          endTimestamp: parseInt(remaining),
+          buttons: [{ label: "Play on Tidal", url: mediaInfoModule.mediaInfo.url }],
+        },
+      });
+    } else {
+      rpc.setActivity({
+        ...idleStatus,
+        ...{
+          details: `Listening to ${mediaInfoModule.mediaInfo.title}`,
+          state: mediaInfoModule.mediaInfo.artist,
+          startTimestamp: parseInt(now),
+          endTimestamp: parseInt(remaining),
+        },
+      });
+    }
   }
 };
 
