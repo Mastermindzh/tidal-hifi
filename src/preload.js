@@ -15,6 +15,7 @@ let currentPlayStatus = statuses.paused;
 let barvalue;
 let updatecurrent = false;
 let oldcurrent;
+let currentURL = undefined;
 
 const elements = {
   play: '*[data-test="play"]',
@@ -22,7 +23,7 @@ const elements = {
   next: '*[data-test="next"]',
   previous: 'button[data-test="previous"]',
   title: '*[data-test^="footer-track-title"]',
-  artists: '*[data-test^="grid-item-detail-text-title-artist"]',
+  artists: '*[class^="elemental__text elemental__text css-oxcos"]',
   home: '*[data-test="menu--home"]',
   back: '[class^="backwardButton"]',
   forward: '[class^="forwardButton"]',
@@ -249,7 +250,7 @@ function updateMediaInfo(options, notify) {
  */
 setInterval(function () {
   const title = elements.getText("title");
-  const url = elements.get("url").href.replace(/[^0-9]/g, "");
+  //const id = elements.get("url").href.replace(/[^0-9]/g, "");
   const artists = elements.getText("artists");
   const current = elements.getText("current");
   const duration = elements.getText("duration");
@@ -260,7 +261,7 @@ setInterval(function () {
     title,
     message: artists,
     status: currentStatus,
-    url: `https://tidal.com/browse/track/${url}`,
+    url: currentURL,
     current: current,
     duration: duration,
   };
@@ -281,6 +282,17 @@ setInterval(function () {
       oldcurrent = options.current;
       options.duration = duration;
       updatecurrent = true;
+    }
+
+    // Video/Song check if it's a video return URL as undefined due to it not having an id.
+    switch(elements.get("url")) {
+      case null:
+        currentURL = undefined;
+        break;
+      default:
+        const id = elements.get("url").href.replace(/[^0-9]/g, "");
+        currentURL = `https://tidal.com/browse/track/${id}`;
+        break;
     }
 
     if(updatecurrent) {
