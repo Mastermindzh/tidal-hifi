@@ -16,11 +16,11 @@ const observer = (event, arg) => {
   if (mediaInfoModule.mediaInfo.status == "paused" && rpc) {
     rpc.setActivity(idleStatus);
   } else if (rpc) {
-    let csec = timeToSeconds(mediaInfoModule.mediaInfo.current.split(":"));
-    let dsec = timeToSeconds(mediaInfoModule.mediaInfo.duration.split(":"));
+    const currentSeconds = timeToSeconds(mediaInfoModule.mediaInfo.current.split(":"));
+    const durationSeconds = timeToSeconds(mediaInfoModule.mediaInfo.duration.split(":"));
     const date = new Date();
-    let now = date.getTime() / 1000 | 0;
-    let remaining = date.setSeconds(date.getSeconds() + (dsec - csec));
+    const now = date.getTime() / 1000 | 0;
+    const remaining = date.setSeconds(date.getSeconds() + (durationSeconds - currentSeconds));
     if (mediaInfoModule.mediaInfo.url) {
       rpc.setActivity({
         ...idleStatus,
