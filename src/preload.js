@@ -12,6 +12,10 @@ const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 let currentSong = "";
 let player;
 let currentPlayStatus = statuses.paused;
+let progressBarTime;
+let currentTimeChanged = false;
+let currentTime;
+let currentURL = undefined;
 
 const elements = {
   play: '*[data-test="play"]',
@@ -19,7 +23,7 @@ const elements = {
   next: '*[data-test="next"]',
   previous: 'button[data-test="previous"]',
   title: '*[data-test^="footer-track-title"]',
-  artists: '*[data-test^="grid-item-detail-text-title-artist"]',
+  artists: '*[class^="elemental__text elemental__text css-oxcos"]',
   home: '*[data-test="menu--home"]',
   back: '[class^="backwardButton"]',
   forward: '[class^="forwardButton"]',
@@ -31,7 +35,9 @@ const elements = {
   settings: '*[data-test^="open-settings"]',
   media: '*[data-test="current-media-imagery"]',
   image: "img",
-  url: 'a[href*="/track/"]',
+  current: '*[data-test="current-time"]',
+  duration: '*[data-test="duration-time"]',
+  bar: '*[data-test="progress-bar"]',
 
   /**
    * Get an element from the dom
@@ -239,29 +245,73 @@ function updateMediaInfo(options, notify) {
 }
 
 /**
+ * Checks if Tidal is playing a video or song by grabbing the "a" element from the title.
+ * If it's a song it sets the track URL as currentURL, If it's a video it will set currentURL to undefined.
+ */
+function updateURL() {
+  const URLelement = elements.get("title").querySelector("a");
+  switch (URLelement) {
+    case null:
+      currentURL = undefined;
+      break;
+    default:
+      const id = URLelement.href.replace(/[^0-9]/g, "");
+      currentURL = `https://tidal.com/browse/track/${id}`;
+      break;
+  }
+}
+
+/**
  * Watch for song changes and update title + notify
  */
 setInterval(function () {
   const title = elements.getText("title");
-  const url = elements.get("url").href.replace(/[^0-9]/g, "");
   const artists = elements.getText("artists");
+  const current = elements.getText("current");
+  const duration = elements.getText("duration");
+  const progressBarcurrentTime = elements.get("bar").getAttribute("aria-valuenow");
   const songDashArtistTitle = `${title} - ${artists}`;
   const currentStatus = getCurrentlyPlayingStatus();
   const options = {
     title,
     message: artists,
     status: currentStatus,
-    url: `https://tidal.com/browse/track/${url}`,
+    url: currentURL,
+    current: current,
+    duration: duration,
   };
 
   const playStatusChanged = currentStatus !== currentPlayStatus;
+  const progressBarTimeChanged = progressBarcurrentTime !== progressBarTime;
   const titleOrArtistChanged = currentSong !== songDashArtistTitle;
 
-  if (titleOrArtistChanged || playStatusChanged) {
-    // update title and play info with new info
+  if (titleOrArtistChanged || playStatusChanged || progressBarTimeChanged || currentTimeChanged) {
+    // update title, url and play info with new info
     setTitle(songDashArtistTitle);
+    updateURL();
     currentSong = songDashArtistTitle;
     currentPlayStatus = currentStatus;
+
+    // check progress bar value and make sure current stays up to date after switch
+    if(progressBarTime != progressBarcurrentTime && !titleOrArtistChanged) {
+      progressBarTime = progressBarcurrentTime;
+      currentTime = options.current;
+      options.duration = duration;
+      currentTimeChanged = true;
+    }
+
+    if(currentTimeChanged) {
+      if(options.current == currentTime && currentStatus != "paused") return;
+      currentTime = options.current;
+      currentTimeChanged = false;
+    }
+
+    // make sure current is set to 0 if title changes
+    if(titleOrArtistChanged) {
+      options.current = "0:00";
+      currentTime = options.current;
+      progressBarTime = progressBarcurrentTime;
+    }
 
     const image = elements.getSongIcon();
 

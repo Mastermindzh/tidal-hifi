@@ -1,31 +1,55 @@
 const discordrpc = require("discord-rpc");
-const { ipcMain } = require("electron");
-const electron = require("electron");
+const { app, ipcMain } = require("electron");
 const globalEvents = require("../constants/globalEvents");
 const clientId = "833617820704440341";
 const mediaInfoModule = require("./mediaInfo");
 const discordModule = [];
+
+function timeToSeconds(timeArray) {
+  let minutes = (timeArray[0] * 1);
+  let seconds = (minutes * 60) + (timeArray[1] * 1);
+  return seconds;
+}
 
 let rpc;
 const observer = (event, arg) => {
   if (mediaInfoModule.mediaInfo.status == "paused" && rpc) {
     rpc.setActivity(idleStatus);
   } else if (rpc) {
-    rpc.setActivity({
-      ...idleStatus,
-      ...{
-        details: `Listening to ${mediaInfoModule.mediaInfo.title}`,
-        state: mediaInfoModule.mediaInfo.artist,
-        buttons: [{ label: "Play on Tidal", url: mediaInfoModule.mediaInfo.url }],
-      },
-    });
+    const currentSeconds = timeToSeconds(mediaInfoModule.mediaInfo.current.split(":"));
+    const durationSeconds = timeToSeconds(mediaInfoModule.mediaInfo.duration.split(":"));
+    const date = new Date();
+    const now = date.getTime() / 1000 | 0;
+    const remaining = date.setSeconds(date.getSeconds() + (durationSeconds - currentSeconds));
+    if (mediaInfoModule.mediaInfo.url) {
+      rpc.setActivity({
+        ...idleStatus,
+        ...{
+          details: `Listening to ${mediaInfoModule.mediaInfo.title}`,
+          state: mediaInfoModule.mediaInfo.artist,
+          startTimestamp: parseInt(now),
+          endTimestamp: parseInt(remaining),
+          buttons: [{ label: "Play on Tidal", url: mediaInfoModule.mediaInfo.url }],
+        },
+      });
+    } else {
+      rpc.setActivity({
+        ...idleStatus,
+        ...{
+          details: `Watching ${mediaInfoModule.mediaInfo.title}`,
+          state: mediaInfoModule.mediaInfo.artist,
+          startTimestamp: parseInt(now),
+          endTimestamp: parseInt(remaining),
+        },
+      });
+    }
   }
 };
 
 const idleStatus = {
   details: `Browsing Tidal`,
   largeImageKey: "tidal-hifi-icon",
-  largeImageText: `Tidal HiFi ${electron.app.getVersion()}`,
+  largeImageText: `Tidal HiFi ${app.getVersion()}`,
   instance: false,
 };
 
