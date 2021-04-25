@@ -18,6 +18,7 @@ The web version of [listen.tidal.com](listen.tidal.com) running in electron with
   - [Using source](#using-source)
 - [features](#features)
 - [Integrations](#integrations)
+  - [not included](#not-included)
   - [Known bugs](#known-bugs)
 - [Why](#why)
 - [Why not extend existing projects?](#why-not-extend-existing-projects)
@@ -39,13 +40,13 @@ Various packaged versions of the software are available on the [releases](https:
 
 To install with `snap` you need to download the pre-packaged snap-package from this repository, found under releases:
 
-1. Download:
+1. Download
 
 ```sh
 wget <URI> #for instance: https://github.com/Mastermindzh/tidal-hifi/releases/download/1.0/tidal-hifi_1.0.0_amd64.snap
 ```
 
-2. Install:
+2. Install
 
 ```sh
 snap install --dangerous <path> #for instance: tidal-hifi_1.0.0_amd64.snap
@@ -63,7 +64,7 @@ trizen tidal-hifi
 
 To install and work with the code on this project follow these steps:
 
-- git clone https://github.com/Mastermindzh/tidal-hifi.git
+- git clone [https://github.com/Mastermindzh/tidal-hifi.git](https://github.com/Mastermindzh/tidal-hifi.git)
 - cd tidal-hifi
 - npm install
 - npm start
@@ -74,9 +75,22 @@ To install and work with the code on this project follow these steps:
 - Notifications
 - Custom hotkeys ([source](https://defkey.com/tidal-desktop-shortcuts))
 - API for status and playback
+- Custom [integrations](#integrations)
 - [Settings feature](./docs/settings.png) to disable certain functionality. (`ctrl+=`)
 
 ## Integrations
+
+Tidal-hifi comes with several integrations out of the box.
+You can find these in the settings menu (`ctrl + =` by default) under the "integrations" tab.
+
+![integrations menu, showing a list of integrations](./docs/integrations.png)
+
+It currently includes:
+
+- mpris - mpris media player controls/status
+- Discord - Shows what you're listening to on Discord.
+
+### not included
 
 - [i3 blocks config](https://github.com/Mastermindzh/dotfiles/commit/9714b2fa1d670108ce811d5511fd3b7a43180647) - My dotfiles where I use this app to fetch currently playing music (direct commit)
 

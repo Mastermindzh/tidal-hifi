@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.2.0
+
+- The discord integration now adds a time remaining field based on the song duration
+- All fields (current, remaining, and url are also available in the API*)
+- the artist field is now correctly identified
+
+* current time only updates on play/pause.
+
 ## 2.1.1
 
 - The discord integration now doesn't send an update every 15 seconds it sends an update whenever the media info changes
