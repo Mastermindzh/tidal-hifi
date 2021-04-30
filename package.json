@@ -37,8 +37,7 @@
     "electron": "git+https://github.com/castlabs/electron-releases.git#v10.4.3-wvvmp",
     "electron-builder": "^21.2.0",
     "electron-reload": "^1.5.0",
-    "prettier": "^2.0.4",
-    "dot-prop": ">=4.2.1"
+    "prettier": "^2.0.4"
   },
   "prettier": "@mastermindzh/prettier-config"
 }
