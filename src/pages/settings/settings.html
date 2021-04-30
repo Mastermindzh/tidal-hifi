@@ -68,15 +68,35 @@
                             </label>
                         </div>
                     </div>
+                    <div class="section">
+                      <h3>System</h3>
+                      <div class="option">
+                          <h4>Tray icon</h4>
+                          <p>
+                              Show Tidal-hifi's tray icon<br />
+                          </p>
+                          <label class="switch">
+                              <input id="trayIcon" type="checkbox">
+                              <span class="slider round"></span>
+                          </label>
+                      </div>
+                      <div class="option">
+                        <h4>Hotkeys</h4>
+                        <p>
+                            Enables extra hotkeys to achieve feature parity with the <a href = "javascript:openExternal('https://defkey.com/tidal-desktop-shortcuts')">desktop apps</a><br />
+                        </p>
+                        <label class="switch">
+                            <input id="enableCustomHotkeys" type="checkbox">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                  </div>
                 </section>
                 <section id="api" class="tab-panel">
                     <div class="section">
                         <h3>Api</h3>
                         <p style="margin-bottom: 15px;">
                             Tidal-hifi has a web api built in to allow users to get current song information. You can optionally enable playback control as well.
-                            <br />
-                            <br />
-                            <small>* api changes require a restart to update</small>
                         </p>
 
                         <div class="option">
@@ -104,18 +124,14 @@
                             </label>
                         </div>
                     </div>
-                    <button onClick="restart()">Restart Tidal-hifi</button>
                 </section>
                 <section id="integrations" class="tab-panel">
                   <div class="section">
                       <h3>integrations</h3>
                       <p style="margin-bottom: 15px;">
                           Tidal-hifi is extensible trough the use of integrations. You can enable or disable integrations here
-                          <br />
-                          * not all integrations require restarting but some do, your best bet is to restart :)
                       </p>
-                      <!-- disabled until the 403 with mpris-service/dbus is fixed  -->
-                      <!-- <div class="option">
+                      <div class="option">
                           <h4>mpris-player</h4>
                           <p>
                               Whether to enable the mpris media player controls for Linux systems
@@ -124,8 +140,17 @@
                               <input id="mprisCheckbox" type="checkbox">
                               <span class="slider round"></span>
                           </label>
-                      </div> -->
-                      <button onClick="restart()">Restart Tidal-hifi</button>
+                      </div>
+                      <div class="option">
+                        <h4>Discord RPC</h4>
+                        <p>
+                            Show what you're listening to on Discord
+                        </p>
+                        <label class="switch">
+                            <input id="enableDiscord" type="checkbox">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
                   </div>
               </section>
                 <section id="about" class="tab-panel">
@@ -138,6 +163,9 @@
 
                   </div>
                 </section>
+
+              <small>Some settings require a restart of Tidal-hifi. To do so click the button below:</small>
+              <button onClick="restart()" style ="width: 100%">Restart Tidal-hifi</button>
             </div>
         </div>
     </div>

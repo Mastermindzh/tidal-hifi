@@ -1,5 +1,7 @@
 appId: com.rickvanlieshout.tidal-hifi
+electronVersion: 8.5.2
 electronDownload:
+  version: 8.5.2-wvvmp
   mirror: https://github.com/castlabs/electron-releases/releases/download/v
 snap:
   plugs:

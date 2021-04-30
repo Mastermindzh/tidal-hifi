@@ -5,6 +5,9 @@ const mediaInfo = {
   artist: "",
   icon: "",
   status: statuses.paused,
+  url: "",
+  current: "",
+  duration: ""
 };
 const mediaInfoModule = {
   mediaInfo,
@@ -13,19 +16,14 @@ const mediaInfoModule = {
 /**
  * Update artist and song info in the mediaInfo constant
  */
-mediaInfoModule.update = function(arg) {
+mediaInfoModule.update = function (arg) {
   mediaInfo.title = propOrDefault(arg.title);
   mediaInfo.artist = propOrDefault(arg.message);
   mediaInfo.icon = propOrDefault(arg.icon);
-};
-
-/**
- * Update tidal's status in the mediaInfo constant
- */
-mediaInfoModule.updateStatus = function(status) {
-  if (Object.values(statuses).includes(status)) {
-    mediaInfo.status = status;
-  }
+  mediaInfo.url = propOrDefault(arg.url);
+  mediaInfo.status = propOrDefault(arg.status);
+  mediaInfo.current = propOrDefault(arg.current);
+  mediaInfo.duration = propOrDefault(arg.duration);
 };
 
 /**

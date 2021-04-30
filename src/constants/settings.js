@@ -18,6 +18,9 @@ const settings = {
     port: "apiSettings.port",
   },
   mpris: "mpris",
+  enableCustomHotkeys: "enableCustomHotkeys",
+  trayIcon: "trayIcon",
+  enableDiscord: "enableDiscord",
   windowBounds: {
     root: "windowBounds",
     width: "windowBounds.width",
