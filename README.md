@@ -3,7 +3,7 @@ Tidal-hifi
 <img src = "./build/icon.png" height="40" align="right" />
 </h1>
 
-The web version of [listen.tidal.com](listen.tidal.com) running in electron with hifi support thanks to widevine.
+The web version of [listen.tidal.com](https://listen.tidal.com) running in electron with hifi support thanks to widevine.
 
 ![tidal-hifi preview](./docs/preview.png)
 
@@ -122,7 +122,7 @@ Sometimes it's just easier to start over, cover my own needs and then making it 
 
 ## Buy me a coffee? Please don't
 
-Instead spend some money on a charity I care for: [kwf.nl](secure.kwf.nl/donation).
+Instead spend some money on a charity I care for: [kwf.nl](https://secure.kwf.nl/donation).
 Inspired by [haydenjames' issue](https://github.com/Mastermindzh/tidal-hifi/issues/27#issuecomment-704198429)
 
 ## Images
