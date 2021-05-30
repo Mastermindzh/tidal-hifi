@@ -6,8 +6,8 @@ const mediaInfoModule = require("./mediaInfo");
 const discordModule = [];
 
 function timeToSeconds(timeArray) {
-  let minutes = (timeArray[0] * 1);
-  let seconds = (minutes * 60) + (timeArray[1] * 1);
+  let minutes = timeArray[0] * 1;
+  let seconds = minutes * 60 + timeArray[1] * 1;
   return seconds;
 }
 
@@ -19,14 +19,16 @@ const observer = (event, arg) => {
     const currentSeconds = timeToSeconds(mediaInfoModule.mediaInfo.current.split(":"));
     const durationSeconds = timeToSeconds(mediaInfoModule.mediaInfo.duration.split(":"));
     const date = new Date();
-    const now = date.getTime() / 1000 | 0;
+    const now = (date.getTime() / 1000) | 0;
     const remaining = date.setSeconds(date.getSeconds() + (durationSeconds - currentSeconds));
     if (mediaInfoModule.mediaInfo.url) {
       rpc.setActivity({
         ...idleStatus,
         ...{
           details: `Listening to ${mediaInfoModule.mediaInfo.title}`,
-          state: mediaInfoModule.mediaInfo.artist,
+          state: mediaInfoModule.mediaInfo.artist
+            ? mediaInfoModule.mediaInfo.artist
+            : "unknown artist(s)",
           startTimestamp: parseInt(now),
           endTimestamp: parseInt(remaining),
           buttons: [{ label: "Play on Tidal", url: mediaInfoModule.mediaInfo.url }],

@@ -23,7 +23,7 @@ const elements = {
   next: '*[data-test="next"]',
   previous: 'button[data-test="previous"]',
   title: '*[data-test^="footer-track-title"]',
-  artists: '*[class^="elemental__text elemental__text css-oxcos"]',
+  artists: '*[data-test^="grid-item-detail-text-title-artist"]',
   home: '*[data-test="menu--home"]',
   back: '[class^="backwardButton"]',
   forward: '[class^="forwardButton"]',
@@ -38,6 +38,7 @@ const elements = {
   current: '*[data-test="current-time"]',
   duration: '*[data-test="duration-time"]',
   bar: '*[data-test="progress-bar"]',
+  footer: "#footerPlayer",
 
   /**
    * Get an element from the dom
@@ -61,6 +62,19 @@ const elements = {
     }
 
     return "";
+  },
+
+  getArtists: function () {
+    const footer = this.get("footer");
+
+    if (footer) {
+      const artists = footer.querySelector(this["artists"]);
+      if (artists) {
+        return artists.innerText;
+      }
+    }
+
+    return "unknown artist(s)";
   },
 
   /**
@@ -266,7 +280,7 @@ function updateURL() {
  */
 setInterval(function () {
   const title = elements.getText("title");
-  const artists = elements.getText("artists");
+  const artists = elements.getArtists();
   const current = elements.getText("current");
   const duration = elements.getText("duration");
   const progressBarcurrentTime = elements.get("bar").getAttribute("aria-valuenow");
@@ -293,21 +307,21 @@ setInterval(function () {
     currentPlayStatus = currentStatus;
 
     // check progress bar value and make sure current stays up to date after switch
-    if(progressBarTime != progressBarcurrentTime && !titleOrArtistChanged) {
+    if (progressBarTime != progressBarcurrentTime && !titleOrArtistChanged) {
       progressBarTime = progressBarcurrentTime;
       currentTime = options.current;
       options.duration = duration;
       currentTimeChanged = true;
     }
 
-    if(currentTimeChanged) {
-      if(options.current == currentTime && currentStatus != "paused") return;
+    if (currentTimeChanged) {
+      if (options.current == currentTime && currentStatus != "paused") return;
       currentTime = options.current;
       currentTimeChanged = false;
     }
 
     // make sure current is set to 0 if title changes
-    if(titleOrArtistChanged) {
+    if (titleOrArtistChanged) {
       options.current = "0:00";
       currentTime = options.current;
       progressBarTime = progressBarcurrentTime;
