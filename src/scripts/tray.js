@@ -37,7 +37,8 @@ trayModule.refreshTray = function (mainWindow) {
             mainWindow.destroy();
             app.quit();
           },
-        },
+        },      
+        ...mainMenu, //we add menu items from the other context
       ])
     );
   } else {
