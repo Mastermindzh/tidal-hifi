@@ -21,6 +21,7 @@ function refreshSettings() {
   mpris.checked = store.get(settings.mpris);
   enableCustomHotkeys.checked = store.get(settings.enableCustomHotkeys);
   enableDiscord.checked = store.get(settings.enableDiscord);
+  minimizeOnClose.checked = store.get(settings.minimizeOnClose);
 }
 
 /**
@@ -80,6 +81,7 @@ window.addEventListener("DOMContentLoaded", () => {
   port = get("port");
   menuBar = get("menuBar");
   trayIcon = get("trayIcon");
+  minimizeOnClose = get("minimizeOnClose");
   mpris = get("mprisCheckbox");
   enableCustomHotkeys = get("enableCustomHotkeys");
   enableDiscord = get("enableDiscord");
@@ -95,4 +97,5 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(mpris, settings.mpris);
   addInputListener(enableCustomHotkeys, settings.enableCustomHotkeys);
   addInputListener(enableDiscord, settings.enableDiscord);
+  addInputListener(minimizeOnClose, settings.minimizeOnClose);
 });
