@@ -1,4 +1,4 @@
-const { Tray } = require("electron");
+const { Tray, app } = require("electron");
 const { Menu } = require("electron");
 const { getMenu, mainMenu } = require("./menu");
 const { store, settings } = require("./settings");
@@ -31,7 +31,13 @@ trayModule.refreshTray = function (mainWindow) {
             mainWindow.show();
           },
         },
-        ...mainMenu,
+        {
+          label: "Close App",
+          click: function () {
+            mainWindow.destroy();
+            app.quit();
+          },
+        },
       ])
     );
   } else {
