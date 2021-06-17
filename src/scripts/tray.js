@@ -21,7 +21,7 @@ trayModule.refreshTray = function (mainWindow) {
   });
 
   tray.setToolTip("Tidal-hifi");
-  
+
   if (mainWindow && store.get(settings.minimizeOnClose)) {
     tray.setContextMenu(
       Menu.buildFromTemplate([
@@ -37,7 +37,7 @@ trayModule.refreshTray = function (mainWindow) {
             mainWindow.destroy();
             app.quit();
           },
-        },      
+        },
         ...mainMenu, //we add menu items from the other context
       ])
     );
