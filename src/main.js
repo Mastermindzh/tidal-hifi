@@ -56,6 +56,14 @@ function createWindow(options = {}) {
   // run stuff after first load
   mainWindow.webContents.once("did-finish-load", () => {});
 
+  mainWindow.on("close", function (event) {
+    if (!app.isQuiting && store.get(settings.minimizeOnClose)) {
+      event.preventDefault();
+      mainWindow.hide();
+      refreshTray(mainWindow);
+    }
+    return false;
+  });
   // Emitted when the window is closed.
   mainWindow.on("closed", function () {
     closeSettingsWindow();
