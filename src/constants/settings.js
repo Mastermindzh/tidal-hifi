@@ -26,6 +26,7 @@ const settings = {
     width: "windowBounds.width",
     height: "windowBounds.height",
   },
+  minimizeOnClose: "minimizeOnClose",
 };
 
 module.exports = settings;

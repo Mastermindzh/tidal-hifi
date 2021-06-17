@@ -15,6 +15,7 @@ const store = new Store({
       port: 47836,
     },
     trayIcon: true,
+    minimizeOnClose : false,
     mpris: false,
     enableCustomHotkeys: false,
     enableDiscord: false,
