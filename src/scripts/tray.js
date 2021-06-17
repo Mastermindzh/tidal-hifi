@@ -26,13 +26,13 @@ trayModule.refreshTray = function (mainWindow) {
     tray.setContextMenu(
       Menu.buildFromTemplate([
         {
-          label: "Open App",
+          label: "Toggle Window",
           click: function () {
-            mainWindow.show();
+            mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
           },
         },
         {
-          label: "Close App",
+          label: "Quit",
           click: function () {
             mainWindow.destroy();
             app.quit();
