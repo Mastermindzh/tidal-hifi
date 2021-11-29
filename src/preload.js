@@ -235,6 +235,15 @@ function getCurrentlyPlayingStatus() {
 }
 
 /**
+ * Convert the duration from MM:SS to seconds
+ * @param {*} duration
+ */
+function convertDuration(duration) {
+  const parts = duration.split(":");
+  return parseInt(parts[1]) + 60 * parseInt(parts[0]);
+}
+
+/**
  * Update Tidal-hifi's media info
  *
  * @param {*} options
@@ -243,14 +252,14 @@ function updateMediaInfo(options, notify) {
   if (options) {
     ipcRenderer.send(globalEvents.updateInfo, options);
     store.get(settings.notifications) && notify && notifier.notify(options);
-
     if (player) {
       player.metadata = {
         ...player.metadata,
         ...{
           "xesam:title": options.title,
-          "xesam:artist": [options.artists],
+          "xesam:artist": [options.message],
           "mpris:artUrl": options.image,
+          "mpris:length": convertDuration(options.duration) * 1000 * 1000,
         },
       };
       player.playbackStatus = options.status == statuses.paused ? "Paused" : "Playing";
@@ -331,6 +340,7 @@ setInterval(function () {
 
     new Promise((resolve) => {
       if (image.startsWith("http")) {
+        options.image = image;
         downloadFile(image, notificationPath).then(
           () => {
             options.icon = notificationPath;
@@ -397,6 +407,10 @@ if (process.platform === "linux" && store.get(settings.mpris)) {
         }
       });
     });
+    // Override get position function
+    player.getPosition = function () {
+      return convertDuration(elements.getText("current")) * 1000 * 1000;
+    };
 
     player.on("quit", function () {
       app.quit();
