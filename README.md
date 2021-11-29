@@ -20,6 +20,7 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
 - [Integrations](#integrations)
   - [not included](#not-included)
   - [Known bugs](#known-bugs)
+    - [last.fm doesn't work out of the box. Use rescrobbler as a workaround](#lastfm-doesnt-work-out-of-the-box-use-rescrobbler-as-a-workaround)
 - [Why](#why)
 - [Why not extend existing projects?](#why-not-extend-existing-projects)
 - [Special thanks to...](#special-thanks-to)
@@ -96,7 +97,11 @@ It currently includes:
 
 ### Known bugs
 
-- [Last.fm login doesn't work](https://github.com/Mastermindzh/tidal-hifi/issues/4).
+#### last.fm doesn't work out of the box. Use rescrobbler as a workaround
+
+The last.fm login doesn't work, as is evident from the following issue: [Last.fm login doesn't work](https://github.com/Mastermindzh/tidal-hifi/issues/4).
+However, in that same issue you can read about a workaround using [rescrobbler](https://github.com/InputUsername/rescrobbled).
+For now that will be the default workaround.
 
 ## Why
 

@@ -236,11 +236,11 @@ function getCurrentlyPlayingStatus() {
 
 /**
  * Convert the duration from MM:SS to seconds
- * @param {*} duration 
+ * @param {*} duration
  */
 function convertDuration(duration) {
-  parts = duration.split(":")
-  return parseInt(parts[1]) + 60*parseInt(parts[0])
+  const parts = duration.split(":");
+  return parseInt(parts[1]) + 60 * parseInt(parts[0]);
 }
 
 /**
@@ -259,7 +259,7 @@ function updateMediaInfo(options, notify) {
           "xesam:title": options.title,
           "xesam:artist": [options.message],
           "mpris:artUrl": options.image,
-          "mpris:length":  convertDuration(options.duration)*1000*1000,
+          "mpris:length": convertDuration(options.duration) * 1000 * 1000,
         },
       };
       player.playbackStatus = options.status == statuses.paused ? "Paused" : "Playing";
@@ -340,7 +340,7 @@ setInterval(function () {
 
     new Promise((resolve) => {
       if (image.startsWith("http")) {
-        options.image = image
+        options.image = image;
         downloadFile(image, notificationPath).then(
           () => {
             options.icon = notificationPath;
@@ -408,9 +408,9 @@ if (process.platform === "linux" && store.get(settings.mpris)) {
       });
     });
     // Override get position function
-    player.getPosition = function(){
-      return convertDuration(elements.getText('current')) * 1000 * 1000
-    }
+    player.getPosition = function () {
+      return convertDuration(elements.getText("current")) * 1000 * 1000;
+    };
 
     player.on("quit", function () {
       app.quit();
