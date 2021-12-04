@@ -8,6 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Notify-send now correctly shows "Tidal Hifi" as the program name
 
+- Updated dependencies (including electron itself)
+
+### known issues
+
+- Requires older version of nodejs due to electron-builder (use lts/gallium)
+
+### builds
+
+updated to nodejs 16 in actions
+
 ## 2.4.0
 
 - Added more mpris settings

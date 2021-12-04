@@ -34,3 +34,7 @@ mac:
   category: public.app-category.entertainment
 win:
   target: msi
+  icon: build/icon.png
+  artifactName: "tidalhifi"
+  appId: com.rickvanlieshout.tidalhifi
+  executableName: tidalhifi

@@ -23,21 +23,20 @@
   "homepage": "https://github.com/Mastermindzh/tidal-hifi",
   "license": "MIT",
   "dependencies": {
-    "discord-rpc": "^3.2.0",
-    "electron-store": "^5.1.1",
+    "discord-rpc": "^4.0.1",
+    "electron-store": "^8.0.1",
     "express": "^4.17.1",
-    "hotkeys-js": "^3.7.6",
-    "mpris-service": "^2.1.0",
-    "node-notifier": "^9.0.1",
+    "hotkeys-js": "^3.8.7",
+    "mpris-service": "^2.1.2",
+    "node-notifier": "^10.0.0",
     "request": "^2.88.2"
   },
   "devDependencies": {
     "@mastermindzh/prettier-config": "^1.0.0",
-    "dot-prop": ">=4.2.1",
-    "electron": "git+https://github.com/castlabs/electron-releases.git#v10.4.3-wvvmp",
-    "electron-builder": "^21.2.0",
+    "electron": "git+https://github.com/castlabs/electron-releases.git#v16.0.4+wvcus",
+    "electron-builder": "^22.14.5",
     "electron-reload": "^1.5.0",
-    "prettier": "^2.0.4"
+    "prettier": "^2.5.0"
   },
   "prettier": "@mastermindzh/prettier-config"
 }
