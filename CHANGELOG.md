@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.5.0
+
+- Notify-send now correctly shows "Tidal Hifi" as the program name
+
+## 2.4.0
+
+- Added more mpris settings
+- Added instruction for rescrobbler to get last.fm working without sandbox mode
+
 ## 2.3.0
 
 - Added a setting to minimize to tray on app close (off by default)
@@ -21,7 +30,7 @@ moved to: [https://github.com/Mastermindzh/tidal-hifi-aur](https://github.com/Ma
 ## 2.2.0
 
 - The discord integration now adds a time remaining field based on the song duration
-- All fields (current, remaining, and url are also available in the API*)
+- All fields (current, remaining, and url are also available in the API\*)
 - the artist field is now correctly identified
 
 * current time only updates on play/pause.

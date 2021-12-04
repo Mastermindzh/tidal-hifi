@@ -292,6 +292,7 @@ setInterval(function () {
   const artists = elements.getArtists();
   const current = elements.getText("current");
   const duration = elements.getText("duration");
+  const appName = "Tidal Hifi";
   const progressBarcurrentTime = elements.get("bar").getAttribute("aria-valuenow");
   const songDashArtistTitle = `${title} - ${artists}`;
   const currentStatus = getCurrentlyPlayingStatus();
@@ -302,6 +303,7 @@ setInterval(function () {
     url: currentURL,
     current: current,
     duration: duration,
+    'app-name': appName,
   };
 
   const playStatusChanged = currentStatus !== currentPlayStatus;

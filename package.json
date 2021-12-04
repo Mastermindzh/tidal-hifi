@@ -1,6 +1,6 @@
 {
   "name": "tidal-hifi",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "description": "Tidal on Electron with widevine(hifi) support",
   "main": "src/main.js",
   "scripts": {
