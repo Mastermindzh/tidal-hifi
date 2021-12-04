@@ -34,3 +34,4 @@ mac:
   category: public.app-category.entertainment
 win:
   target: msi
+  icon: build/icon.png
