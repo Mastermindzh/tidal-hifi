@@ -12,7 +12,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
-          node-version: 12
+          node-version: 16
       - run: npm install
       - run: npm run build
 
@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
-          node-version: 12
+          node-version: 16
       - run: npm install
       - run: npm run build
 
@@ -32,6 +32,6 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
-          node-version: 12
+          node-version: 16
       - run: npm install
       - run: npm run build
