@@ -10,7 +10,7 @@ snap:
 linux:
   category: Audio
   target:
-    # - pacman
+    - pacman
     - tar.gz
     - deb
     - rpm
