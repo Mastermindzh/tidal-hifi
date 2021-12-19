@@ -57,7 +57,7 @@ const elements = {
     if (figure) {
       const mediaElement = figure.querySelector(this["image"]);
       if (mediaElement) {
-        return mediaElement.src;
+        return mediaElement.src.replace("80x80", "640x640");
       }
     }
 

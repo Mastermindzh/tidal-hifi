@@ -7,7 +7,8 @@ const mediaInfo = {
   status: statuses.paused,
   url: "",
   current: "",
-  duration: ""
+  duration: "",
+  image: "tidal-hifi-icon"
 };
 const mediaInfoModule = {
   mediaInfo,
@@ -24,6 +25,7 @@ mediaInfoModule.update = function (arg) {
   mediaInfo.status = propOrDefault(arg.status);
   mediaInfo.current = propOrDefault(arg.current);
   mediaInfo.duration = propOrDefault(arg.duration);
+  mediaInfo.image = propOrDefault(arg.image);
 };
 
 /**
