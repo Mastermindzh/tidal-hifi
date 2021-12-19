@@ -31,6 +31,7 @@ const observer = (event, arg) => {
             : "unknown artist(s)",
           startTimestamp: parseInt(now),
           endTimestamp: parseInt(remaining),
+          largeImageKey: mediaInfoModule.mediaInfo.image,
           buttons: [{ label: "Play on Tidal", url: mediaInfoModule.mediaInfo.url }],
         },
       });
