@@ -1,5 +1,5 @@
 const { setTitle } = require("./scripts/window-functions");
-const { dialog, process } = require("electron").remote;
+const { dialog, process, Notification } = require("electron").remote;
 const { store, settings } = require("./scripts/settings");
 const { ipcRenderer } = require("electron");
 const { app } = require("electron").remote;
@@ -7,7 +7,6 @@ const { downloadFile } = require("./scripts/download");
 const statuses = require("./constants/statuses");
 const hotkeys = require("./scripts/hotkeys");
 const globalEvents = require("./constants/globalEvents");
-const notifier = require("node-notifier");
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 let currentSong = "";
 let player;
@@ -251,7 +250,9 @@ function convertDuration(duration) {
 function updateMediaInfo(options, notify) {
   if (options) {
     ipcRenderer.send(globalEvents.updateInfo, options);
-    store.get(settings.notifications) && notify && notifier.notify(options);
+    if(store.get(settings.notifications) && notify) {
+      new Notification({ title: options.title, body: options.message, icon: options.icon}).show();
+    }
     if (player) {
       player.metadata = {
         ...player.metadata,
