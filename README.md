@@ -78,6 +78,7 @@ To install and work with the code on this project follow these steps:
 - API for status and playback
 - Custom [integrations](#integrations)
 - [Settings feature](./docs/settings.png) to disable certain functionality. (`ctrl+=`)
+- AlbumArt in integrations ([best-effort](https://github.com/Mastermindzh/tidal-hifi/pull/88#pullrequestreview-840814847))
 
 ## Integrations
 

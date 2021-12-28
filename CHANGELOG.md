@@ -4,10 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.7.0
+
+- Switched to the native Notifier (removed node-notifier)
+- Album art now also has a name, based on [best effort](https://github.com/Mastermindzh/tidal-hifi/pull/88#pullrequestreview-840814847)
+
+## 2.6.0
+
+- Add album images to mediainfo and discord
+
 ## 2.5.0
 
 - Notify-send now correctly shows "Tidal Hifi" as the program name
-
 - Updated dependencies (including electron itself)
 
 ### known issues
