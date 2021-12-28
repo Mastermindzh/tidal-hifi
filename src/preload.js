@@ -42,6 +42,7 @@ const elements = {
   album_header_title: '.header-details [data-test="title"]',
   playing_title: 'span[data-test="table-cell-title"].css-geqnfr',
   album_name_cell: '[data-test="table-cell-album"]',
+  tracklist_row: '[data-test="tracklist-row"]',
 
   /**
    * Get an element from the dom
@@ -87,12 +88,10 @@ const elements = {
       if(albumName) {
         return albumName.textContent;
       }
-    }
-
-    //If listening to a playlist or a mix, get album name from the list
-    if(window.location.href.includes('/playlist/') || window.location.href.includes('/mix/')) {
-      if(currentPlayStatus === 'playing') {
-        const row = window.document.querySelector(this.playing_title).closest('[data-test="tracklist-row"]');
+      //If listening to a playlist or a mix, get album name from the list
+    } else if(window.location.href.includes('/playlist/') || window.location.href.includes('/mix/')) {
+      if(currentPlayStatus === statuses.playing) {
+        const row = window.document.querySelector(this.playing_title).closest(this.tracklist_row);
         if(row) {
          return row.querySelector(this.album_name_cell).textContent;
         }
