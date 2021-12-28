@@ -1,5 +1,5 @@
 const { setTitle } = require("./scripts/window-functions");
-const { dialog, process } = require("electron").remote;
+const { dialog, process, Notification } = require("electron").remote;
 const { store, settings } = require("./scripts/settings");
 const { ipcRenderer } = require("electron");
 const { app } = require("electron").remote;
@@ -7,7 +7,6 @@ const { downloadFile } = require("./scripts/download");
 const statuses = require("./constants/statuses");
 const hotkeys = require("./scripts/hotkeys");
 const globalEvents = require("./constants/globalEvents");
-const notifier = require("node-notifier");
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 let currentSong = "";
 let player;
@@ -39,6 +38,10 @@ const elements = {
   duration: '*[data-test="duration-time"]',
   bar: '*[data-test="progress-bar"]',
   footer: "#footerPlayer",
+  album_header_title: '.header-details [data-test="title"]',
+  playing_title: 'span[data-test="table-cell-title"].css-geqnfr',
+  album_name_cell: '[data-test="table-cell-album"]',
+  tracklist_row: '[data-test="tracklist-row"]',
 
   /**
    * Get an element from the dom
@@ -75,6 +78,26 @@ const elements = {
     }
 
     return "unknown artist(s)";
+  },
+
+  getAlbumName: function () {
+    //If listening to an album, get its name from the header title
+    if(window.location.href.includes('/album/')) {
+      const albumName = window.document.querySelector(this.album_header_title);
+      if(albumName) {
+        return albumName.textContent;
+      }
+      //If listening to a playlist or a mix, get album name from the list
+    } else if(window.location.href.includes('/playlist/') || window.location.href.includes('/mix/')) {
+      if(currentPlayStatus === statuses.playing) {
+        const row = window.document.querySelector(this.playing_title).closest(this.tracklist_row);
+        if(row) {
+         return row.querySelector(this.album_name_cell).textContent;
+        }
+      }
+    }
+
+    return "";
   },
 
   /**
@@ -251,13 +274,16 @@ function convertDuration(duration) {
 function updateMediaInfo(options, notify) {
   if (options) {
     ipcRenderer.send(globalEvents.updateInfo, options);
-    store.get(settings.notifications) && notify && notifier.notify(options);
+    if(store.get(settings.notifications) && notify) {
+      new Notification({ title: options.title, body: options.message, icon: options.icon}).show();
+    }
     if (player) {
       player.metadata = {
         ...player.metadata,
         ...{
           "xesam:title": options.title,
           "xesam:artist": [options.message],
+          "xesam:album": options.album,
           "mpris:artUrl": options.image,
           "mpris:length": convertDuration(options.duration) * 1000 * 1000,
         },
@@ -290,6 +316,7 @@ function updateURL() {
 setInterval(function () {
   const title = elements.getText("title");
   const artists = elements.getArtists();
+  const album = elements.getAlbumName();
   const current = elements.getText("current");
   const duration = elements.getText("duration");
   const appName = "Tidal Hifi";
@@ -299,6 +326,7 @@ setInterval(function () {
   const options = {
     title,
     message: artists,
+    album: album,
     status: currentStatus,
     url: currentURL,
     current: current,

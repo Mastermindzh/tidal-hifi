@@ -3,6 +3,7 @@ const statuses = require("./../constants/statuses");
 const mediaInfo = {
   title: "",
   artist: "",
+  album: "",
   icon: "",
   status: statuses.paused,
   url: "",
@@ -20,6 +21,7 @@ const mediaInfoModule = {
 mediaInfoModule.update = function (arg) {
   mediaInfo.title = propOrDefault(arg.title);
   mediaInfo.artist = propOrDefault(arg.message);
+  mediaInfo.album = propOrDefault(arg.album);
   mediaInfo.icon = propOrDefault(arg.icon);
   mediaInfo.url = propOrDefault(arg.url);
   mediaInfo.status = propOrDefault(arg.status);
