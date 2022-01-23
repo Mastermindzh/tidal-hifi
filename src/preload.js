@@ -183,6 +183,9 @@ function addHotKeys() {
   hotkeys.add("control+=", function () {
     ipcRenderer.send(globalEvents.showSettings);
   });
+  hotkeys.add("control+0", function () {
+    ipcRenderer.send(globalEvents.showSettings);
+  });
 }
 
 /**
