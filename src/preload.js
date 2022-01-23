@@ -82,17 +82,20 @@ const elements = {
 
   getAlbumName: function () {
     //If listening to an album, get its name from the header title
-    if(window.location.href.includes('/album/')) {
+    if (window.location.href.includes("/album/")) {
       const albumName = window.document.querySelector(this.album_header_title);
-      if(albumName) {
+      if (albumName) {
         return albumName.textContent;
       }
       //If listening to a playlist or a mix, get album name from the list
-    } else if(window.location.href.includes('/playlist/') || window.location.href.includes('/mix/')) {
-      if(currentPlayStatus === statuses.playing) {
+    } else if (
+      window.location.href.includes("/playlist/") ||
+      window.location.href.includes("/mix/")
+    ) {
+      if (currentPlayStatus === statuses.playing) {
         const row = window.document.querySelector(this.playing_title).closest(this.tracklist_row);
-        if(row) {
-         return row.querySelector(this.album_name_cell).textContent;
+        if (row) {
+          return row.querySelector(this.album_name_cell).textContent;
         }
       }
     }
@@ -213,6 +216,12 @@ function handleLogout() {
   );
 }
 
+function addFullScreenListeners() {
+  window.document.addEventListener("fullscreenchange", (event) => {
+    ipcRenderer.send(globalEvents.refreshMenuBar);
+  });
+}
+
 /**
  * Add ipc event listeners.
  * Some actions triggered outside of the site need info from the site.
@@ -274,8 +283,8 @@ function convertDuration(duration) {
 function updateMediaInfo(options, notify) {
   if (options) {
     ipcRenderer.send(globalEvents.updateInfo, options);
-    if(store.get(settings.notifications) && notify) {
-      new Notification({ title: options.title, body: options.message, icon: options.icon}).show();
+    if (store.get(settings.notifications) && notify) {
+      new Notification({ title: options.title, body: options.message, icon: options.icon }).show();
     }
     if (player) {
       player.metadata = {
@@ -331,7 +340,7 @@ setInterval(function () {
     url: currentURL,
     current: current,
     duration: duration,
-    'app-name': appName,
+    "app-name": appName,
   };
 
   const playStatusChanged = currentStatus !== currentPlayStatus;
@@ -452,3 +461,4 @@ if (process.platform === "linux" && store.get(settings.mpris)) {
 
 addHotKeys();
 addIPCEventListeners();
+addFullScreenListeners();

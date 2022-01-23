@@ -6,6 +6,7 @@ const globalEvents = {
   previous: "previous",
   updateInfo: "update-info",
   hideSettings: "hideSettings",
+  refreshMenuBar: "refreshMenubar",
   showSettings: "showSettings",
   storeChanged: "storeChanged",
   error: "error",

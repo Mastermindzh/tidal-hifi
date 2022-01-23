@@ -29,6 +29,14 @@ if (!app.isPackaged) {
   });
 }
 
+/**
+ * Update the menuBarVisbility according to the store value
+ *
+ */
+function syncMenuBarWithStore() {
+  mainWindow.setMenuBarVisibility(store.get(settings.menuBar));
+}
+
 function createWindow(options = {}) {
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -48,7 +56,7 @@ function createWindow(options = {}) {
     },
   });
 
-  mainWindow.setMenuBarVisibility(store.get(settings.menuBar));
+  syncMenuBarWithStore();
 
   // load the Tidal website
   mainWindow.loadURL(tidalUrl);
@@ -95,6 +103,7 @@ app.on("ready", () => {
   store.get(settings.trayIcon) && addTray({ icon }) && refreshTray();
   store.get(settings.api) && expressModule.run(mainWindow);
   store.get(settings.enableDiscord) && discordModule.initRPC();
+  // mainWindow.webContents.openDevTools();
 });
 
 app.on("activate", function () {
@@ -117,8 +126,12 @@ ipcMain.on(globalEvents.showSettings, (event, arg) => {
   showSettingsWindow();
 });
 
+ipcMain.on(globalEvents.refreshMenuBar, (event, arg) => {
+  syncMenuBarWithStore();
+});
+
 ipcMain.on(globalEvents.storeChanged, (event, arg) => {
-  mainWindow.setMenuBarVisibility(store.get(settings.menuBar));
+  syncMenuBarWithStore();
 
   if (store.get(settings.enableDiscord) && !discordModule.rpc) {
     discordModule.initRPC();
