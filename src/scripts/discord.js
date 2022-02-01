@@ -25,7 +25,7 @@ const observer = (event, arg) => {
       rpc.setActivity({
         ...idleStatus,
         ...{
-          details: `Listening to ${mediaInfoModule.mediaInfo.title}`,
+          details: `${mediaInfoModule.mediaInfo.title}`,
           state: mediaInfoModule.mediaInfo.artist
             ? mediaInfoModule.mediaInfo.artist
             : "unknown artist(s)",
@@ -33,14 +33,14 @@ const observer = (event, arg) => {
           endTimestamp: parseInt(remaining),
           largeImageKey: mediaInfoModule.mediaInfo.image,
           largeImageText: (mediaInfoModule.mediaInfo.album) ? mediaInfoModule.mediaInfo.album : `${idleStatus.largeImageText}`,
-          buttons: [{ label: "Play on Tidal", url: mediaInfoModule.mediaInfo.url }],
+          buttons: [{ label: "Listen Along", url: mediaInfoModule.mediaInfo.url }],
         },
       });
     } else {
       rpc.setActivity({
         ...idleStatus,
         ...{
-          details: `Watching ${mediaInfoModule.mediaInfo.title}`,
+          details: `${mediaInfoModule.mediaInfo.title}`,
           state: mediaInfoModule.mediaInfo.artist,
           startTimestamp: parseInt(now),
           endTimestamp: parseInt(remaining),
@@ -51,9 +51,9 @@ const observer = (event, arg) => {
 };
 
 const idleStatus = {
-  details: `Browsing Tidal`,
+  details: `Browsing TIDAL`,
   largeImageKey: "tidal-hifi-icon",
-  largeImageText: `Tidal HiFi ${app.getVersion()}`,
+  largeImageText: `TIDAL HiFi ${app.getVersion()}`,
   instance: false,
 };
 
