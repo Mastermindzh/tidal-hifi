@@ -3,7 +3,7 @@ Tidal-hifi
 <img src = "./build/icon.png" height="40" align="right" />
 </h1>
 
-The web version of [listen.tidal.com](https://listen.tidal.com) running in electron with hifi support thanks to widevine.
+The web version of [listen.tidal.com](https://listen.tidal.com) running in electron with HiFi support thanks to Widevine.
 
 ![tidal-hifi preview](./docs/preview.png)
 
@@ -16,18 +16,18 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
     - [Snap install](#snap-install)
   - [Arch Linux](#arch-linux)
   - [Using source](#using-source)
-- [features](#features)
+- [Features](#features)
 - [Integrations](#integrations)
-  - [not included](#not-included)
+  - [Not included](#not-included)
   - [Known bugs](#known-bugs)
-    - [last.fm doesn't work out of the box. Use rescrobbler as a workaround](#lastfm-doesnt-work-out-of-the-box-use-rescrobbler-as-a-workaround)
+    - [Last.fm doesn't work out of the box. Use rescrobbler as a workaround.](#lastfm-doesnt-work-out-of-the-box-use-rescrobbler-as-a-workaround)
 - [Why](#why)
 - [Why not extend existing projects?](#why-not-extend-existing-projects)
 - [Special thanks to...](#special-thanks-to)
-- [Buy me a coffee? Please don't](#buy-me-a-coffee-please-dont)
+- [Buy me a coffee? Please don't.](#buy-me-a-coffee-please-dont)
 - [Images](#images)
-  - [settings window](#settings-window)
-  - [user setups](#user-setups)
+  - [Settings window](#settings-window)
+  - [User setups](#user-setups)
 
 <!-- tocstop -->
 
@@ -39,7 +39,7 @@ Various packaged versions of the software are available on the [releases](https:
 
 #### Snap install
 
-To install with `snap` you need to download the pre-packaged snap-package from this repository, found under releases:
+To install with `snap`, you need to download the pre-packaged snap-package from this repository, found under releases:
 
 1. Download
 
@@ -55,7 +55,7 @@ snap install --dangerous <path> #for instance: tidal-hifi_1.0.0_amd64.snap
 
 ### Arch Linux
 
-Arch Linux users can use the AUR to install tidal-hifi:
+Arch Linux users can use the AUR to install TIDAL-HiFi:
 
 ```sh
 trizen tidal-hifi
@@ -63,14 +63,14 @@ trizen tidal-hifi
 
 ### Using source
 
-To install and work with the code on this project follow these steps:
+To install and work with the code on this project, follow these steps:
 
 - git clone [https://github.com/Mastermindzh/tidal-hifi.git](https://github.com/Mastermindzh/tidal-hifi.git)
 - cd tidal-hifi
 - npm install
 - npm start
 
-## features
+## Features
 
 - HiFi playback
 - Notifications
@@ -82,62 +82,62 @@ To install and work with the code on this project follow these steps:
 
 ## Integrations
 
-Tidal-hifi comes with several integrations out of the box.
+TIDAL-HiFi comes with several integrations out of the box.
 You can find these in the settings menu (`ctrl + =` by default) under the "integrations" tab.
 
 ![integrations menu, showing a list of integrations](./docs/integrations.png)
 
 It currently includes:
 
-- mpris - mpris media player controls/status
+- MPRIS - MPRIS media player controls/status.
 - Discord - Shows what you're listening to on Discord.
 
-### not included
+### Not included
 
-- [i3 blocks config](https://github.com/Mastermindzh/dotfiles/commit/9714b2fa1d670108ce811d5511fd3b7a43180647) - My dotfiles where I use this app to fetch currently playing music (direct commit)
+- [i3 blocks config](https://github.com/Mastermindzh/dotfiles/commit/9714b2fa1d670108ce811d5511fd3b7a43180647) - My dotfiles where I use this app to fetch currently playing music (direct commit).
 
 ### Known bugs
 
-#### last.fm doesn't work out of the box. Use rescrobbler as a workaround
+#### Last.fm doesn't work out of the box. Use rescrobbler as a workaround.
 
-The last.fm login doesn't work, as is evident from the following issue: [Last.fm login doesn't work](https://github.com/Mastermindzh/tidal-hifi/issues/4).
-However, in that same issue you can read about a workaround using [rescrobbler](https://github.com/InputUsername/rescrobbled).
-For now that will be the default workaround.
+The Last.fm login doesn't work, as is evident from the following issue: [Last.fm login doesn't work](https://github.com/Mastermindzh/tidal-hifi/issues/4).
+However, in that same issue, you can read about a workaround using [rescrobbler](https://github.com/InputUsername/rescrobbled).
+For now, that will be the default workaround.
 
 ## Why
 
-I moved from Spotify over to Tidal and found Linux support to be lacking.
+I moved from Spotify over to TIDAL and found Linux support to be lacking.
 
-When I started this project there weren't any Linux apps that offered Tidal's "hifi" options nor any scripts to control it.
+When I started this project, there weren't any Linux apps that offered TIDAL's "HiFi" options, nor any scripts to control it.
 
 ## Why not extend existing projects?
 
-Whilst there are a handful of projects attempting to run Tidal on Electron they are all unappealing to me because of various reasons:
+Whilst there are a handful of projects attempting to run TIDAL on Electron, they are all unappealing to me because of various reasons:
 
 - Lack of a maintainers/developers. (no hotfixes, no issues being handled etc)
 - Most are simple web wrappers, not my cup of tea.
 - Some are DE oriented. I want this to work on WM's too.
-- None have widevine working at the moment
+- None have widevine working at the moment.
 
-Sometimes it's just easier to start over, cover my own needs and then making it available to the public :)
+Sometimes it's just easier to start over, cover my own needs, and then making it available to the public. :)
 
 ## Special thanks to...
 
-- [Castlabs](https://castlabs.com/)
-  For maintaining Electron with Widevine CDM installation, Verified Media Path (VMP), and persistent licenses (StorageID)
+- [Castlabs](https://castlabs.com/).
+  For maintaining Electron with Widevine CDM installation, Verified Media Path (VMP), and persistent licenses (StorageID).
 
-## Buy me a coffee? Please don't
+## Buy me a coffee? Please don't.
 
 Instead spend some money on a charity I care for: [kwf.nl](https://secure.kwf.nl/donation).
-Inspired by [haydenjames' issue](https://github.com/Mastermindzh/tidal-hifi/issues/27#issuecomment-704198429)
+Inspired by [haydenjames' issue](https://github.com/Mastermindzh/tidal-hifi/issues/27#issuecomment-704198429).
 
 ## Images
 
-### settings window
+### Settings window
 
 ![settings window](./docs/settings-preview.png)
 
-### user setups
+### User setups
 
 Some of our users are kind enough to share their usage pictures.
 If you want to see them or possibly even add one please do so in the following issue: [#3 - image thread](https://github.com/Mastermindzh/tidal-hifi/issues/3).
