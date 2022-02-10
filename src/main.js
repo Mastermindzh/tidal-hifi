@@ -1,4 +1,4 @@
-const { app, BrowserWindow, globalShortcut, ipcMain } = require("electron");
+const { app, BrowserWindow, globalShortcut, ipcMain, session } = require("electron");
 const {
   settings,
   store,
@@ -28,6 +28,11 @@ if (!app.isPackaged) {
     electron: require(`${__dirname}/../node_modules/electron`),
   });
 }
+
+session.defaultSession.webRequest.onBeforeSendHeaders((details, callback) => {
+  details.requestHeaders['User-Agent'] = 'Mozilla/5.0 (X11; Linux x86_64; rv:98.0) Gecko/20100101 Firefox/98.0';
+  callback({ cancel: false, requestHeaders: details.requestHeaders });
+});
 
 /**
  * Update the menuBarVisbility according to the store value
