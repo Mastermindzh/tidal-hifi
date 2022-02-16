@@ -30,6 +30,11 @@ if (!app.isPackaged) {
 }
 
 /**
+ * Fix Display Compositor issue.
+ */
+app.commandLine.appendSwitch('disable-seccomp-filter-sandbox');
+
+/**
  * Update the menuBarVisbility according to the store value
  *
  */
