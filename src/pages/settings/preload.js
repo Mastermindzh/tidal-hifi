@@ -22,6 +22,7 @@ function refreshSettings() {
   enableCustomHotkeys.checked = store.get(settings.enableCustomHotkeys);
   enableDiscord.checked = store.get(settings.enableDiscord);
   minimizeOnClose.checked = store.get(settings.minimizeOnClose);
+  muteAds.checked = store.get(settings.muteAds);
 }
 
 /**
@@ -85,6 +86,7 @@ window.addEventListener("DOMContentLoaded", () => {
   mpris = get("mprisCheckbox");
   enableCustomHotkeys = get("enableCustomHotkeys");
   enableDiscord = get("enableDiscord");
+  muteAds = get("muteAds");
 
   refreshSettings();
 
@@ -98,4 +100,5 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(enableCustomHotkeys, settings.enableCustomHotkeys);
   addInputListener(enableDiscord, settings.enableDiscord);
   addInputListener(minimizeOnClose, settings.minimizeOnClose);
+  addInputListener(muteAds, settings.muteAds);
 });
