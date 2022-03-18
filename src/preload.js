@@ -43,7 +43,7 @@ const elements = {
   playing_title: 'span[data-test="table-cell-title"].css-geqnfr',
   album_name_cell: '[data-test="table-cell-album"]',
   tracklist_row: '[data-test="tracklist-row"]',
-  mute: '*[data-test="volume"]',
+  volume: '*[data-test="volume"]',
   /**
    * Get an element from the dom
    * @param {*} key key in elements object to fetch
@@ -105,7 +105,7 @@ const elements = {
   },
 
   isMuted: function () {
-    return this.get("mute").getAttribute("aria-checked") === "false"; // it's muted if aria-checked is false
+    return this.get("volume").getAttribute("aria-checked") === "false"; // it's muted if aria-checked is false
   },
 
   /**
@@ -357,11 +357,16 @@ setInterval(function () {
 
 
   if (store.get(settings.muteAds)) {
-    if (artists == "TIDAL") {
-      isAd = true;
-      if (!elements.isMuted()) elements.click("mute");
+    if (artists === "TIDAL") {
+      if (!elements.isMuted()) {
+        isAd = true;
+        elements.click("volume");
+      }
     }
-    else if (currentStatus === statuses.playing && isAd && elements.isMuted()) elements.click("mute");
+    else if (currentStatus === statuses.playing && isAd && elements.isMuted()) {
+      elements.click("volume");
+      isAd = false;
+    }
   }
 
   if (titleOrArtistChanged || playStatusChanged || progressBarTimeChanged || currentTimeChanged) {
