@@ -89,7 +89,7 @@ You can find these in the settings menu (`ctrl + =` by default) under the "integ
 
 It currently includes:
 
-- mpris - mpris media player controls/status
+- MPRIS - MPRIS media player controls/status
 - Discord - Shows what you're listening to on Discord.
 
 ### not included
