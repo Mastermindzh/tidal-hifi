@@ -10,6 +10,7 @@ const store = new Store({
     notifications: true,
     api: true,
     playBackControl: true,
+    muteAds: false,
     menuBar: true,
     apiSettings: {
       port: 47836,
