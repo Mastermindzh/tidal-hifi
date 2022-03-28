@@ -15,7 +15,7 @@ let progressBarTime;
 let currentTimeChanged = false;
 let currentTime;
 let currentURL = undefined;
-let isAd = false;
+let isMutedArtist = false;
 
 const elements = {
   play: '*[data-test="play"]',
@@ -355,19 +355,7 @@ setInterval(function () {
   const progressBarTimeChanged = progressBarcurrentTime !== progressBarTime;
   const titleOrArtistChanged = currentSong !== songDashArtistTitle;
 
-
-  if (store.get(settings.muteAds)) {
-    if (artists === "TIDAL") {
-      if (!elements.isMuted()) {
-        isAd = true;
-        elements.click("volume");
-      }
-    }
-    else if (currentStatus === statuses.playing && isAd && elements.isMuted()) {
-      elements.click("volume");
-      isAd = false;
-    }
-  }
+  muteArtistIfFoundInMutedArtistsList();
 
   if (titleOrArtistChanged || playStatusChanged || progressBarTimeChanged || currentTimeChanged) {
     // update title, url and play info with new info
@@ -422,6 +410,24 @@ setInterval(function () {
       },
       () => {}
     );
+  }
+
+  /**
+   * Checks whether the current artist is included in the "muted artists" list and if so it will automatically mute the player
+   */
+  function muteArtistIfFoundInMutedArtistsList() {
+    if (store.get(settings.muteArtists)) {
+      const mutedArtists = store.get(settings.mutedArtists);
+      if (mutedArtists.find((artist) => artist === artists) !== undefined) {
+        if (!elements.isMuted()) {
+          isMutedArtist = true;
+          elements.click("volume");
+        }
+      } else if (currentStatus === statuses.playing && isMutedArtist && elements.isMuted()) {
+        elements.click("volume");
+        isMutedArtist = false;
+      }
+    }
   }
 }, 200);
 

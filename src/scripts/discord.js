@@ -32,7 +32,9 @@ const observer = (event, arg) => {
           startTimestamp: parseInt(now),
           endTimestamp: parseInt(remaining),
           largeImageKey: mediaInfoModule.mediaInfo.image,
-          largeImageText: (mediaInfoModule.mediaInfo.album) ? mediaInfoModule.mediaInfo.album : `${idleStatus.largeImageText}`,
+          largeImageText: mediaInfoModule.mediaInfo.album
+            ? mediaInfoModule.mediaInfo.album
+            : `${idleStatus.largeImageText}`,
           buttons: [{ label: "Play on Tidal", url: mediaInfoModule.mediaInfo.url }],
         },
       });
@@ -62,24 +64,32 @@ const idleStatus = {
  */
 discordModule.initRPC = function () {
   rpc = new discordrpc.Client({ transport: "ipc" });
-  rpc.login({ clientId }).catch(console.error);
-  discordModule.rpc = rpc;
+  rpc.login({ clientId }).then(
+    () => {
+      discordModule.rpc = rpc;
 
-  rpc.on("ready", () => {
-    rpc.setActivity(idleStatus);
-  });
-  ipcMain.on(globalEvents.updateInfo, observer);
+      rpc.on("ready", () => {
+        rpc.setActivity(idleStatus);
+      });
+      ipcMain.on(globalEvents.updateInfo, observer);
+    },
+    () => {
+      console.error("Can't connect to Discord, is it running?");
+    }
+  );
 };
 
 /**
  * Remove any RPC connection with discord and remove the event listener on globalEvents.updateInfo
  */
 discordModule.unRPC = function () {
-  rpc.clearActivity();
-  rpc.destroy();
-  rpc = false;
-  discordModule.rpc = rpc;
-  ipcMain.removeListener(globalEvents.updateInfo, observer);
+  if (rpc) {
+    rpc.clearActivity();
+    rpc.destroy();
+    rpc = false;
+    discordModule.rpc = undefined;
+    ipcMain.removeListener(globalEvents.updateInfo, observer);
+  }
 };
 
 module.exports = discordModule;

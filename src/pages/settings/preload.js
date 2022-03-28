@@ -1,8 +1,15 @@
-let notifications;
-let playBackControl;
-let api;
-let port;
-let menuBar;
+let trayIcon,
+  minimizeOnClose,
+  mpris,
+  enableCustomHotkeys,
+  enableDiscord,
+  muteArtists,
+  notifications,
+  playBackControl,
+  api,
+  port,
+  menuBar,
+  mutedArtists;
 
 const { store, settings } = require("./../../scripts/settings");
 const { ipcRenderer } = require("electron");
@@ -22,7 +29,8 @@ function refreshSettings() {
   enableCustomHotkeys.checked = store.get(settings.enableCustomHotkeys);
   enableDiscord.checked = store.get(settings.enableDiscord);
   minimizeOnClose.checked = store.get(settings.minimizeOnClose);
-  muteAds.checked = store.get(settings.muteAds);
+  muteArtists.checked = store.get(settings.muteArtists);
+  mutedArtists.value = store.get(settings.mutedArtists).join("\n");
 }
 
 /**
@@ -68,6 +76,13 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function addTextAreaListener(source, key) {
+    source.addEventListener("input", function (event, data) {
+      store.set(key, source.value.split("\n"));
+      ipcRenderer.send(globalEvents.storeChanged);
+    });
+  }
+
   ipcRenderer.on("refreshData", () => {
     refreshSettings();
   });
@@ -86,7 +101,8 @@ window.addEventListener("DOMContentLoaded", () => {
   mpris = get("mprisCheckbox");
   enableCustomHotkeys = get("enableCustomHotkeys");
   enableDiscord = get("enableDiscord");
-  muteAds = get("muteAds");
+  muteArtists = get("muteArtists");
+  mutedArtists = get("mutedArtists");
 
   refreshSettings();
 
@@ -100,5 +116,6 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(enableCustomHotkeys, settings.enableCustomHotkeys);
   addInputListener(enableDiscord, settings.enableDiscord);
   addInputListener(minimizeOnClose, settings.minimizeOnClose);
-  addInputListener(muteAds, settings.muteAds);
+  addInputListener(muteArtists, settings.muteArtists);
+  addTextAreaListener(mutedArtists, settings.mutedArtists);
 });

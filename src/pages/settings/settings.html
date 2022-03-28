@@ -56,14 +56,15 @@
                             </label>
                         </div>
                         <div class="option">
-                            <h4>Mute ads</h4>
+                            <h4>Mute Artists automatically</h4>
                             <p>
-                                Automatically mute ads on the free plan
+                                The following list of artists (1 per line) will be muted automatically.
                             </p>
-                            <label class="switch">
-                                <input id="muteAds" type="checkbox">
-                                <span class="slider round"></span>
-                            </label>
+                            <label class="switch" style="margin-bottom:10px">
+                              <input id="muteArtists" type="checkbox">
+                              <span class="slider round" ></span>
+                          </label>
+                          <textarea id="mutedArtists" cols="40" rows="5"></textarea>
                         </div>
                     </div>
                     <div class="section">
@@ -479,6 +480,20 @@
     }
     button:hover{
       background-color: rgba(229,238,255,.3);
+    }
+    textarea {
+      color: #72777f;
+      background: #242528;
+      border: 0;
+      width: 100%;
+      color: rgba(229, 238, 255, .6);
+      padding: 0 0 12px;
+      display:block;
+    }
+    textarea:focus {
+      outline: none;
+      border: 0;
+      border-bottom: 1px solid #0ff;
     }
 </style>
 </html>
