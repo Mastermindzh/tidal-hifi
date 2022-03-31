@@ -11,7 +11,7 @@ const store = new Store({
     api: true,
     playBackControl: true,
     muteArtists: false,
-    mutedArtists: ["Tidal"],
+    mutedArtists: ["TIDAL"],
     menuBar: true,
     apiSettings: {
       port: 47836,
