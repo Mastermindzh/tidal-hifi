@@ -15,6 +15,7 @@ let progressBarTime;
 let currentTimeChanged = false;
 let currentTime;
 let currentURL = undefined;
+let isMutedArtist = false;
 
 const elements = {
   play: '*[data-test="play"]',
@@ -42,7 +43,7 @@ const elements = {
   playing_title: 'span[data-test="table-cell-title"].css-geqnfr',
   album_name_cell: '[data-test="table-cell-album"]',
   tracklist_row: '[data-test="tracklist-row"]',
-
+  volume: '*[data-test="volume"]',
   /**
    * Get an element from the dom
    * @param {*} key key in elements object to fetch
@@ -101,6 +102,10 @@ const elements = {
     }
 
     return "";
+  },
+
+  isMuted: function () {
+    return this.get("volume").getAttribute("aria-checked") === "false"; // it's muted if aria-checked is false
   },
 
   /**
@@ -350,6 +355,8 @@ setInterval(function () {
   const progressBarTimeChanged = progressBarcurrentTime !== progressBarTime;
   const titleOrArtistChanged = currentSong !== songDashArtistTitle;
 
+  muteArtistIfFoundInMutedArtistsList();
+
   if (titleOrArtistChanged || playStatusChanged || progressBarTimeChanged || currentTimeChanged) {
     // update title, url and play info with new info
     setTitle(songDashArtistTitle);
@@ -403,6 +410,24 @@ setInterval(function () {
       },
       () => {}
     );
+  }
+
+  /**
+   * Checks whether the current artist is included in the "muted artists" list and if so it will automatically mute the player
+   */
+  function muteArtistIfFoundInMutedArtistsList() {
+    if (store.get(settings.muteArtists)) {
+      const mutedArtists = store.get(settings.mutedArtists);
+      if (mutedArtists.find((artist) => artist === artists) !== undefined) {
+        if (!elements.isMuted()) {
+          isMutedArtist = true;
+          elements.click("volume");
+        }
+      } else if (currentStatus === statuses.playing && isMutedArtist && elements.isMuted()) {
+        elements.click("volume");
+        isMutedArtist = false;
+      }
+    }
   }
 }, 200);
 

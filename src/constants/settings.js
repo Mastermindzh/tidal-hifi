@@ -13,6 +13,8 @@ const settings = {
   api: "api",
   menuBar: "menuBar",
   playBackControl: "playBackControl",
+  muteArtists: "muteArtists",
+  mutedArtists: "mutedArtists",
   apiSettings: {
     root: "apiSettings",
     port: "apiSettings.port",

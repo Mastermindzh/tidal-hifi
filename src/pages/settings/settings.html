@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <title>Tidal-hifi settings</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
@@ -53,6 +54,17 @@
                                 <input id="notifications" type="checkbox">
                                 <span class="slider round"></span>
                             </label>
+                        </div>
+                        <div class="option">
+                            <h4>Mute Artists automatically</h4>
+                            <p>
+                                The following list of artists (1 per line) will be muted automatically.
+                            </p>
+                            <label class="switch" style="margin-bottom:10px">
+                              <input id="muteArtists" type="checkbox">
+                              <span class="slider round" ></span>
+                          </label>
+                          <textarea id="mutedArtists" cols="40" rows="5"></textarea>
                         </div>
                     </div>
                     <div class="section">
@@ -139,12 +151,12 @@
                   <div class="section">
                       <h3>integrations</h3>
                       <p style="margin-bottom: 15px;">
-                          Tidal-hifi is extensible trough the use of integrations. You can enable or disable integrations here
+                          Tidal-hifi is extensible through the use of integrations. You can enable or disable integrations here
                       </p>
                       <div class="option">
-                          <h4>mpris-player</h4>
+                          <h4>MPRIS-player</h4>
                           <p>
-                              Whether to enable the mpris media player controls for Linux systems
+                              Whether to enable the MPRIS media player controls for Linux systems
                           </p>
                           <label class="switch">
                               <input id="mprisCheckbox" type="checkbox">
@@ -165,16 +177,16 @@
               </section>
                 <section id="about" class="tab-panel">
                   <div class="section">
-                    <img style="width: 100px; height: auto; display: block; margin: 0 auto; margin-bottom: 20px; margin-top: 20px;" src = "./icon.png">
+                    <img alt="tidal icon" style="width: 100px; height: auto; display: block; margin: 0 auto; margin-bottom: 20px; margin-top: 20px;" src = "./icon.png">
                     <p style="max-width: 350px; display:block; margin: 0 auto; text-align: center;">
                       <a href ="javascript:openExternal('https://github.com/Mastermindzh/tidal-hifi');">Tidal-hifi</a> is made by <a href ="javascript:openExternal('https://www.rickvanlieshout.com')">Rick van Lieshout</a>.<br />
-                      It uses <a href="javascript:openExternal('https://castlabs.com/');">castlabs</a> versions of Electron for widevine support.
+                      It uses <a href="javascript:openExternal('https://castlabs.com/');">Castlabs'</a> versions of Electron for widevine support.
                     </p>
 
                   </div>
                 </section>
 
-              <small>Some settings require a restart of Tidal-hifi. To do so click the button below:</small>
+              <small>Some settings require a restart of Tidal-hifi. To do so, click the button below:</small>
               <button onClick="restart()" style ="width: 100%">Restart Tidal-hifi</button>
             </div>
         </div>
@@ -468,6 +480,20 @@
     }
     button:hover{
       background-color: rgba(229,238,255,.3);
+    }
+    textarea {
+      color: #72777f;
+      background: #242528;
+      border: 0;
+      width: 100%;
+      color: rgba(229, 238, 255, .6);
+      padding: 0 0 12px;
+      display:block;
+    }
+    textarea:focus {
+      outline: none;
+      border: 0;
+      border-bottom: 1px solid #0ff;
     }
 </style>
 </html>

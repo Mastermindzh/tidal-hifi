@@ -4,13 +4,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.8.0
+
+- Added the ability to mute artists automatically
+- Added better error handling for discord rpc
+
 ## 2.7.2
 
-- Disabled sanboxing to fix a display compositor issue on Linux.
+- Disabled sandboxing to fix a display compositor issue on Linux.
 
 ## 2.7.1
 
-- Fixed bug: Triggering fullscreen from the Tidal web app would cause the menubar to be visible even if it was disabled in the settings
+- Fixed bug: Triggering full screen from the Tidal web app would cause the menubar to be visible even if it was disabled in the settings
 
 ## 2.7.0
 
@@ -19,11 +24,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 2.6.0
 
-- Add album images to mediainfo and discord
+- Add album images to media info and discord
 
 ## 2.5.0
 
-- Notify-send now correctly shows "Tidal Hifi" as the program name
+- Notify-send now correctly shows "Tidal HiFi" as the program name
 - Updated dependencies (including electron itself)
 
 ### known issues
@@ -36,13 +41,13 @@ updated to nodejs 16 in actions
 
 ## 2.4.0
 
-- Added more mpris settings
+- Added more MPRIS settings
 - Added instruction for rescrobbler to get last.fm working without sandbox mode
 
 ## 2.3.0
 
 - Added a setting to minimize to tray on app close (off by default)
-- Added the main menu to the trayicon
+- Added the main menu to the tray icon
 
 ## 2.2.1
 
@@ -59,7 +64,7 @@ moved to: [https://github.com/Mastermindzh/tidal-hifi-aur](https://github.com/Ma
 - All fields (current, remaining, and url are also available in the API\*)
 - the artist field is now correctly identified
 
-* current time only updates on play/pause.
+\* current time only updates on play/pause.
 
 ## 2.1.1
 
@@ -84,7 +89,7 @@ moved to: [https://github.com/Mastermindzh/tidal-hifi-aur](https://github.com/Ma
 
 ## 1.3.0
 
--- re-enabled mpris-service wit the electron downloader fixes
+-- re-enabled MPRIS-service wit the electron downloader fixes
 
 ## 1.2.0
 
@@ -99,7 +104,7 @@ Bugfixes:
 ## 1.1.0
 
 - updated to electron 8.0.0
-- Added a beta-version of the mpris service
+- Added a beta-version of the MPRIS service
 
 - Bugfixes:
   - icon on gnome not showing in launcher

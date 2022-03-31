@@ -76,6 +76,7 @@ To install and work with the code on this project follow these steps:
 - Notifications
 - Custom hotkeys ([source](https://defkey.com/tidal-desktop-shortcuts))
 - API for status and playback
+- [Mute artists automatically (defaults to "Tidal")]("./docs/muting-artists.md")
 - Custom [integrations](#integrations)
 - [Settings feature](./docs/settings.png) to disable certain functionality. (`ctrl+=` or `ctrl+0`)
 - AlbumArt in integrations ([best-effort](https://github.com/Mastermindzh/tidal-hifi/pull/88#pullrequestreview-840814847))
@@ -89,7 +90,7 @@ You can find these in the settings menu (`ctrl + =` by default) under the "integ
 
 It currently includes:
 
-- mpris - mpris media player controls/status
+- MPRIS - MPRIS media player controls/status
 - Discord - Shows what you're listening to on Discord.
 
 ### not included
