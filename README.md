@@ -58,7 +58,7 @@ snap install --dangerous <path> #for instance: tidal-hifi_1.0.0_amd64.snap
 Arch Linux users can use the AUR to install tidal-hifi:
 
 ```sh
-trizen tidal-hifi
+trizen tidal-hifi-bin
 ```
 
 ### Using source
