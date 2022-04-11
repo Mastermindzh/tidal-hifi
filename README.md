@@ -129,7 +129,7 @@ Sometimes it's just easier to start over, cover my own needs and then making it 
 
 ## Buy me a coffee? Please don't
 
-Instead spend some money on a charity I care for: [kwf.nl](https://secure.kwf.nl/donation).
+Instead spend some money on a charity I care for: [kwf.nl](https://www.kwf.nl/donatie/donation).
 Inspired by [haydenjames' issue](https://github.com/Mastermindzh/tidal-hifi/issues/27#issuecomment-704198429)
 
 ## Images
