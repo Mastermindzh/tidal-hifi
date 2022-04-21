@@ -1,4 +1,4 @@
-const { Menu } = require("electron");
+const { Menu, app } = require("electron");
 const { showSettingsWindow } = require("./settings");
 const isMac = process.platform === "darwin";
 
@@ -8,6 +8,14 @@ const settingsMenuEntry = {
     showSettingsWindow();
   },
   accelerator: "Control+/",
+};
+
+const quitMenuEntry = {
+  label: "Quit",
+  click() {
+    app.exit(0);
+  },
+  accelerator: "Control+Q"
 };
 
 const mainMenu = [
@@ -25,7 +33,7 @@ const mainMenu = [
             { role: "hideothers" },
             { role: "unhide" },
             { type: "separator" },
-            { role: "quit" },
+            quitMenuEntry,
           ],
         },
       ]
@@ -33,7 +41,7 @@ const mainMenu = [
   // { role: 'fileMenu' }
   {
     label: "File",
-    submenu: [settingsMenuEntry, isMac ? { role: "close" } : { role: "quit" }],
+    submenu: [settingsMenuEntry, isMac ? { role: "close" } : quitMenuEntry],
   },
   // { role: 'editMenu' }
   {
