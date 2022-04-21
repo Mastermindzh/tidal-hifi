@@ -8,6 +8,7 @@ const statuses = require("./constants/statuses");
 const hotkeys = require("./scripts/hotkeys");
 const globalEvents = require("./constants/globalEvents");
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
+const appName = "Tidal Hifi";
 let currentSong = "";
 let player;
 let currentPlayStatus = statuses.paused;
@@ -225,7 +226,7 @@ function handleLogout() {
 }
 
 function addFullScreenListeners() {
-  window.document.addEventListener("fullscreenchange", (event) => {
+  window.document.addEventListener("fullscreenchange", () => {
     ipcRenderer.send(globalEvents.refreshMenuBar);
   });
 }
@@ -236,7 +237,7 @@ function addFullScreenListeners() {
  */
 function addIPCEventListeners() {
   window.addEventListener("DOMContentLoaded", () => {
-    ipcRenderer.on("globalEvent", (event, args) => {
+    ipcRenderer.on("globalEvent", (_event, args) => {
       switch (args) {
         case globalEvents.playPause:
           playPause();
@@ -336,7 +337,6 @@ setInterval(function () {
   const album = elements.getAlbumName();
   const current = elements.getText("current");
   const duration = elements.getText("duration");
-  const appName = "Tidal Hifi";
   const progressBarcurrentTime = elements.get("bar").getAttribute("aria-valuenow");
   const songDashArtistTitle = `${title} - ${artists}`;
   const currentStatus = getCurrentlyPlayingStatus();
