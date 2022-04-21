@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install libarchive-tools
+        run: sudo apt-get update
         run: sudo apt-get install -y libarchive-tools
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
