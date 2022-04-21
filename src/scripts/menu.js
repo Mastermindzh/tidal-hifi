@@ -38,12 +38,10 @@ const mainMenu = [
         },
       ]
     : []),
-  // { role: 'fileMenu' }
   {
     label: "File",
     submenu: [settingsMenuEntry, isMac ? { role: "close" } : quitMenuEntry],
   },
-  // { role: 'editMenu' }
   {
     label: "Edit",
     submenu: [
@@ -69,7 +67,6 @@ const mainMenu = [
       settingsMenuEntry,
     ],
   },
-  // { role: 'viewMenu' }
   {
     label: "View",
     submenu: [
@@ -83,7 +80,6 @@ const mainMenu = [
       { role: "togglefullscreen" },
     ],
   },
-  // { role: 'windowMenu' }
   {
     label: "Window",
     submenu: [

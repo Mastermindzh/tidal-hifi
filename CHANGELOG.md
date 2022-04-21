@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 2.8.2
+
+- Updated dependencies
+- Downgraded packaged version of electron to 8.5.2, doesn't seem to like a newer build
+- Fixed the annoying (and useless) terminal warning about `allowRendererProcessReuse`
+
 ## 2.8.1
 
 - Mar0xy fixed some build issues (thanks!)
