@@ -44,14 +44,14 @@ window.openExternal = function (url) {
 /**
  * hide the settings window
  */
-window.hide = function () {
+function hide () {
   ipcRenderer.send(globalEvents.hideSettings);
 };
 
 /**
  * Restart tidal-hifi after changes
  */
-window.restart = function () {
+function restart () {
   const remote = require("@electron/remote");
   remote.app.relaunch();
   remote.app.exit(0);
@@ -64,6 +64,9 @@ window.addEventListener("DOMContentLoaded", () => {
   function get(id) {
     return document.getElementById(id);
   }
+
+  document.getElementById("close").addEventListener("click", hide);
+  document.getElementById("restart").addEventListener("click", restart);
 
   function addInputListener(source, key) {
     source.addEventListener("input", function (event, data) {

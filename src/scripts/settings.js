@@ -42,10 +42,8 @@ settingsModule.createSettingsWindow = function () {
       preload: path.join(__dirname, "../pages/settings/preload.js"),
       plugins: true,
       nodeIntegration: true,
-      sandbox: false
     },
   });
-  require("@electron/remote/main").enable(settingsWindow.webContents);
 
   settingsWindow.on("close", (event) => {
     if (settingsWindow != null) {
