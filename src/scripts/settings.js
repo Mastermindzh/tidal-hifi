@@ -39,7 +39,6 @@ settingsModule.createSettingsWindow = function () {
     frame: false,
     title: "Tidal-hifi - settings",
     webPreferences: {
-      affinity: "window",
       preload: path.join(__dirname, "../pages/settings/preload.js"),
       plugins: true,
       nodeIntegration: true,

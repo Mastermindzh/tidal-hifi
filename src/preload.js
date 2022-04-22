@@ -1,8 +1,8 @@
 const { setTitle } = require("./scripts/window-functions");
-const { dialog, process, Notification } = require("electron").remote;
+const { dialog, process, Notification } = require('@electron/remote');
 const { store, settings } = require("./scripts/settings");
 const { ipcRenderer } = require("electron");
-const { app } = require("electron").remote;
+const { app } = require('@electron/remote');
 const { downloadFile } = require("./scripts/download");
 const statuses = require("./constants/statuses");
 const hotkeys = require("./scripts/hotkeys");
