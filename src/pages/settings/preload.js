@@ -52,7 +52,7 @@ window.hide = function () {
  * Restart tidal-hifi after changes
  */
 window.restart = function () {
-  const remote = require('@electron/remote');
+  const remote = require("@electron/remote");
   remote.app.relaunch();
   remote.app.exit(0);
 };

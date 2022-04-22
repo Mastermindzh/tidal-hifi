@@ -56,7 +56,6 @@ function createWindow(options = {}) {
       preload: path.join(__dirname, "preload.js"),
       plugins: true,
       devTools: true, // I like tinkering, others might too
-      allowRunningInsecureContent: true
     },
   });
   require("@electron/remote/main").enable(mainWindow.webContents);
