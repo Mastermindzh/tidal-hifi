@@ -64,7 +64,7 @@ trizen tidal-hifi-bin
 
 ### Flatpak
 
-To install via Flatpak run the following command:
+To install via [Flatpak](https://flathub.org/apps/details/com.mastermindzh.tidal-hifi) run the following command:
 
 ```sh
 flatpak install flathub com.mastermindzh.tidal-hifi
