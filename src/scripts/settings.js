@@ -17,6 +17,7 @@ const store = new Store({
       port: 47836,
     },
     singleInstance: true,
+    disableHardwareMediaKeys: false,
     trayIcon: true,
     minimizeOnClose: false,
     mpris: false,

@@ -20,6 +20,7 @@ const settings = {
     port: "apiSettings.port",
   },
   singleInstance: "singleInstance",
+  disableHardwareMediaKeys: "disableHardwareMediaKeys",
   mpris: "mpris",
   enableCustomHotkeys: "enableCustomHotkeys",
   trayIcon: "trayIcon",

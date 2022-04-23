@@ -27,6 +27,13 @@ let icon = path.join(__dirname, "../assets/icon.png");
 app.commandLine.appendSwitch("disable-seccomp-filter-sandbox");
 
 /**
+ * Disable media keys when requested
+ */
+if (store.get(settings.disableHardwareMediaKeys)) {
+  app.commandLine.appendSwitch("disable-features", "HardwareMediaKeyHandling");
+}
+
+/**
  * Update the menuBarVisbility according to the store value
  *
  */
