@@ -1,3 +1,4 @@
 extends: ./build/electron-builder.yml
 linux:
   target:
+    - dir

@@ -1,6 +1,6 @@
 {
   "name": "tidal-hifi",
-  "version": "2.8.2",
+  "version": "3.0.0",
   "description": "Tidal on Electron with widevine(hifi) support",
   "main": "src/main.js",
   "scripts": {
@@ -36,7 +36,6 @@
     "@mastermindzh/prettier-config": "^1.0.0",
     "electron": "git+https://github.com/castlabs/electron-releases.git#v15.5.2-wvvmp",
     "electron-builder": "^22.14.5",
-    "electron-reload": "^1.5.0",
     "prettier": "^2.5.0"
   },
   "prettier": "@mastermindzh/prettier-config"

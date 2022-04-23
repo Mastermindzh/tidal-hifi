@@ -1,4 +1,4 @@
-require('@electron/remote/main').initialize();
+require("@electron/remote/main").initialize();
 const { app, BrowserWindow, globalShortcut, ipcMain } = require("electron");
 const {
   settings,
@@ -22,18 +22,9 @@ let mainWindow;
 let icon = path.join(__dirname, "../assets/icon.png");
 
 /**
- * Enable live reload in development builds
- */
-if (!app.isPackaged) {
-  require("electron-reload")(`${__dirname}`, {
-    electron: require(`${__dirname}/../node_modules/electron`),
-  });
-}
-
-/**
  * Fix Display Compositor issue.
  */
-app.commandLine.appendSwitch('disable-seccomp-filter-sandbox');
+app.commandLine.appendSwitch("disable-seccomp-filter-sandbox");
 
 /**
  * Update the menuBarVisbility according to the store value
@@ -118,8 +109,8 @@ app.on("activate", function () {
   }
 });
 
-app.on('browser-window-created', (_, window) => {
-  require("@electron/remote/main").enable(window.webContents)
+app.on("browser-window-created", (_, window) => {
+  require("@electron/remote/main").enable(window.webContents);
 });
 
 // IPC
