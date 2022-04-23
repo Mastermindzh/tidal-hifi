@@ -16,6 +16,7 @@ const store = new Store({
     apiSettings: {
       port: 47836,
     },
+    singleInstance: true,
     trayIcon: true,
     minimizeOnClose: false,
     mpris: false,

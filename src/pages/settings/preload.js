@@ -9,7 +9,8 @@ let trayIcon,
   api,
   port,
   menuBar,
-  mutedArtists;
+  mutedArtists,
+  singleInstance;
 
 const { store, settings } = require("./../../scripts/settings");
 const { ipcRenderer } = require("electron");
@@ -32,6 +33,7 @@ function refreshSettings() {
   minimizeOnClose.checked = store.get(settings.minimizeOnClose);
   muteArtists.checked = store.get(settings.muteArtists);
   mutedArtists.value = store.get(settings.mutedArtists).join("\n");
+  singleInstance.checked = store.get(settings.singleInstance);
 }
 
 /**
@@ -111,6 +113,7 @@ window.addEventListener("DOMContentLoaded", () => {
   enableDiscord = get("enableDiscord");
   muteArtists = get("muteArtists");
   mutedArtists = get("mutedArtists");
+  singleInstance = get("singleInstance");
 
   refreshSettings();
 
@@ -126,4 +129,5 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(minimizeOnClose, settings.minimizeOnClose);
   addInputListener(muteArtists, settings.muteArtists);
   addTextAreaListener(mutedArtists, settings.mutedArtists);
+  addInputListener(singleInstance, settings.singleInstance);
 });

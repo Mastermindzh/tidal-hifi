@@ -34,6 +34,23 @@ function syncMenuBarWithStore() {
   mainWindow.setMenuBarVisibility(store.get(settings.menuBar));
 }
 
+/**
+ * Determine whether the current window is the main window
+ * if singleInstance is requested.
+ * If singleInstance isn't requested simply return true
+ * @returns true if singInstance is not requested, otherwise true/false based on whether the current window is the main window
+ */
+function isMainInstanceOrMultipleInstancesAllowed() {
+  if (store.get(settings.singleInstance)) {
+    const gotTheLock = app.requestSingleInstanceLock();
+
+    if (!gotTheLock) {
+      return false;
+    }
+  }
+  return true;
+}
+
 function createWindow(options = {}) {
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -91,14 +108,18 @@ function addGlobalShortcuts() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
-  createWindow();
-  addMenu();
-  createSettingsWindow();
-  addGlobalShortcuts();
-  store.get(settings.trayIcon) && addTray({ icon }) && refreshTray();
-  store.get(settings.api) && expressModule.run(mainWindow);
-  store.get(settings.enableDiscord) && discordModule.initRPC();
-  // mainWindow.webContents.openDevTools();
+  if (isMainInstanceOrMultipleInstancesAllowed()) {
+    createWindow();
+    addMenu();
+    createSettingsWindow();
+    addGlobalShortcuts();
+    store.get(settings.trayIcon) && addTray({ icon }) && refreshTray();
+    store.get(settings.api) && expressModule.run(mainWindow);
+    store.get(settings.enableDiscord) && discordModule.initRPC();
+    // mainWindow.webContents.openDevTools();
+  } else {
+    app.quit();
+  }
 });
 
 app.on("activate", function () {
@@ -114,22 +135,22 @@ app.on("browser-window-created", (_, window) => {
 });
 
 // IPC
-ipcMain.on(globalEvents.updateInfo, (event, arg) => {
+ipcMain.on(globalEvents.updateInfo, (_event, arg) => {
   mediaInfoModule.update(arg);
 });
 
-ipcMain.on(globalEvents.hideSettings, (event, arg) => {
+ipcMain.on(globalEvents.hideSettings, (_event, _arg) => {
   hideSettingsWindow();
 });
-ipcMain.on(globalEvents.showSettings, (event, arg) => {
+ipcMain.on(globalEvents.showSettings, (_event, _arg) => {
   showSettingsWindow();
 });
 
-ipcMain.on(globalEvents.refreshMenuBar, (event, arg) => {
+ipcMain.on(globalEvents.refreshMenuBar, (_event, _arg) => {
   syncMenuBarWithStore();
 });
 
-ipcMain.on(globalEvents.storeChanged, (event, arg) => {
+ipcMain.on(globalEvents.storeChanged, (_event, _arg) => {
   syncMenuBarWithStore();
 
   if (store.get(settings.enableDiscord) && !discordModule.rpc) {
@@ -139,6 +160,6 @@ ipcMain.on(globalEvents.storeChanged, (event, arg) => {
   }
 });
 
-ipcMain.on(globalEvents.error, (event, arg) => {
+ipcMain.on(globalEvents.error, (event, _arg) => {
   console.log(event);
 });

@@ -19,6 +19,7 @@ const settings = {
     root: "apiSettings",
     port: "apiSettings.port",
   },
+  singleInstance: "singleInstance",
   mpris: "mpris",
   enableCustomHotkeys: "enableCustomHotkeys",
   trayIcon: "trayIcon",
