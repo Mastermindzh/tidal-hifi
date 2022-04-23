@@ -8,7 +8,7 @@ snap:
     - default
     - screen-inhibit-control
 linux:
-  category: AudioVideo
+  category: Audio
   target:
     - pacman
     - tar.gz
