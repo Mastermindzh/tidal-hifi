@@ -15,6 +15,7 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
   - [Using releases](#using-releases)
     - [Snap install](#snap-install)
   - [Arch Linux](#arch-linux)
+  - [Flatpak](#flatpak)
   - [Using source](#using-source)
 - [features](#features)
 - [Integrations](#integrations)
@@ -59,6 +60,14 @@ Arch Linux users can use the AUR to install tidal-hifi:
 
 ```sh
 trizen tidal-hifi-bin
+```
+
+### Flatpak
+
+To install via Flatpak run the following command:
+
+```sh
+flatpak install flathub com.mastermindzh.tidal-hifi
 ```
 
 ### Using source
