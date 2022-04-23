@@ -36,7 +36,7 @@ function refreshSettings() {
 /**
  * Open an url in the default browsers
  */
-window.openExternal = function (url) {
+function openExternal (url) {
   const { shell } = require("electron");
   shell.openExternal(url);
 };
@@ -44,15 +44,15 @@ window.openExternal = function (url) {
 /**
  * hide the settings window
  */
-window.hide = function () {
+function hide () {
   ipcRenderer.send(globalEvents.hideSettings);
 };
 
 /**
  * Restart tidal-hifi after changes
  */
-window.restart = function () {
-  const remote = require("electron").remote;
+function restart () {
+  const remote = require("@electron/remote");
   remote.app.relaunch();
   remote.app.exit(0);
 };
@@ -64,6 +64,12 @@ window.addEventListener("DOMContentLoaded", () => {
   function get(id) {
     return document.getElementById(id);
   }
+
+  document.getElementById("close").addEventListener("click", hide);
+  document.getElementById("restart").addEventListener("click", restart);
+  document.querySelectorAll("#openExternal").forEach(elem => elem.addEventListener("click", function (event) {
+    openExternal(event.target.getAttribute("data-url"));
+  }));
 
   function addInputListener(source, key) {
     source.addEventListener("input", function (event, data) {

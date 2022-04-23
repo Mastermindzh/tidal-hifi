@@ -1,3 +1,4 @@
+require('@electron/remote/main').initialize();
 const { app, BrowserWindow, globalShortcut, ipcMain } = require("electron");
 const {
   settings,
@@ -50,16 +51,14 @@ function createWindow(options = {}) {
     width: store && store.get(settings.windowBounds.width),
     height: store && store.get(settings.windowBounds.height),
     icon,
-    tray: true,
     backgroundColor: options.backgroundColor,
     webPreferences: {
-      affinity: "window",
       preload: path.join(__dirname, "preload.js"),
       plugins: true,
       devTools: true, // I like tinkering, others might too
-      enableRemoteModule: true,
     },
   });
+  require("@electron/remote/main").enable(mainWindow.webContents);
 
   syncMenuBarWithStore();
 
@@ -101,7 +100,6 @@ function addGlobalShortcuts() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
-  app.allowRendererProcessReuse = true;
   createWindow();
   addMenu();
   createSettingsWindow();
@@ -118,6 +116,10 @@ app.on("activate", function () {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+app.on('browser-window-created', (_, window) => {
+  require("@electron/remote/main").enable(window.webContents)
 });
 
 // IPC
