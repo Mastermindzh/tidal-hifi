@@ -11,7 +11,7 @@
 <body>
     <div class="header">
         <h1 class="title">Settings</h1>
-        <a href="javascript:hide();" class="exitWindow">
+        <a id="close" style="cursor: pointer;" class="exitWindow">
 
             <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" viewBox="0 0 348.333 348.334">
                 <g>
@@ -105,13 +105,34 @@
                       <div class="option">
                         <h4>Hotkeys</h4>
                         <p>
-                            Enables extra hotkeys to achieve feature parity with the <a href = "javascript:openExternal('https://defkey.com/tidal-desktop-shortcuts')">desktop apps</a><br />
+                            Enables extra hotkeys to achieve feature parity with the <a id="openExternal" style="text-decoration: underline; cursor: pointer;" data-url= "https://defkey.com/tidal-desktop-shortcuts">desktop apps</a><br />
                         </p>
                         <label class="switch">
                             <input id="enableCustomHotkeys" type="checkbox">
                             <span class="slider round"></span>
                         </label>
-                    </div>
+                      </div>
+                      <div class="option">
+                        <h4>Single instance</h4>
+                        <p>
+                            Prevent opening multiple tidal-hifi instances
+                        </p>
+                        <label class="switch">
+                            <input id="singleInstance" type="checkbox">
+                            <span class="slider round"></span>
+                        </label>
+                      </div>
+                      <div class="option">
+                        <h4>Disable hardware media keys</h4>
+                        <p>
+                            Disable built-in media keys. <br />
+                            Also prevents certain desktop environments from recognizing the chrome MPRIS client separetely from the custom MPRIS client.
+                        </p>
+                        <label class="switch">
+                            <input id="disableHardwareMediaKeys" type="checkbox">
+                            <span class="slider round"></span>
+                        </label>
+                      </div>
                   </div>
                 </section>
                 <section id="api" class="tab-panel">
@@ -179,15 +200,15 @@
                   <div class="section">
                     <img alt="tidal icon" style="width: 100px; height: auto; display: block; margin: 0 auto; margin-bottom: 20px; margin-top: 20px;" src = "./icon.png">
                     <p style="max-width: 350px; display:block; margin: 0 auto; text-align: center;">
-                      <a href ="javascript:openExternal('https://github.com/Mastermindzh/tidal-hifi');">Tidal-hifi</a> is made by <a href ="javascript:openExternal('https://www.rickvanlieshout.com')">Rick van Lieshout</a>.<br />
-                      It uses <a href="javascript:openExternal('https://castlabs.com/');">Castlabs'</a> versions of Electron for widevine support.
+                      <a id="openExternal" style="text-decoration: underline; cursor: pointer;" data-url="https://github.com/Mastermindzh/tidal-hifi">Tidal-hifi</a> is made by <a id="openExternal" data-url="https://www.rickvanlieshout.com" style="text-decoration: underline; cursor: pointer;">Rick van Lieshout</a>.<br />
+                      It uses <a style="text-decoration: underline; cursor: pointer;" id="openExternal" data-url="https://castlabs.com/">Castlabs'</a> versions of Electron for widevine support.
                     </p>
 
                   </div>
                 </section>
 
               <small>Some settings require a restart of Tidal-hifi. To do so, click the button below:</small>
-              <button onClick="restart()" style ="width: 100%">Restart Tidal-hifi</button>
+              <button id="restart" style ="width: 100%">Restart Tidal-hifi</button>
             </div>
         </div>
     </div>

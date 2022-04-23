@@ -1,3 +1,4 @@
+require("@electron/remote/main").initialize();
 const { app, BrowserWindow, globalShortcut, ipcMain } = require("electron");
 const {
   settings,
@@ -21,18 +22,16 @@ let mainWindow;
 let icon = path.join(__dirname, "../assets/icon.png");
 
 /**
- * Enable live reload in development builds
- */
-if (!app.isPackaged) {
-  require("electron-reload")(`${__dirname}`, {
-    electron: require(`${__dirname}/../node_modules/electron`),
-  });
-}
-
-/**
  * Fix Display Compositor issue.
  */
-app.commandLine.appendSwitch('disable-seccomp-filter-sandbox');
+app.commandLine.appendSwitch("disable-seccomp-filter-sandbox");
+
+/**
+ * Disable media keys when requested
+ */
+if (store.get(settings.disableHardwareMediaKeys)) {
+  app.commandLine.appendSwitch("disable-features", "HardwareMediaKeyHandling");
+}
 
 /**
  * Update the menuBarVisbility according to the store value
@@ -40,6 +39,23 @@ app.commandLine.appendSwitch('disable-seccomp-filter-sandbox');
  */
 function syncMenuBarWithStore() {
   mainWindow.setMenuBarVisibility(store.get(settings.menuBar));
+}
+
+/**
+ * Determine whether the current window is the main window
+ * if singleInstance is requested.
+ * If singleInstance isn't requested simply return true
+ * @returns true if singInstance is not requested, otherwise true/false based on whether the current window is the main window
+ */
+function isMainInstanceOrMultipleInstancesAllowed() {
+  if (store.get(settings.singleInstance)) {
+    const gotTheLock = app.requestSingleInstanceLock();
+
+    if (!gotTheLock) {
+      return false;
+    }
+  }
+  return true;
 }
 
 function createWindow(options = {}) {
@@ -50,16 +66,14 @@ function createWindow(options = {}) {
     width: store && store.get(settings.windowBounds.width),
     height: store && store.get(settings.windowBounds.height),
     icon,
-    tray: true,
     backgroundColor: options.backgroundColor,
     webPreferences: {
-      affinity: "window",
       preload: path.join(__dirname, "preload.js"),
       plugins: true,
       devTools: true, // I like tinkering, others might too
-      enableRemoteModule: true,
     },
   });
+  require("@electron/remote/main").enable(mainWindow.webContents);
 
   syncMenuBarWithStore();
 
@@ -101,15 +115,18 @@ function addGlobalShortcuts() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", () => {
-  app.allowRendererProcessReuse = true;
-  createWindow();
-  addMenu();
-  createSettingsWindow();
-  addGlobalShortcuts();
-  store.get(settings.trayIcon) && addTray({ icon }) && refreshTray();
-  store.get(settings.api) && expressModule.run(mainWindow);
-  store.get(settings.enableDiscord) && discordModule.initRPC();
-  // mainWindow.webContents.openDevTools();
+  if (isMainInstanceOrMultipleInstancesAllowed()) {
+    createWindow();
+    addMenu();
+    createSettingsWindow();
+    addGlobalShortcuts();
+    store.get(settings.trayIcon) && addTray({ icon }) && refreshTray();
+    store.get(settings.api) && expressModule.run(mainWindow);
+    store.get(settings.enableDiscord) && discordModule.initRPC();
+    // mainWindow.webContents.openDevTools();
+  } else {
+    app.quit();
+  }
 });
 
 app.on("activate", function () {
@@ -120,23 +137,27 @@ app.on("activate", function () {
   }
 });
 
+app.on("browser-window-created", (_, window) => {
+  require("@electron/remote/main").enable(window.webContents);
+});
+
 // IPC
-ipcMain.on(globalEvents.updateInfo, (event, arg) => {
+ipcMain.on(globalEvents.updateInfo, (_event, arg) => {
   mediaInfoModule.update(arg);
 });
 
-ipcMain.on(globalEvents.hideSettings, (event, arg) => {
+ipcMain.on(globalEvents.hideSettings, (_event, _arg) => {
   hideSettingsWindow();
 });
-ipcMain.on(globalEvents.showSettings, (event, arg) => {
+ipcMain.on(globalEvents.showSettings, (_event, _arg) => {
   showSettingsWindow();
 });
 
-ipcMain.on(globalEvents.refreshMenuBar, (event, arg) => {
+ipcMain.on(globalEvents.refreshMenuBar, (_event, _arg) => {
   syncMenuBarWithStore();
 });
 
-ipcMain.on(globalEvents.storeChanged, (event, arg) => {
+ipcMain.on(globalEvents.storeChanged, (_event, _arg) => {
   syncMenuBarWithStore();
 
   if (store.get(settings.enableDiscord) && !discordModule.rpc) {
@@ -146,6 +167,6 @@ ipcMain.on(globalEvents.storeChanged, (event, arg) => {
   }
 });
 
-ipcMain.on(globalEvents.error, (event, arg) => {
+ipcMain.on(globalEvents.error, (event, _arg) => {
   console.log(event);
 });

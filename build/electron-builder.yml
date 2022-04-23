@@ -1,7 +1,7 @@
 appId: com.rickvanlieshout.tidal-hifi
-electronVersion: 8.5.2
+electronVersion: 15.5.2
 electronDownload:
-  version: 8.5.2-wvvmp
+  version: 15.5.2-wvvmp
   mirror: https://github.com/castlabs/electron-releases/releases/download/v
 snap:
   plugs:
@@ -27,7 +27,7 @@ linux:
     StartupNotify: true
     Terminal: false
     Type: Application
-    Categories: Network;Application;Audio;Video
+    Categories: Network;Application;AudioVideo;Audio;Video
     StartupWMClass: tidal-hifi
     X-PulseAudio-Properties: media.role=music
 mac:

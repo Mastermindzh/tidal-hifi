@@ -16,6 +16,8 @@ const store = new Store({
     apiSettings: {
       port: 47836,
     },
+    singleInstance: true,
+    disableHardwareMediaKeys: false,
     trayIcon: true,
     minimizeOnClose: false,
     mpris: false,
@@ -39,7 +41,6 @@ settingsModule.createSettingsWindow = function () {
     frame: false,
     title: "Tidal-hifi - settings",
     webPreferences: {
-      affinity: "window",
       preload: path.join(__dirname, "../pages/settings/preload.js"),
       plugins: true,
       nodeIntegration: true,

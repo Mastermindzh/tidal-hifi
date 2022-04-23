@@ -9,12 +9,15 @@ let trayIcon,
   api,
   port,
   menuBar,
-  mutedArtists;
+  mutedArtists,
+  singleInstance,
+  disableHardwareMediaKeys;
 
 const { store, settings } = require("./../../scripts/settings");
 const { ipcRenderer } = require("electron");
 const globalEvents = require("./../../constants/globalEvents");
-
+const remote = require("@electron/remote");
+const { app } = remote;
 /**
  * Sync the UI forms with the current settings
  */
@@ -31,31 +34,32 @@ function refreshSettings() {
   minimizeOnClose.checked = store.get(settings.minimizeOnClose);
   muteArtists.checked = store.get(settings.muteArtists);
   mutedArtists.value = store.get(settings.mutedArtists).join("\n");
+  singleInstance.checked = store.get(settings.singleInstance);
+  disableHardwareMediaKeys.checked = store.get(settings.disableHardwareMediaKeys);
 }
 
 /**
  * Open an url in the default browsers
  */
-window.openExternal = function (url) {
+function openExternal(url) {
   const { shell } = require("electron");
   shell.openExternal(url);
-};
+}
 
 /**
  * hide the settings window
  */
-window.hide = function () {
+function hide() {
   ipcRenderer.send(globalEvents.hideSettings);
-};
+}
 
 /**
  * Restart tidal-hifi after changes
  */
-window.restart = function () {
-  const remote = require("electron").remote;
-  remote.app.relaunch();
-  remote.app.exit(0);
-};
+function restart() {
+  app.relaunch();
+  app.quit();
+}
 
 /**
  * Bind UI components to functions after DOMContentLoaded
@@ -65,8 +69,16 @@ window.addEventListener("DOMContentLoaded", () => {
     return document.getElementById(id);
   }
 
+  document.getElementById("close").addEventListener("click", hide);
+  document.getElementById("restart").addEventListener("click", restart);
+  document.querySelectorAll("#openExternal").forEach((elem) =>
+    elem.addEventListener("click", function (event) {
+      openExternal(event.target.getAttribute("data-url"));
+    })
+  );
+
   function addInputListener(source, key) {
-    source.addEventListener("input", function (event, data) {
+    source.addEventListener("input", function (_event, _data) {
       if (this.value === "on") {
         store.set(key, source.checked);
       } else {
@@ -77,7 +89,7 @@ window.addEventListener("DOMContentLoaded", () => {
   }
 
   function addTextAreaListener(source, key) {
-    source.addEventListener("input", function (event, data) {
+    source.addEventListener("input", function (_event, _data) {
       store.set(key, source.value.split("\n"));
       ipcRenderer.send(globalEvents.storeChanged);
     });
@@ -103,6 +115,8 @@ window.addEventListener("DOMContentLoaded", () => {
   enableDiscord = get("enableDiscord");
   muteArtists = get("muteArtists");
   mutedArtists = get("mutedArtists");
+  singleInstance = get("singleInstance");
+  disableHardwareMediaKeys = get("disableHardwareMediaKeys");
 
   refreshSettings();
 
@@ -118,4 +132,6 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(minimizeOnClose, settings.minimizeOnClose);
   addInputListener(muteArtists, settings.muteArtists);
   addTextAreaListener(mutedArtists, settings.mutedArtists);
+  addInputListener(singleInstance, settings.singleInstance);
+  addInputListener(disableHardwareMediaKeys, settings.disableHardwareMediaKeys);
 });
