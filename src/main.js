@@ -22,6 +22,12 @@ let mainWindow;
 let icon = path.join(__dirname, "../assets/icon.png");
 
 /**
+  * Fix slow animations in playlists
+  * https://github.com/Mastermindzh/tidal-hifi/issues/132#issuecomment-1107854429
+*/
+app.commandLine.appendSwitch('enable-gpu-rasterization')
+
+/**
  * Fix Display Compositor issue.
  */
 app.commandLine.appendSwitch("disable-seccomp-filter-sandbox");
