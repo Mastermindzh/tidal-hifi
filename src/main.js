@@ -17,20 +17,30 @@ const mediaKeys = require("./constants/mediaKeys");
 const mediaInfoModule = require("./scripts/mediaInfo");
 const discordModule = require("./scripts/discord");
 const globalEvents = require("./constants/globalEvents");
+const flagValues = require("./constants/flags");
 
 let mainWindow;
 let icon = path.join(__dirname, "../assets/icon.png");
 
-/**
- * Fix Display Compositor issue.
- */
-app.commandLine.appendSwitch("disable-seccomp-filter-sandbox");
+setFlags();
 
-/**
- * Disable media keys when requested
- */
-if (store.get(settings.disableHardwareMediaKeys)) {
-  app.commandLine.appendSwitch("disable-features", "HardwareMediaKeyHandling");
+function setFlags() {
+  const flags = store.get().flags;
+  if (flags) {
+    for (const [key, value] of Object.entries(flags)) {
+      if (value) {
+        flagValues[key].forEach((flag) => {
+          console.log(`enabling command line switch ${flag.flag} with value ${flag.value}`);
+          app.commandLine.appendSwitch(flag.flag, flag.value);
+        });
+      }
+    }
+  }
+
+  /**
+   * Fix Display Compositor issue.
+   */
+  app.commandLine.appendSwitch("disable-seccomp-filter-sandbox");
 }
 
 /**

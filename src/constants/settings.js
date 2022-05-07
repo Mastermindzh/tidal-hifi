@@ -21,6 +21,10 @@ const settings = {
   },
   singleInstance: "singleInstance",
   disableHardwareMediaKeys: "disableHardwareMediaKeys",
+  flags: {
+    disableHardwareMediaKeys: "flags.disableHardwareMediaKeys",
+    gpuRasterization: "flags.gpuRasterization",
+  },
   mpris: "mpris",
   enableCustomHotkeys: "enableCustomHotkeys",
   trayIcon: "trayIcon",

@@ -11,7 +11,8 @@ let trayIcon,
   menuBar,
   mutedArtists,
   singleInstance,
-  disableHardwareMediaKeys;
+  disableHardwareMediaKeys,
+  gpuRasterization;
 
 const { store, settings } = require("./../../scripts/settings");
 const { ipcRenderer } = require("electron");
@@ -35,7 +36,8 @@ function refreshSettings() {
   muteArtists.checked = store.get(settings.muteArtists);
   mutedArtists.value = store.get(settings.mutedArtists).join("\n");
   singleInstance.checked = store.get(settings.singleInstance);
-  disableHardwareMediaKeys.checked = store.get(settings.disableHardwareMediaKeys);
+  disableHardwareMediaKeys.checked = store.get(settings.flags.disableHardwareMediaKeys);
+  gpuRasterization.checked = store.get(settings.flags.gpuRasterization);
 }
 
 /**
@@ -117,6 +119,7 @@ window.addEventListener("DOMContentLoaded", () => {
   mutedArtists = get("mutedArtists");
   singleInstance = get("singleInstance");
   disableHardwareMediaKeys = get("disableHardwareMediaKeys");
+  gpuRasterization = get("gpuRasterization");
 
   refreshSettings();
 
@@ -133,5 +136,6 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(muteArtists, settings.muteArtists);
   addTextAreaListener(mutedArtists, settings.mutedArtists);
   addInputListener(singleInstance, settings.singleInstance);
-  addInputListener(disableHardwareMediaKeys, settings.disableHardwareMediaKeys);
+  addInputListener(disableHardwareMediaKeys, settings.flags.gpuRasterization);
+  addInputListener(gpuRasterization, settings.flags.gpuRasterization);
 });

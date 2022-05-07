@@ -24,6 +24,19 @@ const store = new Store({
     enableCustomHotkeys: false,
     enableDiscord: false,
     windowBounds: { width: 800, height: 600 },
+    flags: {
+      gpuRasterization: true,
+      disableHardwareMediaKeys: false,
+    },
+  },
+  migrations: {
+    "3.1.0": (migrationStore) => {
+      console.log("running migrations for 3.1.0");
+      migrationStore.set(
+        settings.flags.disableHardwareMediaKeys,
+        migrationStore.get("disableHardwareMediaKeys") ?? false
+      );
+    },
   },
 });
 
