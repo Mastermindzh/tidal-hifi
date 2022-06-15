@@ -37,7 +37,7 @@ const elements = {
   media: '*[data-test="current-media-imagery"]',
   image: "img",
   current: '*[data-test="current-time"]',
-  duration: '*[data-test="duration-time"]',
+  duration: '*[data-test="duration"]',
   bar: '*[data-test="progress-bar"]',
   footer: "#footerPlayer",
   album_header_title: '.header-details [data-test="title"]',
