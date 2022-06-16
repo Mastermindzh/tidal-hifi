@@ -429,7 +429,7 @@ setInterval(function () {
       }
     }
   }
-}, 200);
+}, 500);
 
 if (process.platform === "linux" && store.get(settings.mpris)) {
   try {
