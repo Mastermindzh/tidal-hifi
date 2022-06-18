@@ -136,6 +136,6 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(muteArtists, settings.muteArtists);
   addTextAreaListener(mutedArtists, settings.mutedArtists);
   addInputListener(singleInstance, settings.singleInstance);
-  addInputListener(disableHardwareMediaKeys, settings.flags.gpuRasterization);
+  addInputListener(disableHardwareMediaKeys, settings.flags.disableHardwareMediaKeys);
   addInputListener(gpuRasterization, settings.flags.gpuRasterization);
 });

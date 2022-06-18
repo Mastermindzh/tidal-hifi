@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 3.1.1
+
+- Media update timeout set to 500 instead of 200
+- Updated property name for duration because of a tidal update
+- flag for "disable hardware media keys" now working again
+
 ## 3.1.0
 
 - Added a separate advanced options settings panel with flags
