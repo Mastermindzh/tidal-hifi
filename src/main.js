@@ -1,5 +1,5 @@
 require("@electron/remote/main").initialize();
-const { app, BrowserWindow, globalShortcut, ipcMain } = require("electron");
+const { app, BrowserWindow, components, globalShortcut, ipcMain } = require("electron");
 const {
   settings,
   store,
@@ -124,8 +124,9 @@ function addGlobalShortcuts() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on("ready", () => {
+app.on("ready", async () => {
   if (isMainInstanceOrMultipleInstancesAllowed()) {
+    await components.whenReady();
     createWindow();
     addMenu();
     createSettingsWindow();
