@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 4.0.1
+
+- Updated build config to make use of a base file that doesn't build anything.
+  - This fixes the issue of unwanted extra build targets that were introduced with the electron-builder update
+
 ## 4.0.0
 
 - Updated to Electron 19.0.5

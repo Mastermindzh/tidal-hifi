@@ -1,6 +1,6 @@
 {
   "name": "tidal-hifi",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "description": "Tidal on Electron with widevine(hifi) support",
   "main": "src/main.js",
   "scripts": {
@@ -12,7 +12,8 @@
     "build-snap": "electron-builder --publish=never -c ./build/electron-builder.snap.yml",
     "build-arch": "electron-builder --publish=never -c ./build/electron-builder.pacman.yml",
     "build-wl": "electron-builder --publish=never -c ./build/electron-builder.yml -wl",
-    "build-mac": "electron-builder --publish=never -c ./build/electron-builder.yml -m"
+    "build-mac": "electron-builder --publish=never -c ./build/electron-builder.yml -m",
+    "build-base": "electron-builder --publish=never -c ./build/electron-builder.base.yml"
   },
   "keywords": [
     "electron",

@@ -1,6 +1,6 @@
-extends: ./build/electron-builder.yml
+extends: ./build/electron-builder.base.yml
 linux:
-    category: Audio
-    icon: ./assets/TIDAL.icns
-    target:
-        - rpm
+  category: Audio
+  icon: ./assets/TIDAL.icns
+  target:
+    - rpm
