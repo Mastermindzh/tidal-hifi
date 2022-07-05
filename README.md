@@ -12,23 +12,23 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
 <!-- toc -->
 
 - [Installation](#installation)
-  - [Using releases](#using-releases)
-    - [Snap install](#snap-install)
-  - [Arch Linux](#arch-linux)
-  - [Flatpak](#flatpak)
-  - [Using source](#using-source)
-- [features](#features)
+  * [Using releases](#using-releases)
+  * [Snap](#snap)
+  * [Arch Linux](#arch-linux)
+  * [Flatpak](#flatpak)
+  * [Nix](#nix)
+  * [Using source](#using-source)
+- [Features](#features)
 - [Integrations](#integrations)
-  - [not included](#not-included)
-  - [Known bugs](#known-bugs)
-    - [last.fm doesn't work out of the box. Use rescrobbler as a workaround](#lastfm-doesnt-work-out-of-the-box-use-rescrobbler-as-a-workaround)
+  * [Known bugs](#known-bugs)
+    + [last.fm doesn't work out of the box. Use rescrobbler as a workaround](#lastfm-doesnt-work-out-of-the-box-use-rescrobbler-as-a-workaround)
 - [Why](#why)
 - [Why not extend existing projects?](#why-not-extend-existing-projects)
 - [Special thanks to...](#special-thanks-to)
 - [Buy me a coffee? Please don't](#buy-me-a-coffee-please-dont)
 - [Images](#images)
-  - [settings window](#settings-window)
-  - [user setups](#user-setups)
+  * [Settings window](#settings-window)
+  * [User setups](#user-setups)
 
 <!-- tocstop -->
 
@@ -38,7 +38,7 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
 
 Various packaged versions of the software are available on the [releases](https://github.com/Mastermindzh/tidal-hifi/releases) tab.
 
-#### Snap install
+### Snap
 
 To install with `snap` you need to download the pre-packaged snap-package from this repository, found under releases:
 
@@ -70,6 +70,14 @@ To install via [Flatpak](https://flathub.org/apps/details/com.mastermindzh.tidal
 flatpak install flathub com.mastermindzh.tidal-hifi
 ```
 
+### Nix
+
+To install with Nix run the following command:
+
+```sh
+nix-env -iA nixpkgs.tidal-hifi
+```
+
 ### Using source
 
 To install and work with the code on this project follow these steps:
@@ -79,7 +87,7 @@ To install and work with the code on this project follow these steps:
 - npm install
 - npm start
 
-## features
+## Features
 
 - HiFi playback
 - Notifications
@@ -102,7 +110,7 @@ It currently includes:
 - MPRIS - MPRIS media player controls/status
 - Discord - Shows what you're listening to on Discord.
 
-### not included
+Not included:
 
 - [i3 blocks config](https://github.com/Mastermindzh/dotfiles/commit/9714b2fa1d670108ce811d5511fd3b7a43180647) - My dotfiles where I use this app to fetch currently playing music (direct commit)
 
@@ -143,11 +151,11 @@ Inspired by [haydenjames' issue](https://github.com/Mastermindzh/tidal-hifi/issu
 
 ## Images
 
-### settings window
+### Settings window
 
 ![settings window](./docs/settings-preview.png)
 
-### user setups
+### User setups
 
 Some of our users are kind enough to share their usage pictures.
 If you want to see them or possibly even add one please do so in the following issue: [#3 - image thread](https://github.com/Mastermindzh/tidal-hifi/issues/3).
