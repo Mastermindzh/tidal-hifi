@@ -82,6 +82,7 @@ function createWindow(options = {}) {
       plugins: true,
       devTools: true, // I like tinkering, others might too
     },
+    show: options.show ?? true,
   });
   require("@electron/remote/main").enable(mainWindow.webContents);
 
@@ -126,14 +127,15 @@ function addGlobalShortcuts() {
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
   if (isMainInstanceOrMultipleInstancesAllowed()) {
+    let isHidden = process.argv.includes("--hidden");
     await components.whenReady();
-    createWindow();
+    createWindow({ show: !isHidden });
     addMenu();
     createSettingsWindow();
     addGlobalShortcuts();
-    store.get(settings.trayIcon) && addTray({ icon }) && refreshTray();
-    store.get(settings.api) && expressModule.run(mainWindow);
-    store.get(settings.enableDiscord) && discordModule.initRPC();
+    if (store.get(settings.trayIcon)) { addTray({ icon }); refreshTray(mainWindow); }
+    if (store.get(settings.api)) { expressModule.run(mainWindow); }
+    if (store.get(settings.enableDiscord)) { discordModule.initRPC(); }
     // mainWindow.webContents.openDevTools();
   } else {
     app.quit();
