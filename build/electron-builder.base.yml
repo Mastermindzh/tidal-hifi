@@ -17,17 +17,23 @@ linux:
     Name: tidal-hifi
     GenericName: tidal-hifi
     Comment: The web version of listen.tidal.com running in electron with hifi support thanks to widevine.
-    Icon: assets/icon.png
+    Icon: icon.png
     StartupNotify: true
     Terminal: false
     Type: Application
     Categories: Network;Application;AudioVideo;Audio;Video
     StartupWMClass: tidal-hifi
     X-PulseAudio-Properties: media.role=music
+    MimeType: x-scheme-handler/tidal;
+
 mac:
   category: public.app-category.entertainment
 win:
-  icon: build/icon.png
+  icon: icon.png
   artifactName: "tidalhifi"
   appId: com.rickvanlieshout.tidalhifi
   executableName: tidalhifi
+protocols:
+  name: "tidal"
+  role: "Viewer"
+  schemes: ["tidal"]

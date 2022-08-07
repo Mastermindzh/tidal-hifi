@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 4.1.0
+
+- Added `tidal://` protocol support
+- Switched icon strategies to fix bugs with icons
+- Fixed tray icon bugs
+  - Menu now shows in KDE as well
+  - Toggle window is supported from tray icon
+  - regular click is still ignored, see [this issue](https://github.com/electron/electron/issues/6773)
+- Fixed about tab not showing
+- Fixed playback, mpris and API issues
+
 ## 4.0.1
 
 - Updated build config to make use of a base file that doesn't build anything.

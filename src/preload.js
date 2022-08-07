@@ -1,8 +1,8 @@
 const { setTitle } = require("./scripts/window-functions");
-const { dialog, process, Notification } = require('@electron/remote');
+const { dialog, process, Notification } = require("@electron/remote");
 const { store, settings } = require("./scripts/settings");
 const { ipcRenderer } = require("electron");
-const { app } = require('@electron/remote');
+const { app } = require("@electron/remote");
 const { downloadFile } = require("./scripts/download");
 const statuses = require("./constants/statuses");
 const hotkeys = require("./scripts/hotkeys");
@@ -12,10 +12,6 @@ const appName = "Tidal Hifi";
 let currentSong = "";
 let player;
 let currentPlayStatus = statuses.paused;
-let progressBarTime;
-let currentTimeChanged = false;
-let currentTime;
-let currentURL = undefined;
 let isMutedArtist = false;
 
 const elements = {
@@ -313,19 +309,16 @@ function updateMediaInfo(options, notify) {
 
 /**
  * Checks if Tidal is playing a video or song by grabbing the "a" element from the title.
- * If it's a song it sets the track URL as currentURL, If it's a video it will set currentURL to undefined.
+ * If it's a song it returns the track URL, if not it will return undefined
  */
-function updateURL() {
+function getTrackURL() {
   const URLelement = elements.get("title").querySelector("a");
-  switch (URLelement) {
-    case null:
-      currentURL = undefined;
-      break;
-    default:
-      const id = URLelement.href.replace(/[^0-9]/g, "");
-      currentURL = `https://tidal.com/browse/track/${id}`;
-      break;
+  if (URLelement !== null) {
+    const id = URLelement.href.replace(/[^0-9]/g, "");
+    return `https://tidal.com/browse/track/${id}`;
   }
+
+  return window.location;
 }
 
 /**
@@ -337,7 +330,6 @@ setInterval(function () {
   const album = elements.getAlbumName();
   const current = elements.getText("current");
   const duration = elements.getText("duration");
-  const progressBarcurrentTime = elements.get("bar").getAttribute("aria-valuenow");
   const songDashArtistTitle = `${title} - ${artists}`;
   const currentStatus = getCurrentlyPlayingStatus();
   const options = {
@@ -345,72 +337,47 @@ setInterval(function () {
     message: artists,
     album: album,
     status: currentStatus,
-    url: currentURL,
-    current: current,
-    duration: duration,
+    url: getTrackURL(),
+    current,
+    duration,
     "app-name": appName,
   };
 
-  const playStatusChanged = currentStatus !== currentPlayStatus;
-  const progressBarTimeChanged = progressBarcurrentTime !== progressBarTime;
   const titleOrArtistChanged = currentSong !== songDashArtistTitle;
 
   muteArtistIfFoundInMutedArtistsList();
 
-  if (titleOrArtistChanged || playStatusChanged || progressBarTimeChanged || currentTimeChanged) {
-    // update title, url and play info with new info
-    setTitle(songDashArtistTitle);
-    updateURL();
-    currentSong = songDashArtistTitle;
-    currentPlayStatus = currentStatus;
+  // update title, url and play info with new info
+  setTitle(songDashArtistTitle);
+  getTrackURL();
+  currentSong = songDashArtistTitle;
+  currentPlayStatus = currentStatus;
 
-    // check progress bar value and make sure current stays up to date after switch
-    if (progressBarTime != progressBarcurrentTime && !titleOrArtistChanged) {
-      progressBarTime = progressBarcurrentTime;
-      currentTime = options.current;
-      options.duration = duration;
-      currentTimeChanged = true;
+  const image = elements.getSongIcon();
+
+  new Promise((resolve) => {
+    if (image.startsWith("http")) {
+      options.image = image;
+      downloadFile(image, notificationPath).then(
+        () => {
+          options.icon = notificationPath;
+          resolve();
+        },
+        () => {
+          // if the image can't be downloaded then continue without it
+          resolve();
+        }
+      );
+    } else {
+      // if the image can't be found on the page continue without it
+      resolve();
     }
-
-    if (currentTimeChanged) {
-      if (options.current == currentTime && currentStatus != "paused") return;
-      currentTime = options.current;
-      currentTimeChanged = false;
-    }
-
-    // make sure current is set to 0 if title changes
-    if (titleOrArtistChanged) {
-      options.current = "0:00";
-      currentTime = options.current;
-      progressBarTime = progressBarcurrentTime;
-    }
-
-    const image = elements.getSongIcon();
-
-    new Promise((resolve) => {
-      if (image.startsWith("http")) {
-        options.image = image;
-        downloadFile(image, notificationPath).then(
-          () => {
-            options.icon = notificationPath;
-            resolve();
-          },
-          () => {
-            // if the image can't be downloaded then continue without it
-            resolve();
-          }
-        );
-      } else {
-        // if the image can't be found on the page continue without it
-        resolve();
-      }
-    }).then(
-      () => {
-        updateMediaInfo(options, titleOrArtistChanged);
-      },
-      () => {}
-    );
-  }
+  }).then(
+    () => {
+      updateMediaInfo(options, titleOrArtistChanged);
+    },
+    () => {}
+  );
 
   /**
    * Checks whether the current artist is included in the "muted artists" list and if so it will automatically mute the player
@@ -429,7 +396,7 @@ setInterval(function () {
       }
     }
   }
-}, 500);
+}, 1000);
 
 if (process.platform === "linux" && store.get(settings.mpris)) {
   try {
