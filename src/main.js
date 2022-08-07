@@ -139,7 +139,7 @@ app.on("ready", async () => {
     addMenu();
     createSettingsWindow();
     addGlobalShortcuts();
-    store.get(settings.trayIcon) && addTray({ icon }) && refreshTray();
+    store.get(settings.trayIcon) && addTray(mainWindow, { icon }) && refreshTray();
     store.get(settings.api) && expressModule.run(mainWindow);
     store.get(settings.enableDiscord) && discordModule.initRPC();
     // mainWindow.webContents.openDevTools();
