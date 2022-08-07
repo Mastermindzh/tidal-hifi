@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Toggle window is supported from tray icon
   - regular click is still ignored, see [this issue](https://github.com/electron/electron/issues/6773)
 - Fixed about tab not showing
+- Fixed playback, mpris and API issues
 
 ## 4.0.1
 
