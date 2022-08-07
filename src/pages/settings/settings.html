@@ -26,10 +26,10 @@
   </div>
   <div class="body">
     <div class="tabset">
-      <!-- Tab 1 -->
+
       <input type="radio" name="tabset" id="general" checked />
       <label for="general">General</label>
-      <!-- Tab 2 -->
+
       <input type="radio" name="tabset" id="api" />
       <label for="api">Api</label>
 
@@ -191,7 +191,6 @@
             </div>
           </div>
         </section>
-
         <section id="advanced" class="tab-panel">
           <div class="section">
             <h3>Flags</h3>
@@ -219,8 +218,6 @@
             </div>
           </div>
         </section>
-
-        <!-- about -->
         <section id="about" class="tab-panel">
           <div class="section">
             <img alt="tidal icon"
@@ -400,7 +397,8 @@
   .tabset>input:first-child:checked~.tab-panels>.tab-panel:first-child,
   .tabset>input:nth-child(3):checked~.tab-panels>.tab-panel:nth-child(2),
   .tabset>input:nth-child(5):checked~.tab-panels>.tab-panel:nth-child(3),
-  .tabset>input:nth-child(7):checked~.tab-panels>.tab-panel:nth-child(4) {
+  .tabset>input:nth-child(7):checked~.tab-panels>.tab-panel:nth-child(4),
+  .tabset>input:nth-child(9):checked~.tab-panels>.tab-panel:nth-child(5) {
     display: block;
   }
 

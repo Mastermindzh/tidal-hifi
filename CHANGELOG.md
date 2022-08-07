@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Menu now shows in KDE as well
   - Toggle window is supported from tray icon
   - regular click is still ignored, see [this issue](https://github.com/electron/electron/issues/6773)
+- Fixed about tab not showing
 
 ## 4.0.1
 
