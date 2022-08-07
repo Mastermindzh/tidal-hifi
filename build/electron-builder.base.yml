@@ -24,6 +24,8 @@ linux:
     Categories: Network;Application;AudioVideo;Audio;Video
     StartupWMClass: tidal-hifi
     X-PulseAudio-Properties: media.role=music
+    MimeType: x-scheme-handler/tidal;
+
 mac:
   category: public.app-category.entertainment
 win:
@@ -31,3 +33,7 @@ win:
   artifactName: "tidalhifi"
   appId: com.rickvanlieshout.tidalhifi
   executableName: tidalhifi
+protocols:
+  name: "tidal"
+  role: "Viewer"
+  schemes: ["tidal"]

@@ -1,5 +1,5 @@
 require("@electron/remote/main").initialize();
-const { app, BrowserWindow, components, globalShortcut, ipcMain } = require("electron");
+const { app, BrowserWindow, components, globalShortcut, ipcMain, protocol } = require("electron");
 const {
   settings,
   store,
@@ -21,6 +21,7 @@ const flagValues = require("./constants/flags");
 
 let mainWindow;
 let icon = path.join(__dirname, "../assets/icon.png");
+const PROTOCOL_PREFIX = "tidal";
 
 setFlags();
 
@@ -84,7 +85,7 @@ function createWindow(options = {}) {
     },
   });
   require("@electron/remote/main").enable(mainWindow.webContents);
-
+  registerHttpProtocols();
   syncMenuBarWithStore();
 
   // load the Tidal website
@@ -111,6 +112,13 @@ function createWindow(options = {}) {
 
     store.set(settings.windowBounds.root, { width, height });
   });
+}
+
+function registerHttpProtocols() {
+  protocol.registerHttpProtocol(PROTOCOL_PREFIX, (request, _callback) => {
+    mainWindow.loadURL(`${tidalUrl}/${request.url.substring(PROTOCOL_PREFIX.length + 3)}`);
+  });
+  app.setAsDefaultProtocolClient(PROTOCOL_PREFIX);
 }
 
 function addGlobalShortcuts() {
