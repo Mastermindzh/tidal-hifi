@@ -142,6 +142,7 @@ app.on("ready", async () => {
     store.get(settings.trayIcon) && addTray(mainWindow, { icon }) && refreshTray();
     store.get(settings.api) && expressModule.run(mainWindow);
     store.get(settings.enableDiscord) && discordModule.initRPC();
+    console.log(store.get(settings.mutedArtists).find((artist) => artist === "Yes"))
     // mainWindow.webContents.openDevTools();
   } else {
     app.quit();

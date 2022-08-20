@@ -91,9 +91,16 @@ const elements = {
       window.location.href.includes("/mix/")
     ) {
       if (currentPlayStatus === statuses.playing) {
-        const row = window.document.querySelector(this.playing_title).closest(this.tracklist_row);
-        if (row) {
-          return row.querySelector(this.album_name_cell).textContent;
+        const playing_title = window.document.querySelector(this.playing_title);
+        
+        if (playing_title) {
+          const row = playing_title.closest(this.tracklist_row);
+          if (row) {
+            const album_name_cell = row.querySelector(this.album_name_cell);
+            if (album_name_cell) {
+              return album_name_cell.textContent;
+            }
+          }
         }
       }
     }
@@ -327,6 +334,8 @@ function getTrackURL() {
 setInterval(function () {
   const title = elements.getText("title");
   const artists = elements.getArtists();
+  muteArtistIfFoundInMutedArtistsList(); // doing this here so that nothing can possibly fail before we call this function
+  
   const album = elements.getAlbumName();
   const current = elements.getText("current");
   const duration = elements.getText("duration");
@@ -342,10 +351,11 @@ setInterval(function () {
     duration,
     "app-name": appName,
   };
+  
+
 
   const titleOrArtistChanged = currentSong !== songDashArtistTitle;
 
-  muteArtistIfFoundInMutedArtistsList();
 
   // update title, url and play info with new info
   setTitle(songDashArtistTitle);
