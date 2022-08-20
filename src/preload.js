@@ -12,7 +12,7 @@ const appName = "Tidal Hifi";
 let currentSong = "";
 let player;
 let currentPlayStatus = statuses.paused;
-let isMutedArtist = false;
+let isMutedArtist = true;
 
 const elements = {
   play: '*[data-test="play"]',
@@ -400,7 +400,7 @@ setInterval(function () {
           isMutedArtist = true;
           elements.click("volume");
         }
-      } else if (currentStatus === statuses.playing && isMutedArtist && elements.isMuted()) {
+      } else if (isMutedArtist && elements.isMuted()) {
         elements.click("volume");
         isMutedArtist = false;
       }
