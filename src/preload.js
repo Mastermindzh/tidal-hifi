@@ -91,16 +91,9 @@ const elements = {
       window.location.href.includes("/mix/")
     ) {
       if (currentPlayStatus === statuses.playing) {
-        const playing_title = window.document.querySelector(this.playing_title);
-        
-        if (playing_title) {
-          const row = playing_title.closest(this.tracklist_row);
-          if (row) {
-            const album_name_cell = row.querySelector(this.album_name_cell);
-            if (album_name_cell) {
-              return album_name_cell.textContent;
-            }
-          }
+        const row = window.document.querySelector(this.playing_title).closest(this.tracklist_row);
+        if (row) {
+          return row.querySelector(this.album_name_cell).textContent;
         }
       }
     }
