@@ -136,7 +136,7 @@ app.on("ready", async () => {
   if (isMainInstanceOrMultipleInstancesAllowed()) {
     await components.whenReady();
     createWindow();
-    addMenu();
+    addMenu(mainWindow);
     createSettingsWindow();
     addGlobalShortcuts();
     store.get(settings.trayIcon) && addTray(mainWindow, { icon }) && refreshTray();

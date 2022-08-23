@@ -115,8 +115,8 @@ menuModule.getMenu = function (mainWindow) {
   return Menu.buildFromTemplate(mainMenu);
 };
 
-menuModule.addMenu = function () {
-  Menu.setApplicationMenu(menuModule.getMenu());
+menuModule.addMenu = function (mainWindow) {
+  Menu.setApplicationMenu(menuModule.getMenu(mainWindow));
 };
 
 module.exports = menuModule;
