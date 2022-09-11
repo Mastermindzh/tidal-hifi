@@ -8,14 +8,14 @@ snap:
     - default
     - screen-inhibit-control
 linux:
-  category: Audio
+  category: AudioVideo
   target:
     - dir
   executableName: tidal-hifi
   desktop:
     Encoding: UTF-8
-    Name: tidal-hifi
-    GenericName: tidal-hifi
+    Name: TIDAL Hi-Fi
+    GenericName: TIDAL Hi-Fi
     Comment: The web version of listen.tidal.com running in electron with hifi support thanks to widevine.
     Icon: icon.png
     StartupNotify: true
