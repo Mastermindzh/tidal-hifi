@@ -73,7 +73,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("close").addEventListener("click", hide);
   document.getElementById("restart").addEventListener("click", restart);
-  document.querySelectorAll("#openExternal").forEach((elem) =>
+  document.querySelectorAll(".external-link").forEach((elem) =>
     elem.addEventListener("click", function (event) {
       openExternal(event.target.getAttribute("data-url"));
     })

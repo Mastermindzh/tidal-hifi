@@ -2,557 +2,247 @@
 <html lang="en">
 
 <head>
-  <title>Tidal-hifi settings</title>
+  <title>Tidal Hi-Fi settings</title>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="./settings.css" />
 </head>
 
-<body>
-  <div class="header">
-    <h1 class="title">Settings</h1>
-    <a id="close" style="cursor: pointer;" class="exitWindow">
-
-      <svg version="1.1" xmlns="http://www.w3.org/2000/svg" width="18px" height="18px" viewBox="0 0 348.333 348.334">
-        <g>
-          <path fill="white" d="M336.559,68.611L231.016,174.165l105.543,105.549c15.699,15.705,15.699,41.145,0,56.85
-              c-7.844,7.844-18.128,11.769-28.407,11.769c-10.296,0-20.581-3.919-28.419-11.769L174.167,231.003L68.609,336.563
-              c-7.843,7.844-18.128,11.769-28.416,11.769c-10.285,0-20.563-3.919-28.413-11.769c-15.699-15.698-15.699-41.139,0-56.85
-              l105.54-105.549L11.774,68.611c-15.699-15.699-15.699-41.145,0-56.844c15.696-15.687,41.127-15.687,56.829,0l105.563,105.554
-              L279.721,11.767c15.705-15.687,41.139-15.687,56.832,0C352.258,27.466,352.258,52.912,336.559,68.611z" />
+<body class="settings-window">
+  <div class="settings-window__wrapper">
+    <div class="settings-window__drag-area"></div>
+    <a id="close" class="settings-window__close-button" title="Close settings">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 348.333 348.334" class="settings-window__svg-icon">
+        <path fill="white" d="M336.559,68.611L231.016,174.165l105.543,105.549c15.699,15.705,15.699,41.145,0,56.85
+            c-7.844,7.844-18.128,11.769-28.407,11.769c-10.296,0-20.581-3.919-28.419-11.769L174.167,231.003L68.609,336.563
+            c-7.843,7.844-18.128,11.769-28.416,11.769c-10.285,0-20.563-3.919-28.413-11.769c-15.699-15.698-15.699-41.139,0-56.85
+            l105.54-105.549L11.774,68.611c-15.699-15.699-15.699-41.145,0-56.844c15.696-15.687,41.127-15.687,56.829,0l105.563,105.554
+            L279.721,11.767c15.705-15.687,41.139-15.687,56.832,0C352.258,27.466,352.258,52.912,336.559,68.611z" />
       </svg>
-
     </a>
-  </div>
-  <div class="body">
-    <div class="tabset">
 
-      <input type="radio" name="tabset" id="general" checked />
+    <main class="settings">
+      <input type="radio" name="tab" id="general" checked />
       <label for="general">General</label>
 
-      <input type="radio" name="tabset" id="api" />
-      <label for="api">Api</label>
+      <input type="radio" name="tab" id="api" />
+      <label for="api">API</label>
 
-      <!-- Integrations tab -->
-      <input type="radio" name="tabset" id="integrations" />
+      <input type="radio" name="tab" id="integrations" />
       <label for="integrations">Integrations</label>
 
-      <!-- advanced tab -->
-      <input type="radio" name="tabset" id="advanced" />
+      <input type="radio" name="tab" id="advanced" />
       <label for="advanced">Advanced</label>
-      <!-- about tab -->
-      <input type="radio" name="tabset" id="about" />
+
+      <input type="radio" name="tab" id="about" />
       <label for="about">About</label>
 
-      <div class="tab-panels">
-        <section id="general" class="tab-panel">
-          <div class="section">
-            <h3>Playback</h3>
-            <div class="option">
-              <h4>Notifications</h4>
-              <p>
-                Whether to show a notification when a new song starts.
-              </p>
+      <div class="tabs">
+        <section id="general-section" class="tabs__section">
+          <div class="group">
+            <p class="group__title">Playback</p>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Notifications</h4>
+                <p>Show a notification when a new song starts.</p>
+              </div>
               <label class="switch">
                 <input id="notifications" type="checkbox">
-                <span class="slider round"></span>
+                <span class="switch__slider"></span>
               </label>
             </div>
-            <div class="option">
-              <h4>Mute Artists automatically</h4>
-              <p>
-                The following list of artists (1 per line) will be muted automatically.
-              </p>
-              <label class="switch" style="margin-bottom:10px">
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Mute Artists automatically</h4>
+                <p>The following list of artists (1 per line) will be muted automatically.</p>
+              </div>
+              <label class="switch">
                 <input id="muteArtists" type="checkbox">
-                <span class="slider round"></span>
+                <span class="switch__slider"></span>
               </label>
-              <textarea id="mutedArtists" cols="40" rows="5"></textarea>
             </div>
+            <textarea id="mutedArtists" class="textarea" cols="40" rows="5" spellcheck="false"></textarea>
           </div>
-          <div class="section">
-            <h3>UI</h3>
-            <div class="option">
-              <h4>Menubar</h4>
-              <p>
-                Show Tidal-hifi's menu bar
-              </p>
+          <div class="group">
+            <p class="group__title">UI</p>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Menubar</h4>
+                <p>Show TIDAL Hi-Fi's menu bar.</p>
+              </div>
               <label class="switch">
                 <input id="menuBar" type="checkbox">
-                <span class="slider round"></span>
+                <span class="switch__slider"></span>
               </label>
             </div>
           </div>
-          <div class="section">
-            <h3>System</h3>
-            <div class="option">
-              <h4>Tray icon</h4>
-              <p>
-                Show Tidal-hifi's tray icon<br />
-              </p>
+          <div class="group">
+            <p class="group__title">System</p>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Tray icon</h4>
+                <p>Show TIDAL Hi-Fi's tray icon.</p>
+              </div>
               <label class="switch">
                 <input id="trayIcon" type="checkbox">
-                <span class="slider round"></span>
+                <span class="switch__slider"></span>
               </label>
             </div>
-            <div class="option">
-              <h4>Minimize on Close</h4>
-              <p>
-                Minimize window on close instead <br />
-              </p>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Minimize on Close</h4>
+                <p>Minimize window on close instead.</p>
+              </div>
               <label class="switch">
                 <input id="minimizeOnClose" type="checkbox">
-                <span class="slider round"></span>
+                <span class="switch__slider"></span>
               </label>
             </div>
-            <div class="option">
-              <h4>Hotkeys</h4>
-              <p>
-                Enables extra hotkeys to achieve feature parity with the <a id="openExternal"
-                  style="text-decoration: underline; cursor: pointer;"
-                  data-url="https://defkey.com/tidal-desktop-shortcuts">desktop apps</a><br />
-              </p>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Hotkeys</h4>
+                <p>
+                  Enable extra hotkeys to achieve feature parity with the
+                  <a class="external-link" data-url="https://defkey.com/tidal-desktop-shortcuts">desktop apps</a>.
+                </p>
+              </div>
               <label class="switch">
                 <input id="enableCustomHotkeys" type="checkbox">
-                <span class="slider round"></span>
+                <span class="switch__slider"></span>
               </label>
             </div>
-            <div class="option">
-              <h4>Single instance</h4>
-              <p>
-                Prevent opening multiple tidal-hifi instances
-              </p>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Single instance</h4>
+                <p>Prevent opening multiple TIDAL Hi-Fi's instances.</p>
+              </div>
               <label class="switch">
                 <input id="singleInstance" type="checkbox">
-                <span class="slider round"></span>
+                <span class="switch__slider"></span>
               </label>
             </div>
           </div>
         </section>
-        <section id="api" class="tab-panel">
-          <div class="section">
-            <h3>Api</h3>
-            <p style="margin-bottom: 15px;">
-              Tidal-hifi has a web api built in to allow users to get current song information. You can optionally
-              enable playback control as well.
-            </p>
 
-            <div class="option">
-              <h4>Web API</h4>
+        <section id="api-section" class="tabs__section">
+          <div class="group">
+            <p class="group__title">API</p>
+            <div class="group__description">
               <p>
-                Whether to enable the Tidal-hifi web api
+                TIDAL Hi-Fi has a built-in web API to allow users to get current song information. You can optionally
+                enable playback control as well.
               </p>
+            </div>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Web API</h4>
+                <p>Enable the TIDAL Hi-Fi web API.</p>
+              </div>
               <label class="switch">
                 <input id="apiCheckbox" type="checkbox">
-                <span class="slider round"></span>
+                <span class="switch__slider"></span>
               </label>
             </div>
-            <div class="option">
-              <h4 style="margin-bottom: 5px;">API port</h4>
-              <input id="port" type="text" class="freeTextInput" name="port">
+            <div class="group__option">
+              <div class="group__description">
+                <label for="port">API port</label>
+                <input id="port" type="text" class="text-input" name="port">
+              </div>
             </div>
-            <div class="option">
-              <h4>Playback control</h4>
-              <p>
-                Whether to enable playback control from the api
-              </p>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Playback control</h4>
+                <p>Enable playback control from the web API.</p>
+              </div>
               <label class="switch">
                 <input id="playBackControl" type="checkbox">
-                <span class="slider round"></span>
+                <span class="switch__slider"></span>
               </label>
             </div>
           </div>
         </section>
-        <section id="integrations" class="tab-panel">
-          <div class="section">
-            <h3>integrations</h3>
-            <p style="margin-bottom: 15px;">
-              Tidal-hifi is extensible through the use of integrations. You can enable or disable integrations here
-            </p>
-            <div class="option">
-              <h4>MPRIS-player</h4>
+
+        <section id="integrations-section" class="tabs__section">
+          <div class="group">
+            <p class="group__title">Integrations</p>
+            <div class="group__description">
               <p>
-                Whether to enable the MPRIS media player controls for Linux systems
+                TIDAL Hi-Fi is extensible through the use of integrations.
+                You can enable or disable them here.
               </p>
+            </div>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>MPRIS</h4>
+                <p>Enable MPRIS interface which provides a mechanism for discovery, querying and basic playback control
+                  on Linux systems.</p>
+              </div>
               <label class="switch">
                 <input id="mprisCheckbox" type="checkbox">
-                <span class="slider round"></span>
+                <span class="switch__slider"></span>
               </label>
             </div>
-            <div class="option">
-              <h4>Discord RPC</h4>
-              <p>
-                Show what you're listening to on Discord
-              </p>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Discord RPC</h4>
+                <p>Show what you're listening to on Discord.</p>
+              </div>
               <label class="switch">
                 <input id="enableDiscord" type="checkbox">
-                <span class="slider round"></span>
+                <span class="switch__slider"></span>
               </label>
             </div>
           </div>
         </section>
-        <section id="advanced" class="tab-panel">
-          <div class="section">
-            <h3>Flags</h3>
-            <div class="option">
-              <h4>Disable hardware media keys</h4>
-              <p>
-                Disable built-in media keys. <br />
-                Also prevents certain desktop environments from recognizing the chrome MPRIS client separetely from the
-                custom MPRIS client.
-              </p>
+
+        <section id="advanced-section" class="tabs__section">
+          <div class="group">
+            <p class="group__title">Flags</p>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Disable hardware built-in media keys</h4>
+                <p>
+                  Also prevents certain desktop environments from recognizing the chrome
+                  MPRIS client separately from the custom MPRIS client.
+                </p>
+              </div>
               <label class="switch">
                 <input id="disableHardwareMediaKeys" type="checkbox">
-                <span class="slider round"></span>
+                <span class="switch__slider"></span>
               </label>
             </div>
-            <div class="option">
-              <h4>Enable GPU rasterization</h4>
-              <p>
-                Move a part of the rendering to the GPU for increased performance.
-              </p>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Enable GPU rasterization</h4>
+                <p>Move a part of the rendering to the GPU for increased performance.</p>
+              </div>
               <label class="switch">
                 <input id="gpuRasterization" type="checkbox">
-                <span class="slider round"></span>
+                <span class="switch__slider"></span>
               </label>
             </div>
           </div>
         </section>
-        <section id="about" class="tab-panel">
-          <div class="section">
-            <img alt="tidal icon"
-              style="width: 100px; height: auto; display: block; margin: 0 auto; margin-bottom: 20px; margin-top: 20px;"
-              src="./icon.png">
-            <p style="max-width: 350px; display:block; margin: 0 auto; text-align: center;">
-              <a id="openExternal" style="text-decoration: underline; cursor: pointer;"
-                data-url="https://github.com/Mastermindzh/tidal-hifi">Tidal-hifi</a> is made by <a id="openExternal"
-                data-url="https://www.rickvanlieshout.com" style="text-decoration: underline; cursor: pointer;">Rick van
-                Lieshout</a>.<br />
-              It uses <a style="text-decoration: underline; cursor: pointer;" id="openExternal"
-                data-url="https://castlabs.com/">Castlabs'</a> versions of Electron for widevine support.
-            </p>
-          </div>
+
+        <section id="about-section" class="tabs__section about-section">
+          <img alt="tidal icon" class="about-section__icon" src="./icon.png">
+          <p class="about-section__text">
+            <a class="external-link" data-url="https://github.com/Mastermindzh/tidal-hifi">TIDAL Hi-Fi</a>
+            is made by <a class="external-link" data-url="https://www.rickvanlieshout.com">
+              Rick van Lieshout</a>. <br>It uses <a class="external-link" data-url="https://castlabs.com/">Castlabs'</a>
+            version of Electron for widevine support.
+          </p>
         </section>
 
-        <small>Some settings require a restart of Tidal-hifi. To do so, click the button below:</small>
-        <button id="restart" style="width: 100%">Restart Tidal-hifi</button>
+        <footer class="footer">
+          <p class="footer__note">Some settings may require a restart of TIDAL Hi-Fi. To do so, click the button below:
+          </p>
+          <button class="footer__button" id="restart">Restart TIDAL Hi-Fi</button>
+        </footer>
       </div>
-    </div>
+    </main>
   </div>
 </body>
-
-<style>
-  .header {
-    -webkit-user-select: none;
-    -webkit-app-region: drag;
-  }
-
-  .header a {
-    -webkit-app-region: no-drag;
-  }
-
-  * {
-    margin: 0%;
-    padding: 0%;
-    color: #ffffff;
-    font-weight: 400;
-    font-stretch: normal;
-    -webkit-font-smoothing: antialiased;
-    font-family: nationale, nationale-regular, Helvetica, sans-serif;
-  }
-
-  html,
-  body {
-    height: 100%;
-    background-color: black;
-    display: flex;
-    flex-direction: column;
-  }
-
-  h2 {
-    font-size: 1.2rem;
-  }
-
-  small {
-    font-style: italic;
-    color: #72777f;
-  }
-
-  .header {
-    background-color: #242528;
-    border-bottom: 1px solid #5a5a5a;
-    height: 50px;
-  }
-
-  .title {
-    float: left;
-    line-height: 50px;
-    margin-left: 15px;
-  }
-
-  .accent {
-    color: #0ff;
-  }
-
-  .exitWindow {
-    border: none;
-    outline: none;
-    text-decoration: none;
-    font-size: 1.4rem;
-    float: right;
-    margin-right: 15px;
-    height: 50px;
-    line-height: 50px;
-  }
-
-  .exitWindow:focus {
-    border: none;
-    outline: none;
-  }
-
-  .exitWindow svg {
-    height: 50px;
-    color: white;
-  }
-
-  .section {
-    padding-top: 10px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(246, 245, 255, .1);
-  }
-
-  .section .option {
-    margin-bottom: 15px;
-  }
-
-  .section .option p {
-    max-width: 75%;
-    float: left
-  }
-
-  .section .option label {
-    float: right;
-  }
-
-  .section:after,
-  .section .option:after {
-    content: "";
-    display: table;
-    clear: both;
-  }
-
-  .section h3 {
-    margin-bottom: 15px;
-  }
-
-  .section h4 {
-    font-size: 0.9rem;
-  }
-
-  .section p {
-    color: #72777f;
-  }
-
-  .bottom-border {
-    border-bottom: 1px solid #0ff;
-  }
-
-  .body {
-    padding: 15px;
-    flex: 1 1 auto;
-    position: relative;
-    overflow-y: auto;
-  }
-
-  .body::-webkit-scrollbar-track {
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    border-radius: 5px;
-    background-color: 2a2a2a;
-  }
-
-  .body::-webkit-scrollbar {
-    width: 10px;
-    background-color: #2a2a2a;
-  }
-
-  .body::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
-    box-shadow: inset 0 0 6px rgba(0, 0, 0, .3);
-    background-color: #5a5a5a;
-  }
-
-  /* Tabs */
-
-  .tabset>input[type="radio"] {
-    position: absolute;
-    left: -200vw;
-  }
-
-  .tabset .tab-panel {
-    display: none;
-  }
-
-  .tabset>input:first-child:checked~.tab-panels>.tab-panel:first-child,
-  .tabset>input:nth-child(3):checked~.tab-panels>.tab-panel:nth-child(2),
-  .tabset>input:nth-child(5):checked~.tab-panels>.tab-panel:nth-child(3),
-  .tabset>input:nth-child(7):checked~.tab-panels>.tab-panel:nth-child(4),
-  .tabset>input:nth-child(9):checked~.tab-panels>.tab-panel:nth-child(5) {
-    display: block;
-  }
-
-  .tabset>label {
-    position: relative;
-    display: inline-block;
-    padding: 15px 0px 10px;
-    border-bottom: 0;
-    cursor: pointer;
-  }
-
-  .tabset>input+label {
-    color: #e0e0e0;
-    margin-right: 30px;
-  }
-
-  .tabset>input:checked+label {
-    color: #0ff;
-    border-bottom: 2px solid #0ff;
-  }
-
-  .tab-panel {
-    padding: 10px 0;
-  }
-
-  /* switches */
-  /* The switch - the box around the slider */
-
-  .switch {
-    position: relative;
-    display: inline-block;
-    width: 50px;
-    height: 28px;
-  }
-
-  /* Hide default HTML checkbox */
-
-  .switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-
-  /* The slider */
-
-  .slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(246, 245, 255, .1);
-    -webkit-transition: .4s;
-    transition: .4s;
-  }
-
-  .slider:before {
-    position: absolute;
-    content: "";
-    height: 24px;
-    width: 24px;
-    left: 2px;
-    bottom: 2px;
-    background-color: white;
-    -webkit-transition: .4s;
-    transition: .4s;
-  }
-
-  input:checked+.slider {
-    background-color: #0ff;
-  }
-
-  input:focus+.slider {
-    box-shadow: 0 0 1px #0ff;
-  }
-
-  input:checked+.slider:before {
-    -webkit-transform: translateX(22px);
-    -ms-transform: translateX(22px);
-    transform: translateX(22px);
-  }
-
-  /* Rounded sliders */
-
-  .slider.round {
-    border-radius: 34px;
-  }
-
-  .slider.round:before {
-    border-radius: 50%;
-  }
-
-  /* input field */
-
-  input {
-    background: transparent;
-    border: 0;
-    border-bottom: 1px solid rgba(246, 245, 255, .1);
-    color: rgba(229, 238, 255, .6);
-    width: 100%;
-    display: block;
-    padding: 0 0 12px;
-  }
-
-  .freeTextInput:focus {
-    outline: none;
-    border-bottom: 1px solid #0ff;
-  }
-
-  /* buttons */
-  button {
-    border: none;
-    background: none;
-    align-items: center;
-    background-color: rgba(229, 238, 255, .2);
-    display: inline-flex;
-    justify-content: center;
-    border-radius: 12px;
-    height: 48px;
-    line-height: 49px;
-    padding: 0 24px;
-    text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    transition: background .35s ease;
-    min-height: 0;
-    min-width: 0;
-    font-size: 1.14286rem;
-    font-family: nationale, nationale-regular, Helvetica, sans-serif;
-    margin-top: 10px;
-    cursor: pointer;
-  }
-
-  button:hover {
-    background-color: rgba(229, 238, 255, .3);
-  }
-
-  textarea {
-    color: #72777f;
-    background: #242528;
-    border: 0;
-    width: 100%;
-    color: rgba(229, 238, 255, .6);
-    padding: 0 0 12px;
-    display: block;
-  }
-
-  textarea:focus {
-    outline: none;
-    border: 0;
-    border-bottom: 1px solid #0ff;
-  }
-</style>
 
 </html>

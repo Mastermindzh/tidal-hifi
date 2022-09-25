@@ -48,11 +48,13 @@ const settingsModule = {
 
 settingsModule.createSettingsWindow = function () {
   settingsWindow = new BrowserWindow({
-    width: 500,
+    width: 700,
     height: 600,
+    resizable: false,
     show: false,
+    transparent: true,
     frame: false,
-    title: "Tidal-hifi - settings",
+    title: "TIDAL Hi-Fi settings",
     webPreferences: {
       preload: path.join(__dirname, "../pages/settings/preload.js"),
       plugins: true,

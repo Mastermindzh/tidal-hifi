@@ -7,3 +7,8 @@ build/linux/arch/*
 !build/linux/arch/.SRCINFO
 !build/linux/arch/tidal-hifi.desktop
 !build/linux/arch/install.sh
+*.css
+*.css.map
+
+# JetBrains IDE configuration
+.idea

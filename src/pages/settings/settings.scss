@@ -1,0 +1,363 @@
+// --- Variables ---
+
+$black: #17171a;
+$grey-333: #333;
+$white: #f9f9f9;
+
+$tidal-blue: #0ff;
+$tidal-grey: #72777f;
+$tidal-grey-darker: #404248;
+$tidal-grey-darker-focus: #55585f;
+$tidal-grey-darkest: #242528;
+
+// --- Fonts ---
+
+@font-face {
+  font-family: "Noto Sans";
+  font-weight: 300;
+  src: url("fonts/NotoSans-Light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Noto Sans";
+  font-weight: normal;
+  src: url("fonts/NotoSans-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Noto Sans";
+  font-weight: 600;
+  src: url("fonts/NotoSans-SemiBold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Noto Sans";
+  font-weight: bold;
+  src: url("fonts/NotoSans-Bold.ttf") format("truetype");
+}
+
+$font1: "Noto Sans", Helvetica, sans-serif;
+
+// --- Mixins ---
+
+@mixin drag($enabled: true) {
+  @if $enabled {
+    -webkit-app-region: drag;
+  }
+
+  @else {
+    -webkit-app-region: no-drag;
+  }
+}
+
+button {
+  cursor: pointer;
+}
+
+// --- Settings window ---
+
+html {
+  height: 100%;
+}
+
+.external-link {
+  @extend button;
+  text-decoration: underline;
+}
+
+.settings-window {
+  height: 100%;
+  margin: 0;
+  color: $white;
+  font-family: $font1;
+
+  &__wrapper {
+    height: 100%;
+    background: $black;
+    box-shadow: inset 0 0 2px 0 $tidal-grey;
+    overflow: hidden;
+  }
+
+  &__drag-area {
+    @include drag;
+    position: absolute;
+    width: 100%;
+    height: 50px;
+    z-index: 0;
+    user-select: none;
+  }
+
+  &__close-button {
+    @extend button;
+    @include drag(false);
+    position: absolute;
+    top: 12px;
+    right: 10px;
+    padding: 10px;
+    border-radius: 100%;
+    z-index: 1;
+
+    &:hover {
+      background: $grey-333;
+    }
+  }
+
+  &__svg-icon {
+    display: block;
+    width: 18px;
+    height: 18px;
+    opacity: .7;
+  }
+
+  // --- Settings tabs ---
+}
+
+.settings {
+  height: 100%;
+  margin: 20px 0;
+  padding-left: 15px;
+  font-size: 0;
+
+  input {
+    &[type="radio"] {
+      margin-right: -18px;
+      transform: scale(0);
+      outline: none;
+    }
+
+    &+label {
+      @include drag(false);
+      display: inline-block;
+      position: relative;
+      margin-right: 35px;
+      padding-bottom: 8px;
+      border-bottom: 0;
+      font-size: 16px;
+      cursor: pointer;
+      z-index: 1;
+      user-select: none;
+    }
+
+    &:checked+label {
+      border-bottom: 2px solid $tidal-blue;
+      color: $tidal-blue;
+    }
+  }
+}
+
+.tabs {
+  height: calc(100% - 70px);
+  padding-right: 15px;
+  font-size: 16px;
+  overflow: auto;
+
+  &__section {
+    display: none;
+  }
+
+  @for $i from 1 to 6 {
+    .settings>input:nth-child(#{$i*2-1}):checked~&>.tabs__section:nth-child(#{$i}) {
+      display: block;
+    }
+  }
+
+  &::-webkit-scrollbar {
+    width: 10px;
+
+    &-thumb {
+      border-radius: 10px;
+      background-color: $tidal-grey-darker;
+      box-shadow: inset 0 0 10px 2px $tidal-grey-darkest;
+    }
+
+    // --- Settings group ---
+  }
+}
+
+.group {
+  padding: 10px 0;
+  border-bottom: 1px solid $grey-333;
+
+  &:last-child {
+    border: 0;
+  }
+
+  &__title {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: bold;
+  }
+
+  &__option {
+    display: flex;
+    align-items: center;
+  }
+
+  &__description {
+    flex-grow: 1;
+
+    h4,
+    label {
+      display: block;
+      margin-top: 10px;
+      margin-bottom: 0;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    p {
+      margin-top: 5px;
+      margin-bottom: 8px;
+      color: $tidal-grey;
+      font-size: 14px;
+    }
+
+    .text-input {
+      display: block;
+      width: 100%;
+      margin-bottom: 10px;
+      padding: 5px 0;
+      transition: .2s;
+      border: 0;
+      border-bottom: solid 1px $grey-333;
+      outline: none;
+      background: transparent;
+      color: $tidal-grey;
+      font-size: 14px;
+
+      &:focus {
+        border-color: $tidal-blue;
+        color: $white;
+      }
+
+      // --- Switch slider component ---
+    }
+  }
+}
+
+.switch {
+  $this: &;
+  position: relative;
+  min-width: 50px;
+  height: 28px;
+
+  margin-left: 10px;
+
+  input {
+    transform: scale(0);
+    outline: none;
+
+    &:checked+#{$this}__slider {
+      background-color: $tidal-blue;
+
+      &::before {
+        transform: translateX(22px);
+        background-color: white;
+      }
+    }
+
+    &:focus+#{$this}__slider {
+      box-shadow: inset 0 0 0 1px $tidal-blue;
+    }
+  }
+
+  &__slider {
+    @extend button;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    transition: .4s;
+    border-radius: 40px;
+    background-color: $tidal-grey-darkest;
+
+    &::before {
+      position: absolute;
+      bottom: 2px;
+      left: 2px;
+      width: 24px;
+      height: 24px;
+      transition: .4s;
+      border-radius: 50%;
+      background-color: $white;
+      content: "";
+    }
+
+    // --- Textarea component
+  }
+}
+
+.textarea {
+  min-width: 100%;
+  max-width: 100%;
+  min-height: 50px;
+  max-height: 100px;
+  padding: 8px;
+  transition: .2s;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  background: $tidal-grey-darkest;
+  color: $tidal-grey;
+  font-size: 13px;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: $tidal-blue;
+    outline: none;
+    color: $white;
+  }
+
+  // --- About section ---
+}
+
+.about-section {
+  padding-top: 120px;
+  text-align: center;
+
+  &__icon {
+    display: inline-block;
+    width: 100px;
+  }
+
+  &__text {
+    display: block;
+    max-width: 350px;
+    margin: 20px auto 0;
+  }
+
+  // --- Footer ---
+}
+
+.footer {
+  position: sticky;
+  top: calc(100% - 120px);
+  height: 100px;
+  padding-top: 20px;
+  text-align: center;
+
+  &__note {
+    max-width: 300px;
+    margin: 0 auto 15px;
+    color: $tidal-grey;
+    font-size: 12px;
+  }
+
+  &__button {
+    @extend button;
+    display: block;
+    height: 48px;
+    margin: auto;
+    padding: 0 24px;
+    transition: .2s;
+    border: 0;
+    border-radius: 12px;
+    background: $tidal-grey-darker;
+    color: $white;
+    font-size: 16px;
+
+    &:hover {
+      background: $tidal-grey-darker-focus;
+    }
+  }
+}

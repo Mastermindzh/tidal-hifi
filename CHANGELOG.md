@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 4.2.0
+
+- New settings window by BlueManCZ
+- Fixed the desktop files in electron-builder
+  - icon is set to new static path based on Arch/Debian
+  - Name has changed to Tidal-Hifi
+  -
+
 ## 4.1.2
 
 - Changed the category of the desktop file to AudioVideo
