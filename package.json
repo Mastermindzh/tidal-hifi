@@ -17,9 +17,9 @@
     "prestart": "npm run sass",
     "prebuilder": "npm run sass",
     "builder": "electron-builder --publish=never",
-    "sass": "sass ./src/pages/settings/settings.sass ./src/pages/settings/settings.css",
-    "sass-lint": "sass-lint -vc ./sass-lint.yml ./src/pages/settings/settings.sass",
-    "sass-lint-fix": "sass-lint-auto-fix ./src/pages/settings/settings.sass --config-sass-lint ./sass-lint.yml"
+    "sass": "sass ./src/pages/settings/settings.scss ./src/pages/settings/settings.css",
+    "sass-lint": "sass-lint -vc ./sass-lint.yml ./src/pages/settings/settings.scss",
+    "sass-lint-fix": "sass-lint-auto-fix ./src/pages/settings/settings.scss --config-sass-lint ./sass-lint.yml"
   },
   "keywords": [
     "electron",
