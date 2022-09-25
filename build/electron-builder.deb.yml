@@ -1,6 +1,4 @@
 extends: ./build/electron-builder.base.yml
 linux:
-  category: Audio
-  icon: icon.png
   target:
     - deb

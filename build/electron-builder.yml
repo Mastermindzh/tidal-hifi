@@ -1,9 +1,5 @@
-electronVersion: 19.0.5
-electronDownload:
-  version: 19.0.5+wvcus
-  mirror: https://github.com/castlabs/electron-releases/releases/download/v
+extends: ./build/electron-builder.base.yml
 linux:
-  category: Audio
   target:
     - pacman
     - tar.gz

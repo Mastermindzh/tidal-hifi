@@ -21,7 +21,7 @@ jobs:
       - run: npm run build
 
   build_on_mac:
-    runs-on: macOS-latest
+    runs-on: macos-latest
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
