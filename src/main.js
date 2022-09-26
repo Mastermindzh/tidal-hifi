@@ -91,6 +91,9 @@ function createWindow(options = {}) {
   // load the Tidal website
   mainWindow.loadURL(tidalUrl);
 
+  // prevent setInterval lag
+  mainWindow.webContents.setBackgroundThrottling(false);
+
   // run stuff after first load
   mainWindow.webContents.once("did-finish-load", () => {});
 
