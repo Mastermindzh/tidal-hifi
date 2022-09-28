@@ -15,6 +15,7 @@ const settings = {
   playBackControl: "playBackControl",
   muteArtists: "muteArtists",
   mutedArtists: "mutedArtists",
+  disableBackgroundThrottle: "disableBackgroundThrottle",
   apiSettings: {
     root: "apiSettings",
     port: "apiSettings.port",
