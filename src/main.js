@@ -123,7 +123,9 @@ function registerHttpProtocols() {
   protocol.registerHttpProtocol(PROTOCOL_PREFIX, (request, _callback) => {
     mainWindow.loadURL(`${tidalUrl}/${request.url.substring(PROTOCOL_PREFIX.length + 3)}`);
   });
-  app.setAsDefaultProtocolClient(PROTOCOL_PREFIX);
+  if (!app.isDefaultProtocolClient(PROTOCOL_PREFIX)) { 
+    app.setAsDefaultProtocolClient(PROTOCOL_PREFIX);
+  }
 }
 
 function addGlobalShortcuts() {
