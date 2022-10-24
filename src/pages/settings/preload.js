@@ -10,6 +10,7 @@ let trayIcon,
   port,
   menuBar,
   mutedArtists,
+  disableBackgroundThrottle,
   singleInstance,
   disableHardwareMediaKeys,
   gpuRasterization;
@@ -38,6 +39,7 @@ function refreshSettings() {
   singleInstance.checked = store.get(settings.singleInstance);
   disableHardwareMediaKeys.checked = store.get(settings.flags.disableHardwareMediaKeys);
   gpuRasterization.checked = store.get(settings.flags.gpuRasterization);
+  disableBackgroundThrottle.checked = store.get("disableBackgroundThrottle");
 }
 
 /**
@@ -117,6 +119,7 @@ window.addEventListener("DOMContentLoaded", () => {
   enableDiscord = get("enableDiscord");
   muteArtists = get("muteArtists");
   mutedArtists = get("mutedArtists");
+  disableBackgroundThrottle = get("disableBackgroundThrottle");
   singleInstance = get("singleInstance");
   disableHardwareMediaKeys = get("disableHardwareMediaKeys");
   gpuRasterization = get("gpuRasterization");
@@ -135,6 +138,7 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(minimizeOnClose, settings.minimizeOnClose);
   addInputListener(muteArtists, settings.muteArtists);
   addTextAreaListener(mutedArtists, settings.mutedArtists);
+  addInputListener(disableBackgroundThrottle, settings.disableBackgroundThrottle);
   addInputListener(singleInstance, settings.singleInstance);
   addInputListener(disableHardwareMediaKeys, settings.flags.disableHardwareMediaKeys);
   addInputListener(gpuRasterization, settings.flags.gpuRasterization);
