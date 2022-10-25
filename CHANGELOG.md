@@ -8,13 +8,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - fix: App always requests a default-url-handler-scheme change on start
 
+## 4.3.0
+
+- Added a setting to disable background throttling ([docs](https://www.electronjs.org/docs/latest/api/browser-window))
+
 ## 4.2.0
 
 - New settings window by BlueManCZ
 - Fixed the desktop files in electron-builder
   - icon is set to new static path based on Arch/Debian
   - Name has changed to Tidal-Hifi
-  -
 
 ## 4.1.2
 
