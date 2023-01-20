@@ -8,7 +8,7 @@ const settingsMenuEntry = {
   click() {
     showSettingsWindow();
   },
-  accelerator: "Control+/",
+  accelerator: "Control+=",
 };
 
 const quitMenuEntry = {

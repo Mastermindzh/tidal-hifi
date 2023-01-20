@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 4.4.0
+
+- Updated shortcut hint on the menubar to reflect the new `ctrl+=` shortcut.
+
 ## 4.3.1
 
 - fix: App always requests a default-url-handler-scheme change on start
