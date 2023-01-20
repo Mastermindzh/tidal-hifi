@@ -110,6 +110,7 @@ menuModule.getMenu = function (mainWindow) {
       },
     },
     toggleWindow,
+    quitMenuEntry,
   ];
 
   return Menu.buildFromTemplate(mainMenu);

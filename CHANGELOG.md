@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated shortcut hint on the menubar to reflect the new `ctrl+=` shortcut.
 - Reverted icon path to `icon.png` instead of the hardcoded linux path.
 - Add support to autoHide the menubar and showing it with the `alt` key.
+- Move the quit command from the system sub-menu to the main menu
 
 ## 4.3.1
 
