@@ -328,7 +328,7 @@ setInterval(function () {
   const title = elements.getText("title");
   const artists = elements.getArtists();
   muteArtistIfFoundInMutedArtistsList(); // doing this here so that nothing can possibly fail before we call this function
-  
+
   const album = elements.getAlbumName();
   const current = elements.getText("current");
   const duration = elements.getText("duration");
@@ -344,11 +344,8 @@ setInterval(function () {
     duration,
     "app-name": appName,
   };
-  
-
 
   const titleOrArtistChanged = currentSong !== songDashArtistTitle;
-
 
   // update title, url and play info with new info
   setTitle(songDashArtistTitle);

@@ -49,7 +49,10 @@ function setFlags() {
  *
  */
 function syncMenuBarWithStore() {
-  mainWindow.setMenuBarVisibility(store.get(settings.menuBar));
+  const fixedMenuBar = store.get(settings.menuBar);
+
+  mainWindow.autoHideMenuBar = !fixedMenuBar;
+  mainWindow.setMenuBarVisibility(fixedMenuBar);
 }
 
 /**
@@ -78,6 +81,7 @@ function createWindow(options = {}) {
     height: store && store.get(settings.windowBounds.height),
     icon,
     backgroundColor: options.backgroundColor,
+    autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, "preload.js"),
       plugins: true,
@@ -123,7 +127,7 @@ function registerHttpProtocols() {
   protocol.registerHttpProtocol(PROTOCOL_PREFIX, (request, _callback) => {
     mainWindow.loadURL(`${tidalUrl}/${request.url.substring(PROTOCOL_PREFIX.length + 3)}`);
   });
-  if (!app.isDefaultProtocolClient(PROTOCOL_PREFIX)) { 
+  if (!app.isDefaultProtocolClient(PROTOCOL_PREFIX)) {
     app.setAsDefaultProtocolClient(PROTOCOL_PREFIX);
   }
 }
