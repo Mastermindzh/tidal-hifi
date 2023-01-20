@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 4.4.0
 
 - Updated shortcut hint on the menubar to reflect the new `ctrl+=` shortcut.
+- Reverted icon path to `icon.png` instead of the hardcoded linux path
 
 ## 4.3.1
 
