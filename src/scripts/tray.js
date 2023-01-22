@@ -11,6 +11,10 @@ trayModule.addTray = function (mainWindow, options = { icon: "" }) {
   const menu = getMenu(mainWindow);
 
   tray.setContextMenu(menu);
+
+  tray.on("click", function () {
+    mainWindow.isVisible() ? mainWindow.focus() : mainWindow.show();
+  });
 };
 
 trayModule.refreshTray = function (mainWindow) {

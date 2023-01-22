@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Reverted icon path to `icon.png` instead of the hardcoded linux path.
 - Add support to autoHide the menubar and showing it with the `alt` key.
 - Move the quit command from the system sub-menu to the main menu
+- Added single click focus/show on the tray icon
+  - Doesn't work on all platforms. Nothing I can do about that unfortunately!
 
 ## 4.3.1
 
