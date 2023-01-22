@@ -7,6 +7,7 @@ const { downloadFile } = require("./scripts/download");
 const statuses = require("./constants/statuses");
 const hotkeys = require("./scripts/hotkeys");
 const globalEvents = require("./constants/globalEvents");
+const { skipArtists } = require("./constants/settings");
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 const appName = "Tidal Hifi";
 let currentSong = "";
@@ -327,7 +328,8 @@ function getTrackURL() {
 setInterval(function () {
   const title = elements.getText("title");
   const artists = elements.getArtists();
-  muteArtistIfFoundInMutedArtistsList(); // doing this here so that nothing can possibly fail before we call this function
+  skipArtistsIfFoundInSkippedArtistsList(artists);
+  muteArtistIfFoundInMutedArtistsList(artists); // doing this here so that nothing can possibly fail before we call this function
 
   const album = elements.getAlbumName();
   const current = elements.getText("current");
@@ -382,7 +384,7 @@ setInterval(function () {
   /**
    * Checks whether the current artist is included in the "muted artists" list and if so it will automatically mute the player
    */
-  function muteArtistIfFoundInMutedArtistsList() {
+  function muteArtistIfFoundInMutedArtistsList(artists) {
     if (store.get(settings.muteArtists)) {
       const mutedArtists = store.get(settings.mutedArtists);
       if (mutedArtists.find((artist) => artist === artists) !== undefined) {
@@ -393,6 +395,19 @@ setInterval(function () {
       } else if (isMutedArtist && elements.isMuted()) {
         elements.click("volume");
         isMutedArtist = false;
+      }
+    }
+  }
+
+  /**
+   * automatically skip a song if the artists are found in the list of artists to skip
+   * @param {*} artists list of artists to skip
+   */
+  function skipArtistsIfFoundInSkippedArtistsList(artists) {
+    if (store.get(skipArtists)) {
+      const skippedArtists = store.get(settings.skippedArtists);
+      if (skippedArtists.find((artist) => artist === artists) !== undefined) {
+        elements.click("next");
       }
     }
   }

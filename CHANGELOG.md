@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Move the quit command from the system sub-menu to the main menu
 - Added single click focus/show on the tray icon
   - Doesn't work on all platforms. Nothing I can do about that unfortunately!
+- Added a list of artists to automatically skip.
+  - I don't like the vast majority of dutch music so I added one of them to my list to test: [./docs/no-dutch-music.mp4](./docs/no-dutch-music.mp4)
 
 ## 4.3.1
 

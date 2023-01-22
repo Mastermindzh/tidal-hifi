@@ -4,12 +4,14 @@ let trayIcon,
   enableCustomHotkeys,
   enableDiscord,
   muteArtists,
+  skipArtists,
   notifications,
   playBackControl,
   api,
   port,
   menuBar,
   mutedArtists,
+  skippedArtists,
   disableBackgroundThrottle,
   singleInstance,
   disableHardwareMediaKeys,
@@ -36,6 +38,8 @@ function refreshSettings() {
   minimizeOnClose.checked = store.get(settings.minimizeOnClose);
   muteArtists.checked = store.get(settings.muteArtists);
   mutedArtists.value = store.get(settings.mutedArtists).join("\n");
+  skipArtists.checked = store.get(settings.skipArtists);
+  skippedArtists.value = store.get(settings.skippedArtists).join("\n");
   singleInstance.checked = store.get(settings.singleInstance);
   disableHardwareMediaKeys.checked = store.get(settings.flags.disableHardwareMediaKeys);
   gpuRasterization.checked = store.get(settings.flags.gpuRasterization);
@@ -119,6 +123,8 @@ window.addEventListener("DOMContentLoaded", () => {
   enableDiscord = get("enableDiscord");
   muteArtists = get("muteArtists");
   mutedArtists = get("mutedArtists");
+  skipArtists = get("skipArtists");
+  skippedArtists = get("skippedArtists");
   disableBackgroundThrottle = get("disableBackgroundThrottle");
   singleInstance = get("singleInstance");
   disableHardwareMediaKeys = get("disableHardwareMediaKeys");
@@ -138,6 +144,8 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(minimizeOnClose, settings.minimizeOnClose);
   addInputListener(muteArtists, settings.muteArtists);
   addTextAreaListener(mutedArtists, settings.mutedArtists);
+  addInputListener(skipArtists, settings.skipArtists);
+  addTextAreaListener(skippedArtists, settings.skippedArtists);
   addInputListener(disableBackgroundThrottle, settings.disableBackgroundThrottle);
   addInputListener(singleInstance, settings.singleInstance);
   addInputListener(disableHardwareMediaKeys, settings.flags.disableHardwareMediaKeys);
