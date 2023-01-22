@@ -8,7 +8,7 @@ const settingsMenuEntry = {
   click() {
     showSettingsWindow();
   },
-  accelerator: "Control+/",
+  accelerator: "Control+=",
 };
 
 const quitMenuEntry = {
@@ -110,6 +110,7 @@ menuModule.getMenu = function (mainWindow) {
       },
     },
     toggleWindow,
+    quitMenuEntry,
   ];
 
   return Menu.buildFromTemplate(mainMenu);
