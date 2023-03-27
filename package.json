@@ -38,7 +38,7 @@
     "hotkeys-js": "^3.9.4",
     "mpris-service": "^2.1.2",
     "request": "^2.88.2",
-    "sass": "^1.54.9"
+    "sass": "^1.58.3"
   },
   "devDependencies": {
     "@mastermindzh/prettier-config": "^1.0.0",
