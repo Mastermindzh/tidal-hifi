@@ -407,7 +407,16 @@ setInterval(function () {
     if (store.get(skipArtists)) {
       const skippedArtists = store.get(settings.skippedArtists);
       if (skippedArtists.find((artist) => artist === artists) !== undefined) {
-        elements.click("next");
+        // if artist is TIDAL
+        if (artists === "TIDAL") {
+          const { exec } = require("child_process");
+          exec("playerctl position 29.9");
+          setTimeout(() => {
+          }, 100);
+        }
+        else {
+          elements.click("next");
+        }
       }
     }
   }
