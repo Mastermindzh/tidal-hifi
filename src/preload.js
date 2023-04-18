@@ -13,7 +13,7 @@ const appName = "Tidal Hifi";
 let currentSong = "";
 let player;
 let currentPlayStatus = statuses.paused;
-let isMutedArtist = true;
+let isMuted = true;
 
 const elements = {
   play: '*[data-test="play"]',
@@ -328,8 +328,8 @@ function getTrackURL() {
 setInterval(function () {
   const title = elements.getText("title");
   const artists = elements.getArtists();
+  skipAds(artists);
   skipArtistsIfFoundInSkippedArtistsList(artists);
-  muteArtistIfFoundInMutedArtistsList(artists); // doing this here so that nothing can possibly fail before we call this function
 
   const album = elements.getAlbumName();
   const current = elements.getText("current");
@@ -382,24 +382,6 @@ setInterval(function () {
   );
 
   /**
-   * Checks whether the current artist is included in the "muted artists" list and if so it will automatically mute the player
-   */
-  function muteArtistIfFoundInMutedArtistsList(artists) {
-    if (store.get(settings.muteArtists)) {
-      const mutedArtists = store.get(settings.mutedArtists);
-      if (mutedArtists.find((artist) => artist === artists) !== undefined) {
-        if (!elements.isMuted()) {
-          isMutedArtist = true;
-          elements.click("volume");
-        }
-      } else if (isMutedArtist && elements.isMuted()) {
-        elements.click("volume");
-        isMutedArtist = false;
-      }
-    }
-  }
-
-  /**
    * automatically skip a song if the artists are found in the list of artists to skip
    * @param {*} artists list of artists to skip
    */
@@ -407,25 +389,37 @@ setInterval(function () {
     if (store.get(skipArtists)) {
       const skippedArtists = store.get(settings.skippedArtists);
       if (skippedArtists.find((artist) => artist === artists) !== undefined) {
-        if (artists === "TIDAL") {
-          if (!elements.isMuted()) {
-            elements.click("volume");
-            isMutedArtist = true;
-          }
-          const { exec } = require("child_process");
-          exec("playerctl position 29.9");
-        }
-        else {
-          elements.click("next");
-        }
-      }
-      else if (isMutedArtist && elements.isMuted()) {
-        elements.click("volume");
-        isMutedArtist = false;
+        elements.click("next");
       }
     }
   }
-}, 1000);
+
+  /**
+   * Mute or unmute the player
+   * @param {*} muted mutes the player if true, unmutes if false
+    */
+  function setMuted(muted) {
+    elements.click("volume");
+    isMuted = muted;
+  }
+
+  /**
+   * automatically skip ads to latest possible time before 30th second (it is always constant)
+   * @param {*} artists current artist
+   */
+  function skipAds(artists) {
+    if (store.get(settings.blockAds)) {
+      if (artists === "TIDAL") {
+        if (!elements.isMuted())
+          setMuted(true);
+        const { exec } = require("child_process");
+        exec("playerctl position 29.9");
+      } else if (isMuted && elements.isMuted())
+        setMuted(false);
+    }
+  }
+
+}, 400);
 
 if (process.platform === "linux" && store.get(settings.mpris)) {
   try {

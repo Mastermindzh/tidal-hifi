@@ -54,17 +54,6 @@
             </div>
             <div class="group__option">
               <div class="group__description">
-                <h4>Mute Artists automatically</h4>
-                <p>The following list of artists (1 per line) will be muted automatically.</p>
-              </div>
-              <label class="switch">
-                <input id="muteArtists" type="checkbox">
-                <span class="switch__slider"></span>
-              </label>
-            </div>
-            <textarea id="mutedArtists" class="textarea" cols="40" rows="5" spellcheck="false"></textarea>
-            <div class="group__option">
-              <div class="group__description">
                 <h4>Skip Artists automatically</h4>
                 <p>The following list of artists (1 per line) will be skipped automatically.</p>
               </div>
@@ -74,6 +63,17 @@
               </label>
             </div>
             <textarea id="skippedArtists" class="textarea" cols="40" rows="5" spellcheck="false"></textarea>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Block ads</h4>
+                <p>It requires MPRIS service enabled.<br>
+                Also, make sure playerctl command is installed in your system.</p>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="blockAds">
+                <span class="switch__slider"></span>
+              </label>
+            </div>
 
           </div>
           <div class="group">
@@ -193,6 +193,18 @@
               <label class="switch">
                 <input id="mprisCheckbox" type="checkbox">
                 <span class="switch__slider"></span>
+                <script type="text/javascript">
+                  var checkbox = document.getElementById("mprisCheckbox");
+                  checkbox.addEventListener("change", function() {
+                    var blockAds = document.getElementById("blockAds");
+                   if (this.checked)
+                     blockAds.disabled = false;
+                   else {
+                     blockAds.checked = false;
+                      blockAds.disabled = true;
+                   }
+                  });
+                </script>
               </label>
             </div>
             <div class="group__option">

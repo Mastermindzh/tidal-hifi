@@ -10,10 +10,9 @@ const store = new Store({
     notifications: true,
     api: true,
     playBackControl: true,
-    muteArtists: false,
-    mutedArtists: ["TIDAL"],
     skipArtists: false,
     skippedArtists: [""],
+    blockAds: false,
     disableBackgroundThrottle: true,
     menuBar: true,
     apiSettings: {
