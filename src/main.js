@@ -101,7 +101,14 @@ function createWindow(options = {}) {
   }
 
   // run stuff after first load
-  mainWindow.webContents.once("did-finish-load", () => {});
+  mainWindow.webContents.once("did-finish-load", () => {
+    // remove the upgrade button
+    setTimeout(() => {
+      mainWindow.webContents.executeJavaScript(
+        `upgrade = document.querySelector(".sidebarUpgrade--Hl7N0"); if (upgrade) { upgrade.remove(); }`
+      );
+      }, 2000);
+  });
 
   mainWindow.on("close", function (event) {
     if (!app.isQuiting && store.get(settings.minimizeOnClose)) {
