@@ -13,7 +13,14 @@ trayModule.addTray = function (mainWindow, options = { icon: "" }) {
   tray.setContextMenu(menu);
 
   tray.on("click", function () {
-    mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
+    if (mainWindow.isVisible()) {
+      if (!mainWindow.isFocused())
+        mainWindow.focus();
+      else
+        mainWindow.minimize();
+    }
+    else
+      mainWindow.show();
   });
 };
 
