@@ -83,6 +83,7 @@ function createWindow(options = {}) {
     backgroundColor: options.backgroundColor,
     autoHideMenuBar: true,
     webPreferences: {
+      sandbox: false,
       preload: path.join(__dirname, "preload.js"),
       plugins: true,
       devTools: true, // I like tinkering, others might too

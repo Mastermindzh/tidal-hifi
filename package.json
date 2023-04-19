@@ -38,11 +38,11 @@
     "hotkeys-js": "^3.10.1",
     "mpris-service": "^2.1.2",
     "request": "^2.88.2",
-    "sass": "^1.58.3"
+    "sass": "^1.60.0"
   },
   "devDependencies": {
     "@mastermindzh/prettier-config": "^1.0.0",
-    "electron": "git+https://github.com/castlabs/electron-releases.git#v19.0.5+wvcus",
+    "electron": "git+https://github.com/castlabs/electron-releases.git#v24.1.2+wvcus",
     "electron-builder": "^23.3.3",
     "js-yaml": "^3.14.1",
     "prettier": "^2.7.1",
