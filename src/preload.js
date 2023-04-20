@@ -13,7 +13,6 @@ const appName = "Tidal Hifi";
 let currentSong = "";
 let player;
 let currentPlayStatus = statuses.paused;
-let isMutedArtist = true;
 
 const elements = {
   play: '*[data-test="play"]',
@@ -329,7 +328,6 @@ setInterval(function () {
   const title = elements.getText("title");
   const artists = elements.getArtists();
   skipArtistsIfFoundInSkippedArtistsList(artists);
-  muteArtistIfFoundInMutedArtistsList(artists); // doing this here so that nothing can possibly fail before we call this function
 
   const album = elements.getAlbumName();
   const current = elements.getText("current");
@@ -380,24 +378,6 @@ setInterval(function () {
     },
     () => {}
   );
-
-  /**
-   * Checks whether the current artist is included in the "muted artists" list and if so it will automatically mute the player
-   */
-  function muteArtistIfFoundInMutedArtistsList(artists) {
-    if (store.get(settings.muteArtists)) {
-      const mutedArtists = store.get(settings.mutedArtists);
-      if (mutedArtists.find((artist) => artist === artists) !== undefined) {
-        if (!elements.isMuted()) {
-          isMutedArtist = true;
-          elements.click("volume");
-        }
-      } else if (isMutedArtist && elements.isMuted()) {
-        elements.click("volume");
-        isMutedArtist = false;
-      }
-    }
-  }
 
   /**
    * automatically skip a song if the artists are found in the list of artists to skip
