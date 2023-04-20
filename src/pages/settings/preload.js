@@ -3,15 +3,14 @@ let trayIcon,
   mpris,
   enableCustomHotkeys,
   enableDiscord,
-  muteArtists,
   skipArtists,
   notifications,
   playBackControl,
   api,
   port,
   menuBar,
-  mutedArtists,
   skippedArtists,
+  adBlock,
   disableBackgroundThrottle,
   singleInstance,
   disableHardwareMediaKeys,
@@ -36,10 +35,9 @@ function refreshSettings() {
   enableCustomHotkeys.checked = store.get(settings.enableCustomHotkeys);
   enableDiscord.checked = store.get(settings.enableDiscord);
   minimizeOnClose.checked = store.get(settings.minimizeOnClose);
-  muteArtists.checked = store.get(settings.muteArtists);
-  mutedArtists.value = store.get(settings.mutedArtists).join("\n");
   skipArtists.checked = store.get(settings.skipArtists);
   skippedArtists.value = store.get(settings.skippedArtists).join("\n");
+  adBlock.checked = store.get(settings.adBlock);
   singleInstance.checked = store.get(settings.singleInstance);
   disableHardwareMediaKeys.checked = store.get(settings.flags.disableHardwareMediaKeys);
   gpuRasterization.checked = store.get(settings.flags.gpuRasterization);
@@ -121,10 +119,9 @@ window.addEventListener("DOMContentLoaded", () => {
   mpris = get("mprisCheckbox");
   enableCustomHotkeys = get("enableCustomHotkeys");
   enableDiscord = get("enableDiscord");
-  muteArtists = get("muteArtists");
-  mutedArtists = get("mutedArtists");
   skipArtists = get("skipArtists");
   skippedArtists = get("skippedArtists");
+  adBlock = get("adBlock");
   disableBackgroundThrottle = get("disableBackgroundThrottle");
   singleInstance = get("singleInstance");
   disableHardwareMediaKeys = get("disableHardwareMediaKeys");
@@ -142,10 +139,9 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(enableCustomHotkeys, settings.enableCustomHotkeys);
   addInputListener(enableDiscord, settings.enableDiscord);
   addInputListener(minimizeOnClose, settings.minimizeOnClose);
-  addInputListener(muteArtists, settings.muteArtists);
-  addTextAreaListener(mutedArtists, settings.mutedArtists);
   addInputListener(skipArtists, settings.skipArtists);
   addTextAreaListener(skippedArtists, settings.skippedArtists);
+  addInputListener(adBlock, settings.adBlock);
   addInputListener(disableBackgroundThrottle, settings.disableBackgroundThrottle);
   addInputListener(singleInstance, settings.singleInstance);
   addInputListener(disableHardwareMediaKeys, settings.flags.disableHardwareMediaKeys);

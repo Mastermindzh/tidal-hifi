@@ -13,10 +13,9 @@ const settings = {
   api: "api",
   menuBar: "menuBar",
   playBackControl: "playBackControl",
-  muteArtists: "muteArtists",
-  mutedArtists: "mutedArtists",
   skipArtists: "skipArtists",
   skippedArtists: "skippedArtists",
+  adBlock: "adBlock",
   disableBackgroundThrottle: "disableBackgroundThrottle",
   apiSettings: {
     root: "apiSettings",

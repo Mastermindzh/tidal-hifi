@@ -11,24 +11,25 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
 
 <!-- toc -->
 
+- [Table of contents](#table-of-contents)
 - [Installation](#installation)
-  * [Using releases](#using-releases)
-  * [Snap](#snap)
-  * [Arch Linux](#arch-linux)
-  * [Flatpak](#flatpak)
-  * [Nix](#nix)
-  * [Using source](#using-source)
+  - [Using releases](#using-releases)
+  - [Snap](#snap)
+  - [Arch Linux](#arch-linux)
+  - [Flatpak](#flatpak)
+  - [Nix](#nix)
+  - [Using source](#using-source)
 - [Features](#features)
 - [Integrations](#integrations)
-  * [Known bugs](#known-bugs)
-    + [last.fm doesn't work out of the box. Use rescrobbler as a workaround](#lastfm-doesnt-work-out-of-the-box-use-rescrobbler-as-a-workaround)
+  - [Known bugs](#known-bugs)
+    - [last.fm doesn't work out of the box. Use rescrobbler as a workaround](#lastfm-doesnt-work-out-of-the-box-use-rescrobbler-as-a-workaround)
 - [Why](#why)
 - [Why not extend existing projects?](#why-not-extend-existing-projects)
 - [Special thanks to...](#special-thanks-to)
 - [Buy me a coffee? Please don't](#buy-me-a-coffee-please-dont)
 - [Images](#images)
-  * [Settings window](#settings-window)
-  * [User setups](#user-setups)
+  - [Settings window](#settings-window)
+  - [User setups](#user-setups)
 
 <!-- tocstop -->
 
@@ -93,7 +94,7 @@ To install and work with the code on this project follow these steps:
 - Notifications
 - Custom hotkeys ([source](https://defkey.com/tidal-desktop-shortcuts))
 - API for status and playback
-- [Mute artists automatically (defaults to "Tidal")]("./docs/muting-artists.md")
+- Block ads and enable video playback thanks to uBlock Origin custom filters (breakage is possible)
 - Custom [integrations](#integrations)
 - [Settings feature](./docs/settings.png) to disable certain functionality. (`ctrl+=` or `ctrl+0`)
 - AlbumArt in integrations ([best-effort](https://github.com/Mastermindzh/tidal-hifi/pull/88#pullrequestreview-840814847))
