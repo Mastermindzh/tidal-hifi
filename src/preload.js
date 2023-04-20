@@ -300,6 +300,7 @@ function updateMediaInfo(options, notify) {
           "xesam:album": options.album,
           "mpris:artUrl": options.image,
           "mpris:length": convertDuration(options.duration) * 1000 * 1000,
+          "mpris:trackid": "/org/mpris/MediaPlayer2/track/" + getTrackID(),
         },
       };
       player.playbackStatus = options.status == statuses.paused ? "Paused" : "Playing";
@@ -316,6 +317,16 @@ function getTrackURL() {
   if (URLelement !== null) {
     const id = URLelement.href.replace(/[^0-9]/g, "");
     return `https://tidal.com/browse/track/${id}`;
+  }
+
+  return window.location;
+}
+
+function getTrackID() {
+  const URLelement = elements.get("title").querySelector("a");
+  if (URLelement !== null) {
+    const id = URLelement.href.replace(/[^0-9]/g, "");
+    return id;
   }
 
   return window.location;
