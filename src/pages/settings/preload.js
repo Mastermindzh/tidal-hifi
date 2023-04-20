@@ -64,7 +64,7 @@ function hide() {
  */
 function restart() {
   app.relaunch();
-  app.quit();
+  app.exit();
 }
 
 /**
