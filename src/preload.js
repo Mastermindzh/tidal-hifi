@@ -13,7 +13,6 @@ const appName = "Tidal Hifi";
 let currentSong = "";
 let player;
 let currentPlayStatus = statuses.paused;
-let isMutedArtist = true;
 
 const elements = {
   play: '*[data-test="play"]',
@@ -301,6 +300,7 @@ function updateMediaInfo(options, notify) {
           "xesam:album": options.album,
           "mpris:artUrl": options.image,
           "mpris:length": convertDuration(options.duration) * 1000 * 1000,
+          "mpris:trackid": "/org/mpris/MediaPlayer2/track/" + getTrackID(),
         },
       };
       player.playbackStatus = options.status == statuses.paused ? "Paused" : "Playing";
@@ -313,10 +313,15 @@ function updateMediaInfo(options, notify) {
  * If it's a song it returns the track URL, if not it will return undefined
  */
 function getTrackURL() {
+  const id = getTrackID();
+  return `https://tidal.com/browse/track/${id}`;
+}
+
+function getTrackID() {
   const URLelement = elements.get("title").querySelector("a");
   if (URLelement !== null) {
-    const id = URLelement.href.replace(/[^0-9]/g, "");
-    return `https://tidal.com/browse/track/${id}`;
+    const id = URLelement.href.replace(/\D/g, "");
+    return id;
   }
 
   return window.location;
@@ -329,7 +334,6 @@ setInterval(function () {
   const title = elements.getText("title");
   const artists = elements.getArtists();
   skipArtistsIfFoundInSkippedArtistsList(artists);
-  muteArtistIfFoundInMutedArtistsList(artists); // doing this here so that nothing can possibly fail before we call this function
 
   const album = elements.getAlbumName();
   const current = elements.getText("current");
@@ -382,24 +386,6 @@ setInterval(function () {
   );
 
   /**
-   * Checks whether the current artist is included in the "muted artists" list and if so it will automatically mute the player
-   */
-  function muteArtistIfFoundInMutedArtistsList(artists) {
-    if (store.get(settings.muteArtists)) {
-      const mutedArtists = store.get(settings.mutedArtists);
-      if (mutedArtists.find((artist) => artist === artists) !== undefined) {
-        if (!elements.isMuted()) {
-          isMutedArtist = true;
-          elements.click("volume");
-        }
-      } else if (isMutedArtist && elements.isMuted()) {
-        elements.click("volume");
-        isMutedArtist = false;
-      }
-    }
-  }
-
-  /**
    * automatically skip a song if the artists are found in the list of artists to skip
    * @param {*} artists list of artists to skip
    */
@@ -411,7 +397,7 @@ setInterval(function () {
       }
     }
   }
-}, 1000);
+}, 100);
 
 if (process.platform === "linux" && store.get(settings.mpris)) {
   try {

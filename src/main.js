@@ -1,5 +1,13 @@
 require("@electron/remote/main").initialize();
-const { app, BrowserWindow, components, globalShortcut, ipcMain, protocol } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  components,
+  globalShortcut,
+  ipcMain,
+  protocol,
+  session,
+} = require("electron");
 const {
   settings,
   store,
@@ -146,6 +154,16 @@ function addGlobalShortcuts() {
 app.on("ready", async () => {
   if (isMainInstanceOrMultipleInstancesAllowed()) {
     await components.whenReady();
+
+    // Adblock
+    if (store.get(settings.adBlock)) {
+      const filter = { urls: ["https://listen.tidal.com/*"] };
+      session.defaultSession.webRequest.onBeforeRequest(filter, (details, callback) => {
+        if (details.url.match(/\d\?country/)) callback({ cancel: true });
+        else callback({ cancel: false });
+      });
+    }
+
     createWindow();
     addMenu(mainWindow);
     createSettingsWindow();
