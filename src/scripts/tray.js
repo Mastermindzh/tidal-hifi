@@ -17,7 +17,7 @@ trayModule.addTray = function (mainWindow, options = { icon: "" }) {
       if (!mainWindow.isFocused())
         mainWindow.focus();
       else
-        mainWindow.minimize();
+        mainWindow.hide();
     }
     else
       mainWindow.show();
