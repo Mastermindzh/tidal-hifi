@@ -1,6 +1,6 @@
 {
   "name": "tidal-hifi",
-  "version": "4.4.0",
+  "version": "5.0.0",
   "description": "Tidal on Electron with widevine(hifi) support",
   "main": "src/main.js",
   "scripts": {
@@ -45,6 +45,7 @@
     "electron": "git+https://github.com/castlabs/electron-releases.git#v19.0.5+wvcus",
     "electron-builder": "^23.3.3",
     "js-yaml": "^3.14.1",
+    "markdown-toc": "^1.2.0",
     "prettier": "^2.7.1",
     "sass-lint": "^1.13.1",
     "sass-lint-auto-fix": "^0.21.2"

@@ -1,5 +1,13 @@
 require("@electron/remote/main").initialize();
-const { app, BrowserWindow, components, globalShortcut, ipcMain, protocol, session } = require("electron");
+const {
+  app,
+  BrowserWindow,
+  components,
+  globalShortcut,
+  ipcMain,
+  protocol,
+  session,
+} = require("electron");
 const {
   settings,
   store,
