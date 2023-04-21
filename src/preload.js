@@ -313,19 +313,14 @@ function updateMediaInfo(options, notify) {
  * If it's a song it returns the track URL, if not it will return undefined
  */
 function getTrackURL() {
-  const URLelement = elements.get("title").querySelector("a");
-  if (URLelement !== null) {
-    const id = URLelement.href.replace(/[^0-9]/g, "");
-    return `https://tidal.com/browse/track/${id}`;
-  }
-
-  return window.location;
+  const id = getTrackID();
+  return `https://tidal.com/browse/track/${id}`;
 }
 
 function getTrackID() {
   const URLelement = elements.get("title").querySelector("a");
   if (URLelement !== null) {
-    const id = URLelement.href.replace(/[^0-9]/g, "");
+    const id = URLelement.href.replace(/\D/g, "");
     return id;
   }
 
@@ -402,7 +397,7 @@ setInterval(function () {
       }
     }
   }
-}, 1000);
+}, 100);
 
 if (process.platform === "linux" && store.get(settings.mpris)) {
   try {
