@@ -14,13 +14,14 @@ trayModule.addTray = function (mainWindow, options = { icon: "" }) {
 
   tray.on("click", function () {
     if (mainWindow.isVisible()) {
-      if (!mainWindow.isFocused())
+      if (!mainWindow.isFocused()) {
         mainWindow.focus();
-      else
+      } else {
         mainWindow.hide();
-    }
-    else
+      }
+    } else {
       mainWindow.show();
+    }
   });
 };
 

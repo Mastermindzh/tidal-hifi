@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Replaced "skipping arists" with a full implementation of an Adblock mechanism
   > Disabled audio & visual ads, unlocked lyrics, suggested track, track info, unlimited skips thanks to uBlockOrigin custom filters ([source](https://github.com/uBlockOrigin/uAssets/issues/17495))
 
+- Updated to v24 of electron
+  - Fixes [#196](https://github.com/Mastermindzh/tidal-hifi/issues/196)
+
 ## 4.4.0
 
 - Updated shortcut hint on the menubar to reflect the new `ctrl+=` shortcut.
