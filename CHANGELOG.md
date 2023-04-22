@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 5.0.0
 
-- Replaced "skipping arists" with a full implementation of an Adblock mechanism
+- Replaced "muting artists" with a full implementation of an Adblock mechanism
   > Disabled audio & visual ads, unlocked lyrics, suggested track, track info, unlimited skips thanks to uBlockOrigin custom filters ([source](https://github.com/uBlockOrigin/uAssets/issues/17495))
 
 ## 4.4.0

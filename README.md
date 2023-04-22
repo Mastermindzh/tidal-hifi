@@ -10,30 +10,33 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
 
 <!-- toc -->
 
-- [Tidal-hifi](#tidal-hifi)
-  - [Table of Contents](#table-of-contents)
-  - [Installation](#installation)
-    - [Using releases](#using-releases)
-    - [Snap](#snap)
-    - [Arch Linux](#arch-linux)
-    - [Flatpak](#flatpak)
-    - [Nix](#nix)
-    - [Using source](#using-source)
-  - [Features](#features)
-  - [Integrations](#integrations)
-    - [Known bugs](#known-bugs)
-      - [last.fm doesn't work out of the box. Use rescrobbler as a workaround](#lastfm-doesnt-work-out-of-the-box-use-rescrobbler-as-a-workaround)
-  - [Why](#why)
-  - [Why not extend existing projects?](#why-not-extend-existing-projects)
-  - [Special thanks to...](#special-thanks-to)
-  - [Buy me a coffee? Please don't](#buy-me-a-coffee-please-dont)
-  - [Images](#images)
-    - [Settings window](#settings-window)
-    - [User setups](#user-setups)
+- [Installation](#installation)
+  - [Dependencies](#dependencies)
+  - [Using releases](#using-releases)
+  - [Snap](#snap)
+  - [Arch Linux](#arch-linux)
+  - [Flatpak](#flatpak)
+  - [Nix](#nix)
+  - [Using source](#using-source)
+- [Features](#features)
+- [Integrations](#integrations)
+  - [Known bugs](#known-bugs)
+    - [last.fm doesn't work out of the box. Use rescrobbler as a workaround](#lastfm-doesnt-work-out-of-the-box-use-rescrobbler-as-a-workaround)
+- [Why](#why)
+- [Why not extend existing projects?](#why-not-extend-existing-projects)
+- [Special thanks to](#special-thanks-to)
+- [Buy me a coffee? Please don't](#buy-me-a-coffee-please-dont)
+- [Images](#images)
+  - [Settings window](#settings-window)
+  - [User setups](#user-setups)
 
 <!-- tocstop -->
 
 ## Installation
+
+### Dependencies
+
+Note that you **need** a notification library such as [libnotify](https://github.com/GNOME/libnotify) or [dunst](https://github.com/dunst-project/dunst) in order for the software to work properly.
 
 ### Using releases
 
