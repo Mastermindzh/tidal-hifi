@@ -42,7 +42,7 @@
   },
   "devDependencies": {
     "@mastermindzh/prettier-config": "^1.0.0",
-    "electron": "git+https://github.com/castlabs/electron-releases.git#v19.0.5+wvcus",
+    "electron": "git+https://github.com/castlabs/electron-releases.git#v24.1.2+wvcus",
     "electron-builder": "^24.2.1",
     "js-yaml": "^3.14.1",
     "markdown-toc": "^1.2.0",

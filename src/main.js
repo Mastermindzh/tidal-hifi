@@ -91,6 +91,7 @@ function createWindow(options = {}) {
     backgroundColor: options.backgroundColor,
     autoHideMenuBar: true,
     webPreferences: {
+      sandbox: false,
       preload: path.join(__dirname, "preload.js"),
       plugins: true,
       devTools: true, // I like tinkering, others might too
@@ -159,7 +160,7 @@ app.on("ready", async () => {
     if (store.get(settings.adBlock)) {
       const filter = { urls: ["https://listen.tidal.com/*"] };
       session.defaultSession.webRequest.onBeforeRequest(filter, (details, callback) => {
-        if (details.url.match(/\d\?country/)) callback({ cancel: true });
+        if (details.url.match(/\/users\/.*\d\?country/)) callback({ cancel: true });
         else callback({ cancel: false });
       });
     }
