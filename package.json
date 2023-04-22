@@ -44,6 +44,7 @@
     "@mastermindzh/prettier-config": "^1.0.0",
     "electron": "git+https://github.com/castlabs/electron-releases.git#v24.1.2+wvcus",
     "electron-builder": "^24.2.1",
+    "js-yaml": "^4.1.0",
     "markdown-toc": "^1.2.0",
     "prettier": "^2.8.7",
     "sass-lint": "^1.13.1",
