@@ -9,7 +9,7 @@ snap:
     - screen-inhibit-control
 linux:
   category: AudioVideo
-  icon: icon.png
+  icon: assets/icons
   target:
     - dir
   executableName: tidal-hifi
