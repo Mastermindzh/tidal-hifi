@@ -323,14 +323,14 @@ function updateMediaInfo(options, notify) {
   if (options) {
     ipcRenderer.send(globalEvents.updateInfo, options);
     if (store.get(settings.notifications) && notify) {
-      new Notification({ title: options.title, body: options.message, icon: options.icon }).show();
+      new Notification({ title: options.title, body: options.artists, icon: options.icon }).show();
     }
     if (player) {
       player.metadata = {
         ...player.metadata,
         ...{
           "xesam:title": options.title,
-          "xesam:artist": [options.message],
+          "xesam:artist": [options.artists],
           "xesam:album": options.album,
           "mpris:artUrl": options.image,
           "mpris:length": convertDuration(options.duration) * 1000 * 1000,
@@ -361,6 +361,23 @@ function getTrackID() {
   return window.location;
 }
 
+function updateMediaSession(options) {
+  if ("mediaSession" in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: options.title,
+      artist: options.artists,
+      album: options.album,
+      artwork: [
+        {
+          src: options.icon,
+          sizes: "640x640",
+          type: "image/png",
+        },
+      ],
+    });
+  }
+}
+
 /**
  * Watch for song changes and update title + notify
  */
@@ -377,7 +394,7 @@ setInterval(function () {
   const currentStatus = getCurrentlyPlayingStatus();
   const options = {
     title,
-    message: artistsString,
+    artists: artistsString,
     album: album,
     status: currentStatus,
     url: getTrackURL(),
@@ -386,7 +403,7 @@ setInterval(function () {
     "app-name": appName,
   };
 
-  const titleOrArtistChanged = currentSong !== songDashArtistTitle;
+  const titleOrArtistsChanged = currentSong !== songDashArtistTitle;
 
   // update title, url and play info with new info
   setTitle(songDashArtistTitle);
@@ -415,7 +432,10 @@ setInterval(function () {
     }
   }).then(
     () => {
-      updateMediaInfo(options, titleOrArtistChanged);
+      updateMediaInfo(options, titleOrArtistsChanged);
+      if (titleOrArtistsChanged) {
+        updateMediaSession(options);
+      }
     },
     () => {}
   );

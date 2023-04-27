@@ -2,14 +2,14 @@ const statuses = require("./../constants/statuses");
 
 const mediaInfo = {
   title: "",
-  artist: "",
+  artists: "",
   album: "",
   icon: "",
   status: statuses.paused,
   url: "",
   current: "",
   duration: "",
-  image: "tidal-hifi-icon"
+  image: "tidal-hifi-icon",
 };
 const mediaInfoModule = {
   mediaInfo,
@@ -20,7 +20,7 @@ const mediaInfoModule = {
  */
 mediaInfoModule.update = function (arg) {
   mediaInfo.title = propOrDefault(arg.title);
-  mediaInfo.artist = propOrDefault(arg.message);
+  mediaInfo.artists = propOrDefault(arg.artists);
   mediaInfo.album = propOrDefault(arg.album);
   mediaInfo.icon = propOrDefault(arg.icon);
   mediaInfo.url = propOrDefault(arg.url);
