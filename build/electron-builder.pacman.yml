@@ -1,5 +1,4 @@
 extends: ./build/electron-builder.base.yml
 linux:
-  icon: icon.png
   target:
     - pacman
