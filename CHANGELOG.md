@@ -4,9 +4,22 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 5.1.0
+
+### New features
+
+- You can now configure the updateFrequency in the settings window
+  - Default value is set to 500 and will overwrite the hardcoded value of 100
+
+### Fixes
+
+- Any songs **including** an artist listed in the `skipped artists` setting will now be skipped even if the song is a collaboration.
+- Linux desktop icons have been fixed. See [#222](https://github.com/Mastermindzh/tidal-hifi/pull/222) for details.
+
 ## 5.0.0
 
 - Replaced "muting artists" with a full implementation of an Adblock mechanism
+
   > Disabled audio & visual ads, unlocked lyrics, suggested track, track info, unlimited skips thanks to uBlockOrigin custom filters ([source](https://github.com/uBlockOrigin/uAssets/issues/17495))
 
 - @thanasistrisp updated Electron to 24.1.2 and fixed the tray bug :)
