@@ -1,5 +1,6 @@
 let adBlock,
   api,
+  customCSS,
   disableBackgroundThrottle,
   disableHardwareMediaKeys,
   enableCustomHotkeys,
@@ -28,6 +29,7 @@ const { app } = remote;
 function refreshSettings() {
   adBlock.checked = store.get(settings.adBlock);
   api.checked = store.get(settings.api);
+  customCSS.value = store.get(settings.customCSS);
   disableBackgroundThrottle.checked = store.get("disableBackgroundThrottle");
   disableHardwareMediaKeys.checked = store.get(settings.flags.disableHardwareMediaKeys);
   enableCustomHotkeys.checked = store.get(settings.enableCustomHotkeys);
@@ -113,6 +115,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   adBlock = get("adBlock");
   api = get("apiCheckbox");
+  customCSS = get("customCSS");
   disableBackgroundThrottle = get("disableBackgroundThrottle");
   disableHardwareMediaKeys = get("disableHardwareMediaKeys");
   enableCustomHotkeys = get("enableCustomHotkeys");
@@ -134,6 +137,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   addInputListener(adBlock, settings.adBlock);
   addInputListener(api, settings.api);
+  addTextAreaListener(customCSS, settings.customCSS);
   addInputListener(disableBackgroundThrottle, settings.disableBackgroundThrottle);
   addInputListener(disableHardwareMediaKeys, settings.flags.disableHardwareMediaKeys);
   addInputListener(enableCustomHotkeys, settings.enableCustomHotkeys);

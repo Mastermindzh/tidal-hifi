@@ -172,7 +172,6 @@ app.on("ready", async () => {
     store.get(settings.trayIcon) && addTray(mainWindow, { icon }) && refreshTray();
     store.get(settings.api) && expressModule.run(mainWindow);
     store.get(settings.enableDiscord) && discordModule.initRPC();
-    // mainWindow.webContents.openDevTools();
   } else {
     app.quit();
   }

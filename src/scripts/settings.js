@@ -12,6 +12,7 @@ const store = new Store({
     apiSettings: {
       port: 47836,
     },
+    customCSS: "",
     disableBackgroundThrottle: true,
     disableHardwareMediaKeys: false,
     enableCustomHotkeys: false,

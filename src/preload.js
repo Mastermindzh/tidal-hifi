@@ -7,7 +7,7 @@ const { downloadFile } = require("./scripts/download");
 const statuses = require("./constants/statuses");
 const hotkeys = require("./scripts/hotkeys");
 const globalEvents = require("./constants/globalEvents");
-const { skipArtists, updateFrequency } = require("./constants/settings");
+const { skipArtists, updateFrequency, customCSS } = require("./constants/settings");
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 const appName = "Tidal Hifi";
 let currentSong = "";
@@ -142,6 +142,14 @@ const elements = {
     return this.get(key).focus();
   },
 };
+
+function addCustomCss() {
+  window.addEventListener("DOMContentLoaded", () => {
+    const style = document.createElement("style");
+    style.innerHTML = store.get(customCSS);
+    document.head.appendChild(style);
+  });
+}
 
 /**
  * Get the update frequency from the store
@@ -486,7 +494,7 @@ if (process.platform === "linux" && store.get(settings.mpris)) {
     console.log("player api not working");
   }
 }
-
+addCustomCss();
 addHotKeys();
 addIPCEventListeners();
 addFullScreenListeners();

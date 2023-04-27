@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### New features
 
+- You can now add custom CSS in the "advanced" settings tab
 - You can now configure the updateFrequency in the settings window
   - Default value is set to 500 and will overwrite the hardcoded value of 100
 

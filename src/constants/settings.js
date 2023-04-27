@@ -15,6 +15,7 @@ const settings = {
     root: "apiSettings",
     port: "apiSettings.port",
   },
+  customCSS: "customCSS",
   disableBackgroundThrottle: "disableBackgroundThrottle",
   disableHardwareMediaKeys: "disableHardwareMediaKeys",
   enableCustomHotkeys: "enableCustomHotkeys",
