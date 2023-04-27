@@ -7,7 +7,7 @@ const { downloadFile } = require("./scripts/download");
 const statuses = require("./constants/statuses");
 const hotkeys = require("./scripts/hotkeys");
 const globalEvents = require("./constants/globalEvents");
-const { skipArtists } = require("./constants/settings");
+const { skipArtists, updateFrequency, customCSS } = require("./constants/settings");
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 const appName = "Tidal Hifi";
 let currentSong = "";
@@ -65,16 +65,27 @@ const elements = {
     return "";
   },
 
-  getArtists: function () {
+  /**
+   * returns an array of all artists in the current song
+   * @returns {Array} artists
+   */
+  getArtistsArray: function () {
     const footer = this.get("footer");
 
     if (footer) {
-      const artists = footer.querySelector(this["artists"]);
-      if (artists) {
-        return artists.innerText;
-      }
+      const artists = footer.querySelectorAll(this.artists);
+      if (artists) return Array.from(artists).map((artist) => artist.textContent);
     }
+    return [];
+  },
 
+  /**
+   * unify the artists array into a string separated by commas
+   * @param {Array} artistsArray
+   * @returns {String} artists
+   */
+  getArtistsString: function (artistsArray) {
+    if (artistsArray.length > 0) return artistsArray.join(", ");
     return "unknown artist(s)";
   },
 
@@ -131,6 +142,29 @@ const elements = {
     return this.get(key).focus();
   },
 };
+
+function addCustomCss() {
+  window.addEventListener("DOMContentLoaded", () => {
+    const style = document.createElement("style");
+    style.innerHTML = store.get(customCSS);
+    document.head.appendChild(style);
+  });
+}
+
+/**
+ * Get the update frequency from the store
+ * make sure it returns a number, if not use the default
+ */
+function getUpdateFrequency() {
+  const storeValue = store.get(updateFrequency);
+  const defaultValue = 500;
+
+  if (!isNaN(storeValue)) {
+    return storeValue;
+  } else {
+    return defaultValue;
+  }
+}
 
 /**
  * Play or pause the current song
@@ -289,14 +323,14 @@ function updateMediaInfo(options, notify) {
   if (options) {
     ipcRenderer.send(globalEvents.updateInfo, options);
     if (store.get(settings.notifications) && notify) {
-      new Notification({ title: options.title, body: options.message, icon: options.icon }).show();
+      new Notification({ title: options.title, body: options.artists, icon: options.icon }).show();
     }
     if (player) {
       player.metadata = {
         ...player.metadata,
         ...{
           "xesam:title": options.title,
-          "xesam:artist": [options.message],
+          "xesam:artist": [options.artists],
           "xesam:album": options.album,
           "mpris:artUrl": options.image,
           "mpris:length": convertDuration(options.duration) * 1000 * 1000,
@@ -327,22 +361,40 @@ function getTrackID() {
   return window.location;
 }
 
+function updateMediaSession(options) {
+  if ("mediaSession" in navigator) {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: options.title,
+      artist: options.artists,
+      album: options.album,
+      artwork: [
+        {
+          src: options.icon,
+          sizes: "640x640",
+          type: "image/png",
+        },
+      ],
+    });
+  }
+}
+
 /**
  * Watch for song changes and update title + notify
  */
 setInterval(function () {
   const title = elements.getText("title");
-  const artists = elements.getArtists();
-  skipArtistsIfFoundInSkippedArtistsList(artists);
+  const artistsArray = elements.getArtistsArray();
+  const artistsString = elements.getArtistsString(artistsArray);
+  skipArtistsIfFoundInSkippedArtistsList(artistsArray);
 
   const album = elements.getAlbumName();
   const current = elements.getText("current");
   const duration = elements.getText("duration");
-  const songDashArtistTitle = `${title} - ${artists}`;
+  const songDashArtistTitle = `${title} - ${artistsString}`;
   const currentStatus = getCurrentlyPlayingStatus();
   const options = {
     title,
-    message: artists,
+    artists: artistsString,
     album: album,
     status: currentStatus,
     url: getTrackURL(),
@@ -351,7 +403,7 @@ setInterval(function () {
     "app-name": appName,
   };
 
-  const titleOrArtistChanged = currentSong !== songDashArtistTitle;
+  const titleOrArtistsChanged = currentSong !== songDashArtistTitle;
 
   // update title, url and play info with new info
   setTitle(songDashArtistTitle);
@@ -380,24 +432,32 @@ setInterval(function () {
     }
   }).then(
     () => {
-      updateMediaInfo(options, titleOrArtistChanged);
+      updateMediaInfo(options, titleOrArtistsChanged);
+      if (titleOrArtistsChanged) {
+        updateMediaSession(options);
+      }
     },
     () => {}
   );
 
   /**
    * automatically skip a song if the artists are found in the list of artists to skip
-   * @param {*} artists list of artists to skip
+   * @param {*} artists array of artists
    */
   function skipArtistsIfFoundInSkippedArtistsList(artists) {
     if (store.get(skipArtists)) {
       const skippedArtists = store.get(settings.skippedArtists);
-      if (skippedArtists.find((artist) => artist === artists) !== undefined) {
-        elements.click("next");
+      if (skippedArtists.length > 0) {
+        const artistsToSkip = skippedArtists.map((artist) => artist);
+        const artistNames = Object.values(artists).map((artist) => artist);
+        const foundArtist = artistNames.some((artist) => artistsToSkip.includes(artist));
+        if (foundArtist) {
+          elements.click("next");
+        }
       }
     }
   }
-}, 100);
+}, getUpdateFrequency());
 
 if (process.platform === "linux" && store.get(settings.mpris)) {
   try {
@@ -454,7 +514,7 @@ if (process.platform === "linux" && store.get(settings.mpris)) {
     console.log("player api not working");
   }
 }
-
+addCustomCss();
 addHotKeys();
 addIPCEventListeners();
 addFullScreenListeners();

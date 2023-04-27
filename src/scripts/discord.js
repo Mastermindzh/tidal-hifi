@@ -26,8 +26,8 @@ const observer = (event, arg) => {
         ...idleStatus,
         ...{
           details: `Listening to ${mediaInfoModule.mediaInfo.title}`,
-          state: mediaInfoModule.mediaInfo.artist
-            ? mediaInfoModule.mediaInfo.artist
+          state: mediaInfoModule.mediaInfo.artists
+            ? mediaInfoModule.mediaInfo.artists
             : "unknown artist(s)",
           startTimestamp: parseInt(now),
           endTimestamp: parseInt(remaining),
@@ -43,7 +43,7 @@ const observer = (event, arg) => {
         ...idleStatus,
         ...{
           details: `Watching ${mediaInfoModule.mediaInfo.title}`,
-          state: mediaInfoModule.mediaInfo.artist,
+          state: mediaInfoModule.mediaInfo.artists,
           startTimestamp: parseInt(now),
           endTimestamp: parseInt(remaining),
         },

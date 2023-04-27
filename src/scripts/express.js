@@ -11,7 +11,7 @@ let expressInstance;
 /**
  * Function to enable tidal-hifi's express api
  */
-expressModule.run = function(mainWindow) {
+expressModule.run = function (mainWindow) {
   /**
    * Shorthand to handle a fire and forget global event
    * @param {*} res
@@ -24,14 +24,14 @@ expressModule.run = function(mainWindow) {
 
   const expressApp = express();
   expressApp.get("/", (req, res) => res.send("Hello World!"));
-  expressApp.get("/current", (req, res) => res.json(mediaInfo));
+  expressApp.get("/current", (req, res) => res.json({ ...mediaInfo, artist: mediaInfo.artists }));
   expressApp.get("/image", (req, res) => {
     var stream = fs.createReadStream(mediaInfo.icon);
-    stream.on("open", function() {
+    stream.on("open", function () {
       res.set("Content-Type", "image/png");
       stream.pipe(res);
     });
-    stream.on("error", function() {
+    stream.on("error", function () {
       res.set("Content-Type", "text/plain");
       res.status(404).end("Not found");
     });
@@ -54,7 +54,7 @@ expressModule.run = function(mainWindow) {
     let port = store.get(settings.apiSettings.port);
 
     expressInstance = expressApp.listen(port, "127.0.0.1", () => {});
-    expressInstance.on("error", function(e) {
+    expressInstance.on("error", function (e) {
       let message = e.code;
       if (e.code === "EADDRINUSE") {
         message = `Port ${port} in use.`;

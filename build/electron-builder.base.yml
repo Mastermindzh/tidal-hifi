@@ -9,7 +9,7 @@ snap:
     - screen-inhibit-control
 linux:
   category: AudioVideo
-  icon: icon.png
+  icon: assets/icons
   target:
     - dir
   executableName: tidal-hifi
@@ -18,7 +18,7 @@ linux:
     Name: TIDAL Hi-Fi
     GenericName: TIDAL Hi-Fi
     Comment: The web version of listen.tidal.com running in electron with hifi support thanks to widevine.
-    Icon: icon.png
+    Icon: tidal-hifi
     StartupNotify: true
     Terminal: false
     Type: Application
