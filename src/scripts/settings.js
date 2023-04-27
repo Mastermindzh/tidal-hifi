@@ -7,29 +7,30 @@ let settingsWindow;
 
 const store = new Store({
   defaults: {
-    notifications: true,
-    api: true,
-    playBackControl: true,
-    skipArtists: false,
-    skippedArtists: [""],
     adBlock: false,
-    disableBackgroundThrottle: true,
-    menuBar: true,
+    api: true,
     apiSettings: {
       port: 47836,
     },
-    singleInstance: true,
+    disableBackgroundThrottle: true,
     disableHardwareMediaKeys: false,
-    trayIcon: true,
-    minimizeOnClose: false,
-    mpris: false,
     enableCustomHotkeys: false,
     enableDiscord: false,
-    windowBounds: { width: 800, height: 600 },
     flags: {
       gpuRasterization: true,
       disableHardwareMediaKeys: false,
     },
+    menuBar: true,
+    minimizeOnClose: false,
+    mpris: false,
+    notifications: true,
+    playBackControl: true,
+    singleInstance: true,
+    skipArtists: false,
+    skippedArtists: [""],
+    trayIcon: true,
+    updateFrequency: 500,
+    windowBounds: { width: 800, height: 600 },
   },
   migrations: {
     "3.1.0": (migrationStore) => {

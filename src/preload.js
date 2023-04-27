@@ -7,7 +7,7 @@ const { downloadFile } = require("./scripts/download");
 const statuses = require("./constants/statuses");
 const hotkeys = require("./scripts/hotkeys");
 const globalEvents = require("./constants/globalEvents");
-const { skipArtists } = require("./constants/settings");
+const { skipArtists, updateFrequency } = require("./constants/settings");
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 const appName = "Tidal Hifi";
 let currentSong = "";
@@ -68,14 +68,13 @@ const elements = {
   /**
    * returns an array of all artists in the current song
    * @returns {Array} artists
-    */
+   */
   getArtistsArray: function () {
     const footer = this.get("footer");
 
     if (footer) {
       const artists = footer.querySelectorAll(this.artists);
-      if (artists)
-        return Array.from(artists).map((artist) => artist.textContent);
+      if (artists) return Array.from(artists).map((artist) => artist.textContent);
     }
     return [];
   },
@@ -84,10 +83,9 @@ const elements = {
    * unify the artists array into a string separated by commas
    * @param {Array} artistsArray
    * @returns {String} artists
-    */
+   */
   getArtistsString: function (artistsArray) {
-    if (artistsArray.length > 0)
-      return artistsArray.join(", ");
+    if (artistsArray.length > 0) return artistsArray.join(", ");
     return "unknown artist(s)";
   },
 
@@ -144,6 +142,21 @@ const elements = {
     return this.get(key).focus();
   },
 };
+
+/**
+ * Get the update frequency from the store
+ * make sure it returns a number, if not use the default
+ */
+function getUpdateFrequency() {
+  const storeValue = store.get(updateFrequency);
+  const defaultValue = 500;
+
+  if (!isNaN(storeValue)) {
+    return storeValue;
+  } else {
+    return defaultValue;
+  }
+}
 
 /**
  * Play or pause the current song
@@ -416,7 +429,7 @@ setInterval(function () {
       }
     }
   }
-}, 100);
+}, getUpdateFrequency());
 
 if (process.platform === "linux" && store.get(settings.mpris)) {
   try {

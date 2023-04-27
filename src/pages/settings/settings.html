@@ -160,7 +160,7 @@
             <div class="group__option">
               <div class="group__description">
                 <label for="port">API port</label>
-                <input id="port" type="text" class="text-input" name="port" />
+                <input id="port" type="number" class="text-input" name="port" />
               </div>
             </div>
             <div class="group__option">
@@ -212,6 +212,22 @@
         </section>
 
         <section id="advanced-section" class="tabs__section">
+          <div class="group">
+            <p class="group__title">Settings</p>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Update frequency</h4>
+                <p>
+                  The amount of time, in milliseconds, that tidal-hifi will refresh its playback info by scraping the
+                  website.
+                  The default of 500 seems to work in more cases but if you are fine with a bit more resource usage you
+                  can decrease it as well.
+                </p>
+                <input id="updateFrequency" type="number" class="text-input" name="updateFrequency" />
+              </div>
+            </div>
+          </div>
+
           <div class="group">
             <p class="group__title">Flags</p>
             <div class="group__option">
