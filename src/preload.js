@@ -65,16 +65,29 @@ const elements = {
     return "";
   },
 
-  getArtists: function () {
+  /**
+   * returns an array of all artists in the current song
+   * @returns {Array} artists
+    */
+  getArtistsArray: function () {
     const footer = this.get("footer");
 
     if (footer) {
-      const artists = footer.querySelector(this["artists"]);
-      if (artists) {
-        return artists.innerText;
-      }
+      const artists = footer.querySelectorAll(this.artists);
+      if (artists)
+        return Array.from(artists).map((artist) => artist.textContent);
     }
+    return [];
+  },
 
+  /**
+   * unify the artists array into a string separated by commas
+   * @param {Array} artistsArray
+   * @returns {String} artists
+    */
+  getArtistsString: function (artistsArray) {
+    if (artistsArray.length > 0)
+      return artistsArray.join(", ");
     return "unknown artist(s)";
   },
 
@@ -332,17 +345,18 @@ function getTrackID() {
  */
 setInterval(function () {
   const title = elements.getText("title");
-  const artists = elements.getArtists();
-  skipArtistsIfFoundInSkippedArtistsList(artists);
+  const artistsArray = elements.getArtistsArray();
+  const artistsString = elements.getArtistsString(artistsArray);
+  skipArtistsIfFoundInSkippedArtistsList(artistsArray);
 
   const album = elements.getAlbumName();
   const current = elements.getText("current");
   const duration = elements.getText("duration");
-  const songDashArtistTitle = `${title} - ${artists}`;
+  const songDashArtistTitle = `${title} - ${artistsString}`;
   const currentStatus = getCurrentlyPlayingStatus();
   const options = {
     title,
-    message: artists,
+    message: artistsString,
     album: album,
     status: currentStatus,
     url: getTrackURL(),
@@ -387,13 +401,18 @@ setInterval(function () {
 
   /**
    * automatically skip a song if the artists are found in the list of artists to skip
-   * @param {*} artists list of artists to skip
+   * @param {*} artists array of artists
    */
   function skipArtistsIfFoundInSkippedArtistsList(artists) {
     if (store.get(skipArtists)) {
       const skippedArtists = store.get(settings.skippedArtists);
-      if (skippedArtists.find((artist) => artist === artists) !== undefined) {
-        elements.click("next");
+      if (skippedArtists.length > 0) {
+        const artistsToSkip = skippedArtists.map((artist) => artist);
+        const artistNames = Object.values(artists).map((artist) => artist);
+        const foundArtist = artistNames.some((artist) => artistsToSkip.includes(artist));
+        if (foundArtist) {
+          elements.click("next");
+        }
       }
     }
   }
