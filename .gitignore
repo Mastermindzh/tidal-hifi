@@ -12,3 +12,4 @@ build/linux/arch/*
 
 # JetBrains IDE configuration
 .idea
+ts-dist/**

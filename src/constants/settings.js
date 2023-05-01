@@ -21,6 +21,7 @@ const settings = {
   enableCustomHotkeys: "enableCustomHotkeys",
   enableDiscord: "enableDiscord",
   flags: {
+    root: "flags",
     disableHardwareMediaKeys: "flags.disableHardwareMediaKeys",
     gpuRasterization: "flags.gpuRasterization",
   },

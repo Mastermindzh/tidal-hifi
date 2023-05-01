@@ -1,5 +1,5 @@
-require("@electron/remote/main").initialize();
-const {
+import { initialize, enable } from "@electron/remote/main";
+import {
   app,
   BrowserWindow,
   components,
@@ -7,38 +7,40 @@ const {
   ipcMain,
   protocol,
   session,
-} = require("electron");
-const {
+} from "electron";
+import {
   settings,
   store,
   createSettingsWindow,
   showSettingsWindow,
   closeSettingsWindow,
   hideSettingsWindow,
-} = require("./scripts/settings");
-const { addTray, refreshTray } = require("./scripts/tray");
-const { addMenu } = require("./scripts/menu");
-const path = require("path");
+} from "./scripts/settings";
+import { addTray, refreshTray } from "./scripts/tray";
+import { addMenu } from "./scripts/menu";
+import path from "path";
+import expressModule from "./scripts/express";
+import mediaKeys from "./constants/mediaKeys";
+import mediaInfoModule from "./scripts/mediaInfo";
+import discordModule from "./scripts/discord";
+import globalEvents from "./constants/globalEvents";
+import flagValues from "./constants/flags";
 const tidalUrl = "https://listen.tidal.com";
-const expressModule = require("./scripts/express");
-const mediaKeys = require("./constants/mediaKeys");
-const mediaInfoModule = require("./scripts/mediaInfo");
-const discordModule = require("./scripts/discord");
-const globalEvents = require("./constants/globalEvents");
-const flagValues = require("./constants/flags");
 
-let mainWindow;
-let icon = path.join(__dirname, "../assets/icon.png");
+initialize();
+
+let mainWindow: any;
+const icon = path.join(__dirname, "../assets/icon.png");
 const PROTOCOL_PREFIX = "tidal";
 
 setFlags();
 
 function setFlags() {
-  const flags = store.get().flags;
+  const flags = store.get(settings.flags.root);
   if (flags) {
     for (const [key, value] of Object.entries(flags)) {
       if (value) {
-        flagValues[key].forEach((flag) => {
+        (flagValues as any)[key].forEach((flag: any) => {
           console.log(`enabling command line switch ${flag.flag} with value ${flag.value}`);
           app.commandLine.appendSwitch(flag.flag, flag.value);
         });
@@ -80,7 +82,7 @@ function isMainInstanceOrMultipleInstancesAllowed() {
   return true;
 }
 
-function createWindow(options = {}) {
+function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     x: options.x,
@@ -97,7 +99,7 @@ function createWindow(options = {}) {
       devTools: true, // I like tinkering, others might too
     },
   });
-  require("@electron/remote/main").enable(mainWindow.webContents);
+  enable(mainWindow.webContents);
   registerHttpProtocols();
   syncMenuBarWithStore();
 
@@ -109,11 +111,8 @@ function createWindow(options = {}) {
     mainWindow.webContents.setBackgroundThrottling(false);
   }
 
-  // run stuff after first load
-  mainWindow.webContents.once("did-finish-load", () => {});
-
-  mainWindow.on("close", function (event) {
-    if (!app.isQuiting && store.get(settings.minimizeOnClose)) {
+  mainWindow.on("close", function (event: any) {
+    if (store.get(settings.minimizeOnClose)) {
       event.preventDefault();
       mainWindow.hide();
       refreshTray(mainWindow);
@@ -126,8 +125,7 @@ function createWindow(options = {}) {
     app.quit();
   });
   mainWindow.on("resize", () => {
-    let { width, height } = mainWindow.getBounds();
-
+    const { width, height } = mainWindow.getBounds();
     store.set(settings.windowBounds.root, { width, height });
   });
 }
@@ -144,7 +142,7 @@ function registerHttpProtocols() {
 function addGlobalShortcuts() {
   Object.keys(mediaKeys).forEach((key) => {
     globalShortcut.register(`${key}`, () => {
-      mainWindow.webContents.send("globalEvent", `${mediaKeys[key]}`);
+      mainWindow.webContents.send("globalEvent", `${(mediaKeys as any)[key]}`);
     });
   });
 }
@@ -169,7 +167,10 @@ app.on("ready", async () => {
     addMenu(mainWindow);
     createSettingsWindow();
     addGlobalShortcuts();
-    store.get(settings.trayIcon) && addTray(mainWindow, { icon }) && refreshTray();
+    if (store.get(settings.trayIcon)) {
+      addTray(mainWindow, { icon });
+      refreshTray();
+    }
     store.get(settings.api) && expressModule.run(mainWindow);
     store.get(settings.enableDiscord) && discordModule.initRPC();
   } else {
@@ -186,7 +187,7 @@ app.on("activate", function () {
 });
 
 app.on("browser-window-created", (_, window) => {
-  require("@electron/remote/main").enable(window.webContents);
+  enable(window.webContents);
 });
 
 // IPC

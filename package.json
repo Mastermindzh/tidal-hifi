@@ -2,9 +2,13 @@
   "name": "tidal-hifi",
   "version": "5.1.0",
   "description": "Tidal on Electron with widevine(hifi) support",
-  "main": "src/main.js",
+  "main": "ts-dist/main.js",
   "scripts": {
     "start": "electron .",
+    "compile": "tsc && npm run sass-and-copy",
+    "watch": "tsc-watch --onSuccess \"npm run sass-and-copy\"",
+    "sass-and-copy": "npm run sass && npm run copy-files",
+    "copy-files": "rsync -av --exclude '*.ts' --exclude '*.scss' ./src/pages ts-dist",
     "build": "npm run builder -- -c ./build/electron-builder.yml",
     "build-deb": "npm run builder -- -c ./build/electron-builder.deb.yml",
     "build-unpacked": "npm run builder -- -c ./build/electron-builder.unpacked.yml",
@@ -14,8 +18,7 @@
     "build-wl": "npm run builder -- -c ./build/electron-builder.yml -wl",
     "build-mac": "npm run builder -- -c ./build/electron-builder.yml -m",
     "build-base": "npm run builder -- -c ./build/electron-builder.base.yml",
-    "prestart": "npm run sass",
-    "prebuilder": "npm run sass",
+    "prebuilder": "npm run compile",
     "builder": "electron-builder --publish=never",
     "sass": "sass ./src/pages/settings/settings.scss ./src/pages/settings/settings.css",
     "style-lint": "npx stylelint **/*.scss",
@@ -42,8 +45,11 @@
   },
   "devDependencies": {
     "@mastermindzh/prettier-config": "^1.0.0",
+    "@typescript-eslint/eslint-plugin": "^5.59.1",
+    "@typescript-eslint/parser": "^5.59.1",
     "electron": "git+https://github.com/castlabs/electron-releases.git#v24.1.2+wvcus",
     "electron-builder": "^24.2.1",
+    "eslint": "^8.39.0",
     "js-yaml": "^4.1.0",
     "markdown-toc": "^1.2.0",
     "prettier": "^2.8.8",
@@ -51,6 +57,8 @@
     "stylelint-config-standard": "^33.0.0",
     "stylelint-config-standard-scss": "^9.0.0",
     "stylelint-prettier": "^3.0.0",
+    "tsc-watch": "^6.0.4",
+    "typescript": "^5.0.4"
   },
   "prettier": "@mastermindzh/prettier-config"
 }

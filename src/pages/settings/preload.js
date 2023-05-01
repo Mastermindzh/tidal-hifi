@@ -18,9 +18,9 @@ let adBlock,
   trayIcon,
   updateFrequency;
 
-const { store, settings } = require("./../../scripts/settings");
+const { store, settings } = require("../../scripts/settings");
 const { ipcRenderer } = require("electron");
-const globalEvents = require("./../../constants/globalEvents");
+const globalEvents = require("../../constants/globalEvents");
 const remote = require("@electron/remote");
 const { app } = remote;
 /**

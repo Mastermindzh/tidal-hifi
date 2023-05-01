@@ -3,7 +3,15 @@ const { app, ipcMain } = require("electron");
 const globalEvents = require("../constants/globalEvents");
 const clientId = "833617820704440341";
 const mediaInfoModule = require("./mediaInfo");
-const discordModule = [];
+const discordModule = {
+  rpc: {},
+  unRPC: function () {
+    return;
+  },
+  initRPC: function () {
+    return;
+  },
+};
 
 function timeToSeconds(timeArray) {
   let minutes = timeArray[0] * 1;
