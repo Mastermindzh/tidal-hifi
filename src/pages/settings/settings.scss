@@ -3,7 +3,6 @@
 $black: #17171a;
 $grey-333: #333;
 $white: #f9f9f9;
-
 $tidal-blue: #0ff;
 $tidal-grey: #72777f;
 $tidal-grey-darker: #404248;
@@ -36,16 +35,14 @@ $tidal-grey-darkest: #242528;
   src: url("fonts/NotoSans-Bold.ttf") format("truetype");
 }
 
-$font1: "Noto Sans", Helvetica, sans-serif;
+$font1: "Noto Sans", helvetica, sans-serif;
 
 // --- Mixins ---
 
 @mixin drag($enabled: true) {
   @if $enabled {
     -webkit-app-region: drag;
-  }
-
-  @else {
+  } @else {
     -webkit-app-region: no-drag;
   }
 }
@@ -62,6 +59,7 @@ html {
 
 .external-link {
   @extend button;
+
   text-decoration: underline;
 }
 
@@ -80,6 +78,7 @@ html {
 
   &__drag-area {
     @include drag;
+
     position: absolute;
     width: 100%;
     height: 50px;
@@ -90,6 +89,7 @@ html {
   &__close-button {
     @extend button;
     @include drag(false);
+
     position: absolute;
     top: 12px;
     right: 10px;
@@ -106,7 +106,7 @@ html {
     display: block;
     width: 18px;
     height: 18px;
-    opacity: .7;
+    opacity: 0.7;
   }
 
   // --- Settings tabs ---
@@ -125,8 +125,9 @@ html {
       outline: none;
     }
 
-    &+label {
+    & + label {
       @include drag(false);
+
       display: inline-block;
       position: relative;
       margin-right: 35px;
@@ -138,7 +139,7 @@ html {
       user-select: none;
     }
 
-    &:checked+label {
+    &:checked + label {
       border-bottom: 2px solid $tidal-blue;
       color: $tidal-blue;
     }
@@ -156,7 +157,7 @@ html {
   }
 
   @for $i from 1 to 6 {
-    .settings>input:nth-child(#{$i*2-1}):checked~&>.tabs__section:nth-child(#{$i}) {
+    .settings > input:nth-child(#{$i * 2 - 1}):checked ~ & > .tabs__section:nth-child(#{$i}) {
       display: block;
     }
   }
@@ -217,7 +218,7 @@ html {
       width: 100%;
       margin-bottom: 10px;
       padding: 5px 0;
-      transition: .2s;
+      transition: 0.2s;
       border: 0;
       border-bottom: solid 1px $grey-333;
       outline: none;
@@ -237,38 +238,36 @@ html {
 
 .switch {
   $this: &;
+
   position: relative;
   min-width: 50px;
   height: 28px;
-
   margin-left: 10px;
 
   input {
     transform: scale(0);
     outline: none;
 
-    &:checked+#{$this}__slider {
+    &:checked + #{$this}__slider {
       background-color: $tidal-blue;
 
       &::before {
         transform: translateX(22px);
-        background-color: white;
+        background-color: $white;
       }
     }
 
-    &:focus+#{$this}__slider {
+    &:focus + #{$this}__slider {
       box-shadow: inset 0 0 0 1px $tidal-blue;
     }
   }
 
   &__slider {
     @extend button;
+
     position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    transition: .4s;
+    inset: 0;
+    transition: 0.4s;
     border-radius: 40px;
     background-color: $tidal-grey-darkest;
 
@@ -278,7 +277,7 @@ html {
       left: 2px;
       width: 24px;
       height: 24px;
-      transition: .4s;
+      transition: 0.4s;
       border-radius: 50%;
       background-color: $white;
       content: "";
@@ -294,7 +293,7 @@ html {
   min-height: 50px;
   max-height: 100px;
   padding: 8px;
-  transition: .2s;
+  transition: 0.2s;
   border: 0;
   border-bottom: 1px solid transparent;
   background: $tidal-grey-darkest;
@@ -345,11 +344,12 @@ html {
 
   &__button {
     @extend button;
+
     display: block;
     height: 48px;
     margin: auto;
     padding: 0 24px;
-    transition: .2s;
+    transition: 0.2s;
     border: 0;
     border-radius: 12px;
     background: $tidal-grey-darker;

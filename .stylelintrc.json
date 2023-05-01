@@ -1,0 +1,13 @@
+{
+  "plugins": [
+    "stylelint-prettier"
+  ],
+  "extends": [
+    "stylelint-config-standard-scss"
+  ],
+  "rules": {
+    "prettier/prettier": true,
+    "scss/at-extend-no-missing-placeholder": null,
+    "no-descending-specificity": null
+  }
+}

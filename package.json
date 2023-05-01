@@ -18,8 +18,8 @@
     "prebuilder": "npm run sass",
     "builder": "electron-builder --publish=never",
     "sass": "sass ./src/pages/settings/settings.scss ./src/pages/settings/settings.css",
-    "sass-lint": "sass-lint -vc ./sass-lint.yml ./src/pages/settings/settings.scss",
-    "sass-lint-fix": "sass-lint-auto-fix ./src/pages/settings/settings.scss --config-sass-lint ./sass-lint.yml"
+    "style-lint": "npx stylelint **/*.scss",
+    "style-lint-fix": "npx stylelint --fix **/*.scss"
   },
   "keywords": [
     "electron",
@@ -46,9 +46,11 @@
     "electron-builder": "^24.2.1",
     "js-yaml": "^4.1.0",
     "markdown-toc": "^1.2.0",
-    "prettier": "^2.8.7",
-    "sass-lint": "^1.13.1",
-    "sass-lint-auto-fix": "^0.21.2"
+    "prettier": "^2.8.8",
+    "stylelint": "^15.6.0",
+    "stylelint-config-standard": "^33.0.0",
+    "stylelint-config-standard-scss": "^9.0.0",
+    "stylelint-prettier": "^3.0.0",
   },
   "prettier": "@mastermindzh/prettier-config"
 }
