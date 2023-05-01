@@ -1,5 +1,6 @@
 const Store = require("electron-store");
-const settings = require("./../constants/settings");
+
+const settings = require("../constants/settings");
 const path = require("path");
 const { BrowserWindow } = require("electron");
 

@@ -19,7 +19,7 @@ import {
 import { addTray, refreshTray } from "./scripts/tray";
 import { addMenu } from "./scripts/menu";
 import path from "path";
-import expressModule from "./scripts/express";
+import { startExpress } from "./scripts/express";
 import mediaKeys from "./constants/mediaKeys";
 import mediaInfoModule from "./scripts/mediaInfo";
 import discordModule from "./scripts/discord";
@@ -29,7 +29,7 @@ const tidalUrl = "https://listen.tidal.com";
 
 initialize();
 
-let mainWindow: any;
+let mainWindow: BrowserWindow;
 const icon = path.join(__dirname, "../assets/icon.png");
 const PROTOCOL_PREFIX = "tidal";
 
@@ -59,7 +59,7 @@ function setFlags() {
  *
  */
 function syncMenuBarWithStore() {
-  const fixedMenuBar = store.get(settings.menuBar);
+  const fixedMenuBar = !!store.get(settings.menuBar);
 
   mainWindow.autoHideMenuBar = !fixedMenuBar;
   mainWindow.setMenuBarVisibility(fixedMenuBar);
@@ -111,7 +111,7 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
     mainWindow.webContents.setBackgroundThrottling(false);
   }
 
-  mainWindow.on("close", function (event: any) {
+  mainWindow.on("close", function (event: CloseEvent) {
     if (store.get(settings.minimizeOnClose)) {
       event.preventDefault();
       mainWindow.hide();
@@ -169,9 +169,9 @@ app.on("ready", async () => {
     addGlobalShortcuts();
     if (store.get(settings.trayIcon)) {
       addTray(mainWindow, { icon });
-      refreshTray();
+      refreshTray(mainWindow);
     }
-    store.get(settings.api) && expressModule.run(mainWindow);
+    store.get(settings.api) && startExpress(mainWindow);
     store.get(settings.enableDiscord) && discordModule.initRPC();
   } else {
     app.quit();

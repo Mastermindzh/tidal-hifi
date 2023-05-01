@@ -1,17 +1,17 @@
-const { setTitle } = require("./scripts/window-functions");
-const { dialog, process, Notification } = require("@electron/remote");
+import { Notification, app, dialog } from "@electron/remote";
+import { ipcRenderer } from "electron";
+import { Options } from "./models/options";
+import { downloadFile } from "./scripts/download";
+import { addHotkey } from "./scripts/hotkeys";
+import { setTitle } from "./scripts/window-functions";
 const { store, settings } = require("./scripts/settings");
-const { ipcRenderer } = require("electron");
-const { app } = require("@electron/remote");
-const { downloadFile } = require("./scripts/download");
+const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 const statuses = require("./constants/statuses");
-const hotkeys = require("./scripts/hotkeys");
 const globalEvents = require("./constants/globalEvents");
 const { skipArtists, updateFrequency, customCSS } = require("./constants/settings");
-const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 const appName = "Tidal Hifi";
 let currentSong = "";
-let player;
+let player: any;
 let currentPlayStatus = statuses.paused;
 
 const elements = {
@@ -45,7 +45,7 @@ const elements = {
    * Get an element from the dom
    * @param {*} key key in elements object to fetch
    */
-  get: function (key) {
+  get: function (key: string) {
     return window.document.querySelector(this[key.toLowerCase()]);
   },
 
@@ -74,7 +74,7 @@ const elements = {
 
     if (footer) {
       const artists = footer.querySelectorAll(this.artists);
-      if (artists) return Array.from(artists).map((artist) => artist.textContent);
+      if (artists) return Array.from(artists).map((artist) => (artist as HTMLElement).textContent);
     }
     return [];
   },
@@ -84,7 +84,7 @@ const elements = {
    * @param {Array} artistsArray
    * @returns {String} artists
    */
-  getArtistsString: function (artistsArray) {
+  getArtistsString: function (artistsArray: string[]) {
     if (artistsArray.length > 0) return artistsArray.join(", ");
     return "unknown artist(s)";
   },
@@ -120,7 +120,7 @@ const elements = {
    * Shorthand function to get the text of a dom element
    * @param {*} key key in elements object to fetch
    */
-  getText: function (key) {
+  getText: function (key: string) {
     const element = this.get(key);
     return element ? element.textContent : "";
   },
@@ -129,7 +129,7 @@ const elements = {
    * Shorthand function to click a dom element
    * @param {*} key key in elements object to fetch
    */
-  click: function (key) {
+  click: function (key: string) {
     this.get(key).click();
     return this;
   },
@@ -138,7 +138,7 @@ const elements = {
    * Shorthand function to focus a dom element
    * @param {*} key key in elements object to fetch
    */
-  focus: function (key) {
+  focus: function (key: string) {
     return this.get(key).focus();
   },
 };
@@ -186,40 +186,40 @@ function playPause() {
  */
 function addHotKeys() {
   if (store.get(settings.enableCustomHotkeys)) {
-    hotkeys.add("Control+p", function () {
+    addHotkey("Control+p", function () {
       elements.click("account").click("settings");
     });
-    hotkeys.add("Control+l", function () {
+    addHotkey("Control+l", function () {
       handleLogout();
     });
 
-    hotkeys.add("Control+h", function () {
+    addHotkey("Control+h", function () {
       elements.click("home");
     });
 
-    hotkeys.add("backspace", function () {
+    addHotkey("backspace", function () {
       elements.click("back");
     });
 
-    hotkeys.add("shift+backspace", function () {
+    addHotkey("shift+backspace", function () {
       elements.click("forward");
     });
 
-    hotkeys.add("control+u", function () {
+    addHotkey("control+u", function () {
       // reloading window without cache should show the update bar if applicable
-      window.location.reload(true);
+      window.location.reload();
     });
 
-    hotkeys.add("control+r", function () {
+    addHotkey("control+r", function () {
       elements.click("repeat");
     });
   }
 
   // always add the hotkey for the settings window
-  hotkeys.add("control+=", function () {
+  addHotkey("control+=", function () {
     ipcRenderer.send(globalEvents.showSettings);
   });
-  hotkeys.add("control+0", function () {
+  addHotkey("control+0", function () {
     ipcRenderer.send(globalEvents.showSettings);
   });
 }
@@ -231,28 +231,26 @@ function addHotKeys() {
 function handleLogout() {
   const logoutOptions = ["Cancel", "Yes, please", "No, thanks"];
 
-  dialog.showMessageBox(
-    null,
-    {
+  dialog
+    .showMessageBox(null, {
       type: "question",
       title: "Logging out",
       message: "Are you sure you want to log out?",
       buttons: logoutOptions,
       defaultId: 2,
-    },
-    function (response) {
-      if (logoutOptions.indexOf("Yes, please") == response) {
+    })
+    .then((result: { response: number }) => {
+      if (logoutOptions.indexOf("Yes, please") == result.response) {
         for (let i = 0; i < window.localStorage.length; i++) {
           const key = window.localStorage.key(i);
           if (key.startsWith("_TIDAL_activeSession")) {
             window.localStorage.removeItem(key);
-            i = window.localStorage.length + 1;
+            break;
           }
         }
         window.location.reload();
       }
-    }
-  );
+    });
 }
 
 function addFullScreenListeners() {
@@ -309,7 +307,7 @@ function getCurrentlyPlayingStatus() {
  * Convert the duration from MM:SS to seconds
  * @param {*} duration
  */
-function convertDuration(duration) {
+function convertDuration(duration: string) {
   const parts = duration.split(":");
   return parseInt(parts[1]) + 60 * parseInt(parts[0]);
 }
@@ -319,7 +317,7 @@ function convertDuration(duration) {
  *
  * @param {*} options
  */
-function updateMediaInfo(options, notify) {
+function updateMediaInfo(options: Options, notify: boolean) {
   if (options) {
     ipcRenderer.send(globalEvents.updateInfo, options);
     if (store.get(settings.notifications) && notify) {
@@ -361,7 +359,7 @@ function getTrackID() {
   return window.location;
 }
 
-function updateMediaSession(options) {
+function updateMediaSession(options: Options) {
   if ("mediaSession" in navigator) {
     navigator.mediaSession.metadata = new MediaMetadata({
       title: options.title,
@@ -401,6 +399,8 @@ setInterval(function () {
     current,
     duration,
     "app-name": appName,
+    image: "",
+    icon: "",
   };
 
   const titleOrArtistsChanged = currentSong !== songDashArtistTitle;
@@ -413,7 +413,7 @@ setInterval(function () {
 
   const image = elements.getSongIcon();
 
-  new Promise((resolve) => {
+  new Promise<void>((resolve) => {
     if (image.startsWith("http")) {
       options.image = image;
       downloadFile(image, notificationPath).then(
@@ -444,9 +444,9 @@ setInterval(function () {
    * automatically skip a song if the artists are found in the list of artists to skip
    * @param {*} artists array of artists
    */
-  function skipArtistsIfFoundInSkippedArtistsList(artists) {
+  function skipArtistsIfFoundInSkippedArtistsList(artists: string[]) {
     if (store.get(skipArtists)) {
-      const skippedArtists = store.get(settings.skippedArtists);
+      const skippedArtists = store.get(settings.skippedArtists) as string[];
       if (skippedArtists.length > 0) {
         const artistsToSkip = skippedArtists.map((artist) => artist);
         const artistNames = Object.values(artists).map((artist) => artist);
@@ -478,7 +478,7 @@ if (process.platform === "linux" && store.get(settings.mpris)) {
     });
 
     // Events
-    var events = {
+    const events = {
       next: "next",
       previous: "previous",
       pause: "pause",
@@ -488,7 +488,7 @@ if (process.platform === "linux" && store.get(settings.mpris)) {
       loopStatus: "repeat",
       shuffle: "shuffle",
       seek: "seek",
-    };
+    } as { [key: string]: string };
     Object.keys(events).forEach(function (eventName) {
       player.on(eventName, function () {
         const eventValue = events[eventName];

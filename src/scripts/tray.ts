@@ -1,9 +1,10 @@
-const { Tray } = require("electron");
-const { getMenu } = require("./menu");
-const trayModule = {};
-let tray;
+import { BrowserWindow, Tray } from "electron";
 
-trayModule.addTray = function (mainWindow, options = { icon: "" }) {
+const { getMenu } = require("./menu");
+
+let tray: Tray;
+
+export const addTray = function (mainWindow: BrowserWindow, options = { icon: "" }) {
   tray = new Tray(options.icon);
   tray.setIgnoreDoubleClickEvents(true);
   tray.setToolTip("Tidal-hifi");
@@ -25,10 +26,8 @@ trayModule.addTray = function (mainWindow, options = { icon: "" }) {
   });
 };
 
-trayModule.refreshTray = function (mainWindow) {
+export const refreshTray = function (mainWindow: BrowserWindow) {
   if (!tray) {
-    trayModule.addTray(mainWindow);
+    addTray(mainWindow);
   }
 };
-
-module.exports = trayModule;
