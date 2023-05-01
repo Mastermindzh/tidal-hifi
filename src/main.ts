@@ -1,30 +1,30 @@
-import { initialize, enable } from "@electron/remote/main";
+import { enable, initialize } from "@electron/remote/main";
 import {
-  app,
   BrowserWindow,
+  app,
   components,
   globalShortcut,
   ipcMain,
   protocol,
   session,
 } from "electron";
+import path from "path";
+import flagValues from "./constants/flags";
+import globalEvents from "./constants/globalEvents";
+import mediaKeys from "./constants/mediaKeys";
+import discordModule from "./scripts/discord";
+import { startExpress } from "./scripts/express";
+import mediaInfoModule from "./scripts/mediaInfo";
+import { addMenu } from "./scripts/menu";
 import {
-  settings,
-  store,
-  createSettingsWindow,
-  showSettingsWindow,
   closeSettingsWindow,
+  createSettingsWindow,
   hideSettingsWindow,
+  settings,
+  showSettingsWindow,
+  store,
 } from "./scripts/settings";
 import { addTray, refreshTray } from "./scripts/tray";
-import { addMenu } from "./scripts/menu";
-import path from "path";
-import { startExpress } from "./scripts/express";
-import mediaKeys from "./constants/mediaKeys";
-import mediaInfoModule from "./scripts/mediaInfo";
-import discordModule from "./scripts/discord";
-import globalEvents from "./constants/globalEvents";
-import flagValues from "./constants/flags";
 const tidalUrl = "https://listen.tidal.com";
 
 initialize();

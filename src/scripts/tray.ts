@@ -1,6 +1,5 @@
 import { BrowserWindow, Tray } from "electron";
-
-const { getMenu } = require("./menu");
+import { getMenu } from "./menu";
 
 let tray: Tray;
 

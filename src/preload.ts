@@ -1,14 +1,14 @@
 import { Notification, app, dialog } from "@electron/remote";
 import { ipcRenderer } from "electron";
+import globalEvents from "./constants/globalEvents";
+import { customCSS, skipArtists, updateFrequency } from "./constants/settings";
+import statuses from "./constants/statuses";
 import { Options } from "./models/options";
 import { downloadFile } from "./scripts/download";
 import { addHotkey } from "./scripts/hotkeys";
+import { settings, store } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
-const { store, settings } = require("./scripts/settings");
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
-const statuses = require("./constants/statuses");
-const globalEvents = require("./constants/globalEvents");
-const { skipArtists, updateFrequency, customCSS } = require("./constants/settings");
 const appName = "Tidal Hifi";
 let currentSong = "";
 let player: any;
@@ -156,7 +156,7 @@ function addCustomCss() {
  * make sure it returns a number, if not use the default
  */
 function getUpdateFrequency() {
-  const storeValue = store.get(updateFrequency);
+  const storeValue = store.get(updateFrequency) as number;
   const defaultValue = 500;
 
   if (!isNaN(storeValue)) {
