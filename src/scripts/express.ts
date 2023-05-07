@@ -1,10 +1,11 @@
-import { BrowserWindow } from "electron";
+import { BrowserWindow, dialog } from "electron";
 import express, { Response } from "express";
 import fs from "fs";
-const { mediaInfo } = require("./mediaInfo");
-const { store, settings } = require("./settings");
-const globalEvents = require("./../constants/globalEvents");
-const statuses = require("./../constants/statuses");
+import globalEvents from "./../constants/globalEvents";
+import statuses from "./../constants/statuses";
+import { mediaInfo } from "./mediaInfo";
+import { settingsStore } from "./settings";
+import { settings } from "../constants/settings";
 
 /**
  * Function to enable tidal-hifi's express api
@@ -37,7 +38,7 @@ export const startExpress = (mainWindow: BrowserWindow) => {
     });
   });
 
-  if (store.get(settings.playBackControl)) {
+  if (settingsStore.get(settings.playBackControl)) {
     expressApp.get("/play", (req, res) => handleGlobalEvent(res, globalEvents.play));
     expressApp.get("/pause", (req, res) => handleGlobalEvent(res, globalEvents.pause));
     expressApp.get("/next", (req, res) => handleGlobalEvent(res, globalEvents.next));
@@ -51,15 +52,15 @@ export const startExpress = (mainWindow: BrowserWindow) => {
     });
   }
 
-  let port = store.get(settings.apiSettings.port);
+  const port = settingsStore.get<string, number>(settings.apiSettings.port);
 
-  const expressInstance = expressApp.listen(port, "127.0.0.1", () => {});
+  const expressInstance = expressApp.listen(port, "127.0.0.1");
   expressInstance.on("error", function (e: { code: string }) {
     let message = e.code;
     if (e.code === "EADDRINUSE") {
       message = `Port ${port} in use.`;
     }
-    const { dialog } = require("electron");
+
     dialog.showErrorBox("Api failed to start.", message);
   });
 };

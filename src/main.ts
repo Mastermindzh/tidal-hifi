@@ -12,19 +12,20 @@ import path from "path";
 import flagValues from "./constants/flags";
 import globalEvents from "./constants/globalEvents";
 import mediaKeys from "./constants/mediaKeys";
-import discordModule from "./scripts/discord";
+import { initRPC, rpc, unRPC } from "./scripts/discord";
 import { startExpress } from "./scripts/express";
-import mediaInfoModule from "./scripts/mediaInfo";
+import { updateMediaInfo } from "./scripts/mediaInfo";
 import { addMenu } from "./scripts/menu";
 import {
   closeSettingsWindow,
   createSettingsWindow,
   hideSettingsWindow,
-  settings,
   showSettingsWindow,
-  store,
+  settingsStore,
 } from "./scripts/settings";
+import { settings } from "./constants/settings";
 import { addTray, refreshTray } from "./scripts/tray";
+import { MediaInfo } from "./models/mediaInfo";
 const tidalUrl = "https://listen.tidal.com";
 
 initialize();
@@ -36,7 +37,7 @@ const PROTOCOL_PREFIX = "tidal";
 setFlags();
 
 function setFlags() {
-  const flags = store.get(settings.flags.root);
+  const flags = settingsStore.get(settings.flags.root);
   if (flags) {
     for (const [key, value] of Object.entries(flags)) {
       if (value) {
@@ -59,7 +60,7 @@ function setFlags() {
  *
  */
 function syncMenuBarWithStore() {
-  const fixedMenuBar = !!store.get(settings.menuBar);
+  const fixedMenuBar = !!settingsStore.get(settings.menuBar);
 
   mainWindow.autoHideMenuBar = !fixedMenuBar;
   mainWindow.setMenuBarVisibility(fixedMenuBar);
@@ -72,7 +73,7 @@ function syncMenuBarWithStore() {
  * @returns true if singInstance is not requested, otherwise true/false based on whether the current window is the main window
  */
 function isMainInstanceOrMultipleInstancesAllowed() {
-  if (store.get(settings.singleInstance)) {
+  if (settingsStore.get(settings.singleInstance)) {
     const gotTheLock = app.requestSingleInstanceLock();
 
     if (!gotTheLock) {
@@ -87,8 +88,8 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
   mainWindow = new BrowserWindow({
     x: options.x,
     y: options.y,
-    width: store && store.get(settings.windowBounds.width),
-    height: store && store.get(settings.windowBounds.height),
+    width: settingsStore && settingsStore.get(settings.windowBounds.width),
+    height: settingsStore && settingsStore.get(settings.windowBounds.height),
     icon,
     backgroundColor: options.backgroundColor,
     autoHideMenuBar: true,
@@ -106,13 +107,13 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
   // load the Tidal website
   mainWindow.loadURL(tidalUrl);
 
-  if (store.get(settings.disableBackgroundThrottle)) {
+  if (settingsStore.get(settings.disableBackgroundThrottle)) {
     // prevent setInterval lag
     mainWindow.webContents.setBackgroundThrottling(false);
   }
 
   mainWindow.on("close", function (event: CloseEvent) {
-    if (store.get(settings.minimizeOnClose)) {
+    if (settingsStore.get(settings.minimizeOnClose)) {
       event.preventDefault();
       mainWindow.hide();
       refreshTray(mainWindow);
@@ -126,12 +127,12 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
   });
   mainWindow.on("resize", () => {
     const { width, height } = mainWindow.getBounds();
-    store.set(settings.windowBounds.root, { width, height });
+    settingsStore.set(settings.windowBounds.root, { width, height });
   });
 }
 
 function registerHttpProtocols() {
-  protocol.registerHttpProtocol(PROTOCOL_PREFIX, (request, _callback) => {
+  protocol.registerHttpProtocol(PROTOCOL_PREFIX, (request) => {
     mainWindow.loadURL(`${tidalUrl}/${request.url.substring(PROTOCOL_PREFIX.length + 3)}`);
   });
   if (!app.isDefaultProtocolClient(PROTOCOL_PREFIX)) {
@@ -155,7 +156,7 @@ app.on("ready", async () => {
     await components.whenReady();
 
     // Adblock
-    if (store.get(settings.adBlock)) {
+    if (settingsStore.get(settings.adBlock)) {
       const filter = { urls: ["https://listen.tidal.com/*"] };
       session.defaultSession.webRequest.onBeforeRequest(filter, (details, callback) => {
         if (details.url.match(/\/users\/.*\d\?country/)) callback({ cancel: true });
@@ -167,12 +168,12 @@ app.on("ready", async () => {
     addMenu(mainWindow);
     createSettingsWindow();
     addGlobalShortcuts();
-    if (store.get(settings.trayIcon)) {
+    if (settingsStore.get(settings.trayIcon)) {
       addTray(mainWindow, { icon });
       refreshTray(mainWindow);
     }
-    store.get(settings.api) && startExpress(mainWindow);
-    store.get(settings.enableDiscord) && discordModule.initRPC();
+    settingsStore.get(settings.api) && startExpress(mainWindow);
+    settingsStore.get(settings.enableDiscord) && initRPC();
   } else {
     app.quit();
   }
@@ -191,31 +192,31 @@ app.on("browser-window-created", (_, window) => {
 });
 
 // IPC
-ipcMain.on(globalEvents.updateInfo, (_event, arg) => {
-  mediaInfoModule.update(arg);
+ipcMain.on(globalEvents.updateInfo, (_event, arg: MediaInfo) => {
+  updateMediaInfo(arg);
 });
 
-ipcMain.on(globalEvents.hideSettings, (_event, _arg) => {
+ipcMain.on(globalEvents.hideSettings, () => {
   hideSettingsWindow();
 });
-ipcMain.on(globalEvents.showSettings, (_event, _arg) => {
+ipcMain.on(globalEvents.showSettings, () => {
   showSettingsWindow();
 });
 
-ipcMain.on(globalEvents.refreshMenuBar, (_event, _arg) => {
+ipcMain.on(globalEvents.refreshMenuBar, () => {
   syncMenuBarWithStore();
 });
 
-ipcMain.on(globalEvents.storeChanged, (_event, _arg) => {
+ipcMain.on(globalEvents.storeChanged, () => {
   syncMenuBarWithStore();
 
-  if (store.get(settings.enableDiscord) && !discordModule.rpc) {
-    discordModule.initRPC();
-  } else if (!store.get(settings.enableDiscord) && discordModule.rpc) {
-    discordModule.unRPC();
+  if (settingsStore.get(settings.enableDiscord) && !rpc) {
+    initRPC();
+  } else if (!settingsStore.get(settings.enableDiscord) && rpc) {
+    unRPC();
   }
 });
 
-ipcMain.on(globalEvents.error, (event, _arg) => {
+ipcMain.on(globalEvents.error, (event) => {
   console.log(event);
 });

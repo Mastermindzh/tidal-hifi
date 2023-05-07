@@ -1,13 +1,15 @@
 import { Notification, app, dialog } from "@electron/remote";
 import { ipcRenderer } from "electron";
+import Player from "mpris-service";
 import globalEvents from "./constants/globalEvents";
-import { customCSS, skipArtists, updateFrequency } from "./constants/settings";
+import { settings } from "./constants/settings";
 import statuses from "./constants/statuses";
 import { Options } from "./models/options";
 import { downloadFile } from "./scripts/download";
 import { addHotkey } from "./scripts/hotkeys";
-import { settings, store } from "./scripts/settings";
+
 import { setTitle } from "./scripts/window-functions";
+import { settingsStore } from "./scripts/settings";
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 const appName = "Tidal Hifi";
 let currentSong = "";
@@ -146,7 +148,7 @@ const elements = {
 function addCustomCss() {
   window.addEventListener("DOMContentLoaded", () => {
     const style = document.createElement("style");
-    style.innerHTML = store.get(customCSS);
+    style.innerHTML = settingsStore.get(settings.customCSS);
     document.head.appendChild(style);
   });
 }
@@ -156,7 +158,7 @@ function addCustomCss() {
  * make sure it returns a number, if not use the default
  */
 function getUpdateFrequency() {
-  const storeValue = store.get(updateFrequency) as number;
+  const storeValue = settingsStore.get(settings.updateFrequency) as number;
   const defaultValue = 500;
 
   if (!isNaN(storeValue)) {
@@ -185,7 +187,7 @@ function playPause() {
  * https://defkey.com/tidal-desktop-shortcuts
  */
 function addHotKeys() {
-  if (store.get(settings.enableCustomHotkeys)) {
+  if (settingsStore.get(settings.enableCustomHotkeys)) {
     addHotkey("Control+p", function () {
       elements.click("account").click("settings");
     });
@@ -291,7 +293,7 @@ function addIPCEventListeners() {
  * Update the current status of tidal (e.g playing or paused)
  */
 function getCurrentlyPlayingStatus() {
-  let pause = elements.get("pause");
+  const pause = elements.get("pause");
   let status = undefined;
 
   // if pause button is visible tidal is playing
@@ -320,7 +322,7 @@ function convertDuration(duration: string) {
 function updateMediaInfo(options: Options, notify: boolean) {
   if (options) {
     ipcRenderer.send(globalEvents.updateInfo, options);
-    if (store.get(settings.notifications) && notify) {
+    if (settingsStore.get(settings.notifications) && notify) {
       new Notification({ title: options.title, body: options.artists, icon: options.icon }).show();
     }
     if (player) {
@@ -430,23 +432,20 @@ setInterval(function () {
       // if the image can't be found on the page continue without it
       resolve();
     }
-  }).then(
-    () => {
-      updateMediaInfo(options, titleOrArtistsChanged);
-      if (titleOrArtistsChanged) {
-        updateMediaSession(options);
-      }
-    },
-    () => {}
-  );
+  }).then(() => {
+    updateMediaInfo(options, titleOrArtistsChanged);
+    if (titleOrArtistsChanged) {
+      updateMediaSession(options);
+    }
+  });
 
   /**
    * automatically skip a song if the artists are found in the list of artists to skip
    * @param {*} artists array of artists
    */
   function skipArtistsIfFoundInSkippedArtistsList(artists: string[]) {
-    if (store.get(skipArtists)) {
-      const skippedArtists = store.get(settings.skippedArtists) as string[];
+    if (settingsStore.get(settings.skipArtists)) {
+      const skippedArtists = settingsStore.get<string, string[]>(settings.skippedArtists);
       if (skippedArtists.length > 0) {
         const artistsToSkip = skippedArtists.map((artist) => artist);
         const artistNames = Object.values(artists).map((artist) => artist);
@@ -459,9 +458,8 @@ setInterval(function () {
   }
 }, getUpdateFrequency());
 
-if (process.platform === "linux" && store.get(settings.mpris)) {
+if (process.platform === "linux" && settingsStore.get(settings.mpris)) {
   try {
-    const Player = require("mpris-service");
     player = Player({
       name: "tidal-hifi",
       identity: "tidal-hifi",

@@ -1,12 +1,12 @@
-const Store = require("electron-store");
+import Store from "electron-store";
 
-const settings = require("../constants/settings");
-const path = require("path");
-const { BrowserWindow } = require("electron");
+import { settings } from "../constants/settings";
+import path from "path";
+import { BrowserWindow } from "electron";
 
-let settingsWindow;
+let settingsWindow: BrowserWindow;
 
-const store = new Store({
+export const settingsStore = new Store({
   defaults: {
     adBlock: false,
     api: true,
@@ -46,12 +46,11 @@ const store = new Store({
 });
 
 const settingsModule = {
-  store,
-  settings,
+  // settings,
   settingsWindow,
 };
 
-settingsModule.createSettingsWindow = function () {
+export const createSettingsWindow = function () {
   settingsWindow = new BrowserWindow({
     width: 700,
     height: 600,
@@ -67,7 +66,7 @@ settingsModule.createSettingsWindow = function () {
     },
   });
 
-  settingsWindow.on("close", (event) => {
+  settingsWindow.on("close", (event: any) => {
     if (settingsWindow != null) {
       event.preventDefault();
       settingsWindow.hide();
@@ -79,19 +78,17 @@ settingsModule.createSettingsWindow = function () {
   settingsModule.settingsWindow = settingsWindow;
 };
 
-settingsModule.showSettingsWindow = function (tab = "general") {
+export const showSettingsWindow = function (tab = "general") {
   settingsWindow.webContents.send("goToTab", tab);
 
   // refresh data just before showing the window
   settingsWindow.webContents.send("refreshData");
   settingsWindow.show();
 };
-settingsModule.hideSettingsWindow = function () {
+export const hideSettingsWindow = function () {
   settingsWindow.hide();
 };
 
-settingsModule.closeSettingsWindow = function () {
+export const closeSettingsWindow = function () {
   settingsWindow = null;
 };
-
-module.exports = settingsModule;
