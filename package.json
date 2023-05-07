@@ -20,7 +20,7 @@
     "build-base": "npm run builder -- -c ./build/electron-builder.base.yml",
     "prebuilder": "npm run compile",
     "builder": "electron-builder --publish=never",
-    "sass": "sass ./src/pages/settings/settings.scss ./src/pages/settings/settings.css && sass src/themes:ts-dist/themes",
+    "sass": "sass ./src/pages/settings/settings.scss ./src/pages/settings/settings.css && sass --no-source-map src/themes:themes",
     "style-lint": "npx stylelint **/*.scss",
     "style-lint-fix": "npx stylelint --fix **/*.scss"
   },
