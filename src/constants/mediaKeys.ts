@@ -1,9 +1,7 @@
-const globalEvents = require("./globalEvents");
+import { globalEvents } from "./globalEvents";
 
-const mediaKeys = {
+export const mediaKeys = {
   MediaPlayPause: globalEvents.playPause,
   MediaNextTrack: globalEvents.next,
   MediaPreviousTrack: globalEvents.previous,
 };
-
-module.exports = mediaKeys;

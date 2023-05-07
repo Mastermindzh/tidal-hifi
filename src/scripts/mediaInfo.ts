@@ -1,5 +1,5 @@
 import { MediaInfo } from "../models/mediaInfo";
-import statuses from "./../constants/statuses";
+import { statuses } from "./../constants/statuses";
 
 export const mediaInfo = {
   title: "",

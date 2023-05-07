@@ -1,6 +1,6 @@
 import remote from "@electron/remote";
 import { ipcRenderer, shell } from "electron";
-import globalEvents from "../../constants/globalEvents";
+import { globalEvents } from "../../constants/globalEvents";
 import { settings } from "../../constants/settings";
 import { settingsStore } from "./../../scripts/settings";
 
