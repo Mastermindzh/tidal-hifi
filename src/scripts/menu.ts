@@ -1,7 +1,7 @@
 import { BrowserWindow, Menu, app } from "electron";
-const { showSettingsWindow } = require("./settings");
+import { showSettingsWindow } from "./settings";
 const isMac = process.platform === "darwin";
-const { name } = require("./../constants/values");
+import name from "./../constants/values";
 
 const settingsMenuEntry = {
   label: "Settings",

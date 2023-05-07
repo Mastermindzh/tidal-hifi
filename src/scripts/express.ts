@@ -1,8 +1,8 @@
 import { BrowserWindow, dialog } from "electron";
 import express, { Response } from "express";
 import fs from "fs";
-import globalEvents from "./../constants/globalEvents";
-import statuses from "./../constants/statuses";
+import { globalEvents } from "./../constants/globalEvents";
+import { statuses } from "./../constants/statuses";
 import { mediaInfo } from "./mediaInfo";
 import { settingsStore } from "./settings";
 import { settings } from "../constants/settings";

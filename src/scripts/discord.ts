@@ -1,6 +1,6 @@
 import { Client } from "discord-rpc";
 import { app, ipcMain } from "electron";
-import globalEvents from "../constants/globalEvents";
+import { globalEvents } from "../constants/globalEvents";
 import { MediaStatus } from "../models/mediaStatus";
 import { mediaInfo } from "./mediaInfo";
 

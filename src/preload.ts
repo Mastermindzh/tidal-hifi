@@ -1,15 +1,15 @@
 import { Notification, app, dialog } from "@electron/remote";
 import { ipcRenderer } from "electron";
 import Player from "mpris-service";
-import globalEvents from "./constants/globalEvents";
+import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
-import statuses from "./constants/statuses";
+import { statuses } from "./constants/statuses";
 import { Options } from "./models/options";
 import { downloadFile } from "./scripts/download";
 import { addHotkey } from "./scripts/hotkeys";
 
-import { setTitle } from "./scripts/window-functions";
 import { settingsStore } from "./scripts/settings";
+import { setTitle } from "./scripts/window-functions";
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 const appName = "Tidal Hifi";
 let currentSong = "";

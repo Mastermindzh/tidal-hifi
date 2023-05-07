@@ -1,4 +1,4 @@
-const globalEvents = {
+export const globalEvents = {
   play: "play",
   pause: "pause",
   playPause: "playPause",
@@ -11,5 +11,3 @@ const globalEvents = {
   storeChanged: "storeChanged",
   error: "error",
 };
-
-module.exports = globalEvents;

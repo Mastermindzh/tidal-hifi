@@ -1,4 +1,4 @@
-module.exports = {
+export const statuses = {
   playing: "playing",
   paused: "paused",
 };

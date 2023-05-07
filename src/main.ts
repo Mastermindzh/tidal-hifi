@@ -9,9 +9,9 @@ import {
   session,
 } from "electron";
 import path from "path";
-import flagValues from "./constants/flags";
-import globalEvents from "./constants/globalEvents";
-import mediaKeys from "./constants/mediaKeys";
+import { flags } from "./constants/flags";
+import { globalEvents } from "./constants/globalEvents";
+import { mediaKeys } from "./constants/mediaKeys";
 import { initRPC, rpc, unRPC } from "./scripts/discord";
 import { startExpress } from "./scripts/express";
 import { updateMediaInfo } from "./scripts/mediaInfo";
@@ -37,11 +37,11 @@ const PROTOCOL_PREFIX = "tidal";
 setFlags();
 
 function setFlags() {
-  const flags = settingsStore.get(settings.flags.root);
-  if (flags) {
+  const flagsFromSettings = settingsStore.get(settings.flags.root);
+  if (flagsFromSettings) {
     for (const [key, value] of Object.entries(flags)) {
       if (value) {
-        (flagValues as any)[key].forEach((flag: any) => {
+        flags[key].forEach((flag) => {
           console.log(`enabling command line switch ${flag.flag} with value ${flag.value}`);
           app.commandLine.appendSwitch(flag.flag, flag.value);
         });
