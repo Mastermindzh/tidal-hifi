@@ -1,5 +1,6 @@
 import remote from "@electron/remote";
 import { ipcRenderer, shell } from "electron";
+import fs from "fs";
 import { globalEvents } from "../../constants/globalEvents";
 import { settings } from "../../constants/settings";
 import { settingsStore } from "./../../scripts/settings";
@@ -23,6 +24,36 @@ let adBlock: HTMLInputElement,
   skippedArtists: HTMLInputElement,
   trayIcon: HTMLInputElement,
   updateFrequency: HTMLInputElement;
+
+function getThemeFiles() {
+  const selectElement = document.getElementById("themesList") as HTMLSelectElement;
+  const fileNames = fs.readdirSync(process.resourcesPath).filter((file) => file.endsWith(".css"));
+  const options = fileNames.map((name) => {
+    return new Option(name, name);
+  });
+
+  // empty old options
+  const oldOptions = document.querySelectorAll("#themesList option");
+  oldOptions.forEach((o) => o.remove());
+
+  [new Option("Tidal - Default", "none")].concat(options).forEach((option) => {
+    selectElement.add(option, null);
+  });
+}
+
+function handleFileUploads() {
+  const fileMessage = document.getElementById("file-message");
+  fileMessage.innerText = "or drag and drop files here";
+
+  document.getElementById("theme-files").addEventListener("change", function (e: any) {
+    Array.from(e.target.files).forEach((file: File) => {
+      const destination = `${process.resourcesPath}/${file.name}`;
+      fs.copyFileSync(file.path, destination, null);
+    });
+    fileMessage.innerText = `${e.target.files.length} files successfully uploaded`;
+    getThemeFiles();
+  });
+}
 
 /**
  * Sync the UI forms with the current settings
@@ -78,6 +109,9 @@ window.addEventListener("DOMContentLoaded", () => {
   function get(id: string): HTMLInputElement {
     return document.getElementById(id) as HTMLInputElement;
   }
+
+  getThemeFiles();
+  handleFileUploads();
 
   document.getElementById("close").addEventListener("click", hide);
   document.getElementById("restart").addEventListener("click", restart);
