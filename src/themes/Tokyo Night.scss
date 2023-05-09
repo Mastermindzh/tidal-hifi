@@ -1,0 +1,82 @@
+:root {
+  --footer-player-background: #1a1b26;
+  --sidebar-background: #1a1b26;
+  --sidebar-hover-background: #414868;
+  --sidebar-menu-top-text: #565f89;
+  --sidebar-menu-playlist-text: #565f89;
+  --search-background: #1a1b26;
+  --main-background: #16161e;
+  --main-navigation-control-background: #1a1b26;
+  --main-feed-button-background: #1a1b26;
+  --player-control-background: #24283b;
+  --player-control-active-button: #ff9e64;
+  --player-progress-bar: #ff9e64;
+  --indicator-hifi-background: #9ece6a;
+  --indicator-hifi-span: #1a1b26;
+  --player-control-favorite: #f7768e;
+  --search-dialog-background: #24283b;
+  --right-queue-background: #24283b;
+}
+.player--fNPGt.notFullscreen--ugyc2 {
+  background-color: var(--footer-player-background);
+}
+.sidebar--WvRg_ {
+  background-color: var(--sidebar-background);
+  contain: strict;
+  flex-grow: 1;
+  overflow-y: auto;
+}
+.item--VTpWS:hover {
+  background-color: var(--sidebar-hover-background);
+}
+.main--LUnJp {
+  background-color: var(--main-background);
+}
+button.button--ncJwL {
+  background-color: var(--main-navigation-control-background);
+}
+.player--fNPGt.lossLess--g5Jss button.withBackground[aria-checked="true"] path {
+  fill: var(--player-control-active-button);
+}
+.player--fNPGt.lossLess--g5Jss button.withBackground[aria-checked="true"] {
+  background-color: var(--player-control-background);
+}
+.activeItem--qV6eL .activeItem--qV6eL .playlistItem--YARJh .section--FI41E.playingItem--eWkYS {
+  color: #565f89;
+}
+.progressBarWrapper--WZfox {
+  color: var(--player-progress-bar);
+}
+.playbackControls--FLeZA button .tidal-ui__icon {
+  transform: scale(1);
+}
+.css-11m9iw3 {
+  background-color: var(--indicator-hifi-background);
+}
+.css-11m9iw3 span {
+  color: var(--indicator-hifi-span);
+}
+.activeItem--qV6eL {
+  color: var(--sidebar-menu-top-text);
+}
+.activeItem--qV6eL .playlistItem--YARJh {
+  color: var(--sidebar-menu-playlist-text);
+}
+button.feedBell--B8anb {
+  background-color: var(--main-feed-button-background);
+}
+.baseContainer--cbf17 {
+  background-color: var(--search-dialog-background);
+}
+.favoriteButton--TtBlM.is-favorite path {
+  fill: var(--player-control-favorite);
+}
+.container--mkEWd {
+  background-color: var(--right-queue-background);
+}
+.container--vJVjO {
+  background-color: var(--search-background);
+}
+.searchFieldHighlighted--Fitvs {
+  color: var(--snow-white);
+}

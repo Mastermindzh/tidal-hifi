@@ -9,10 +9,10 @@ build/linux/arch/*
 !build/linux/arch/install.sh
 *.css
 *.css.map
-!src/themes/**/**.css
 
 # JetBrains IDE configuration
 .idea
 ts-dist/**
 ts-dist
 themes
+!src/themes
