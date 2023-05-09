@@ -30,6 +30,7 @@ export const settingsStore = new Store({
     singleInstance: true,
     skipArtists: false,
     skippedArtists: [""],
+    theme: "none",
     trayIcon: true,
     updateFrequency: 500,
     windowBounds: { width: 800, height: 600 },

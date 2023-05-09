@@ -22,6 +22,7 @@ let adBlock: HTMLInputElement,
   singleInstance: HTMLInputElement,
   skipArtists: HTMLInputElement,
   skippedArtists: HTMLInputElement,
+  theme: HTMLSelectElement,
   trayIcon: HTMLInputElement,
   updateFrequency: HTMLInputElement;
 
@@ -79,6 +80,7 @@ function refreshSettings() {
   port.value = settingsStore.get(settings.apiSettings.port);
   singleInstance.checked = settingsStore.get(settings.singleInstance);
   skipArtists.checked = settingsStore.get(settings.skipArtists);
+  theme.value = settingsStore.get(settings.theme);
   skippedArtists.value = settingsStore.get<string, string[]>(settings.skippedArtists).join("\n");
   trayIcon.checked = settingsStore.get(settings.trayIcon);
   updateFrequency.value = settingsStore.get(settings.updateFrequency);
@@ -110,8 +112,8 @@ function restart() {
  * Bind UI components to functions after DOMContentLoaded
  */
 window.addEventListener("DOMContentLoaded", () => {
-  function get(id: string): HTMLInputElement {
-    return document.getElementById(id) as HTMLInputElement;
+  function get<T = HTMLInputElement>(id: string): T {
+    return document.getElementById(id) as T;
   }
 
   getThemeFiles();
@@ -143,6 +145,13 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function addSelectListener(source: HTMLSelectElement, key: string) {
+    source.addEventListener("change", () => {
+      settingsStore.set(key, source.value);
+      ipcRenderer.send(globalEvents.storeChanged);
+    });
+  }
+
   ipcRenderer.on("refreshData", () => {
     refreshSettings();
   });
@@ -165,6 +174,7 @@ window.addEventListener("DOMContentLoaded", () => {
   notifications = get("notifications");
   playBackControl = get("playBackControl");
   port = get("port");
+  theme = get<HTMLSelectElement>("themesList");
   trayIcon = get("trayIcon");
   skipArtists = get("skipArtists");
   skippedArtists = get("skippedArtists");
@@ -190,6 +200,7 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(skipArtists, settings.skipArtists);
   addTextAreaListener(skippedArtists, settings.skippedArtists);
   addInputListener(singleInstance, settings.singleInstance);
+  addSelectListener(theme, settings.theme);
   addInputListener(trayIcon, settings.trayIcon);
   addInputListener(updateFrequency, settings.updateFrequency);
 });
