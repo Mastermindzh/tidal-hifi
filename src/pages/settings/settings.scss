@@ -230,8 +230,6 @@ html {
         border-color: $tidal-blue;
         color: $white;
       }
-
-      // --- Switch slider component ---
     }
   }
 }
@@ -413,5 +411,28 @@ html {
   opacity: 0;
   &:focus {
     outline: none;
+  }
+}
+
+.select-input {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 5px 0;
+  transition: 0.2s;
+  border: 0;
+  border-bottom: solid 1px $grey-333;
+  outline: none;
+  background: transparent;
+  color: $tidal-grey;
+  font-size: 14px;
+
+  &:focus {
+    border-color: $tidal-blue;
+    color: $white;
+  }
+
+  option {
+    background-color: $tidal-grey-darkest;
   }
 }

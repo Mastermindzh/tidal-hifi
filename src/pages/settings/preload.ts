@@ -27,9 +27,13 @@ let adBlock: HTMLInputElement,
 
 function getThemeFiles() {
   const selectElement = document.getElementById("themesList") as HTMLSelectElement;
-  const fileNames = fs.readdirSync(process.resourcesPath).filter((file) => file.endsWith(".css"));
+  const fileNames = fs
+    .readdirSync(process.resourcesPath)
+    .filter((file) => file.endsWith(".css"))
+    .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+
   const options = fileNames.map((name) => {
-    return new Option(name, name);
+    return new Option(name.replace(".css", ""), name);
   });
 
   // empty old options
