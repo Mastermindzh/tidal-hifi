@@ -66,7 +66,7 @@ function handleFileUploads() {
 function refreshSettings() {
   adBlock.checked = settingsStore.get(settings.adBlock);
   api.checked = settingsStore.get(settings.api);
-  customCSS.value = settingsStore.get(settings.customCSS);
+  customCSS.value = settingsStore.get<string, string[]>(settings.customCSS).join("\n");
   disableBackgroundThrottle.checked = settingsStore.get(settings.disableBackgroundThrottle);
   disableHardwareMediaKeys.checked = settingsStore.get(settings.flags.disableHardwareMediaKeys);
   enableCustomHotkeys.checked = settingsStore.get(settings.enableCustomHotkeys);

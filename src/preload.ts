@@ -1,5 +1,6 @@
 import { Notification, app, dialog } from "@electron/remote";
 import { ipcRenderer } from "electron";
+import fs from "fs";
 import Player from "mpris-service";
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
@@ -147,8 +148,24 @@ const elements = {
 
 function addCustomCss() {
   window.addEventListener("DOMContentLoaded", () => {
+    const selectedTheme = settingsStore.get(settings.theme);
+    if (selectedTheme !== "none") {
+      const themeFile = `${process.resourcesPath}/${selectedTheme}`;
+      fs.readFile(themeFile, "utf-8", (err, data) => {
+        if (err) {
+          alert("An error ocurred reading the theme file.");
+          return;
+        }
+
+        const themeStyle = document.createElement("style");
+        themeStyle.innerHTML = data;
+        document.head.appendChild(themeStyle);
+      });
+    }
+
+    // read customCSS (it will override the theme)
     const style = document.createElement("style");
-    style.innerHTML = settingsStore.get(settings.customCSS);
+    style.innerHTML = settingsStore.get<string, string[]>(settings.customCSS).join("\n");
     document.head.appendChild(style);
   });
 }
