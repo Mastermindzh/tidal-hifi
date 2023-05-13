@@ -67,7 +67,7 @@ export const createSettingsWindow = function () {
     },
   });
 
-  settingsWindow.on("close", (event: any) => {
+  settingsWindow.on("close", (event: Event) => {
     if (settingsWindow != null) {
       event.preventDefault();
       settingsWindow.hide();

@@ -18,7 +18,7 @@ export const startExpress = (mainWindow: BrowserWindow) => {
    * @param {*} res
    * @param {*} action
    */
-  function handleGlobalEvent(res: Response, action: any) {
+  function handleGlobalEvent(res: Response, action: string) {
     mainWindow.webContents.send("globalEvent", action);
     res.sendStatus(200);
   }

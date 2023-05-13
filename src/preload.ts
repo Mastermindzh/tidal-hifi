@@ -14,7 +14,7 @@ import { setTitle } from "./scripts/window-functions";
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 const appName = "Tidal Hifi";
 let currentSong = "";
-let player: any;
+let player: Player;
 let currentPlayStatus = statuses.paused;
 
 const elements = {

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "typeRoots": ["src/types"],
     "module": "commonjs",
     "target": "ES6",
     "noImplicitAny": true,
