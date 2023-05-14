@@ -1,6 +1,7 @@
-const statuses = require("./../constants/statuses");
+import { MediaInfo } from "../models/mediaInfo";
+import { statuses } from "./../constants/statuses";
 
-const mediaInfo = {
+export const mediaInfo = {
   title: "",
   artists: "",
   album: "",
@@ -11,14 +12,8 @@ const mediaInfo = {
   duration: "",
   image: "tidal-hifi-icon",
 };
-const mediaInfoModule = {
-  mediaInfo,
-};
 
-/**
- * Update artist and song info in the mediaInfo constant
- */
-mediaInfoModule.update = function (arg) {
+export const updateMediaInfo = (arg: MediaInfo) => {
   mediaInfo.title = propOrDefault(arg.title);
   mediaInfo.artists = propOrDefault(arg.artists);
   mediaInfo.album = propOrDefault(arg.album);
@@ -35,8 +30,6 @@ mediaInfoModule.update = function (arg) {
  * @param {*} prop property to check
  * @param {*} defaultValue defaults to ""
  */
-function propOrDefault(prop, defaultValue = "") {
+function propOrDefault(prop: string, defaultValue = "") {
   return prop ? prop : defaultValue;
 }
-
-module.exports = mediaInfoModule;

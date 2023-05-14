@@ -1,7 +1,7 @@
-const { Menu, app } = require("electron");
-const { showSettingsWindow } = require("./settings");
+import { BrowserWindow, Menu, app } from "electron";
+import { showSettingsWindow } from "./settings";
 const isMac = process.platform === "darwin";
-const { name } = require("./../constants/values");
+import name from "./../constants/values";
 
 const settingsMenuEntry = {
   label: "Settings",
@@ -19,9 +19,7 @@ const quitMenuEntry = {
   accelerator: "Control+Q",
 };
 
-const menuModule = {};
-
-menuModule.getMenu = function (mainWindow) {
+export const getMenu = function (mainWindow: BrowserWindow) {
   const toggleWindow = {
     label: "Toggle Window",
     click: function () {
@@ -113,11 +111,9 @@ menuModule.getMenu = function (mainWindow) {
     quitMenuEntry,
   ];
 
-  return Menu.buildFromTemplate(mainMenu);
+  return Menu.buildFromTemplate(mainMenu as any);
 };
 
-menuModule.addMenu = function (mainWindow) {
-  Menu.setApplicationMenu(menuModule.getMenu(mainWindow));
+export const addMenu = function (mainWindow: BrowserWindow) {
+  Menu.setApplicationMenu(getMenu(mainWindow));
 };
-
-module.exports = menuModule;

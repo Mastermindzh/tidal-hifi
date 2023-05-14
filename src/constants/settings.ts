@@ -8,7 +8,7 @@
  *    },
  *    windowBounds: { width: 800, height: 600 },
  */
-const settings = {
+export const settings = {
   adBlock: "adBlock",
   api: "api",
   apiSettings: {
@@ -21,6 +21,7 @@ const settings = {
   enableCustomHotkeys: "enableCustomHotkeys",
   enableDiscord: "enableDiscord",
   flags: {
+    root: "flags",
     disableHardwareMediaKeys: "flags.disableHardwareMediaKeys",
     gpuRasterization: "flags.gpuRasterization",
   },
@@ -40,5 +41,3 @@ const settings = {
     height: "windowBounds.height",
   },
 };
-
-module.exports = settings;

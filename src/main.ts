@@ -1,44 +1,47 @@
-require("@electron/remote/main").initialize();
-const {
-  app,
+import { enable, initialize } from "@electron/remote/main";
+import {
   BrowserWindow,
+  app,
   components,
   globalShortcut,
   ipcMain,
   protocol,
   session,
-} = require("electron");
-const {
-  settings,
-  store,
-  createSettingsWindow,
-  showSettingsWindow,
+} from "electron";
+import path from "path";
+import { flags } from "./constants/flags";
+import { globalEvents } from "./constants/globalEvents";
+import { mediaKeys } from "./constants/mediaKeys";
+import { initRPC, rpc, unRPC } from "./scripts/discord";
+import { startExpress } from "./scripts/express";
+import { updateMediaInfo } from "./scripts/mediaInfo";
+import { addMenu } from "./scripts/menu";
+import {
   closeSettingsWindow,
+  createSettingsWindow,
   hideSettingsWindow,
-} = require("./scripts/settings");
-const { addTray, refreshTray } = require("./scripts/tray");
-const { addMenu } = require("./scripts/menu");
-const path = require("path");
+  showSettingsWindow,
+  settingsStore,
+} from "./scripts/settings";
+import { settings } from "./constants/settings";
+import { addTray, refreshTray } from "./scripts/tray";
+import { MediaInfo } from "./models/mediaInfo";
 const tidalUrl = "https://listen.tidal.com";
-const expressModule = require("./scripts/express");
-const mediaKeys = require("./constants/mediaKeys");
-const mediaInfoModule = require("./scripts/mediaInfo");
-const discordModule = require("./scripts/discord");
-const globalEvents = require("./constants/globalEvents");
-const flagValues = require("./constants/flags");
 
-let mainWindow;
-let icon = path.join(__dirname, "../assets/icon.png");
+initialize();
+
+let mainWindow: BrowserWindow;
+const icon = path.join(__dirname, "../assets/icon.png");
 const PROTOCOL_PREFIX = "tidal";
 
 setFlags();
 
 function setFlags() {
-  const flags = store.get().flags;
-  if (flags) {
+  const flagsFromSettings = settingsStore.get(settings.flags.root);
+  if (flagsFromSettings) {
     for (const [key, value] of Object.entries(flags)) {
       if (value) {
-        flagValues[key].forEach((flag) => {
+        flags[key].forEach((flag) => {
           console.log(`enabling command line switch ${flag.flag} with value ${flag.value}`);
           app.commandLine.appendSwitch(flag.flag, flag.value);
         });
@@ -57,7 +60,7 @@ function setFlags() {
  *
  */
 function syncMenuBarWithStore() {
-  const fixedMenuBar = store.get(settings.menuBar);
+  const fixedMenuBar = !!settingsStore.get(settings.menuBar);
 
   mainWindow.autoHideMenuBar = !fixedMenuBar;
   mainWindow.setMenuBarVisibility(fixedMenuBar);
@@ -70,7 +73,7 @@ function syncMenuBarWithStore() {
  * @returns true if singInstance is not requested, otherwise true/false based on whether the current window is the main window
  */
 function isMainInstanceOrMultipleInstancesAllowed() {
-  if (store.get(settings.singleInstance)) {
+  if (settingsStore.get(settings.singleInstance)) {
     const gotTheLock = app.requestSingleInstanceLock();
 
     if (!gotTheLock) {
@@ -80,13 +83,13 @@ function isMainInstanceOrMultipleInstancesAllowed() {
   return true;
 }
 
-function createWindow(options = {}) {
+function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
   // Create the browser window.
   mainWindow = new BrowserWindow({
     x: options.x,
     y: options.y,
-    width: store && store.get(settings.windowBounds.width),
-    height: store && store.get(settings.windowBounds.height),
+    width: settingsStore && settingsStore.get(settings.windowBounds.width),
+    height: settingsStore && settingsStore.get(settings.windowBounds.height),
     icon,
     backgroundColor: options.backgroundColor,
     autoHideMenuBar: true,
@@ -97,23 +100,20 @@ function createWindow(options = {}) {
       devTools: true, // I like tinkering, others might too
     },
   });
-  require("@electron/remote/main").enable(mainWindow.webContents);
+  enable(mainWindow.webContents);
   registerHttpProtocols();
   syncMenuBarWithStore();
 
   // load the Tidal website
   mainWindow.loadURL(tidalUrl);
 
-  if (store.get(settings.disableBackgroundThrottle)) {
+  if (settingsStore.get(settings.disableBackgroundThrottle)) {
     // prevent setInterval lag
     mainWindow.webContents.setBackgroundThrottling(false);
   }
 
-  // run stuff after first load
-  mainWindow.webContents.once("did-finish-load", () => {});
-
-  mainWindow.on("close", function (event) {
-    if (!app.isQuiting && store.get(settings.minimizeOnClose)) {
+  mainWindow.on("close", function (event: CloseEvent) {
+    if (settingsStore.get(settings.minimizeOnClose)) {
       event.preventDefault();
       mainWindow.hide();
       refreshTray(mainWindow);
@@ -126,14 +126,13 @@ function createWindow(options = {}) {
     app.quit();
   });
   mainWindow.on("resize", () => {
-    let { width, height } = mainWindow.getBounds();
-
-    store.set(settings.windowBounds.root, { width, height });
+    const { width, height } = mainWindow.getBounds();
+    settingsStore.set(settings.windowBounds.root, { width, height });
   });
 }
 
 function registerHttpProtocols() {
-  protocol.registerHttpProtocol(PROTOCOL_PREFIX, (request, _callback) => {
+  protocol.registerHttpProtocol(PROTOCOL_PREFIX, (request) => {
     mainWindow.loadURL(`${tidalUrl}/${request.url.substring(PROTOCOL_PREFIX.length + 3)}`);
   });
   if (!app.isDefaultProtocolClient(PROTOCOL_PREFIX)) {
@@ -144,7 +143,7 @@ function registerHttpProtocols() {
 function addGlobalShortcuts() {
   Object.keys(mediaKeys).forEach((key) => {
     globalShortcut.register(`${key}`, () => {
-      mainWindow.webContents.send("globalEvent", `${mediaKeys[key]}`);
+      mainWindow.webContents.send("globalEvent", `${(mediaKeys as any)[key]}`);
     });
   });
 }
@@ -157,7 +156,7 @@ app.on("ready", async () => {
     await components.whenReady();
 
     // Adblock
-    if (store.get(settings.adBlock)) {
+    if (settingsStore.get(settings.adBlock)) {
       const filter = { urls: ["https://listen.tidal.com/*"] };
       session.defaultSession.webRequest.onBeforeRequest(filter, (details, callback) => {
         if (details.url.match(/\/users\/.*\d\?country/)) callback({ cancel: true });
@@ -169,9 +168,12 @@ app.on("ready", async () => {
     addMenu(mainWindow);
     createSettingsWindow();
     addGlobalShortcuts();
-    store.get(settings.trayIcon) && addTray(mainWindow, { icon }) && refreshTray();
-    store.get(settings.api) && expressModule.run(mainWindow);
-    store.get(settings.enableDiscord) && discordModule.initRPC();
+    if (settingsStore.get(settings.trayIcon)) {
+      addTray(mainWindow, { icon });
+      refreshTray(mainWindow);
+    }
+    settingsStore.get(settings.api) && startExpress(mainWindow);
+    settingsStore.get(settings.enableDiscord) && initRPC();
   } else {
     app.quit();
   }
@@ -186,35 +188,35 @@ app.on("activate", function () {
 });
 
 app.on("browser-window-created", (_, window) => {
-  require("@electron/remote/main").enable(window.webContents);
+  enable(window.webContents);
 });
 
 // IPC
-ipcMain.on(globalEvents.updateInfo, (_event, arg) => {
-  mediaInfoModule.update(arg);
+ipcMain.on(globalEvents.updateInfo, (_event, arg: MediaInfo) => {
+  updateMediaInfo(arg);
 });
 
-ipcMain.on(globalEvents.hideSettings, (_event, _arg) => {
+ipcMain.on(globalEvents.hideSettings, () => {
   hideSettingsWindow();
 });
-ipcMain.on(globalEvents.showSettings, (_event, _arg) => {
+ipcMain.on(globalEvents.showSettings, () => {
   showSettingsWindow();
 });
 
-ipcMain.on(globalEvents.refreshMenuBar, (_event, _arg) => {
+ipcMain.on(globalEvents.refreshMenuBar, () => {
   syncMenuBarWithStore();
 });
 
-ipcMain.on(globalEvents.storeChanged, (_event, _arg) => {
+ipcMain.on(globalEvents.storeChanged, () => {
   syncMenuBarWithStore();
 
-  if (store.get(settings.enableDiscord) && !discordModule.rpc) {
-    discordModule.initRPC();
-  } else if (!store.get(settings.enableDiscord) && discordModule.rpc) {
-    discordModule.unRPC();
+  if (settingsStore.get(settings.enableDiscord) && !rpc) {
+    initRPC();
+  } else if (!settingsStore.get(settings.enableDiscord) && rpc) {
+    unRPC();
   }
 });
 
-ipcMain.on(globalEvents.error, (event, _arg) => {
+ipcMain.on(globalEvents.error, (event) => {
   console.log(event);
 });

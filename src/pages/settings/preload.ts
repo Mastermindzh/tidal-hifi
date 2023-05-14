@@ -1,58 +1,58 @@
-let adBlock,
-  api,
-  customCSS,
-  disableBackgroundThrottle,
-  disableHardwareMediaKeys,
-  enableCustomHotkeys,
-  enableDiscord,
-  gpuRasterization,
-  menuBar,
-  minimizeOnClose,
-  mpris,
-  notifications,
-  playBackControl,
-  port,
-  singleInstance,
-  skipArtists,
-  skippedArtists,
-  trayIcon,
-  updateFrequency;
+import remote from "@electron/remote";
+import { ipcRenderer, shell } from "electron";
+import { globalEvents } from "../../constants/globalEvents";
+import { settings } from "../../constants/settings";
+import { settingsStore } from "./../../scripts/settings";
 
-const { store, settings } = require("./../../scripts/settings");
-const { ipcRenderer } = require("electron");
-const globalEvents = require("./../../constants/globalEvents");
-const remote = require("@electron/remote");
-const { app } = remote;
+let adBlock: HTMLInputElement,
+  api: HTMLInputElement,
+  customCSS: HTMLInputElement,
+  disableBackgroundThrottle: HTMLInputElement,
+  disableHardwareMediaKeys: HTMLInputElement,
+  enableCustomHotkeys: HTMLInputElement,
+  enableDiscord: HTMLInputElement,
+  gpuRasterization: HTMLInputElement,
+  menuBar: HTMLInputElement,
+  minimizeOnClose: HTMLInputElement,
+  mpris: HTMLInputElement,
+  notifications: HTMLInputElement,
+  playBackControl: HTMLInputElement,
+  port: HTMLInputElement,
+  singleInstance: HTMLInputElement,
+  skipArtists: HTMLInputElement,
+  skippedArtists: HTMLInputElement,
+  trayIcon: HTMLInputElement,
+  updateFrequency: HTMLInputElement;
+
 /**
  * Sync the UI forms with the current settings
  */
 function refreshSettings() {
-  adBlock.checked = store.get(settings.adBlock);
-  api.checked = store.get(settings.api);
-  customCSS.value = store.get(settings.customCSS);
-  disableBackgroundThrottle.checked = store.get("disableBackgroundThrottle");
-  disableHardwareMediaKeys.checked = store.get(settings.flags.disableHardwareMediaKeys);
-  enableCustomHotkeys.checked = store.get(settings.enableCustomHotkeys);
-  enableDiscord.checked = store.get(settings.enableDiscord);
-  gpuRasterization.checked = store.get(settings.flags.gpuRasterization);
-  menuBar.checked = store.get(settings.menuBar);
-  minimizeOnClose.checked = store.get(settings.minimizeOnClose);
-  mpris.checked = store.get(settings.mpris);
-  notifications.checked = store.get(settings.notifications);
-  playBackControl.checked = store.get(settings.playBackControl);
-  port.value = store.get(settings.apiSettings.port);
-  singleInstance.checked = store.get(settings.singleInstance);
-  skipArtists.checked = store.get(settings.skipArtists);
-  skippedArtists.value = store.get(settings.skippedArtists).join("\n");
-  trayIcon.checked = store.get(settings.trayIcon);
-  updateFrequency.value = store.get(settings.updateFrequency);
+  adBlock.checked = settingsStore.get(settings.adBlock);
+  api.checked = settingsStore.get(settings.api);
+  customCSS.value = settingsStore.get(settings.customCSS);
+  disableBackgroundThrottle.checked = settingsStore.get(settings.disableBackgroundThrottle);
+  disableHardwareMediaKeys.checked = settingsStore.get(settings.flags.disableHardwareMediaKeys);
+  enableCustomHotkeys.checked = settingsStore.get(settings.enableCustomHotkeys);
+  enableDiscord.checked = settingsStore.get(settings.enableDiscord);
+  gpuRasterization.checked = settingsStore.get(settings.flags.gpuRasterization);
+  menuBar.checked = settingsStore.get(settings.menuBar);
+  minimizeOnClose.checked = settingsStore.get(settings.minimizeOnClose);
+  mpris.checked = settingsStore.get(settings.mpris);
+  notifications.checked = settingsStore.get(settings.notifications);
+  playBackControl.checked = settingsStore.get(settings.playBackControl);
+  port.value = settingsStore.get(settings.apiSettings.port);
+  singleInstance.checked = settingsStore.get(settings.singleInstance);
+  skipArtists.checked = settingsStore.get(settings.skipArtists);
+  skippedArtists.value = settingsStore.get<string, string[]>(settings.skippedArtists).join("\n");
+  trayIcon.checked = settingsStore.get(settings.trayIcon);
+  updateFrequency.value = settingsStore.get(settings.updateFrequency);
 }
 
 /**
  * Open an url in the default browsers
  */
-function openExternal(url) {
-  const { shell } = require("electron");
+function openExternal(url: string) {
   shell.openExternal(url);
 }
 
@@ -67,40 +67,40 @@ function hide() {
  * Restart tidal-hifi after changes
  */
 function restart() {
-  app.relaunch();
-  app.exit();
+  remote.app.relaunch();
+  remote.app.exit();
 }
 
 /**
  * Bind UI components to functions after DOMContentLoaded
  */
 window.addEventListener("DOMContentLoaded", () => {
-  function get(id) {
-    return document.getElementById(id);
+  function get(id: string): HTMLInputElement {
+    return document.getElementById(id) as HTMLInputElement;
   }
 
   document.getElementById("close").addEventListener("click", hide);
   document.getElementById("restart").addEventListener("click", restart);
   document.querySelectorAll(".external-link").forEach((elem) =>
     elem.addEventListener("click", function (event) {
-      openExternal(event.target.getAttribute("data-url"));
+      openExternal((event.target as HTMLElement).getAttribute("data-url"));
     })
   );
 
-  function addInputListener(source, key) {
-    source.addEventListener("input", function (_event, _data) {
-      if (this.value === "on") {
-        store.set(key, source.checked);
+  function addInputListener(source: HTMLInputElement, key: string) {
+    source.addEventListener("input", () => {
+      if (source.value === "on") {
+        settingsStore.set(key, source.checked);
       } else {
-        store.set(key, this.value);
+        settingsStore.set(key, source.value);
       }
       ipcRenderer.send(globalEvents.storeChanged);
     });
   }
 
-  function addTextAreaListener(source, key) {
-    source.addEventListener("input", function (_event, _data) {
-      store.set(key, source.value.split("\n"));
+  function addTextAreaListener(source: HTMLInputElement, key: string) {
+    source.addEventListener("input", () => {
+      settingsStore.set(key, source.value.split("\n"));
       ipcRenderer.send(globalEvents.storeChanged);
     });
   }

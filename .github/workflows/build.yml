@@ -5,6 +5,10 @@ on:
     branches-ignore:
       - master
       - develop
+  pull_request:
+    branches-ignore:
+      - master
+      - develop
 jobs:
   build_on_linux:
     runs-on: ubuntu-latest

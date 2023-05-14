@@ -1,23 +1,24 @@
-const express = require("express");
-const { mediaInfo } = require("./mediaInfo");
-const { store, settings } = require("./settings");
-const globalEvents = require("./../constants/globalEvents");
-const statuses = require("./../constants/statuses");
-const expressModule = {};
-const fs = require("fs");
-
-let expressInstance;
+import { BrowserWindow, dialog } from "electron";
+import express, { Response } from "express";
+import fs from "fs";
+import { globalEvents } from "./../constants/globalEvents";
+import { statuses } from "./../constants/statuses";
+import { mediaInfo } from "./mediaInfo";
+import { settingsStore } from "./settings";
+import { settings } from "../constants/settings";
 
 /**
  * Function to enable tidal-hifi's express api
  */
-expressModule.run = function (mainWindow) {
+
+// expressModule.run = function (mainWindow)
+export const startExpress = (mainWindow: BrowserWindow) => {
   /**
    * Shorthand to handle a fire and forget global event
    * @param {*} res
    * @param {*} action
    */
-  function handleGlobalEvent(res, action) {
+  function handleGlobalEvent(res: Response, action: string) {
     mainWindow.webContents.send("globalEvent", action);
     res.sendStatus(200);
   }
@@ -26,7 +27,7 @@ expressModule.run = function (mainWindow) {
   expressApp.get("/", (req, res) => res.send("Hello World!"));
   expressApp.get("/current", (req, res) => res.json({ ...mediaInfo, artist: mediaInfo.artists }));
   expressApp.get("/image", (req, res) => {
-    var stream = fs.createReadStream(mediaInfo.icon);
+    const stream = fs.createReadStream(mediaInfo.icon);
     stream.on("open", function () {
       res.set("Content-Type", "image/png");
       stream.pipe(res);
@@ -37,7 +38,7 @@ expressModule.run = function (mainWindow) {
     });
   });
 
-  if (store.get(settings.playBackControl)) {
+  if (settingsStore.get(settings.playBackControl)) {
     expressApp.get("/play", (req, res) => handleGlobalEvent(res, globalEvents.play));
     expressApp.get("/pause", (req, res) => handleGlobalEvent(res, globalEvents.pause));
     expressApp.get("/next", (req, res) => handleGlobalEvent(res, globalEvents.next));
@@ -50,21 +51,16 @@ expressModule.run = function (mainWindow) {
       }
     });
   }
-  if (store.get(settings.api)) {
-    let port = store.get(settings.apiSettings.port);
 
-    expressInstance = expressApp.listen(port, "127.0.0.1", () => {});
-    expressInstance.on("error", function (e) {
-      let message = e.code;
-      if (e.code === "EADDRINUSE") {
-        message = `Port ${port} in use.`;
-      }
-      const { dialog } = require("electron");
-      dialog.showErrorBox("Api failed to start.", message);
-    });
-  } else {
-    expressInstance = undefined;
-  }
+  const port = settingsStore.get<string, number>(settings.apiSettings.port);
+
+  const expressInstance = expressApp.listen(port, "127.0.0.1");
+  expressInstance.on("error", function (e: { code: string }) {
+    let message = e.code;
+    if (e.code === "EADDRINUSE") {
+      message = `Port ${port} in use.`;
+    }
+
+    dialog.showErrorBox("Api failed to start.", message);
+  });
 };
-
-module.exports = expressModule;
