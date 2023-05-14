@@ -434,5 +434,12 @@ html {
 
   option {
     background-color: $tidal-grey-darkest;
+
+    &:disabled {
+      font-size: 1.2em;
+      line-height: 1.5em;
+      text-align: center;
+      color: $white;
+    }
   }
 }
