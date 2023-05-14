@@ -16,3 +16,4 @@ ts-dist/**
 ts-dist
 themes
 !src/themes
+.sass-cache
