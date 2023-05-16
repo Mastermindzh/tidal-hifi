@@ -31,12 +31,13 @@ export const getOptions = (array: string[]) => {
  * @param directory to read from. Will be created if it doesn't exist
  * @returns
  */
-export const getThemeListFromDirectory = (directory: string) => {
+export const getThemeListFromDirectory = (directory: string): string[] => {
   try {
     makeUserThemesDirectory(directory);
     return fs.readdirSync(directory).filter(cssFilter).sort(sort);
   } catch (err) {
     console.error(err);
+    return [];
   }
 };
 
@@ -46,9 +47,7 @@ export const getThemeListFromDirectory = (directory: string) => {
  */
 export const makeUserThemesDirectory = (directory: string) => {
   try {
-    fs.mkdir(directory, { recursive: true }, (err) => {
-      if (err) throw err;
-    });
+    fs.mkdirSync(directory, { recursive: true });
   } catch (err) {
     console.error(err);
   }
