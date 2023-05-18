@@ -13,7 +13,7 @@ export const settingsStore = new Store({
     apiSettings: {
       port: 47836,
     },
-    customCSS: "",
+    customCSS: [],
     disableBackgroundThrottle: true,
     disableHardwareMediaKeys: false,
     enableCustomHotkeys: false,
