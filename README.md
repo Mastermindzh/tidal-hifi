@@ -1,6 +1,6 @@
 # Tidal-hifi<img src = "./build/icon.png" height="40" align="right"/>
 
-![GitHub release](https://img.shields.io/github/release/Mastermindzh/tidal-hifi.svg) [![Discord logo](./docs/images/discord.png)](https://discord.gg/yhNwf4v4He)
+![GitHub release](https://img.shields.io/github/release/Mastermindzh/tidal-hifi.svg) [![github builds](https://github.com/mastermindzh/tidal-hifi/actions/workflows/build.yml/badge.svg)](https://github.com/Mastermindzh/tidal-hifi/actions) [![Build Status](https://ci.mastermindzh.tech/api/badges/Mastermindzh/tidal-hifi/status.svg)](https://ci.mastermindzh.tech/Mastermindzh/tidal-hifi) [![Discord logo](./docs/images/discord.png)](https://discord.gg/yhNwf4v4He)
 
 The web version of [listen.tidal.com](https://listen.tidal.com) running in electron with hifi support thanks to widevine.
 
@@ -86,15 +86,15 @@ To install with `snap` you need to download the pre-packaged snap-package from t
 
 1. Download
 
-    ```sh
-    wget <URI> #for instance: https://github.com/Mastermindzh/tidal-hifi/releases/download/1.0/tidal-hifi_1.0.0_amd64.snap
-    ```
+   ```sh
+   wget <URI> #for instance: https://github.com/Mastermindzh/tidal-hifi/releases/download/1.0/tidal-hifi_1.0.0_amd64.snap
+   ```
 
 2. Install
 
-    ```sh
-    snap install --dangerous <path> #for instance: tidal-hifi_1.0.0_amd64.snap
-    ```
+   ```sh
+   snap install --dangerous <path> #for instance: tidal-hifi_1.0.0_amd64.snap
+   ```
 
 ### Arch Linux
 
