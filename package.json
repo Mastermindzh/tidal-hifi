@@ -1,10 +1,15 @@
 {
   "name": "tidal-hifi",
-  "version": "4.4.0",
+  "version": "5.2.0",
   "description": "Tidal on Electron with widevine(hifi) support",
-  "main": "src/main.js",
+  "main": "ts-dist/main.js",
   "scripts": {
     "start": "electron .",
+    "compile": "tsc && npm run sass-and-copy",
+    "watch": "tsc-watch --onSuccess \"npm run sass-and-copy\"",
+    "copy-files": "copyfiles -u 1 --exclude './src/**/*.ts' --exclude './src/**/*.scss' \"./src/**/*\" ts-dist",
+    "copy-themes-dev": "copyfiles -u 1 \"./themes/*\" node_modules/electron/dist/resources",
+    "sass-and-copy": "npm run sass && npm run copy-files && npm run copy-themes-dev",
     "build": "npm run builder -- -c ./build/electron-builder.yml",
     "build-deb": "npm run builder -- -c ./build/electron-builder.deb.yml",
     "build-unpacked": "npm run builder -- -c ./build/electron-builder.unpacked.yml",
@@ -14,12 +19,11 @@
     "build-wl": "npm run builder -- -c ./build/electron-builder.yml -wl",
     "build-mac": "npm run builder -- -c ./build/electron-builder.yml -m",
     "build-base": "npm run builder -- -c ./build/electron-builder.base.yml",
-    "prestart": "npm run sass",
-    "prebuilder": "npm run sass",
+    "prebuilder": "npm run compile",
     "builder": "electron-builder --publish=never",
-    "sass": "sass ./src/pages/settings/settings.scss ./src/pages/settings/settings.css",
-    "sass-lint": "sass-lint -vc ./sass-lint.yml ./src/pages/settings/settings.scss",
-    "sass-lint-fix": "sass-lint-auto-fix ./src/pages/settings/settings.scss --config-sass-lint ./sass-lint.yml"
+    "sass": "sass ./src/pages/settings/settings.scss ./src/pages/settings/settings.css && sass --no-source-map src/themes:themes",
+    "style-lint": "npx stylelint **/*.scss",
+    "style-lint-fix": "npx stylelint --fix **/*.scss"
   },
   "keywords": [
     "electron",
@@ -31,23 +35,35 @@
   "homepage": "https://github.com/Mastermindzh/tidal-hifi",
   "license": "MIT",
   "dependencies": {
-    "@electron/remote": "^2.0.8",
+    "@electron/remote": "^2.0.9",
     "discord-rpc": "^4.0.1",
     "electron-store": "^8.1.0",
-    "express": "^4.18.1",
-    "hotkeys-js": "^3.9.4",
+    "express": "^4.18.2",
+    "hotkeys-js": "^3.10.2",
     "mpris-service": "^2.1.2",
     "request": "^2.88.2",
-    "sass": "^1.54.9"
+    "sass": "^1.62.0"
   },
   "devDependencies": {
     "@mastermindzh/prettier-config": "^1.0.0",
-    "electron": "git+https://github.com/castlabs/electron-releases.git#v19.0.5+wvcus",
-    "electron-builder": "^23.3.3",
-    "js-yaml": "^3.14.1",
-    "prettier": "^2.7.1",
-    "sass-lint": "^1.13.1",
-    "sass-lint-auto-fix": "^0.21.2"
+    "@types/discord-rpc": "^4.0.4",
+    "@types/express": "^4.17.17",
+    "@types/request": "^2.48.8",
+    "@typescript-eslint/eslint-plugin": "^5.59.1",
+    "@typescript-eslint/parser": "^5.59.1",
+    "copyfiles": "^2.4.1",
+    "electron": "git+https://github.com/castlabs/electron-releases.git#v24.1.2+wvcus",
+    "electron-builder": "^24.2.1",
+    "eslint": "^8.39.0",
+    "js-yaml": "^4.1.0",
+    "markdown-toc": "^1.2.0",
+    "prettier": "^2.8.8",
+    "stylelint": "^15.6.0",
+    "stylelint-config-standard": "^33.0.0",
+    "stylelint-config-standard-scss": "^9.0.0",
+    "stylelint-prettier": "^3.0.0",
+    "tsc-watch": "^6.0.4",
+    "typescript": "^5.0.4"
   },
   "prettier": "@mastermindzh/prettier-config"
 }

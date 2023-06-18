@@ -12,3 +12,8 @@ build/linux/arch/*
 
 # JetBrains IDE configuration
 .idea
+ts-dist/**
+ts-dist
+themes
+!src/themes
+.sass-cache

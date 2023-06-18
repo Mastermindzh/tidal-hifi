@@ -5,6 +5,10 @@ on:
     branches-ignore:
       - master
       - develop
+  pull_request:
+    branches-ignore:
+      - master
+      - develop
 jobs:
   build_on_linux:
     runs-on: ubuntu-latest
@@ -16,7 +20,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
-          node-version: 16
+          node-version: 19
       - run: npm install
       - run: npm run build
 
@@ -26,7 +30,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
-          node-version: 16
+          node-version: 19
       - run: npm install
       - run: npm run build
 
@@ -36,6 +40,6 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
-          node-version: 16
+          node-version: 19
       - run: npm install
       - run: npm run build

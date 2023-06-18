@@ -1,15 +1,17 @@
 appId: com.rickvanlieshout.tidal-hifi
-electronVersion: 19.0.5
+electronVersion: 24.1.2
 electronDownload:
-  version: 19.0.5+wvcus
+  version: 24.1.2+wvcus
   mirror: https://github.com/castlabs/electron-releases/releases/download/v
 snap:
   plugs:
     - default
     - screen-inhibit-control
+extraResources:
+  - "themes/**"
 linux:
   category: AudioVideo
-  icon: icon.png
+  icon: assets/icons
   target:
     - dir
   executableName: tidal-hifi
@@ -18,7 +20,7 @@ linux:
     Name: TIDAL Hi-Fi
     GenericName: TIDAL Hi-Fi
     Comment: The web version of listen.tidal.com running in electron with hifi support thanks to widevine.
-    Icon: icon.png
+    Icon: tidal-hifi
     StartupNotify: true
     Terminal: false
     Type: Application
