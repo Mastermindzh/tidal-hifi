@@ -1,5 +1,6 @@
 import { Notification, app, dialog } from "@electron/remote";
 import { ipcRenderer } from "electron";
+import fs from "fs";
 import Player from "mpris-service";
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
@@ -39,7 +40,7 @@ const elements = {
   bar: '*[data-test="progress-bar"]',
   footer: "#footerPlayer",
   album_header_title: '.header-details [data-test="title"]',
-  playing_title: 'span[data-test="table-cell-title"].css-geqnfr',
+  playing_title: 'span[data-test="table-cell-title"].css-1vjc1xk',
   album_name_cell: '[data-test="table-cell-album"]',
   tracklist_row: '[data-test="tracklist-row"]',
   volume: '*[data-test="volume"]',
@@ -147,8 +148,24 @@ const elements = {
 
 function addCustomCss() {
   window.addEventListener("DOMContentLoaded", () => {
+    const selectedTheme = settingsStore.get(settings.theme);
+    if (selectedTheme !== "none") {
+      const themeFile = `${process.resourcesPath}/${selectedTheme}`;
+      fs.readFile(themeFile, "utf-8", (err, data) => {
+        if (err) {
+          alert("An error ocurred reading the theme file.");
+          return;
+        }
+
+        const themeStyle = document.createElement("style");
+        themeStyle.innerHTML = data;
+        document.head.appendChild(themeStyle);
+      });
+    }
+
+    // read customCSS (it will override the theme)
     const style = document.createElement("style");
-    style.innerHTML = settingsStore.get(settings.customCSS);
+    style.innerHTML = settingsStore.get<string, string[]>(settings.customCSS).join("\n");
     document.head.appendChild(style);
   });
 }

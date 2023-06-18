@@ -7,6 +7,8 @@ snap:
   plugs:
     - default
     - screen-inhibit-control
+extraResources:
+  - "themes/**"
 linux:
   category: AudioVideo
   icon: assets/icons

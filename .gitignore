@@ -14,4 +14,6 @@ build/linux/arch/*
 .idea
 ts-dist/**
 ts-dist
+themes
+!src/themes
 .sass-cache

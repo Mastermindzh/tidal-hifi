@@ -1,42 +1,80 @@
 # Tidal-hifi<img src = "./build/icon.png" height="40" align="right"/>
 
-![GitHub release](https://img.shields.io/github/release/Mastermindzh/tidal-hifi.svg)
+![GitHub release](https://img.shields.io/github/release/Mastermindzh/tidal-hifi.svg) [![github builds](https://github.com/mastermindzh/tidal-hifi/actions/workflows/build.yml/badge.svg)](https://github.com/Mastermindzh/tidal-hifi/actions) [![Build Status](https://ci.mastermindzh.tech/api/badges/Mastermindzh/tidal-hifi/status.svg)](https://ci.mastermindzh.tech/Mastermindzh/tidal-hifi) [![Discord logo](./docs/images/discord.png)](https://discord.gg/yhNwf4v4He)
 
 The web version of [listen.tidal.com](https://listen.tidal.com) running in electron with hifi support thanks to widevine.
 
-![tidal-hifi preview](./docs/preview.png)
+![tidal-hifi preview](./docs/images/preview.png)
 
 ## Table of Contents
 
 <!-- toc -->
 
-- [Installation](#installation)
-  - [Dependencies](#dependencies)
-  - [Using releases](#using-releases)
-  - [Snap](#snap)
-  - [Arch Linux](#arch-linux)
-  - [Flatpak](#flatpak)
-  - [Nix](#nix)
-  - [Using source](#using-source)
-- [Features](#features)
-- [Integrations](#integrations)
-  - [Known bugs](#known-bugs)
-    - [last.fm doesn't work out of the box. Use rescrobbler as a workaround](#lastfm-doesnt-work-out-of-the-box-use-rescrobbler-as-a-workaround)
-- [Why](#why)
-- [Why not extend existing projects?](#why-not-extend-existing-projects)
-- [Special thanks to](#special-thanks-to)
-- [Buy me a coffee? Please don't](#buy-me-a-coffee-please-dont)
-- [Images](#images)
-  - [Settings window](#settings-window)
-  - [User setups](#user-setups)
+- [Tidal-hifi](#tidal-hifi)
+  - [Table of Contents](#table-of-contents)
+  - [Features](#features)
+  - [Contributions](#contributions)
+  - [Why did I create tidal-hifi?](#why-did-i-create-tidal-hifi)
+    - [Why not extend existing projects?](#why-not-extend-existing-projects)
+  - [Installation](#installation)
+    - [Dependencies](#dependencies)
+    - [Using releases](#using-releases)
+    - [Snap](#snap)
+    - [Arch Linux](#arch-linux)
+    - [Flatpak](#flatpak)
+    - [Nix](#nix)
+    - [Using source](#using-source)
+  - [Integrations](#integrations)
+    - [Known bugs](#known-bugs)
+      - [last.fm doesn't work out of the box. Use rescrobbler as a workaround](#lastfm-doesnt-work-out-of-the-box-use-rescrobbler-as-a-workaround)
+  - [Special thanks to](#special-thanks-to)
+  - [Donations](#donations)
+  - [Images](#images)
+    - [Settings window](#settings-window)
+    - [User setups](#user-setups)
 
 <!-- tocstop -->
+
+## Features
+
+- HiFi playback
+- Notifications
+- Custom [theming](./docs/theming.md)
+- Custom hotkeys ([source](https://defkey.com/tidal-desktop-shortcuts))
+- API for status and playback
+- Disabled audio & visual ads, unlocked lyrics, suggested track, track info, and unlimited skips thanks to uBlockOrigin custom filters ([source](https://github.com/uBlockOrigin/uAssets/issues/17495))
+- Custom [integrations](#integrations)
+- [Settings feature](./docs/images/settings.png) to disable certain functionality. (`ctrl+=` or `ctrl+0`)
+- AlbumArt in integrations ([best-effort](https://github.com/Mastermindzh/tidal-hifi/pull/88#pullrequestreview-840814847))
+
+## Contributions
+
+To contribute you can use the standard GitHub features (issues, prs, etc) or join the discord server to talk with like-minded individuals.
+
+- ![Discord logo](./docs/images/discord.png) [Join the Discord server](https://discord.gg/yhNwf4v4He)
+
+## Why did I create tidal-hifi?
+
+I moved from Spotify over to Tidal and found Linux support to be lacking.
+
+When I started this project there weren't any Linux apps that offered Tidal's "hifi" options nor any scripts to control it.
+
+### Why not extend existing projects?
+
+Whilst there are a handful of projects attempting to run Tidal on Electron they are all unappealing to me because of various reasons:
+
+- Lack of maintainers/developers. (no hotfixes, no issues being handled etc)
+- Most are simple web wrappers, not my cup of tea.
+- Some are DE oriented. I want this to work on WM's too.
+- None have widevine working at the moment
+
+Sometimes it's just easier to start over, cover my own needs and then making it available to the public :)
 
 ## Installation
 
 ### Dependencies
 
-Note that you **need** a notification library such as [libnotify](https://github.com/GNOME/libnotify) or [dunst](https://github.com/dunst-project/dunst) in order for the software to work properly.
+Note that you **need** a notification library such as [libnotify](https://github.com/GNOME/libnotify) or [dunst](https://github.com/dunst-project/dunst) for the software to work properly.
 
 ### Using releases
 
@@ -48,15 +86,15 @@ To install with `snap` you need to download the pre-packaged snap-package from t
 
 1. Download
 
-```sh
-wget <URI> #for instance: https://github.com/Mastermindzh/tidal-hifi/releases/download/1.0/tidal-hifi_1.0.0_amd64.snap
-```
+   ```sh
+   wget <URI> #for instance: https://github.com/Mastermindzh/tidal-hifi/releases/download/1.0/tidal-hifi_1.0.0_amd64.snap
+   ```
 
 2. Install
 
-```sh
-snap install --dangerous <path> #for instance: tidal-hifi_1.0.0_amd64.snap
-```
+   ```sh
+   snap install --dangerous <path> #for instance: tidal-hifi_1.0.0_amd64.snap
+   ```
 
 ### Arch Linux
 
@@ -91,23 +129,12 @@ To install and work with the code on this project follow these steps:
 - npm install
 - npm start
 
-## Features
-
-- HiFi playback
-- Notifications
-- Custom hotkeys ([source](https://defkey.com/tidal-desktop-shortcuts))
-- API for status and playback
-- Disabled audio & visual ads, unlocked lyrics, suggested track, track info, and unlimited skips thanks to uBlockOrigin custom filters ([source](https://github.com/uBlockOrigin/uAssets/issues/17495))
-- Custom [integrations](#integrations)
-- [Settings feature](./docs/settings.png) to disable certain functionality. (`ctrl+=` or `ctrl+0`)
-- AlbumArt in integrations ([best-effort](https://github.com/Mastermindzh/tidal-hifi/pull/88#pullrequestreview-840814847))
-
 ## Integrations
 
 Tidal-hifi comes with several integrations out of the box.
 You can find these in the settings menu (`ctrl + =` by default) under the "integrations" tab.
 
-![integrations menu, showing a list of integrations](./docs/integrations.png)
+![integrations menu, showing a list of integrations](./docs/images/integrations.png)
 
 It currently includes:
 
@@ -126,38 +153,20 @@ The last.fm login doesn't work, as is evident from the following issue: [Last.fm
 However, in that same issue you can read about a workaround using [rescrobbler](https://github.com/InputUsername/rescrobbled).
 For now that will be the default workaround.
 
-## Why
-
-I moved from Spotify over to Tidal and found Linux support to be lacking.
-
-When I started this project there weren't any Linux apps that offered Tidal's "hifi" options nor any scripts to control it.
-
-## Why not extend existing projects?
-
-Whilst there are a handful of projects attempting to run Tidal on Electron they are all unappealing to me because of various reasons:
-
-- Lack of a maintainers/developers. (no hotfixes, no issues being handled etc)
-- Most are simple web wrappers, not my cup of tea.
-- Some are DE oriented. I want this to work on WM's too.
-- None have widevine working at the moment
-
-Sometimes it's just easier to start over, cover my own needs and then making it available to the public :)
-
 ## Special thanks to
 
 - [Castlabs](https://castlabs.com/)
   For maintaining Electron with Widevine CDM installation, Verified Media Path (VMP), and persistent licenses (StorageID)
 
-## Buy me a coffee? Please don't
+## Donations
 
-Instead spend some money on a charity I care for: [kwf.nl](https://www.kwf.nl/donatie/donation).
-Inspired by [haydenjames' issue](https://github.com/Mastermindzh/tidal-hifi/issues/27#issuecomment-704198429)
+You can find my Github sponsorship page at: [https://github.com/sponsors/Mastermindzh](https://github.com/sponsors/Mastermindzh)
 
 ## Images
 
 ### Settings window
 
-![settings window](./docs/settings-preview.png)
+![settings window](./docs/images/settings-preview.png)
 
 ### User setups
 

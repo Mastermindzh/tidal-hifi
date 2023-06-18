@@ -7,7 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## 5.2.0
 
 - moved from Javascript to Typescript for all files
+
   - use `npm run watch` to watch for changes & recompile typescript and sass files
+
+- Added support for theming the application
+- Added drone build file use `drone exec` or drone.ci to build it
 
 ## 5.1.0
 
