@@ -33,6 +33,7 @@ export const settings = {
   singleInstance: "singleInstance",
   skipArtists: "skipArtists",
   skippedArtists: "skippedArtists",
+  theme: "theme",
   trayIcon: "trayIcon",
   updateFrequency: "updateFrequency",
   windowBounds: {

@@ -13,7 +13,7 @@ export const settingsStore = new Store({
     apiSettings: {
       port: 47836,
     },
-    customCSS: "",
+    customCSS: [],
     disableBackgroundThrottle: true,
     disableHardwareMediaKeys: false,
     enableCustomHotkeys: false,
@@ -30,6 +30,7 @@ export const settingsStore = new Store({
     singleInstance: true,
     skipArtists: false,
     skippedArtists: [""],
+    theme: "none",
     trayIcon: true,
     updateFrequency: 500,
     windowBounds: { width: 800, height: 600 },
@@ -54,7 +55,7 @@ export const createSettingsWindow = function () {
   settingsWindow = new BrowserWindow({
     width: 700,
     height: 600,
-    resizable: false,
+    resizable: true,
     show: false,
     transparent: true,
     frame: false,

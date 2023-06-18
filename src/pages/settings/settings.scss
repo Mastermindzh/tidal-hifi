@@ -156,7 +156,7 @@ html {
     display: none;
   }
 
-  @for $i from 1 to 6 {
+  @for $i from 1 to 7 {
     .settings > input:nth-child(#{$i * 2 - 1}):checked ~ & > .tabs__section:nth-child(#{$i}) {
       display: block;
     }
@@ -230,8 +230,6 @@ html {
         border-color: $tidal-blue;
         color: $white;
       }
-
-      // --- Switch slider component ---
     }
   }
 }
@@ -358,6 +356,90 @@ html {
 
     &:hover {
       background: $tidal-grey-darker-focus;
+    }
+  }
+}
+
+// file upload
+
+.file-drop-area {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 100%;
+  padding: 25px 0 25px 0px;
+  border: 1px dashed $tidal-grey;
+  border-radius: 3px;
+  transition: 0.2s;
+  &.is-active {
+    background-color: $black;
+  }
+
+  div {
+    padding-left: 25px;
+  }
+}
+
+.file-btn {
+  flex-shrink: 0;
+  background-color: $black;
+  border: 1px solid $tidal-grey;
+  border-radius: 3px;
+  padding: 8px 15px;
+  margin-right: 10px;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.file-msg {
+  font-size: small;
+  font-weight: 300;
+  line-height: 1.4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.file-input {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  opacity: 0;
+  &:focus {
+    outline: none;
+  }
+}
+
+.select-input {
+  display: block;
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 5px 0;
+  transition: 0.2s;
+  border: 0;
+  border-bottom: solid 1px $grey-333;
+  outline: none;
+  background: transparent;
+  color: $tidal-grey;
+  font-size: 14px;
+
+  &:focus {
+    border-color: $tidal-blue;
+    color: $white;
+  }
+
+  option {
+    background-color: $tidal-grey-darkest;
+
+    &:disabled {
+      font-size: 1.2em;
+      line-height: 1.5em;
+      text-align: center;
+      color: $white;
     }
   }
 }

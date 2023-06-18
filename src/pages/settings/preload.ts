@@ -1,8 +1,10 @@
-import remote from "@electron/remote";
+import remote, { app } from "@electron/remote";
 import { ipcRenderer, shell } from "electron";
+import fs from "fs";
 import { globalEvents } from "../../constants/globalEvents";
 import { settings } from "../../constants/settings";
 import { settingsStore } from "./../../scripts/settings";
+import { getOptions, getOptionsHeader, getThemeListFromDirectory } from "./theming";
 
 let adBlock: HTMLInputElement,
   api: HTMLInputElement,
@@ -21,8 +23,45 @@ let adBlock: HTMLInputElement,
   singleInstance: HTMLInputElement,
   skipArtists: HTMLInputElement,
   skippedArtists: HTMLInputElement,
+  theme: HTMLSelectElement,
   trayIcon: HTMLInputElement,
   updateFrequency: HTMLInputElement;
+function getThemeFiles() {
+  const selectElement = document.getElementById("themesList") as HTMLSelectElement;
+  const builtInThemes = getThemeListFromDirectory(process.resourcesPath);
+  const userThemes = getThemeListFromDirectory(`${app.getPath("userData")}/themes`);
+
+  let allThemes = [
+    getOptionsHeader("Built-in Themes"),
+    new Option("Tidal - Default", "none"),
+  ].concat(getOptions(builtInThemes));
+
+  if (userThemes.length >= 1) {
+    allThemes = allThemes.concat([getOptionsHeader("User Themes")]).concat(getOptions(userThemes));
+  }
+
+  // empty old options
+  const oldOptions = document.querySelectorAll("#themesList option");
+  oldOptions.forEach((o) => o.remove());
+
+  allThemes.forEach((option) => {
+    selectElement.add(option, null);
+  });
+}
+
+function handleFileUploads() {
+  const fileMessage = document.getElementById("file-message");
+  fileMessage.innerText = "or drag and drop files here";
+
+  document.getElementById("theme-files").addEventListener("change", function (e: any) {
+    Array.from(e.target.files).forEach((file: File) => {
+      const destination = `${app.getPath("userData")}/themes/${file.name}`;
+      fs.copyFileSync(file.path, destination, null);
+    });
+    fileMessage.innerText = `${e.target.files.length} files successfully uploaded`;
+    getThemeFiles();
+  });
+}
 
 /**
  * Sync the UI forms with the current settings
@@ -30,7 +69,7 @@ let adBlock: HTMLInputElement,
 function refreshSettings() {
   adBlock.checked = settingsStore.get(settings.adBlock);
   api.checked = settingsStore.get(settings.api);
-  customCSS.value = settingsStore.get(settings.customCSS);
+  customCSS.value = settingsStore.get<string, string[]>(settings.customCSS).join("\n");
   disableBackgroundThrottle.checked = settingsStore.get(settings.disableBackgroundThrottle);
   disableHardwareMediaKeys.checked = settingsStore.get(settings.flags.disableHardwareMediaKeys);
   enableCustomHotkeys.checked = settingsStore.get(settings.enableCustomHotkeys);
@@ -44,6 +83,7 @@ function refreshSettings() {
   port.value = settingsStore.get(settings.apiSettings.port);
   singleInstance.checked = settingsStore.get(settings.singleInstance);
   skipArtists.checked = settingsStore.get(settings.skipArtists);
+  theme.value = settingsStore.get(settings.theme);
   skippedArtists.value = settingsStore.get<string, string[]>(settings.skippedArtists).join("\n");
   trayIcon.checked = settingsStore.get(settings.trayIcon);
   updateFrequency.value = settingsStore.get(settings.updateFrequency);
@@ -75,9 +115,12 @@ function restart() {
  * Bind UI components to functions after DOMContentLoaded
  */
 window.addEventListener("DOMContentLoaded", () => {
-  function get(id: string): HTMLInputElement {
-    return document.getElementById(id) as HTMLInputElement;
+  function get<T = HTMLInputElement>(id: string): T {
+    return document.getElementById(id) as T;
   }
+
+  getThemeFiles();
+  handleFileUploads();
 
   document.getElementById("close").addEventListener("click", hide);
   document.getElementById("restart").addEventListener("click", restart);
@@ -105,6 +148,13 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function addSelectListener(source: HTMLSelectElement, key: string) {
+    source.addEventListener("change", () => {
+      settingsStore.set(key, source.value);
+      ipcRenderer.send(globalEvents.storeChanged);
+    });
+  }
+
   ipcRenderer.on("refreshData", () => {
     refreshSettings();
   });
@@ -127,6 +177,7 @@ window.addEventListener("DOMContentLoaded", () => {
   notifications = get("notifications");
   playBackControl = get("playBackControl");
   port = get("port");
+  theme = get<HTMLSelectElement>("themesList");
   trayIcon = get("trayIcon");
   skipArtists = get("skipArtists");
   skippedArtists = get("skippedArtists");
@@ -152,6 +203,7 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(skipArtists, settings.skipArtists);
   addTextAreaListener(skippedArtists, settings.skippedArtists);
   addInputListener(singleInstance, settings.singleInstance);
+  addSelectListener(theme, settings.theme);
   addInputListener(trayIcon, settings.trayIcon);
   addInputListener(updateFrequency, settings.updateFrequency);
 });
