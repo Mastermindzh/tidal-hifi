@@ -40,7 +40,7 @@ const elements = {
   bar: '*[data-test="progress-bar"]',
   footer: "#footerPlayer",
   album_header_title: '.header-details [data-test="title"]',
-  playing_title: 'span[data-test="table-cell-title"].css-geqnfr',
+  playing_title: 'span[data-test="table-cell-title"].css-1vjc1xk',
   album_name_cell: '[data-test="table-cell-album"]',
   tracklist_row: '[data-test="tracklist-row"]',
   volume: '*[data-test="volume"]',
