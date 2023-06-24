@@ -17,37 +17,37 @@
   --search-dialog-background: #24283b;
   --right-queue-background: #24283b;
 }
-.player--fNPGt.notFullscreen--ugyc2 {
+.player--gAOQG.notFullscreen--xbpBL {
   background-color: var(--footer-player-background);
 }
-.sidebar--WvRg_ {
+.sidebar--jVJai {
   background-color: var(--sidebar-background);
   contain: strict;
   flex-grow: 1;
   overflow-y: auto;
 }
-.item--VTpWS:hover {
+.item--buEQw:hover {
   background-color: var(--sidebar-hover-background);
 }
-.main--LUnJp {
+.main--jxfcQ {
   background-color: var(--main-background);
 }
-button.button--ncJwL {
+button.button--yO9Cd {
   background-color: var(--main-navigation-control-background);
 }
-.player--fNPGt.lossLess--g5Jss button.withBackground[aria-checked="true"] path {
+.player--gAOQG.lossLess--ON3FI button.withBackground[aria-checked="true"] path {
   fill: var(--player-control-active-button);
 }
-.player--fNPGt.lossLess--g5Jss button.withBackground[aria-checked="true"] {
+.player--gAOQG.lossLess--ON3FI button.withBackground[aria-checked="true"] {
   background-color: var(--player-control-background);
 }
-.activeItem--qV6eL .activeItem--qV6eL .playlistItem--YARJh .section--FI41E.playingItem--eWkYS {
+.activeItem--kFIk0 .activeItem--kFIk0 .playlistItem--mQrxp .section--PSIay.playingItem--eWkYS {
   color: #565f89;
 }
-.progressBarWrapper--WZfox {
+.progressBarWrapper--IBBI9 {
   color: var(--player-progress-bar);
 }
-.playbackControls--FLeZA button .tidal-ui__icon {
+.playbackControls--FhKVf button .tidal-ui__icon {
   transform: scale(1);
 }
 .css-11m9iw3 {
@@ -56,27 +56,30 @@ button.button--ncJwL {
 .css-11m9iw3 span {
   color: var(--indicator-hifi-span);
 }
-.activeItem--qV6eL {
+.activeItem--kFIk0 {
   color: var(--sidebar-menu-top-text);
 }
-.activeItem--qV6eL .playlistItem--YARJh {
+.activeItem--kFIk0 .playlistItem--mQrxp {
   color: var(--sidebar-menu-playlist-text);
 }
-button.feedBell--B8anb {
+button.feedBell--kvAbD {
   background-color: var(--main-feed-button-background);
 }
-.baseContainer--cbf17 {
+.baseContainer--jxCbW {
   background-color: var(--search-dialog-background);
 }
-.favoriteButton--TtBlM.is-favorite path {
+.favoriteButton--Qladw.is-favorite path {
   fill: var(--player-control-favorite);
 }
-.container--mkEWd {
+.container--PFTHk {
   background-color: var(--right-queue-background);
 }
-.container--vJVjO {
+.container--cl4MJ{
   background-color: var(--search-background);
 }
 .searchFieldHighlighted--Fitvs {
   color: var(--snow-white);
+}
+.searchField--EGBSq {
+  background-color: var(--search-background);
 }
