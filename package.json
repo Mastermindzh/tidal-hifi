@@ -4,7 +4,8 @@
   "description": "Tidal on Electron with widevine(hifi) support",
   "main": "ts-dist/main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron --inspect=0.0.0.0:5858 .",
+    "watchStart": "nodemon dist -x \"npm run start\"",
     "compile": "tsc && npm run sass-and-copy",
     "watch": "tsc-watch --onSuccess \"npm run sass-and-copy\"",
     "copy-files": "copyfiles -u 1 --exclude './src/**/*.ts' --exclude './src/**/*.scss' \"./src/**/*\" ts-dist",
@@ -57,6 +58,7 @@
     "eslint": "^8.39.0",
     "js-yaml": "^4.1.0",
     "markdown-toc": "^1.2.0",
+    "nodemon": "^3.0.1",
     "prettier": "^2.8.8",
     "stylelint": "^15.10.1",
     "stylelint-config-standard": "^33.0.0",

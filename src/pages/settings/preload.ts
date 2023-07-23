@@ -1,4 +1,4 @@
-import remote, { app } from "@electron/remote";
+import { app } from "@electron/remote";
 import { ipcRenderer, shell } from "electron";
 import fs from "fs";
 import { globalEvents } from "../../constants/globalEvents";
@@ -107,8 +107,8 @@ function hide() {
  * Restart tidal-hifi after changes
  */
 function restart() {
-  remote.app.relaunch();
-  remote.app.exit();
+  app.relaunch();
+  app.exit();
 }
 
 /**
