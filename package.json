@@ -30,7 +30,9 @@
     "electron",
     "hifi",
     "widevine",
-    "linux"
+    "linux",
+    "drm",
+    "castlabs"
   ],
   "author": "Rick van Lieshout <info@rickvanlieshout.com> (http://rickvanlieshout.com)",
   "homepage": "https://github.com/Mastermindzh/tidal-hifi",

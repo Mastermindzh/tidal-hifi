@@ -67,10 +67,10 @@ Whilst there are a handful of projects attempting to run Tidal on Electron they 
 
 - Lack of maintainers/developers. (no hotfixes, no issues being handled etc)
 - Most are simple web wrappers, not my cup of tea.
-- Some are DE oriented. I want this to work on WM's too.
-- None have widevine working at the moment
+- Some are DE-oriented. I want this to work on WM's too.
+- None have Widevine working at the moment
 
-Sometimes it's just easier to start over, cover my own needs and then making it available to the public :)
+Sometimes it's just easier to start over, cover my own needs and after that making it available to the public :)
 
 ## Installation
 
