@@ -26,13 +26,12 @@ const elements = {
   title: '*[data-test^="footer-track-title"]',
   artists: '*[data-test^="grid-item-detail-text-title-artist"]',
   home: '*[data-test="menu--home"]',
-  back: '[class^="backwardButton"]',
-  forward: '[class^="forwardButton"]',
+  back: '[title^="Back"]',
+  forward: '[title^="Next"]',
   search: '[class^="searchField"]',
   shuffle: '*[data-test="shuffle"]',
   repeat: '*[data-test="repeat"]',
-  block: '[class="blockButton"]',
-  account: '*[data-test^="profile-image-button"]',
+  account: '*[class^="profileOptions"]',
   settings: '*[data-test^="open-settings"]',
   media: '*[data-test="current-media-imagery"]',
   image: "img",
@@ -40,9 +39,10 @@ const elements = {
   duration: '*[data-test="duration"]',
   bar: '*[data-test="progress-bar"]',
   footer: "#footerPlayer",
+  mediaItem: "[data-type='mediaItem']",
   album_header_title: '.header-details [data-test="title"]',
-  playing_title: 'span[data-test="table-cell-title"].css-1vjc1xk',
-  album_name_cell: '[data-test="table-cell-album"]',
+  currentlyPlaying: "[class^='isPlayingIcon'], [data-test-is-playing='true']",
+  album_name_cell: '[class^="album"]',
   tracklist_row: '[data-test="tracklist-row"]',
   volume: '*[data-test="volume"]',
   /**
@@ -106,7 +106,9 @@ const elements = {
       window.location.href.includes("/mix/")
     ) {
       if (currentPlayStatus === statuses.playing) {
-        const row = window.document.querySelector(this.playing_title).closest(this.tracklist_row);
+        // find the currently playing element from the list (which might be in an album icon), traverse back up to the mediaItem (row) and select the album cell.
+        // document.querySelector("[class^='isPlayingIcon'], [data-test-is-playing='true']").closest('[data-type="mediaItem"]').querySelector('[class^="album"]').textContent
+        const row = window.document.querySelector(this.currentlyPlaying).closest(this.mediaItem);
         if (row) {
           return row.querySelector(this.album_name_cell).textContent;
         }
@@ -207,7 +209,10 @@ function playPause() {
 function addHotKeys() {
   if (settingsStore.get(settings.enableCustomHotkeys)) {
     addHotkey("Control+p", function () {
-      elements.click("account").click("settings");
+      elements.click("account");
+      setTimeout(() => {
+        elements.click("settings");
+      }, 100);
     });
     addHotkey("Control+l", function () {
       handleLogout();
