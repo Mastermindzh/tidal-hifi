@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 5.4.0
 
+- Removed Windows builds (from publishes) as they don't work anymore.
 - Added [Songwhip](https://songwhip.com/) integration
 - Fixed bug with several hotkeys not working due to Tidal's HTML/css changes
 - [DEV]:

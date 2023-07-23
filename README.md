@@ -27,6 +27,7 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
   - [Integrations](#integrations)
     - [Known bugs](#known-bugs)
       - [last.fm doesn't work out of the box. Use rescrobbler as a workaround](#lastfm-doesnt-work-out-of-the-box-use-rescrobbler-as-a-workaround)
+      - [DRM not working on Windows](#drm-not-working-on-windows)
   - [Special thanks to](#special-thanks-to)
   - [Donations](#donations)
   - [Images](#images)
@@ -153,6 +154,11 @@ Not included:
 The last.fm login doesn't work, as is evident from the following issue: [Last.fm login doesn't work](https://github.com/Mastermindzh/tidal-hifi/issues/4).
 However, in that same issue you can read about a workaround using [rescrobbler](https://github.com/InputUsername/rescrobbled).
 For now that will be the default workaround.
+
+#### DRM not working on Windows
+
+Most Windows users run into DRM issues when trying to use Tidal-hifi.
+Nothing I can do about that I'm afraid... Tidal is working on removing/changing DRM so when they finish with that we can give it another shot.
 
 ## Special thanks to
 
