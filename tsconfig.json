@@ -1,8 +1,9 @@
 {
   "compilerOptions": {
-    "typeRoots": ["src/types"],
+    "typeRoots": ["src/types", "node_modules/@types"],
     "module": "commonjs",
     "target": "ES6",
+    "lib": ["ES2020", "DOM"],
     "noImplicitAny": true,
     "sourceMap": true,
     "allowJs": true,
