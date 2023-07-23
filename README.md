@@ -41,6 +41,7 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
 - Notifications
 - Custom [theming](./docs/theming.md)
 - Custom hotkeys ([source](https://defkey.com/tidal-desktop-shortcuts))
+- Songwhip.com integration (hotkey `ctrl + w`)
 - API for status and playback
 - Disabled audio & visual ads, unlocked lyrics, suggested track, track info, and unlimited skips thanks to uBlockOrigin custom filters ([source](https://github.com/uBlockOrigin/uAssets/issues/17495))
 - Custom [integrations](#integrations)

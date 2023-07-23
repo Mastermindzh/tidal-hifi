@@ -1,16 +1,17 @@
-import { Notification, app, dialog } from "@electron/remote";
-import { ipcRenderer } from "electron";
+import { app, dialog, Notification } from "@electron/remote";
+import { clipboard, ipcRenderer } from "electron";
 import fs from "fs";
 import Player from "mpris-service";
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
 import { statuses } from "./constants/statuses";
+import { Songwhip } from "./features/songwhip/songwhip";
 import { Options } from "./models/options";
 import { downloadFile } from "./scripts/download";
 import { addHotkey } from "./scripts/hotkeys";
-
 import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
+
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 const appName = "Tidal Hifi";
 let currentSong = "";
@@ -231,6 +232,15 @@ function addHotKeys() {
 
     addHotkey("control+r", function () {
       elements.click("repeat");
+    });
+    addHotkey("control+w", async function () {
+      const result = await ipcRenderer.invoke(globalEvents.whip, getTrackURL());
+      const url = Songwhip.getWhipUrl(result);
+      clipboard.writeText(url);
+      new Notification({
+        title: `Successfully whipped: `,
+        body: `URL copied to clipboard: ${url}`,
+      }).show();
     });
   }
 

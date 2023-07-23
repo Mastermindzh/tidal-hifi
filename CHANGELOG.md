@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 5.4.0
 
+- Added [Songwhip](https://songwhip.com/) integration
 - [DEV]:
   - added a logger to log into STDout
   - added "watchStart" which will automatically restart electron when it detects a source code change

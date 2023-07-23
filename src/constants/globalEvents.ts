@@ -10,5 +10,6 @@ export const globalEvents = {
   showSettings: "showSettings",
   storeChanged: "storeChanged",
   error: "error",
+  whip: "whip",
   log: "log",
 };
