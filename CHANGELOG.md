@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## 5.4.0
+
+- Removed Windows builds (from publishes) as they don't work anymore.
+- Added [Songwhip](https://songwhip.com/) integration
+- Fixed bug with several hotkeys not working due to Tidal's HTML/css changes
+- [DEV]:
+  - added a logger to log into STDout
+  - added "watchStart" which will automatically restart electron when it detects a source code change
+  - added "listen.tidal.com-parsing-scripts" folder with a script to verify whether all elements (in the main preload.ts) are present on the page
+
 ## 5.3.0
 
 - SPKChaosPhoenix updated the beautiful Tokyo Night theme:

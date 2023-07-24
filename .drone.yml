@@ -13,4 +13,4 @@ steps:
     commands:
       - apt-get update && apt-get upgrade -y
       - apt-get install -y libarchive-tools rpm
-      - npm run build
+      - npm run build-unpacked

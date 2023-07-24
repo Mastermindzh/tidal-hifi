@@ -27,6 +27,7 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
   - [Integrations](#integrations)
     - [Known bugs](#known-bugs)
       - [last.fm doesn't work out of the box. Use rescrobbler as a workaround](#lastfm-doesnt-work-out-of-the-box-use-rescrobbler-as-a-workaround)
+      - [DRM not working on Windows](#drm-not-working-on-windows)
   - [Special thanks to](#special-thanks-to)
   - [Donations](#donations)
   - [Images](#images)
@@ -41,6 +42,7 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
 - Notifications
 - Custom [theming](./docs/theming.md)
 - Custom hotkeys ([source](https://defkey.com/tidal-desktop-shortcuts))
+- Songwhip.com integration (hotkey `ctrl + w`)
 - API for status and playback
 - Disabled audio & visual ads, unlocked lyrics, suggested track, track info, and unlimited skips thanks to uBlockOrigin custom filters ([source](https://github.com/uBlockOrigin/uAssets/issues/17495))
 - Custom [integrations](#integrations)
@@ -65,10 +67,10 @@ Whilst there are a handful of projects attempting to run Tidal on Electron they 
 
 - Lack of maintainers/developers. (no hotfixes, no issues being handled etc)
 - Most are simple web wrappers, not my cup of tea.
-- Some are DE oriented. I want this to work on WM's too.
-- None have widevine working at the moment
+- Some are DE-oriented. I want this to work on WM's too.
+- None have Widevine working at the moment
 
-Sometimes it's just easier to start over, cover my own needs and then making it available to the public :)
+Sometimes it's just easier to start over, cover my own needs and after that making it available to the public :)
 
 ## Installation
 
@@ -152,6 +154,11 @@ Not included:
 The last.fm login doesn't work, as is evident from the following issue: [Last.fm login doesn't work](https://github.com/Mastermindzh/tidal-hifi/issues/4).
 However, in that same issue you can read about a workaround using [rescrobbler](https://github.com/InputUsername/rescrobbled).
 For now that will be the default workaround.
+
+#### DRM not working on Windows
+
+Most Windows users run into DRM issues when trying to use Tidal-hifi.
+Nothing I can do about that I'm afraid... Tidal is working on removing/changing DRM so when they finish with that we can give it another shot.
 
 ## Special thanks to
 

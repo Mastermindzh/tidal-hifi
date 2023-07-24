@@ -26,6 +26,8 @@ import {
 import { settings } from "./constants/settings";
 import { addTray, refreshTray } from "./scripts/tray";
 import { MediaInfo } from "./models/mediaInfo";
+import { Songwhip } from "./features/songwhip/songwhip";
+import { Logger } from "./features/logger";
 const tidalUrl = "https://listen.tidal.com";
 
 initialize();
@@ -220,3 +222,9 @@ ipcMain.on(globalEvents.storeChanged, () => {
 ipcMain.on(globalEvents.error, (event) => {
   console.log(event);
 });
+
+ipcMain.handle(globalEvents.whip, async (event, url) => {
+  return await Songwhip.whip(url);
+});
+
+Logger.watch(ipcMain);
