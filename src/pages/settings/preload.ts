@@ -146,7 +146,7 @@ window.addEventListener("DOMContentLoaded", () => {
       }
       // Live update the view for ListenBrainz input, hide if disabled/show if enabled
       if (source.value === "on" && source.id === "enableListenBrainz") {
-        source.checked ? document.getElementById("listenbrainz__options").setAttribute("hidden", "false") : document.getElementById("listenbrainz__options").setAttribute("hidden", "true");
+        source.checked ? document.getElementById("listenbrainz__options").removeAttribute("hidden") : document.getElementById("listenbrainz__options").setAttribute("hidden", "true");
       }
       ipcRenderer.send(globalEvents.storeChanged);
     });
@@ -199,7 +199,7 @@ window.addEventListener("DOMContentLoaded", () => {
   ListenBrainzToken = get("ListenBrainzToken");
 
   refreshSettings();
-  enableListenBrainz.checked ? document.getElementById("listenbrainz__options").hidden = false : document.getElementById("listenbrainz__options").hidden = true;
+  enableListenBrainz.checked ? document.getElementById("listenbrainz__options").removeAttribute("hidden") : document.getElementById("listenbrainz__options").setAttribute("hidden", "true");
 
   addInputListener(adBlock, settings.adBlock);
   addInputListener(api, settings.api);
