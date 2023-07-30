@@ -29,7 +29,7 @@ export class ListenBrainz {
                         additional_info: {
                             media_player: "Tidal Hi-Fi",
                             submission_client: "Tidal Hi-Fi",
-                            music_service: "listen.tidal.com",
+                            music_service: "tidal.com",
                             duration: duration,
                         },
                         artist_name: artists,
