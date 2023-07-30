@@ -144,6 +144,10 @@ window.addEventListener("DOMContentLoaded", () => {
       } else {
         settingsStore.set(key, source.value);
       }
+      // Live update the view for ListenBrainz input, hide if disabled/show if enabled
+      if (source.value === "on" && source.id === "enableListenBrainz") {
+        source.checked ? document.getElementById("listenbrainz__options").hidden = false : document.getElementById("listenbrainz__options").hidden = true;
+      }
       ipcRenderer.send(globalEvents.storeChanged);
     });
   }
@@ -195,6 +199,7 @@ window.addEventListener("DOMContentLoaded", () => {
   ListenBrainzToken = get("ListenBrainzToken");
 
   refreshSettings();
+  enableListenBrainz.checked ? document.getElementById("listenbrainz__options").hidden = false : document.getElementById("listenbrainz__options").hidden = true;
 
   addInputListener(adBlock, settings.adBlock);
   addInputListener(api, settings.api);

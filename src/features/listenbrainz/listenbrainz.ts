@@ -8,7 +8,7 @@ const ListenBrainzStore = new Store({name: "listenbrainz"});
 
 export class ListenBrainz {
   /**
-   * Call the ListenBrainz API and create playing now payload
+   * Call the ListenBrainz API and create playing now payload and scrobble old song
    * @param title
    * @param artists
    * @param status
