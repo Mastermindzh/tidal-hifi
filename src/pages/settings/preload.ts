@@ -146,7 +146,7 @@ window.addEventListener("DOMContentLoaded", () => {
       }
       // Live update the view for ListenBrainz input, hide if disabled/show if enabled
       if (source.value === "on" && source.id === "enableListenBrainz") {
-        source.checked ? document.getElementById("listenbrainz__options").hidden = false : document.getElementById("listenbrainz__options").hidden = true;
+        source.checked ? document.getElementById("listenbrainz__options").setAttribute("hidden", "false") : document.getElementById("listenbrainz__options").setAttribute("hidden", "true");
       }
       ipcRenderer.send(globalEvents.storeChanged);
     });
