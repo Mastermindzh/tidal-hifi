@@ -4,7 +4,7 @@ import { settings } from "../../constants/settings";
 import { MediaStatus } from "../../models/mediaStatus";
 import Store from "electron-store";
 
-const ListenBrainzStore = new Store();
+const ListenBrainzStore = new Store({name: "listenbrainz"});
 
 export class ListenBrainz {
   /**
