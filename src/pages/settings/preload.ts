@@ -25,7 +25,11 @@ let adBlock: HTMLInputElement,
   skippedArtists: HTMLInputElement,
   theme: HTMLSelectElement,
   trayIcon: HTMLInputElement,
-  updateFrequency: HTMLInputElement;
+  updateFrequency: HTMLInputElement,
+  enableListenBrainz: HTMLInputElement,
+  ListenBrainzAPI: HTMLInputElement,
+  ListenBrainzToken: HTMLInputElement;
+
 function getThemeFiles() {
   const selectElement = document.getElementById("themesList") as HTMLSelectElement;
   const builtInThemes = getThemeListFromDirectory(process.resourcesPath);
@@ -87,6 +91,9 @@ function refreshSettings() {
   skippedArtists.value = settingsStore.get<string, string[]>(settings.skippedArtists).join("\n");
   trayIcon.checked = settingsStore.get(settings.trayIcon);
   updateFrequency.value = settingsStore.get(settings.updateFrequency);
+  enableListenBrainz.checked = settingsStore.get(settings.ListenBrainz.enabled);
+  ListenBrainzAPI.value = settingsStore.get(settings.ListenBrainz.api);
+  ListenBrainzToken.value = settingsStore.get(settings.ListenBrainz.token);
 }
 
 /**
@@ -183,6 +190,9 @@ window.addEventListener("DOMContentLoaded", () => {
   skippedArtists = get("skippedArtists");
   singleInstance = get("singleInstance");
   updateFrequency = get("updateFrequency");
+  enableListenBrainz = get("enableListenBrainz");
+  ListenBrainzAPI = get("ListenBrainzAPI");
+  ListenBrainzToken = get("ListenBrainzToken");
 
   refreshSettings();
 
@@ -206,4 +216,7 @@ window.addEventListener("DOMContentLoaded", () => {
   addSelectListener(theme, settings.theme);
   addInputListener(trayIcon, settings.trayIcon);
   addInputListener(updateFrequency, settings.updateFrequency);
+  addInputListener(enableListenBrainz, settings.ListenBrainz.enabled);
+  addTextAreaListener(ListenBrainzAPI, settings.ListenBrainz.api);
+  addTextAreaListener(ListenBrainzToken, settings.ListenBrainz.token);
 });

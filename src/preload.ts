@@ -6,6 +6,7 @@ import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
 import { statuses } from "./constants/statuses";
 import { Songwhip } from "./features/songwhip/songwhip";
+import { ListenBrainz } from "./features/listenbrainz/listenbrainz";
 import { Options } from "./models/options";
 import { downloadFile } from "./scripts/download";
 import { addHotkey } from "./scripts/hotkeys";
@@ -468,6 +469,9 @@ setInterval(function () {
     updateMediaInfo(options, titleOrArtistsChanged);
     if (titleOrArtistsChanged) {
       updateMediaSession(options);
+      if (settingsStore.get(settings.ListenBrainz.enabled)) {
+        ListenBrainz.scrobble(options.title, options.artists, options.status, convertDuration(options.duration));
+      }
     }
   });
 
