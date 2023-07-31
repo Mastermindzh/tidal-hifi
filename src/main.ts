@@ -58,7 +58,7 @@ function setFlags() {
 }
 
 /**
- * Update the menuBarVisbility according to the store value
+ * Update the menuBarVisibility according to the store value
  *
  */
 function syncMenuBarWithStore() {

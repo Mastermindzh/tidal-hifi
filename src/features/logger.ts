@@ -26,8 +26,7 @@ export class Logger {
   public log(content: string, object: object = {}) {
     if (this.ipcRenderer) {
       this.ipcRenderer.send(globalEvents.log, { content, object });
-    } else {
-      console.log(`${content} \n ${JSON.stringify(object, null, 2)}`);
     }
+    console.log(`${content} \n ${JSON.stringify(object, null, 2)}`);
   }
 }
