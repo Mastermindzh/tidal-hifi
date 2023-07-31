@@ -48,6 +48,7 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
 - Custom [integrations](#integrations)
 - [Settings feature](./docs/images/settings.png) to disable certain functionality. (`ctrl+=` or `ctrl+0`)
 - AlbumArt in integrations ([best-effort](https://github.com/Mastermindzh/tidal-hifi/pull/88#pullrequestreview-840814847))
+- [ListenBrainz](https://listenbrainz.org/?redirect=false) integration
 
 ## Contributions
 
@@ -133,7 +134,7 @@ To install and work with the code on this project follow these steps:
 
 ## Integrations
 
-Tidal-hifi comes with several integrations out of the box.
+tidal-hifi comes with several integrations out of the box.
 You can find these in the settings menu (`ctrl + =` by default) under the "integrations" tab.
 
 ![integrations menu, showing a list of integrations](./docs/images/integrations.png)
@@ -153,11 +154,11 @@ Not included:
 
 The last.fm login doesn't work, as is evident from the following issue: [Last.fm login doesn't work](https://github.com/Mastermindzh/tidal-hifi/issues/4).
 However, in that same issue you can read about a workaround using [rescrobbler](https://github.com/InputUsername/rescrobbled).
-For now that will be the default workaround.
+For now, that will be the default workaround.
 
 #### DRM not working on Windows
 
-Most Windows users run into DRM issues when trying to use Tidal-hifi.
+Most Windows users run into DRM issues when trying to use tidal-hifi.
 Nothing I can do about that I'm afraid... Tidal is working on removing/changing DRM so when they finish with that we can give it another shot.
 
 ## Special thanks to

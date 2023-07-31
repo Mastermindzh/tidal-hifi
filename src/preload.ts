@@ -4,19 +4,25 @@ import fs from "fs";
 import Player from "mpris-service";
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
-import { statuses } from "./constants/statuses";
 import { Songwhip } from "./features/songwhip/songwhip";
+import {
+  ListenBrainz,
+  ListenBrainzConstants,
+  ListenBrainzStore,
+} from "./features/listenbrainz/listenbrainz";
 import { Options } from "./models/options";
 import { downloadFile } from "./scripts/download";
 import { addHotkey } from "./scripts/hotkeys";
 import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
+import { StoreData } from "./features/listenbrainz/models/storeData";
+import { MediaStatus } from "./models/mediaStatus";
 
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 const appName = "Tidal Hifi";
 let currentSong = "";
 let player: Player;
-let currentPlayStatus = statuses.paused;
+let currentPlayStatus = MediaStatus.paused;
 
 const elements = {
   play: '*[data-test="play"]',
@@ -105,7 +111,7 @@ const elements = {
       window.location.href.includes("/playlist/") ||
       window.location.href.includes("/mix/")
     ) {
-      if (currentPlayStatus === statuses.playing) {
+      if (currentPlayStatus === MediaStatus.playing) {
         // find the currently playing element from the list (which might be in an album icon), traverse back up to the mediaItem (row) and select the album cell.
         // document.querySelector("[class^='isPlayingIcon'], [data-test-is-playing='true']").closest('[data-type="mediaItem"]').querySelector('[class^="album"]').textContent
         const row = window.document.querySelector(this.currentlyPlaying).closest(this.mediaItem);
@@ -178,7 +184,7 @@ function addCustomCss() {
  * make sure it returns a number, if not use the default
  */
 function getUpdateFrequency() {
-  const storeValue = settingsStore.get(settings.updateFrequency) as number;
+  const storeValue = settingsStore.get<string, number>(settings.updateFrequency);
   const defaultValue = 500;
 
   if (!isNaN(storeValue)) {
@@ -200,6 +206,11 @@ function playPause() {
     elements.click("pause");
   }
 }
+
+/**
+ * Clears the old listenbrainz data on launch
+ */
+ListenBrainzStore.clear();
 
 /**
  * Add hotkeys for when tidal is focused
@@ -274,7 +285,7 @@ function handleLogout() {
       defaultId: 2,
     })
     .then((result: { response: number }) => {
-      if (logoutOptions.indexOf("Yes, please") == result.response) {
+      if (logoutOptions.indexOf("Yes, please") === result.response) {
         for (let i = 0; i < window.localStorage.length; i++) {
           const key = window.localStorage.key(i);
           if (key.startsWith("_TIDAL_activeSession")) {
@@ -316,6 +327,8 @@ function addIPCEventListeners() {
         case globalEvents.pause:
           elements.click("pause");
           break;
+        default:
+          break;
       }
     });
   });
@@ -330,9 +343,9 @@ function getCurrentlyPlayingStatus() {
 
   // if pause button is visible tidal is playing
   if (pause) {
-    status = statuses.playing;
+    status = MediaStatus.playing;
   } else {
-    status = statuses.paused;
+    status = MediaStatus.paused;
   }
   return status;
 }
@@ -357,19 +370,41 @@ function updateMediaInfo(options: Options, notify: boolean) {
     if (settingsStore.get(settings.notifications) && notify) {
       new Notification({ title: options.title, body: options.artists, icon: options.icon }).show();
     }
-    if (player) {
-      player.metadata = {
-        ...player.metadata,
-        ...{
-          "xesam:title": options.title,
-          "xesam:artist": [options.artists],
-          "xesam:album": options.album,
-          "mpris:artUrl": options.image,
-          "mpris:length": convertDuration(options.duration) * 1000 * 1000,
-          "mpris:trackid": "/org/mpris/MediaPlayer2/track/" + getTrackID(),
-        },
-      };
-      player.playbackStatus = options.status == statuses.paused ? "Paused" : "Playing";
+    updateMpris(options);
+    updateListenBrainz(options);
+  }
+}
+
+function updateMpris(options: Options) {
+  if (player) {
+    player.metadata = {
+      ...player.metadata,
+      ...{
+        "xesam:title": options.title,
+        "xesam:artist": [options.artists],
+        "xesam:album": options.album,
+        "mpris:artUrl": options.image,
+        "mpris:length": convertDuration(options.duration) * 1000 * 1000,
+        "mpris:trackid": "/org/mpris/MediaPlayer2/track/" + getTrackID(),
+      },
+    };
+    player.playbackStatus = options.status === MediaStatus.paused ? "Paused" : "Playing";
+  }
+}
+
+function updateListenBrainz(options: Options) {
+  if (settingsStore.get(settings.ListenBrainz.enabled)) {
+    const oldData = ListenBrainzStore.get(ListenBrainzConstants.oldData) as StoreData;
+    if (
+      (!oldData && options.status === MediaStatus.playing) ||
+      (oldData && oldData.title !== options.title)
+    ) {
+      ListenBrainz.scrobble(
+        options.title,
+        options.artists,
+        options.status,
+        convertDuration(options.duration)
+      );
     }
   }
 }
