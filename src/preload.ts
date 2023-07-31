@@ -377,8 +377,13 @@ function updateMediaInfo(options: Options, notify: boolean) {
       };
       player.playbackStatus = options.status == statuses.paused ? "Paused" : "Playing";
     }
-    if (settingsStore.get(settings.ListenBrainz.enabled) && (ListenBrainzStore.get("OldData") as string[][1]) !== options.title) {
-      ListenBrainz.scrobble(options.title, options.artists, options.status, convertDuration(options.duration));
+    if (settingsStore.get(settings.ListenBrainz.enabled)) {
+      const data = ListenBrainzStore.get("OldData") as string[];
+      if (data && data[1] !== options.title) {
+        ListenBrainz.scrobble(options.title, options.artists, options.status, convertDuration(options.duration));
+      } else if (!data) {
+        ListenBrainz.scrobble(options.title, options.artists, options.status, convertDuration(options.duration));
+      }
     }
   }
 }
