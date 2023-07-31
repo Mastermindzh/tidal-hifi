@@ -48,7 +48,7 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
 - Custom [integrations](#integrations)
 - [Settings feature](./docs/images/settings.png) to disable certain functionality. (`ctrl+=` or `ctrl+0`)
 - AlbumArt in integrations ([best-effort](https://github.com/Mastermindzh/tidal-hifi/pull/88#pullrequestreview-840814847))
-- [ListenBrainz](https://listenbrainz.org/user/mastermindzh/) integration
+- [ListenBrainz](https://listenbrainz.org/?redirect=false) integration
 
 ## Contributions
 
