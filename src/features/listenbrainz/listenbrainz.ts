@@ -81,3 +81,5 @@ export class ListenBrainz {
     }
   }
 }
+
+export { ListenBrainzStore };

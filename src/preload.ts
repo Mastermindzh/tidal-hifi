@@ -6,7 +6,7 @@ import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
 import { statuses } from "./constants/statuses";
 import { Songwhip } from "./features/songwhip/songwhip";
-import { ListenBrainz } from "./features/listenbrainz/listenbrainz";
+import { ListenBrainz, ListenBrainzStore } from "./features/listenbrainz/listenbrainz";
 import { Options } from "./models/options";
 import { downloadFile } from "./scripts/download";
 import { addHotkey } from "./scripts/hotkeys";
@@ -203,6 +203,11 @@ function playPause() {
 }
 
 /**
+ * Clears the old listenbrainz data on launch
+ */
+ListenBrainzStore.clear();
+
+/**
  * Add hotkeys for when tidal is focused
  * Reflects the desktop hotkeys found on:
  * https://defkey.com/tidal-desktop-shortcuts
@@ -372,6 +377,9 @@ function updateMediaInfo(options: Options, notify: boolean) {
       };
       player.playbackStatus = options.status == statuses.paused ? "Paused" : "Playing";
     }
+    if (settingsStore.get(settings.ListenBrainz.enabled) && (ListenBrainzStore.get("OldData") as string[][1]) !== options.title) {
+      ListenBrainz.scrobble(options.title, options.artists, options.status, convertDuration(options.duration));
+    }
   }
 }
 
@@ -469,9 +477,6 @@ setInterval(function () {
     updateMediaInfo(options, titleOrArtistsChanged);
     if (titleOrArtistsChanged) {
       updateMediaSession(options);
-      if (settingsStore.get(settings.ListenBrainz.enabled)) {
-        ListenBrainz.scrobble(options.title, options.artists, options.status, convertDuration(options.duration));
-      }
     }
   });
 
