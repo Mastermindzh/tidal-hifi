@@ -1,12 +1,12 @@
 import { MediaInfo } from "../models/mediaInfo";
-import { statuses } from "./../constants/statuses";
+import { MediaStatus } from "../models/mediaStatus";
 
 export const mediaInfo = {
   title: "",
   artists: "",
   album: "",
   icon: "",
-  status: statuses.paused,
+  status: MediaStatus.paused as string,
   url: "",
   current: "",
   duration: "",

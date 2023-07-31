@@ -18,6 +18,11 @@ export const settingsStore = new Store({
     disableHardwareMediaKeys: false,
     enableCustomHotkeys: false,
     enableDiscord: false,
+    ListenBrainz: {
+      enabled: false,
+      api: "https://api.listenbrainz.org",
+      token: "",
+    },
     flags: {
       gpuRasterization: true,
       disableHardwareMediaKeys: false,

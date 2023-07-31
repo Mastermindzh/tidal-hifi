@@ -1,11 +1,11 @@
 import { BrowserWindow, dialog } from "electron";
 import express, { Response } from "express";
 import fs from "fs";
+import { settings } from "../constants/settings";
+import { MediaStatus } from "../models/mediaStatus";
 import { globalEvents } from "./../constants/globalEvents";
-import { statuses } from "./../constants/statuses";
 import { mediaInfo } from "./mediaInfo";
 import { settingsStore } from "./settings";
-import { settings } from "../constants/settings";
 
 /**
  * Function to enable tidal-hifi's express api
@@ -44,7 +44,7 @@ export const startExpress = (mainWindow: BrowserWindow) => {
     expressApp.get("/next", (req, res) => handleGlobalEvent(res, globalEvents.next));
     expressApp.get("/previous", (req, res) => handleGlobalEvent(res, globalEvents.previous));
     expressApp.get("/playpause", (req, res) => {
-      if (mediaInfo.status == statuses.playing) {
+      if (mediaInfo.status === MediaStatus.playing) {
         handleGlobalEvent(res, globalEvents.pause);
       } else {
         handleGlobalEvent(res, globalEvents.play);
