@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [next]
 
+- Fixed bug with theme files from user directory trying to load: "an error occurred reading the theme file"
 - Fixed: config flags not being set correctly
 - [DEV]:
   - Logger is now static and will automatically call either ipcRenderer or ipcMain

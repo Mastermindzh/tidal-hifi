@@ -17,6 +17,7 @@ import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
 import { StoreData } from "./features/listenbrainz/models/storeData";
 import { MediaStatus } from "./models/mediaStatus";
+import { Logger } from "./features/logger";
 
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 const appName = "Tidal Hifi";
@@ -157,12 +158,14 @@ const elements = {
 
 function addCustomCss() {
   window.addEventListener("DOMContentLoaded", () => {
-    const selectedTheme = settingsStore.get(settings.theme);
+    const selectedTheme = settingsStore.get<string, string>(settings.theme);
     if (selectedTheme !== "none") {
-      const themeFile = `${process.resourcesPath}/${selectedTheme}`;
+      const userThemePath = `${app.getPath("userData")}/themes/${selectedTheme}`;
+      const resourcesThemePath = `${process.resourcesPath}/${selectedTheme}`;
+      const themeFile = fs.existsSync(userThemePath) ? userThemePath : resourcesThemePath;
       fs.readFile(themeFile, "utf-8", (err, data) => {
         if (err) {
-          alert("An error ocurred reading the theme file.");
+          Logger.alert("An error ocurred reading the theme file.", err, alert);
           return;
         }
 
