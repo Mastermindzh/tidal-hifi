@@ -20,10 +20,10 @@ export function setManagedFlagsFromSettings(app: App) {
   if (flagsFromSettings) {
     for (const [key, value] of Object.entries(flagsFromSettings)) {
       if (value) {
-        const { flag, value } = flags[key];
-
-        Logger.log(`enabling command line option ${flag} with value ${value}`);
-        setFlag(app, flag, value);
+        flags[key].forEach((flag) => {
+          Logger.log(`enabling command line option ${flag.flag} with value ${flag.value}`);
+          setFlag(app, flag.flag, flag.value);
+        });
       }
     }
   }
