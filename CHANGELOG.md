@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [next]
 
+- Made it clear in the readme that this tidal-hifi client supports High & Max audio settings. fixes #261
 - Fixed bug with theme files from user directory trying to load: "an error occurred reading the theme file"
 - Fixed: config flags not being set correctly
 - [DEV]:

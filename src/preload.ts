@@ -4,20 +4,20 @@ import fs from "fs";
 import Player from "mpris-service";
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
-import { Songwhip } from "./features/songwhip/songwhip";
 import {
   ListenBrainz,
   ListenBrainzConstants,
   ListenBrainzStore,
 } from "./features/listenbrainz/listenbrainz";
+import { StoreData } from "./features/listenbrainz/models/storeData";
+import { Logger } from "./features/logger";
+import { Songwhip } from "./features/songwhip/songwhip";
+import { MediaStatus } from "./models/mediaStatus";
 import { Options } from "./models/options";
 import { downloadFile } from "./scripts/download";
 import { addHotkey } from "./scripts/hotkeys";
 import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
-import { StoreData } from "./features/listenbrainz/models/storeData";
-import { MediaStatus } from "./models/mediaStatus";
-import { Logger } from "./features/logger";
 
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 const appName = "Tidal Hifi";
