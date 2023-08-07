@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [next]
 
+- Fixed: config flags not being set correctly
 - [DEV]:
   - Logger is now static and will automatically call either ipcRenderer or ipcMain
 

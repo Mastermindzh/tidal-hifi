@@ -9,9 +9,13 @@ import {
   session,
 } from "electron";
 import path from "path";
-import { flags } from "./constants/flags";
 import { globalEvents } from "./constants/globalEvents";
 import { mediaKeys } from "./constants/mediaKeys";
+import { settings } from "./constants/settings";
+import { setDefaultFlags, setManagedFlagsFromSettings } from "./features/flags/flags";
+import { Logger } from "./features/logger";
+import { Songwhip } from "./features/songwhip/songwhip";
+import { MediaInfo } from "./models/mediaInfo";
 import { initRPC, rpc, unRPC } from "./scripts/discord";
 import { startExpress } from "./scripts/express";
 import { updateMediaInfo } from "./scripts/mediaInfo";
@@ -20,14 +24,10 @@ import {
   closeSettingsWindow,
   createSettingsWindow,
   hideSettingsWindow,
-  showSettingsWindow,
   settingsStore,
+  showSettingsWindow,
 } from "./scripts/settings";
-import { settings } from "./constants/settings";
 import { addTray, refreshTray } from "./scripts/tray";
-import { MediaInfo } from "./models/mediaInfo";
-import { Songwhip } from "./features/songwhip/songwhip";
-import { Logger } from "./features/logger";
 const tidalUrl = "https://listen.tidal.com";
 
 initialize();
@@ -36,26 +36,8 @@ let mainWindow: BrowserWindow;
 const icon = path.join(__dirname, "../assets/icon.png");
 const PROTOCOL_PREFIX = "tidal";
 
-setFlags();
-
-function setFlags() {
-  const flagsFromSettings = settingsStore.get(settings.flags.root);
-  if (flagsFromSettings) {
-    for (const [key, value] of Object.entries(flags)) {
-      if (value) {
-        flags[key].forEach((flag) => {
-          console.log(`enabling command line switch ${flag.flag} with value ${flag.value}`);
-          app.commandLine.appendSwitch(flag.flag, flag.value);
-        });
-      }
-    }
-  }
-
-  /**
-   * Fix Display Compositor issue.
-   */
-  app.commandLine.appendSwitch("disable-seccomp-filter-sandbox");
-}
+setDefaultFlags(app);
+setManagedFlagsFromSettings(app);
 
 /**
  * Update the menuBarVisibility according to the store value
@@ -90,8 +72,8 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
   mainWindow = new BrowserWindow({
     x: options.x,
     y: options.y,
-    width: settingsStore && settingsStore.get(settings.windowBounds.width),
-    height: settingsStore && settingsStore.get(settings.windowBounds.height),
+    width: settingsStore?.get(settings.windowBounds.width),
+    height: settingsStore?.get(settings.windowBounds.height),
     icon,
     backgroundColor: options.backgroundColor,
     autoHideMenuBar: true,
@@ -224,7 +206,7 @@ ipcMain.on(globalEvents.error, (event) => {
 });
 
 ipcMain.handle(globalEvents.whip, async (event, url) => {
-  return await Songwhip.whip(url);
+  return Songwhip.whip(url);
 });
 
 Logger.watch(ipcMain);
