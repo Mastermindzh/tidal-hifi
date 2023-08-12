@@ -258,44 +258,57 @@
                 <input id="updateFrequency" type="number" class="text-input" name="updateFrequency" />
               </div>
             </div>
-            <div class="group">
-              <p class="group__title">Flags</p>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Disable hardware built-in media keys</h4>
-                  <p>
-                    Also prevents certain desktop environments from recognizing the chrome MPRIS
-                    client separately from the custom MPRIS client.
-                  </p>
-                </div>
-                <label class="switch">
-                  <input id="disableHardwareMediaKeys" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
+          </div>
+          <div class="group">
+            <p class="group__title">Flags</p>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Disable hardware built-in media keys</h4>
+                <p>
+                  Also prevents certain desktop environments from recognizing the chrome MPRIS
+                  client separately from the custom MPRIS client.
+                </p>
               </div>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Enable GPU rasterization</h4>
-                  <p>Move a part of the rendering to the GPU for increased performance.</p>
-                </div>
-                <label class="switch">
-                  <input id="gpuRasterization" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
-              </div>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Disable Background Throttling</h4>
-                  <p>
-                    Makes app more responsive while in the background, at the cost of performance.
-                  </p>
-                </div>
-                <label class="switch">
-                  <input id="disableBackgroundThrottle" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
-              </div>
+              <label class="switch">
+                <input id="disableHardwareMediaKeys" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
             </div>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Enable GPU rasterization</h4>
+                <p>Move a part of the rendering to the GPU for increased performance.</p>
+              </div>
+              <label class="switch">
+                <input id="gpuRasterization" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Disable Background Throttling</h4>
+                <p>
+                  Makes app more responsive while in the background, at the cost of performance.
+                </p>
+              </div>
+              <label class="switch">
+                <input id="disableBackgroundThrottle" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Wayland support</h4>
+                <p>
+                  Adds a couple of Electron flags to help Tidal-hifi run smoothly on the Wayland window system.
+                </p>
+              </div>
+              <label class="switch">
+                <input id="enableWaylandSupport" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+          </div>
         </section>
 
         <section id="theming-section" class="tabs__section">

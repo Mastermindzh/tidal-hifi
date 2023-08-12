@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.6.0]
+
+- Added support for Wayland (on by default) fixes [#262](https://github.com/Mastermindzh/tidal-hifi/issues/262) and [#157](https://github.com/Mastermindzh/tidal-hifi/issues/157)
+- Made it clear in the readme that this tidal-hifi client supports High & Max audio settings. fixes [#261](https://github.com/Mastermindzh/tidal-hifi/issues/261)
+- Added app suspension inhibitors when music is playing. fixes [#257](https://github.com/Mastermindzh/tidal-hifi/issues/257)
+- Fixed bug with theme files from user directory trying to load: "an error occurred reading the theme file"
+- Fixed: config flags not being set correctly
+- [DEV]:
+  - Logger is now static and will automatically call either ipcRenderer or ipcMain
+
 ## 5.5.0
 
 - ListenBrainz integration added (thanks @Mar0xy)
@@ -22,7 +32,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - SPKChaosPhoenix updated the beautiful Tokyo Night theme:
 
-![](./docs/images/tokyo-night.png)
+![tidal with the tokyo night theme applied](./docs/images/tokyo-night.png)
 
 ## 5.2.0
 

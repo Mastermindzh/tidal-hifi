@@ -2,7 +2,7 @@
 
 ![GitHub release](https://img.shields.io/github/release/Mastermindzh/tidal-hifi.svg) [![github builds](https://github.com/mastermindzh/tidal-hifi/actions/workflows/build.yml/badge.svg)](https://github.com/Mastermindzh/tidal-hifi/actions) [![Build Status](https://ci.mastermindzh.tech/api/badges/Mastermindzh/tidal-hifi/status.svg)](https://ci.mastermindzh.tech/Mastermindzh/tidal-hifi) [![Discord logo](./docs/images/discord.png)](https://discord.gg/yhNwf4v4He)
 
-The web version of [listen.tidal.com](https://listen.tidal.com) running in electron with hifi support thanks to widevine.
+The web version of [listen.tidal.com](https://listen.tidal.com) running in electron with hifi (High & Max) support thanks to widevine.
 
 ![tidal-hifi preview](./docs/images/preview.png)
 
@@ -25,9 +25,9 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
     - [Nix](#nix)
     - [Using source](#using-source)
   - [Integrations](#integrations)
-    - [Known bugs](#known-bugs)
-      - [last.fm doesn't work out of the box. Use rescrobbler as a workaround](#lastfm-doesnt-work-out-of-the-box-use-rescrobbler-as-a-workaround)
-      - [DRM not working on Windows](#drm-not-working-on-windows)
+  - [Known bugs](#known-bugs)
+    - [last.fm doesn't work out of the box. Use rescrobbler as a workaround](#lastfm-doesnt-work-out-of-the-box-use-rescrobbler-as-a-workaround)
+    - [DRM not working on Windows](#drm-not-working-on-windows)
   - [Special thanks to](#special-thanks-to)
   - [Donations](#donations)
   - [Images](#images)
@@ -38,17 +38,19 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
 
 ## Features
 
-- HiFi playback
+- HiFi playback (High & Max settings)
 - Notifications
 - Custom [theming](./docs/theming.md)
 - Custom hotkeys ([source](https://defkey.com/tidal-desktop-shortcuts))
-- Songwhip.com integration (hotkey `ctrl + w`)
+- [Settings feature](./docs/images/settings.png) to disable certain functionality. (`ctrl+=` or `ctrl+0`)
 - API for status and playback
 - Disabled audio & visual ads, unlocked lyrics, suggested track, track info, and unlimited skips thanks to uBlockOrigin custom filters ([source](https://github.com/uBlockOrigin/uAssets/issues/17495))
-- Custom [integrations](#integrations)
-- [Settings feature](./docs/images/settings.png) to disable certain functionality. (`ctrl+=` or `ctrl+0`)
 - AlbumArt in integrations ([best-effort](https://github.com/Mastermindzh/tidal-hifi/pull/88#pullrequestreview-840814847))
-- [ListenBrainz](https://listenbrainz.org/?redirect=false) integration
+- Custom [integrations](#integrations)
+  - [ListenBrainz](https://listenbrainz.org/?redirect=false) integration
+  - Songwhip.com integration (hotkey `ctrl + w`)
+  - Discord RPC integration (showing "now listening", "Browsing", etc)
+  - MPRIS integration
 
 ## Contributions
 
@@ -59,8 +61,8 @@ To contribute you can use the standard GitHub features (issues, prs, etc) or joi
 ## Why did I create tidal-hifi?
 
 I moved from Spotify over to Tidal and found Linux support to be lacking.
-
 When I started this project there weren't any Linux apps that offered Tidal's "hifi" options nor any scripts to control it.
+I made this app to support the highest quality audio available on the Linux platform. It used to be "hifi" but now is ["High & Max"](https://tidal.com/sound-quality).
 
 ### Why not extend existing projects?
 
@@ -139,24 +141,20 @@ You can find these in the settings menu (`ctrl + =` by default) under the "integ
 
 ![integrations menu, showing a list of integrations](./docs/images/integrations.png)
 
-It currently includes:
-
-- MPRIS - MPRIS media player controls/status
-- Discord - Shows what you're listening to on Discord.
-
-Not included:
+Integrations with other projects that are not included natively:
 
 - [i3 blocks config](https://github.com/Mastermindzh/dotfiles/commit/9714b2fa1d670108ce811d5511fd3b7a43180647) - My dotfiles where I use this app to fetch currently playing music (direct commit)
+- [neptune](https://github.com/uwu/neptune) third party plugins & theming
 
-### Known bugs
+## Known bugs
 
-#### last.fm doesn't work out of the box. Use rescrobbler as a workaround
+### last.fm doesn't work out of the box. Use rescrobbler as a workaround
 
 The last.fm login doesn't work, as is evident from the following issue: [Last.fm login doesn't work](https://github.com/Mastermindzh/tidal-hifi/issues/4).
 However, in that same issue you can read about a workaround using [rescrobbler](https://github.com/InputUsername/rescrobbled).
 For now, that will be the default workaround.
 
-#### DRM not working on Windows
+### DRM not working on Windows
 
 Most Windows users run into DRM issues when trying to use tidal-hifi.
 Nothing I can do about that I'm afraid... Tidal is working on removing/changing DRM so when they finish with that we can give it another shot.

@@ -3,6 +3,7 @@ import { ipcRenderer, shell } from "electron";
 import fs from "fs";
 import { globalEvents } from "../../constants/globalEvents";
 import { settings } from "../../constants/settings";
+import { Logger } from "../../features/logger";
 import { settingsStore } from "./../../scripts/settings";
 import { getOptions, getOptionsHeader, getThemeListFromDirectory } from "./theming";
 
@@ -28,7 +29,8 @@ let adBlock: HTMLInputElement,
   updateFrequency: HTMLInputElement,
   enableListenBrainz: HTMLInputElement,
   ListenBrainzAPI: HTMLInputElement,
-  ListenBrainzToken: HTMLInputElement;
+  ListenBrainzToken: HTMLInputElement,
+  enableWaylandSupport: HTMLInputElement;
 
 function getThemeFiles() {
   const selectElement = document.getElementById("themesList") as HTMLSelectElement;
@@ -71,29 +73,34 @@ function handleFileUploads() {
  * Sync the UI forms with the current settings
  */
 function refreshSettings() {
-  adBlock.checked = settingsStore.get(settings.adBlock);
-  api.checked = settingsStore.get(settings.api);
-  customCSS.value = settingsStore.get<string, string[]>(settings.customCSS).join("\n");
-  disableBackgroundThrottle.checked = settingsStore.get(settings.disableBackgroundThrottle);
-  disableHardwareMediaKeys.checked = settingsStore.get(settings.flags.disableHardwareMediaKeys);
-  enableCustomHotkeys.checked = settingsStore.get(settings.enableCustomHotkeys);
-  enableDiscord.checked = settingsStore.get(settings.enableDiscord);
-  gpuRasterization.checked = settingsStore.get(settings.flags.gpuRasterization);
-  menuBar.checked = settingsStore.get(settings.menuBar);
-  minimizeOnClose.checked = settingsStore.get(settings.minimizeOnClose);
-  mpris.checked = settingsStore.get(settings.mpris);
-  notifications.checked = settingsStore.get(settings.notifications);
-  playBackControl.checked = settingsStore.get(settings.playBackControl);
-  port.value = settingsStore.get(settings.apiSettings.port);
-  singleInstance.checked = settingsStore.get(settings.singleInstance);
-  skipArtists.checked = settingsStore.get(settings.skipArtists);
-  theme.value = settingsStore.get(settings.theme);
-  skippedArtists.value = settingsStore.get<string, string[]>(settings.skippedArtists).join("\n");
-  trayIcon.checked = settingsStore.get(settings.trayIcon);
-  updateFrequency.value = settingsStore.get(settings.updateFrequency);
-  enableListenBrainz.checked = settingsStore.get(settings.ListenBrainz.enabled);
-  ListenBrainzAPI.value = settingsStore.get(settings.ListenBrainz.api);
-  ListenBrainzToken.value = settingsStore.get(settings.ListenBrainz.token);
+  try {
+    adBlock.checked = settingsStore.get(settings.adBlock);
+    api.checked = settingsStore.get(settings.api);
+    customCSS.value = settingsStore.get<string, string[]>(settings.customCSS).join("\n");
+    disableBackgroundThrottle.checked = settingsStore.get(settings.disableBackgroundThrottle);
+    disableHardwareMediaKeys.checked = settingsStore.get(settings.flags.disableHardwareMediaKeys);
+    enableCustomHotkeys.checked = settingsStore.get(settings.enableCustomHotkeys);
+    enableDiscord.checked = settingsStore.get(settings.enableDiscord);
+    enableWaylandSupport.checked = settingsStore.get(settings.flags.enableWaylandSupport);
+    gpuRasterization.checked = settingsStore.get(settings.flags.gpuRasterization);
+    menuBar.checked = settingsStore.get(settings.menuBar);
+    minimizeOnClose.checked = settingsStore.get(settings.minimizeOnClose);
+    mpris.checked = settingsStore.get(settings.mpris);
+    notifications.checked = settingsStore.get(settings.notifications);
+    playBackControl.checked = settingsStore.get(settings.playBackControl);
+    port.value = settingsStore.get(settings.apiSettings.port);
+    singleInstance.checked = settingsStore.get(settings.singleInstance);
+    skipArtists.checked = settingsStore.get(settings.skipArtists);
+    theme.value = settingsStore.get(settings.theme);
+    skippedArtists.value = settingsStore.get<string, string[]>(settings.skippedArtists).join("\n");
+    trayIcon.checked = settingsStore.get(settings.trayIcon);
+    updateFrequency.value = settingsStore.get(settings.updateFrequency);
+    enableListenBrainz.checked = settingsStore.get(settings.ListenBrainz.enabled);
+    ListenBrainzAPI.value = settingsStore.get(settings.ListenBrainz.api);
+    ListenBrainzToken.value = settingsStore.get(settings.ListenBrainz.token);
+  } catch (error) {
+    Logger.log("Refreshing settings failed.", error);
+  }
 }
 
 /**
@@ -146,7 +153,9 @@ window.addEventListener("DOMContentLoaded", () => {
       }
       // Live update the view for ListenBrainz input, hide if disabled/show if enabled
       if (source.value === "on" && source.id === "enableListenBrainz") {
-        source.checked ? document.getElementById("listenbrainz__options").removeAttribute("hidden") : document.getElementById("listenbrainz__options").setAttribute("hidden", "true");
+        source.checked
+          ? document.getElementById("listenbrainz__options").removeAttribute("hidden")
+          : document.getElementById("listenbrainz__options").setAttribute("hidden", "true");
       }
       ipcRenderer.send(globalEvents.storeChanged);
     });
@@ -181,6 +190,7 @@ window.addEventListener("DOMContentLoaded", () => {
   disableHardwareMediaKeys = get("disableHardwareMediaKeys");
   enableCustomHotkeys = get("enableCustomHotkeys");
   enableDiscord = get("enableDiscord");
+  enableWaylandSupport = get("enableWaylandSupport");
   gpuRasterization = get("gpuRasterization");
   menuBar = get("menuBar");
   minimizeOnClose = get("minimizeOnClose");
@@ -199,7 +209,9 @@ window.addEventListener("DOMContentLoaded", () => {
   ListenBrainzToken = get("ListenBrainzToken");
 
   refreshSettings();
-  enableListenBrainz.checked ? document.getElementById("listenbrainz__options").removeAttribute("hidden") : document.getElementById("listenbrainz__options").setAttribute("hidden", "true");
+  enableListenBrainz.checked
+    ? document.getElementById("listenbrainz__options").removeAttribute("hidden")
+    : document.getElementById("listenbrainz__options").setAttribute("hidden", "true");
 
   addInputListener(adBlock, settings.adBlock);
   addInputListener(api, settings.api);
@@ -208,6 +220,7 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(disableHardwareMediaKeys, settings.flags.disableHardwareMediaKeys);
   addInputListener(enableCustomHotkeys, settings.enableCustomHotkeys);
   addInputListener(enableDiscord, settings.enableDiscord);
+  addInputListener(enableWaylandSupport, settings.flags.enableWaylandSupport);
   addInputListener(gpuRasterization, settings.flags.gpuRasterization);
   addInputListener(menuBar, settings.menuBar);
   addInputListener(minimizeOnClose, settings.minimizeOnClose);

@@ -1,5 +1,4 @@
 import axios from "axios";
-import { ipcRenderer } from "electron";
 import Store from "electron-store";
 import { settings } from "../../constants/settings";
 import { MediaStatus } from "../../models/mediaStatus";
@@ -125,8 +124,7 @@ export class ListenBrainz {
         }
       }
     } catch (error) {
-      const logger = new Logger(ipcRenderer);
-      logger.log(JSON.stringify(error));
+      Logger.log(JSON.stringify(error));
     }
   }
 }

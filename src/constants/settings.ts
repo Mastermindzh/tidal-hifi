@@ -30,6 +30,7 @@ export const settings = {
     root: "flags",
     disableHardwareMediaKeys: "flags.disableHardwareMediaKeys",
     gpuRasterization: "flags.gpuRasterization",
+    enableWaylandSupport: "flags.enableWaylandSupport",
   },
   menuBar: "menuBar",
   minimizeOnClose: "minimizeOnClose",

@@ -24,8 +24,9 @@ export const settingsStore = new Store({
       token: "",
     },
     flags: {
-      gpuRasterization: true,
       disableHardwareMediaKeys: false,
+      enableWaylandSupport: true,
+      gpuRasterization: true,
     },
     menuBar: true,
     minimizeOnClose: false,

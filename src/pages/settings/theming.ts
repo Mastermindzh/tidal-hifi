@@ -1,4 +1,5 @@
 import fs from "fs";
+import { Logger } from "../../features/logger";
 
 const cssFilter = (file: string) => file.endsWith(".css");
 const sort = (a: string, b: string) => a.toLowerCase().localeCompare(b.toLowerCase());
@@ -36,7 +37,7 @@ export const getThemeListFromDirectory = (directory: string): string[] => {
     makeUserThemesDirectory(directory);
     return fs.readdirSync(directory).filter(cssFilter).sort(sort);
   } catch (err) {
-    console.error(err);
+    Logger.log(`Failed to get files from ${directory}`, err);
     return [];
   }
 };
@@ -49,6 +50,6 @@ export const makeUserThemesDirectory = (directory: string) => {
   try {
     fs.mkdirSync(directory, { recursive: true });
   } catch (err) {
-    console.error(err);
+    Logger.log(`Failed to make user theme directory: ${directory}`, err);
   }
 };
