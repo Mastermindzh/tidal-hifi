@@ -35,7 +35,7 @@
     "castlabs"
   ],
   "author": "Rick van Lieshout <info@rickvanlieshout.com> (http://rickvanlieshout.com)",
-  "homepage": "https://github.com/Mastermindzh/tidal-hifi",
+  "homepage": "https://github.com/Mastermindzh/TIDAL Hi-Fi",
   "license": "MIT",
   "dependencies": {
     "@electron/remote": "^2.0.10",

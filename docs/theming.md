@@ -1,10 +1,10 @@
-# Theming tidal-hifi
+# Theming TIDAL Hi-Fi
 
 ## Table of contents
 
 <!-- toc -->
 
-- [Theming tidal-hifi](#theming-tidal-hifi)
+- [Theming TIDAL Hi-Fi](#theming-TIDAL Hi-Fi)
   - [Table of contents](#table-of-contents)
   - [Custom CSS](#custom-css)
   - [config](#config)
@@ -12,7 +12,7 @@
 
 <!-- tocstop -->
 
-By default tidal-hifi comes with a few themes.
+By default TIDAL Hi-Fi comes with a few themes.
 You can select these in the settings window under the theming tab as shown below.
 
 ![Settings window with the theming tab opened](./images/theming.png)
