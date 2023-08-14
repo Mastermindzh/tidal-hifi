@@ -26,7 +26,6 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
     - [Using source](#using-source)
   - [Integrations](#integrations)
   - [Known bugs](#known-bugs)
-    - [last.fm doesn't work out of the box. Use rescrobbler as a workaround](#lastfm-doesnt-work-out-of-the-box-use-rescrobbler-as-a-workaround)
     - [DRM not working on Windows](#drm-not-working-on-windows)
   - [Special thanks to](#special-thanks-to)
   - [Donations](#donations)
@@ -147,12 +146,6 @@ Integrations with other projects that are not included natively:
 - [neptune](https://github.com/uwu/neptune) third party plugins & theming
 
 ## Known bugs
-
-### last.fm doesn't work out of the box. Use rescrobbler as a workaround
-
-The last.fm login doesn't work, as is evident from the following issue: [Last.fm login doesn't work](https://github.com/Mastermindzh/tidal-hifi/issues/4).
-However, in that same issue you can read about a workaround using [rescrobbler](https://github.com/InputUsername/rescrobbled).
-For now, that will be the default workaround.
 
 ### DRM not working on Windows
 

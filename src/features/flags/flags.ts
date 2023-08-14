@@ -21,7 +21,6 @@ export function setManagedFlagsFromSettings(app: App) {
     for (const [key, value] of Object.entries(flagsFromSettings)) {
       if (value) {
         flags[key].forEach((flag) => {
-          Logger.log(`enabling command line option ${flag.flag} with value ${flag.value}`);
           setFlag(app, flag.flag, flag.value);
         });
       }
@@ -37,5 +36,6 @@ export function setManagedFlagsFromSettings(app: App) {
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function setFlag(app: App, flag: string, value?: any) {
+  Logger.log(`enabling command line option ${flag} with value ${value}`);
   app.commandLine.appendSwitch(flag, value);
 }
