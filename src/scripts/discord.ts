@@ -53,7 +53,7 @@ const observer = () => {
 const idleStatus = {
   details: `Browsing Tidal`,
   largeImageKey: "tidal-hifi-icon",
-  largeImageText: `Tidal HiFi ${app.getVersion()}`,
+  largeImageText: `TIDAL Hi-Fi ${app.getVersion()}`,
   instance: false,
 };
 

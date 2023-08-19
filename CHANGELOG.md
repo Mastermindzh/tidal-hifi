@@ -4,11 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.7.0]
+
+- Renamed app to TIDAL Hi-Fi.
+- Made sure all windows run with the same web preferences set (compared to main app).
+  - Fixes the last.fm bug.
+
 ## [5.6.0]
 
 - Added support for Wayland (on by default) fixes [#262](https://github.com/Mastermindzh/tidal-hifi/issues/262) and [#157](https://github.com/Mastermindzh/tidal-hifi/issues/157)
-- Made it clear in the readme that this tidal-hifi client supports High & Max audio settings. fixes [#261](https://github.com/Mastermindzh/tidal-hifi/issues/261)
-- Added app suspension inhibitors when music is playing. fixes [#257](https://github.com/Mastermindzh/tidal-hifi/issues/257)
+- Made it clear in the readme that this TIDAL Hi-Fi client supports High & Max audio settings. fixes [#261](https://github.com/Mastermindzh/tidal-hifi/issues/261)
 - Fixed bug with theme files from user directory trying to load: "an error occurred reading the theme file"
 - Fixed: config flags not being set correctly
 - [DEV]:
@@ -89,7 +94,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New settings window by BlueManCZ
 - Fixed the desktop files in electron-builder
   - icon is set to new static path based on Arch/Debian
-  - Name has changed to Tidal-Hifi
+  - Name has changed to TIDAL Hi-Fi
 
 ## 4.1.2
 
@@ -137,7 +142,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated to Electron 15
 - Fixed the develop "build-unpacked" command
-- Added setting to disable multiple tidal-hifi windows (defaults to true)
+- Added setting to disable multiple TIDAL Hi-Fi windows (defaults to true)
 - Added setting to disable HardwareMediaKeyHandling (defaults to false)
 
 ## 2.8.2
@@ -175,7 +180,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## 2.5.0
 
-- Notify-send now correctly shows "Tidal HiFi" as the program name
+- Notify-send now correctly shows "Tidal Hi-Fi" as the program name
 - Updated dependencies (including electron itself)
 
 ### known issues

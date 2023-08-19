@@ -37,10 +37,14 @@ const tidalUrl = "https://listen.tidal.com";
 let mainInhibitorId = -1;
 
 initialize();
-
 let mainWindow: BrowserWindow;
 const icon = path.join(__dirname, "../assets/icon.png");
 const PROTOCOL_PREFIX = "tidal";
+const windowPreferences = {
+  sandbox: false,
+  plugins: true,
+  devTools: true, // I like tinkering, others might too
+};
 
 setDefaultFlags(app);
 setManagedFlagsFromSettings(app);
@@ -84,10 +88,10 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
     backgroundColor: options.backgroundColor,
     autoHideMenuBar: true,
     webPreferences: {
-      sandbox: false,
-      preload: path.join(__dirname, "preload.js"),
-      plugins: true,
-      devTools: true, // I like tinkering, others might too
+      ...windowPreferences,
+      ...{
+        preload: path.join(__dirname, "preload.js"),
+      },
     },
   });
   enable(mainWindow.webContents);
@@ -119,6 +123,18 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
   mainWindow.on("resize", () => {
     const { width, height } = mainWindow.getBounds();
     settingsStore.set(settings.windowBounds.root, { width, height });
+  });
+  mainWindow.webContents.setWindowOpenHandler(() => {
+    return {
+      action: "allow",
+      overrideBrowserWindowOptions: {
+        webPreferences: {
+          sandbox: false,
+          plugins: true,
+          devTools: true, // I like tinkering, others might too
+        },
+      },
+    };
   });
 }
 

@@ -33,7 +33,6 @@ export const getMenu = function (mainWindow: BrowserWindow) {
           {
             label: name,
             submenu: [
-              { role: "about" },
               settingsMenuEntry,
               { type: "separator" },
               { role: "services" },
@@ -101,12 +100,6 @@ export const getMenu = function (mainWindow: BrowserWindow) {
       ],
     },
     settingsMenuEntry,
-    {
-      label: "About",
-      click() {
-        showSettingsWindow("about");
-      },
-    },
     toggleWindow,
     quitMenuEntry,
   ];

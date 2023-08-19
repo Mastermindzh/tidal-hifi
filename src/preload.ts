@@ -20,7 +20,7 @@ import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
 
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
-const appName = "Tidal Hifi";
+const appName = "TIDAL Hi-Fi";
 let currentSong = "";
 let player: Player;
 let currentPlayStatus = MediaStatus.paused;
@@ -531,8 +531,8 @@ setInterval(function () {
 if (process.platform === "linux" && settingsStore.get(settings.mpris)) {
   try {
     player = Player({
-      name: "tidal-hifi",
-      identity: "tidal-hifi",
+      name: "TIDAL Hi-Fi",
+      identity: "TIDAL Hi-Fi",
       supportedUriSchemes: ["file"],
       supportedMimeTypes: [
         "audio/mpeg",
@@ -544,7 +544,6 @@ if (process.platform === "linux" && settingsStore.get(settings.mpris)) {
       supportedInterfaces: ["player"],
       desktopEntry: "tidal-hifi",
     });
-
     // Events
     const events = {
       next: "next",

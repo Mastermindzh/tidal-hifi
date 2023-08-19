@@ -118,7 +118,7 @@ function hide() {
 }
 
 /**
- * Restart tidal-hifi after changes
+ * Restart TIDAL Hi-Fi after changes
  */
 function restart() {
   app.relaunch();

@@ -1,3 +1,3 @@
 export default {
-  name: "tidal-hifi",
+  name: "TIDAL Hi-Fi",
 };
