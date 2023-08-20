@@ -1,4 +1,4 @@
-import { IpcMain, ipcRenderer, ipcMain } from "electron";
+import { IpcMain, ipcMain, IpcMainEvent, ipcRenderer } from "electron";
 import { globalEvents } from "../constants/globalEvents";
 
 export class Logger {
@@ -7,10 +7,13 @@ export class Logger {
    * @param ipcMain main thread IPC client so we can subscribe to events
    */
   public static watch(ipcMain: IpcMain) {
-    ipcMain.on(globalEvents.log, (event, message) => {
-      const { content, object } = message;
-      this.logToSTDOut(content, object);
-    });
+    ipcMain.on(
+      globalEvents.log,
+      (event: IpcMainEvent | { content: string; message: string }, message) => {
+        const { content, object } = message ?? event;
+        this.logToSTDOut(content, object);
+      }
+    );
   }
   /**
    * Log content to STDOut
@@ -23,7 +26,6 @@ export class Logger {
     } else {
       ipcMain.emit(globalEvents.log, { content, object });
     }
-    this.logToSTDOut(content, object);
   }
 
   /**

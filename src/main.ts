@@ -1,7 +1,7 @@
 import { enable, initialize } from "@electron/remote/main";
 import {
-  BrowserWindow,
   app,
+  BrowserWindow,
   components,
   globalShortcut,
   ipcMain,
@@ -13,9 +13,14 @@ import { globalEvents } from "./constants/globalEvents";
 import { mediaKeys } from "./constants/mediaKeys";
 import { settings } from "./constants/settings";
 import { setDefaultFlags, setManagedFlagsFromSettings } from "./features/flags/flags";
+import {
+  acquireInhibitorIfInactive,
+  releaseInhibitorIfActive,
+} from "./features/idleInhibitor/idleInhibitor";
 import { Logger } from "./features/logger";
 import { Songwhip } from "./features/songwhip/songwhip";
 import { MediaInfo } from "./models/mediaInfo";
+import { MediaStatus } from "./models/mediaStatus";
 import { initRPC, rpc, unRPC } from "./scripts/discord";
 import { startExpress } from "./scripts/express";
 import { updateMediaInfo } from "./scripts/mediaInfo";
@@ -29,6 +34,7 @@ import {
 } from "./scripts/settings";
 import { addTray, refreshTray } from "./scripts/tray";
 const tidalUrl = "https://listen.tidal.com";
+let mainInhibitorId = -1;
 
 initialize();
 let mainWindow: BrowserWindow;
@@ -110,6 +116,7 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
   });
   // Emitted when the window is closed.
   mainWindow.on("closed", function () {
+    releaseInhibitorIfActive(mainInhibitorId);
     closeSettingsWindow();
     app.quit();
   });
@@ -194,6 +201,12 @@ app.on("browser-window-created", (_, window) => {
 // IPC
 ipcMain.on(globalEvents.updateInfo, (_event, arg: MediaInfo) => {
   updateMediaInfo(arg);
+  if (arg.status === MediaStatus.playing) {
+    mainInhibitorId = acquireInhibitorIfInactive(mainInhibitorId);
+  } else {
+    releaseInhibitorIfActive(mainInhibitorId);
+    mainInhibitorId = -1;
+  }
 });
 
 ipcMain.on(globalEvents.hideSettings, () => {
