@@ -10,7 +10,7 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
 
 <!-- toc -->
 
-- [TIDAL Hi-Fi (Max quality)](#tidal-hi-fi-max-quality-)
+- [TIDAL Hi-Fi (Max quality) ](#tidal-hi-fi-max-quality-)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
   - [Contributions](#contributions)
@@ -41,6 +41,7 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
 - Notifications
 - Custom [theming](./docs/theming.md)
 - Custom hotkeys ([source](https://defkey.com/tidal-desktop-shortcuts))
+- Better icons thanks to [Papirus-icon-theme](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/)
 - [Settings feature](./docs/images/settings.png) to disable certain functionality. (`ctrl+=` or `ctrl+0`)
 - API for status and playback
 - Disabled audio & visual ads, unlocked lyrics, suggested track, track info, and unlimited skips thanks to uBlockOrigin custom filters ([source](https://github.com/uBlockOrigin/uAssets/issues/17495))
