@@ -10,7 +10,8 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
 
 <!-- toc -->
 
-- [TIDAL Hi-Fi (Max quality) ](#tidal-hi-fi-max-quality-)
+
+- [TIDAL Hi-Fi (Max quality)](#tidal-hi-fi-max-quality-)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
   - [Contributions](#contributions)
