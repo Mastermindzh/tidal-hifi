@@ -1,8 +1,8 @@
-# TIDAL Hi-Fi (Max quality) <img src = "./build/icon.png" height="40" align="right"/>
+# TIDAL Hi-Fi (Max quality)<img src = "./build/icon.png" height="40" align="right"/>
 
 ![GitHub release](https://img.shields.io/github/release/Mastermindzh/tidal-hifi.svg) [![github builds](https://github.com/mastermindzh/tidal-hifi/actions/workflows/build.yml/badge.svg)](https://github.com/Mastermindzh/tidal-hifi/actions) [![Build Status](https://ci.mastermindzh.tech/api/badges/Mastermindzh/tidal-hifi/status.svg)](https://ci.mastermindzh.tech/Mastermindzh/tidal-hifi) [![Discord logo](./docs/images/discord.png)](https://discord.gg/yhNwf4v4He)
 
-The web version of [listen.tidal.com](https://listen.tidal.com) running in electron with hifi (High & Max) support thanks to widevine.
+The web version of [listen.tidal.com](https://listen.tidal.com) running in electron with Hi-Fi (High & Max) support thanks to widevine.
 
 ![TIDAL Hi-Fi preview](./docs/images/preview.png)
 
@@ -10,8 +10,7 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
 
 <!-- toc -->
 
-
-- [TIDAL Hi-Fi (Max quality)](#tidal-hi-fi-max-quality-)
+- [TIDAL Hi-Fi (Max quality)](#tidal-hi-fi-max-quality)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
   - [Contributions](#contributions)
