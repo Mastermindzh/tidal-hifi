@@ -201,6 +201,9 @@
                 <span class="switch__slider"></span>
               </label>
             </div>
+          </div>
+          <div class="group">
+            <p class="group__title">Discord</p>
             <div class="group__option">
               <div class="group__description">
                 <h4>Discord RPC</h4>
@@ -210,6 +213,23 @@
                 <input id="enableDiscord" type="checkbox" />
                 <span class="switch__slider"></span>
               </label>
+            </div>
+            <div id="discord_options">
+              <div class="group__option" class="hidden">
+                <div class="group__description">
+                  <h4>Details prefix</h4>
+                  <p>Prefix for the "details" field of Discord's rich presence.</p>
+                  <input id="discord_details_prefix" type="text" class="text-input" name="discord_details_prefix" />
+                </div>
+              </div>
+
+              <div class="group__option">
+                <div class="group__description">
+                  <h4>Button text</h4>
+                  <p>Text to display on the button below the song information.</p>
+                  <input id="discord_button_text" type="text" class="text-input" name="discord_button_text" />
+                </div>
+              </div>
             </div>
           </div>
           <div class="group">
@@ -224,7 +244,7 @@
                 <span class="switch__slider"></span>
               </label>
             </div>
-            <div id="listenbrainz__options" hidden="true">
+            <div id="listenbrainz__options" class="hidden">
               <div class="group__option">
                 <div class="group__description">
                   <h4>ListenBrainz API Url</h4>

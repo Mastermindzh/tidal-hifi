@@ -1,8 +1,8 @@
 import Store from "electron-store";
 
-import { settings } from "../constants/settings";
-import path from "path";
 import { BrowserWindow } from "electron";
+import path from "path";
+import { settings } from "../constants/settings";
 
 let settingsWindow: BrowserWindow;
 
@@ -18,6 +18,10 @@ export const settingsStore = new Store({
     disableHardwareMediaKeys: false,
     enableCustomHotkeys: false,
     enableDiscord: false,
+    discord: {
+      detailsPrefix: "Listening to ",
+      buttonText: "Play on Tidal",
+    },
     ListenBrainz: {
       enabled: false,
       api: "https://api.listenbrainz.org",

@@ -1,8 +1,11 @@
 import { Client } from "discord-rpc";
 import { app, ipcMain } from "electron";
 import { globalEvents } from "../constants/globalEvents";
+import { settings } from "../constants/settings";
+import { Logger } from "../features/logger";
 import { MediaStatus } from "../models/mediaStatus";
 import { mediaInfo } from "./mediaInfo";
+import { settingsStore } from "./settings";
 
 const clientId = "833617820704440341";
 
@@ -15,7 +18,7 @@ function timeToSeconds(timeArray: string[]) {
 export let rpc: Client;
 
 const observer = () => {
-  if (mediaInfo.status == MediaStatus.paused && rpc) {
+  if (mediaInfo.status === MediaStatus.paused && rpc) {
     rpc.setActivity(idleStatus);
   } else if (rpc) {
     const currentSeconds = timeToSeconds(mediaInfo.current.split(":"));
@@ -23,17 +26,21 @@ const observer = () => {
     const date = new Date();
     const now = (date.getTime() / 1000) | 0;
     const remaining = date.setSeconds(date.getSeconds() + (durationSeconds - currentSeconds));
+    const detailsPrefix =
+      settingsStore.get<string, string>(settings.discord.detailsPrefix) ?? "Listening to ";
+    const buttonText =
+      settingsStore.get<string, string>(settings.discord.buttonText) ?? "Play on TIDAL";
     if (mediaInfo.url) {
       rpc.setActivity({
         ...idleStatus,
         ...{
-          details: `Listening to ${mediaInfo.title}`,
+          details: `${detailsPrefix}${mediaInfo.title}`,
           state: mediaInfo.artists ? mediaInfo.artists : "unknown artist(s)",
           startTimestamp: now,
           endTimestamp: remaining,
           largeImageKey: mediaInfo.image,
           largeImageText: mediaInfo.album ? mediaInfo.album : `${idleStatus.largeImageText}`,
-          buttons: [{ label: "Play on Tidal", url: mediaInfo.url }],
+          buttons: [{ label: buttonText, url: mediaInfo.url }],
         },
       });
     } else {
@@ -70,7 +77,7 @@ export const initRPC = () => {
       ipcMain.on(globalEvents.updateInfo, observer);
     },
     () => {
-      console.error("Can't connect to Discord, is it running?");
+      Logger.log("Can't connect to Discord, is it running?");
     }
   );
 };

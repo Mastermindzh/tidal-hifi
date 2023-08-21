@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed app to TIDAL Hi-Fi.
 - Made sure all windows run with the same web preferences set (compared to main app).
   - Fixes the last.fm bug.
+- Added settings to customize the Discord rich presence information
+  - Discord settings are now also collapsible like the ListenBrainz ones are
 
 ## [5.6.0]
 

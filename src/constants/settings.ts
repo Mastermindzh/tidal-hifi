@@ -20,6 +20,10 @@ export const settings = {
   disableHardwareMediaKeys: "disableHardwareMediaKeys",
   enableCustomHotkeys: "enableCustomHotkeys",
   enableDiscord: "enableDiscord",
+  discord: {
+    detailsPrefix: "discord.detailsPrefix",
+    buttonText: "discord.buttonText",
+  },
   ListenBrainz: {
     root: "ListenBrainz",
     enabled: "ListenBrainz.enabled",
