@@ -63,8 +63,8 @@ const settingsModule = {
 
 export const createSettingsWindow = function () {
   settingsWindow = new BrowserWindow({
-    width: 700,
-    height: 600,
+    width: 650,
+    height: 700,
     resizable: true,
     show: false,
     transparent: true,

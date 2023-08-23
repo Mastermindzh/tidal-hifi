@@ -16,5 +16,9 @@
     "tracklist",
     "widevine",
     "xesam"
-  ]
+  ],
+  "sonarlint.connectedMode.project": {
+    "connectionId": "public-sonarcloud",
+    "projectKey": "Mastermindzh_tidal-hifi"
+  }
 }

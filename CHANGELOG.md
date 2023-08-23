@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Fixes the last.fm bug.
 - Added settings to customize the Discord rich presence information
   - Discord settings are now also collapsible like the ListenBrainz ones are
+- Restyled settings menu to include version number and useful links on the about page
 
 ## [5.6.0]
 

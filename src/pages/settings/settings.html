@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <link rel="stylesheet" href="./settings.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body class="settings-window">
@@ -380,21 +381,24 @@
 
         <section id="about-section" class="tabs__section about-section">
           <img alt="tidal icon" class="about-section__icon" src="./icon.png" />
-          <p class="about-section__text">
-            <a class="external-link" data-url="https://github.com/Mastermindzh/tidal-hifi">TIDAL Hi-Fi</a>
-            is made by
-            <a class="external-link" data-url="https://www.rickvanlieshout.com">
-              Rick van Lieshout</a>. <br />It uses
-            <a class="external-link" data-url="https://castlabs.com/">Castlabs'</a>
-            version of Electron for widevine support.
-          </p>
+          <h4>TIDAL Hi-Fi</h4>
+          <div class="about-section__version">
+            <a href="">5.7.0</a>
+          </div>
+          <div class="about-section__links">
+            <a href="https://github.com/mastermindzh/tidal-hifi/" class="about-section__button">Github <i
+                class="fa fa-external-link"></i></a>
+            <a href="https://github.com/Mastermindzh/tidal-hifi/issues" class="about-section__button">Report an issue <i
+                class="fa fa-external-link"></i></a>
+            <a href="https://github.com/Mastermindzh/tidal-hifi/graphs/contributors"
+              class="about-section__button">Contributors <i class="fa fa-external-link"></i></a>
+          </div>
         </section>
 
         <footer class="footer">
           <p class="footer__note">
-            Some settings may require a restart of TIDAL Hi-Fi. To do so, click the button below:
+            <strong>Note</strong>: some settings may require a restart of TIDAL Hi-Fi.
           </p>
-          <button class="footer__button" id="restart">Restart TIDAL Hi-Fi</button>
         </footer>
       </div>
     </main>
