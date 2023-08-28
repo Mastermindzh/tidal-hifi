@@ -12,7 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added settings to customize the Discord rich presence information
   - Discord settings are now also collapsible like the ListenBrainz ones are
 - Restyled settings menu to include version number and useful links on the about page
+    ![The new about page](./docs/images/new-about.png)
 - The ListenBrainz integration has been extended with a configurable (5 seconds by default) delay in song reporting so that it doesn't spam the API when you are cycling through songs.
+- Custom CSS now also applies to settings window
+    ![Tokyo Night theme on settings window](./docs/images/customcss-menu.png)
 
 ## [5.6.0]
 

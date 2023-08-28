@@ -4,6 +4,7 @@ import fs from "fs";
 import { globalEvents } from "../../constants/globalEvents";
 import { settings } from "../../constants/settings";
 import { Logger } from "../../features/logger";
+import { addCustomCss } from "../../features/theming/theming";
 import { settingsStore } from "./../../scripts/settings";
 import { getOptions, getOptionsHeader, getThemeListFromDirectory } from "./theming";
 
@@ -48,6 +49,8 @@ let adBlock: HTMLInputElement,
   enableWaylandSupport: HTMLInputElement,
   discord_details_prefix: HTMLInputElement,
   discord_button_text: HTMLInputElement;
+
+addCustomCss(app, Logger.bind(this));
 
 function getThemeFiles() {
   const selectElement = document.getElementById("themesList") as HTMLSelectElement;
