@@ -155,14 +155,6 @@ function hide() {
 }
 
 /**
- * Restart TIDAL Hi-Fi after changes
- */
-function restart() {
-  app.relaunch();
-  app.exit();
-}
-
-/**
  * Bind UI components to functions after DOMContentLoaded
  */
 window.addEventListener("DOMContentLoaded", () => {
@@ -174,7 +166,6 @@ window.addEventListener("DOMContentLoaded", () => {
   handleFileUploads();
 
   document.getElementById("close").addEventListener("click", hide);
-  document.getElementById("restart").addEventListener("click", restart);
   document.querySelectorAll(".external-link").forEach((elem) =>
     elem.addEventListener("click", function (event) {
       openExternal((event.target as HTMLElement).getAttribute("data-url"));
