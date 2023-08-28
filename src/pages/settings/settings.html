@@ -250,16 +250,22 @@
                 <div class="group__description">
                   <h4>ListenBrainz API Url</h4>
                   <p>There are multiple instances for ListenBrainz you can set the corresponding API url below.</p>
+                  <input id="ListenBrainzAPI" type="text" class="text-input" name="ListenBrainzAPI" />
                 </div>
               </div>
-              <textarea id="ListenBrainzAPI" class="textarea" cols="1" rows="1" spellcheck="false"></textarea>
               <div class="group__option">
                 <div class="group__description">
                   <h4>ListenBrainz User Token</h4>
                   <p>Provide the user token you can get from the settings page.</p>
+                  <input id="ListenBrainzToken" type="text" class="text-input" name="ListenBrainzToken" />
                 </div>
               </div>
-              <textarea id="ListenBrainzToken" class="textarea" cols="1" rows="1" spellcheck="false"></textarea>
+            </div>
+            <div class="group__description">
+              <h4>ScrobbleDelay</h4>
+              <p>The delay (in ms) to send a song to ListenBrainz. Prevents spamming the API when you fast forward
+                immediately</p>
+              <input id="listenbrainz_delay" type="number" class="text-input" name="listenbrainz_delay" />
             </div>
           </div>
         </section>

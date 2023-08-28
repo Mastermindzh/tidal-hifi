@@ -44,6 +44,7 @@ let adBlock: HTMLInputElement,
   enableListenBrainz: HTMLInputElement,
   ListenBrainzAPI: HTMLInputElement,
   ListenBrainzToken: HTMLInputElement,
+  listenbrainz_delay: HTMLInputElement,
   enableWaylandSupport: HTMLInputElement,
   discord_details_prefix: HTMLInputElement,
   discord_button_text: HTMLInputElement;
@@ -75,6 +76,7 @@ function handleFileUploads() {
   const fileMessage = document.getElementById("file-message");
   fileMessage.innerText = "or drag and drop files here";
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   document.getElementById("theme-files").addEventListener("change", function (e: any) {
     Array.from(e.target.files).forEach((file: File) => {
       const destination = `${app.getPath("userData")}/themes/${file.name}`;
@@ -128,6 +130,7 @@ function refreshSettings() {
     enableListenBrainz.checked = settingsStore.get(settings.ListenBrainz.enabled);
     ListenBrainzAPI.value = settingsStore.get(settings.ListenBrainz.api);
     ListenBrainzToken.value = settingsStore.get(settings.ListenBrainz.token);
+    listenbrainz_delay.value = settingsStore.get(settings.ListenBrainz.delay);
     discord_details_prefix.value = settingsStore.get(settings.discord.detailsPrefix);
     discord_button_text.value = settingsStore.get(settings.discord.buttonText);
 
@@ -240,6 +243,7 @@ window.addEventListener("DOMContentLoaded", () => {
   ListenBrainzAPI = get("ListenBrainzAPI");
   ListenBrainzToken = get("ListenBrainzToken");
   discord_details_prefix = get("discord_details_prefix");
+  listenbrainz_delay = get("listenbrainz_delay");
   discord_button_text = get("discord_button_text");
 
   refreshSettings();
@@ -269,8 +273,9 @@ window.addEventListener("DOMContentLoaded", () => {
     settings.ListenBrainz.enabled,
     switchesWithSettings.listenBrainz
   );
-  addTextAreaListener(ListenBrainzAPI, settings.ListenBrainz.api);
-  addTextAreaListener(ListenBrainzToken, settings.ListenBrainz.token);
+  addInputListener(ListenBrainzAPI, settings.ListenBrainz.api);
+  addInputListener(ListenBrainzToken, settings.ListenBrainz.token);
+  addInputListener(listenbrainz_delay, settings.ListenBrainz.delay);
   addInputListener(discord_details_prefix, settings.discord.detailsPrefix);
   addInputListener(discord_button_text, settings.discord.buttonText);
 });

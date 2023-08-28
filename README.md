@@ -51,10 +51,11 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
   - Songwhip.com integration (hotkey `ctrl + w`)
   - Discord RPC integration (showing "now listening", "Browsing", etc)
   - MPRIS integration
+- UI + Json config (`~/.config/tidal-hifi/`, or `~/.var/app/com.mastermindzh.tidal-hifi/` for Flatpak)
 
 ## Contributions
 
-To contribute you can use the standard GitHub features (issues, prs, etc) or join the discord server to talk with like-minded individuals.
+To contribute you can use the standard GitHub features (issues, prs, etc.) or join the discord server to talk with like-minded individuals.
 
 - ![Discord logo](./docs/images/discord.png) [Join the Discord server](https://discord.gg/yhNwf4v4He)
 

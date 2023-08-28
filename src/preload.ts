@@ -24,6 +24,8 @@ const appName = "TIDAL Hi-Fi";
 let currentSong = "";
 let player: Player;
 let currentPlayStatus = MediaStatus.paused;
+let currentListenBrainzDelayId: ReturnType<typeof setTimeout>;
+let scrobbleWaitingForDelay = false;
 
 const elements = {
   play: '*[data-test="play"]',
@@ -395,6 +397,9 @@ function updateMpris(options: Options) {
   }
 }
 
+/**
+ * Update the listenbrainz service with new data based on a few conditions
+ */
 function updateListenBrainz(options: Options) {
   if (settingsStore.get(settings.ListenBrainz.enabled)) {
     const oldData = ListenBrainzStore.get(ListenBrainzConstants.oldData) as StoreData;
@@ -402,12 +407,22 @@ function updateListenBrainz(options: Options) {
       (!oldData && options.status === MediaStatus.playing) ||
       (oldData && oldData.title !== options.title)
     ) {
-      ListenBrainz.scrobble(
-        options.title,
-        options.artists,
-        options.status,
-        convertDuration(options.duration)
-      );
+      if (!scrobbleWaitingForDelay) {
+        scrobbleWaitingForDelay = true;
+        clearTimeout(currentListenBrainzDelayId);
+        currentListenBrainzDelayId = setTimeout(
+          () => {
+            ListenBrainz.scrobble(
+              options.title,
+              options.artists,
+              options.status,
+              convertDuration(options.duration)
+            );
+            scrobbleWaitingForDelay = false;
+          },
+          settingsStore.get(settings.ListenBrainz.delay) ?? 0
+        );
+      }
     }
   }
 }

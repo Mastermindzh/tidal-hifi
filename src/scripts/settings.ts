@@ -26,6 +26,7 @@ export const settingsStore = new Store({
       enabled: false,
       api: "https://api.listenbrainz.org",
       token: "",
+      delay: 5000,
     },
     flags: {
       disableHardwareMediaKeys: false,
@@ -51,6 +52,13 @@ export const settingsStore = new Store({
       migrationStore.set(
         settings.flags.disableHardwareMediaKeys,
         migrationStore.get("disableHardwareMediaKeys") ?? false
+      );
+    },
+    "5.7.0": (migrationStore) => {
+      console.log("running migrations for 5.7.0");
+      migrationStore.set(
+        settings.ListenBrainz.delay,
+        migrationStore.get(settings.ListenBrainz.delay) ?? 5000
       );
     },
   },

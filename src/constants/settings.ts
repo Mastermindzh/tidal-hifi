@@ -29,6 +29,7 @@ export const settings = {
     enabled: "ListenBrainz.enabled",
     api: "ListenBrainz.api",
     token: "ListenBrainz.token",
+    delay: "ListenBrainz.delay",
   },
   flags: {
     root: "flags",
