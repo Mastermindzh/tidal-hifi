@@ -6,8 +6,10 @@
     "Flatpak",
     "geqnfr",
     "hifi",
+    "libnotify",
     "listenbrainz",
     "playpause",
+    "prs",
     "rescrobbler",
     "scrobble",
     "scrobbling",
@@ -16,5 +18,9 @@
     "tracklist",
     "widevine",
     "xesam"
-  ]
+  ],
+  "sonarlint.connectedMode.project": {
+    "connectionId": "public-sonarcloud",
+    "projectKey": "Mastermindzh_tidal-hifi"
+  }
 }

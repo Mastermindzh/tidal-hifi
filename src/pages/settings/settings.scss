@@ -8,6 +8,7 @@ $tidal-grey: #72777f;
 $tidal-grey-darker: #404248;
 $tidal-grey-darker-focus: #55585f;
 $tidal-grey-darkest: #242528;
+$tidal-grey-darkest-focus: #2e2f33;
 
 // --- Fonts ---
 
@@ -309,26 +310,75 @@ html {
 }
 
 .about-section {
-  padding-top: 120px;
+  padding-top: 40px;
   text-align: center;
 
   &__icon {
     display: inline-block;
-    width: 100px;
+    width: 200px;
   }
 
   &__text {
     display: block;
-    max-width: 350px;
-    margin: 20px auto 0;
+    max-width: 500px;
+    margin: -15px auto 0;
+  }
+  &__table {
+    width: 120px;
+    margin: 0 auto 0;
+
+    td {
+      text-align: left;
+    }
+  }
+  &__version {
+    margin: -10px 0px 30px 0px;
+    a {
+      background-color: $tidal-grey-darker;
+      border: none;
+      color: $tidal-blue;
+      padding: 8px 20px;
+      font-weight: bold;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      border-radius: 100px;
+    }
   }
 
-  // --- Footer ---
+  &__links {
+    width: 300px;
+    margin: 0 auto;
+    a {
+      border-radius: 10px;
+      border: none;
+      color: $white;
+      padding: 10px 10px 10px 20px;
+      margin: 8px;
+      text-align: left;
+      font-size: 16px;
+      line-height: 30px;
+      display: flex;
+      text-decoration: none;
+      justify-content: space-between;
+      background-color: $tidal-grey-darkest;
+
+      i {
+        color: $white;
+        line-height: 30px;
+        font-size: 18px;
+      }
+
+      &:hover {
+        background-color: $tidal-grey-darkest-focus;
+      }
+    }
+  }
 }
 
+// --- Footer ---
 .footer {
   position: sticky;
-  top: calc(100% - 120px);
   height: 100px;
   padding-top: 20px;
   text-align: center;
@@ -442,4 +492,8 @@ html {
       color: $white;
     }
   }
+}
+
+.hidden {
+  display: none !important;
 }

@@ -1,20 +1,20 @@
-# Tidal-hifi<img src = "./build/icon.png" height="40" align="right"/>
+# TIDAL Hi-Fi (Max quality)<img src = "./build/icon.png" height="40" align="right"/>
 
 ![GitHub release](https://img.shields.io/github/release/Mastermindzh/tidal-hifi.svg) [![github builds](https://github.com/mastermindzh/tidal-hifi/actions/workflows/build.yml/badge.svg)](https://github.com/Mastermindzh/tidal-hifi/actions) [![Build Status](https://ci.mastermindzh.tech/api/badges/Mastermindzh/tidal-hifi/status.svg)](https://ci.mastermindzh.tech/Mastermindzh/tidal-hifi) [![Discord logo](./docs/images/discord.png)](https://discord.gg/yhNwf4v4He)
 
-The web version of [listen.tidal.com](https://listen.tidal.com) running in electron with hifi (High & Max) support thanks to widevine.
+The web version of [listen.tidal.com](https://listen.tidal.com) running in electron with Hi-Fi (High & Max) support thanks to widevine.
 
-![tidal-hifi preview](./docs/images/preview.png)
+![TIDAL Hi-Fi preview](./docs/images/preview.png)
 
 ## Table of Contents
 
 <!-- toc -->
 
-- [Tidal-hifi](#tidal-hifi)
+- [TIDAL Hi-Fi (Max quality)](#tidal-hi-fi-max-quality)
   - [Table of Contents](#table-of-contents)
   - [Features](#features)
   - [Contributions](#contributions)
-  - [Why did I create tidal-hifi?](#why-did-i-create-tidal-hifi)
+  - [Why did I create TIDAL Hi-Fi?](#why-did-i-create-tidal-hi-fi)
     - [Why not extend existing projects?](#why-not-extend-existing-projects)
   - [Installation](#installation)
     - [Dependencies](#dependencies)
@@ -26,7 +26,6 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
     - [Using source](#using-source)
   - [Integrations](#integrations)
   - [Known bugs](#known-bugs)
-    - [last.fm doesn't work out of the box. Use rescrobbler as a workaround](#lastfm-doesnt-work-out-of-the-box-use-rescrobbler-as-a-workaround)
     - [DRM not working on Windows](#drm-not-working-on-windows)
   - [Special thanks to](#special-thanks-to)
   - [Donations](#donations)
@@ -42,6 +41,7 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
 - Notifications
 - Custom [theming](./docs/theming.md)
 - Custom hotkeys ([source](https://defkey.com/tidal-desktop-shortcuts))
+- Better icons thanks to [Papirus-icon-theme](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/)
 - [Settings feature](./docs/images/settings.png) to disable certain functionality. (`ctrl+=` or `ctrl+0`)
 - API for status and playback
 - Disabled audio & visual ads, unlocked lyrics, suggested track, track info, and unlimited skips thanks to uBlockOrigin custom filters ([source](https://github.com/uBlockOrigin/uAssets/issues/17495))
@@ -51,14 +51,15 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
   - Songwhip.com integration (hotkey `ctrl + w`)
   - Discord RPC integration (showing "now listening", "Browsing", etc)
   - MPRIS integration
+- UI + Json config (`~/.config/tidal-hifi/`, or `~/.var/app/com.mastermindzh.tidal-hifi/` for Flatpak)
 
 ## Contributions
 
-To contribute you can use the standard GitHub features (issues, prs, etc) or join the discord server to talk with like-minded individuals.
+To contribute you can use the standard GitHub features (issues, prs, etc.) or join the discord server to talk with like-minded individuals.
 
 - ![Discord logo](./docs/images/discord.png) [Join the Discord server](https://discord.gg/yhNwf4v4He)
 
-## Why did I create tidal-hifi?
+## Why did I create TIDAL Hi-Fi?
 
 I moved from Spotify over to Tidal and found Linux support to be lacking.
 When I started this project there weren't any Linux apps that offered Tidal's "hifi" options nor any scripts to control it.
@@ -103,10 +104,10 @@ To install with `snap` you need to download the pre-packaged snap-package from t
 
 ### Arch Linux
 
-Arch Linux users can use the AUR to install tidal-hifi:
+Arch Linux users can use the AUR to install TIDAL Hi-Fi:
 
 ```sh
-trizen tidal-hifi-bin
+trizen tidal-hifi-git
 ```
 
 ### Flatpak
@@ -130,13 +131,13 @@ nix-env -iA nixpkgs.tidal-hifi
 To install and work with the code on this project follow these steps:
 
 - git clone [https://github.com/Mastermindzh/tidal-hifi.git](https://github.com/Mastermindzh/tidal-hifi.git)
-- cd tidal-hifi
+- cd TIDAL Hi-Fi
 - npm install
 - npm start
 
 ## Integrations
 
-tidal-hifi comes with several integrations out of the box.
+TIDAL Hi-Fi comes with several integrations out of the box.
 You can find these in the settings menu (`ctrl + =` by default) under the "integrations" tab.
 
 ![integrations menu, showing a list of integrations](./docs/images/integrations.png)
@@ -148,15 +149,9 @@ Integrations with other projects that are not included natively:
 
 ## Known bugs
 
-### last.fm doesn't work out of the box. Use rescrobbler as a workaround
-
-The last.fm login doesn't work, as is evident from the following issue: [Last.fm login doesn't work](https://github.com/Mastermindzh/tidal-hifi/issues/4).
-However, in that same issue you can read about a workaround using [rescrobbler](https://github.com/InputUsername/rescrobbled).
-For now, that will be the default workaround.
-
 ### DRM not working on Windows
 
-Most Windows users run into DRM issues when trying to use tidal-hifi.
+Most Windows users run into DRM issues when trying to use TIDAL Hi-Fi.
 Nothing I can do about that I'm afraid... Tidal is working on removing/changing DRM so when they finish with that we can give it another shot.
 
 ## Special thanks to

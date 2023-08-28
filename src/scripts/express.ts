@@ -8,7 +8,7 @@ import { mediaInfo } from "./mediaInfo";
 import { settingsStore } from "./settings";
 
 /**
- * Function to enable tidal-hifi's express api
+ * Function to enable TIDAL Hi-Fi's express api
  */
 
 // expressModule.run = function (mainWindow)

@@ -4,8 +4,23 @@ import fs from "fs";
 import { globalEvents } from "../../constants/globalEvents";
 import { settings } from "../../constants/settings";
 import { Logger } from "../../features/logger";
+import { addCustomCss } from "../../features/theming/theming";
 import { settingsStore } from "./../../scripts/settings";
 import { getOptions, getOptionsHeader, getThemeListFromDirectory } from "./theming";
+
+// All switches on the settings screen that show additional options based on their state
+const switchesWithSettings = {
+  listenBrainz: {
+    switch: "enableListenBrainz",
+    classToHide: "listenbrainz__options",
+    settingsKey: settings.ListenBrainz.enabled,
+  },
+  discord: {
+    switch: "enableDiscord",
+    classToHide: "discord_options",
+    settingsKey: settings.enableDiscord,
+  },
+};
 
 let adBlock: HTMLInputElement,
   api: HTMLInputElement,
@@ -30,7 +45,12 @@ let adBlock: HTMLInputElement,
   enableListenBrainz: HTMLInputElement,
   ListenBrainzAPI: HTMLInputElement,
   ListenBrainzToken: HTMLInputElement,
-  enableWaylandSupport: HTMLInputElement;
+  listenbrainz_delay: HTMLInputElement,
+  enableWaylandSupport: HTMLInputElement,
+  discord_details_prefix: HTMLInputElement,
+  discord_button_text: HTMLInputElement;
+
+addCustomCss(app, Logger.bind(this));
 
 function getThemeFiles() {
   const selectElement = document.getElementById("themesList") as HTMLSelectElement;
@@ -59,6 +79,7 @@ function handleFileUploads() {
   const fileMessage = document.getElementById("file-message");
   fileMessage.innerText = "or drag and drop files here";
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   document.getElementById("theme-files").addEventListener("change", function (e: any) {
     Array.from(e.target.files).forEach((file: File) => {
       const destination = `${app.getPath("userData")}/themes/${file.name}`;
@@ -67,6 +88,20 @@ function handleFileUploads() {
     fileMessage.innerText = `${e.target.files.length} files successfully uploaded`;
     getThemeFiles();
   });
+}
+
+/**
+ * hide or unhide an element
+ * @param checked
+ * @param toggleOptions
+ */
+function setElementHidden(
+  checked: boolean,
+  toggleOptions: { switch: string; classToHide: string }
+) {
+  const element = document.getElementById(toggleOptions.classToHide);
+
+  checked ? element.classList.remove("hidden") : element.classList.add("hidden");
 }
 
 /**
@@ -98,6 +133,14 @@ function refreshSettings() {
     enableListenBrainz.checked = settingsStore.get(settings.ListenBrainz.enabled);
     ListenBrainzAPI.value = settingsStore.get(settings.ListenBrainz.api);
     ListenBrainzToken.value = settingsStore.get(settings.ListenBrainz.token);
+    listenbrainz_delay.value = settingsStore.get(settings.ListenBrainz.delay);
+    discord_details_prefix.value = settingsStore.get(settings.discord.detailsPrefix);
+    discord_button_text.value = settingsStore.get(settings.discord.buttonText);
+
+    // set state of all switches with additional settings
+    Object.values(switchesWithSettings).forEach((settingSwitch) => {
+      setElementHidden(settingsStore.get(settingSwitch.settingsKey), settingSwitch);
+    });
   } catch (error) {
     Logger.log("Refreshing settings failed.", error);
   }
@@ -118,14 +161,6 @@ function hide() {
 }
 
 /**
- * Restart tidal-hifi after changes
- */
-function restart() {
-  app.relaunch();
-  app.exit();
-}
-
-/**
  * Bind UI components to functions after DOMContentLoaded
  */
 window.addEventListener("DOMContentLoaded", () => {
@@ -137,25 +172,28 @@ window.addEventListener("DOMContentLoaded", () => {
   handleFileUploads();
 
   document.getElementById("close").addEventListener("click", hide);
-  document.getElementById("restart").addEventListener("click", restart);
   document.querySelectorAll(".external-link").forEach((elem) =>
     elem.addEventListener("click", function (event) {
       openExternal((event.target as HTMLElement).getAttribute("data-url"));
     })
   );
 
-  function addInputListener(source: HTMLInputElement, key: string) {
+  function addInputListener(
+    source: HTMLInputElement,
+    key: string,
+    toggleOptions?: { switch: string; classToHide: string }
+  ) {
     source.addEventListener("input", () => {
       if (source.value === "on") {
         settingsStore.set(key, source.checked);
       } else {
         settingsStore.set(key, source.value);
       }
-      // Live update the view for ListenBrainz input, hide if disabled/show if enabled
-      if (source.value === "on" && source.id === "enableListenBrainz") {
-        source.checked
-          ? document.getElementById("listenbrainz__options").removeAttribute("hidden")
-          : document.getElementById("listenbrainz__options").setAttribute("hidden", "true");
+
+      if (toggleOptions) {
+        if (source.value === "on" && source.id === toggleOptions.switch) {
+          setElementHidden(source.checked, toggleOptions);
+        }
       }
       ipcRenderer.send(globalEvents.storeChanged);
     });
@@ -207,19 +245,18 @@ window.addEventListener("DOMContentLoaded", () => {
   enableListenBrainz = get("enableListenBrainz");
   ListenBrainzAPI = get("ListenBrainzAPI");
   ListenBrainzToken = get("ListenBrainzToken");
+  discord_details_prefix = get("discord_details_prefix");
+  listenbrainz_delay = get("listenbrainz_delay");
+  discord_button_text = get("discord_button_text");
 
   refreshSettings();
-  enableListenBrainz.checked
-    ? document.getElementById("listenbrainz__options").removeAttribute("hidden")
-    : document.getElementById("listenbrainz__options").setAttribute("hidden", "true");
-
   addInputListener(adBlock, settings.adBlock);
   addInputListener(api, settings.api);
   addTextAreaListener(customCSS, settings.customCSS);
   addInputListener(disableBackgroundThrottle, settings.disableBackgroundThrottle);
   addInputListener(disableHardwareMediaKeys, settings.flags.disableHardwareMediaKeys);
   addInputListener(enableCustomHotkeys, settings.enableCustomHotkeys);
-  addInputListener(enableDiscord, settings.enableDiscord);
+  addInputListener(enableDiscord, settings.enableDiscord, switchesWithSettings.discord);
   addInputListener(enableWaylandSupport, settings.flags.enableWaylandSupport);
   addInputListener(gpuRasterization, settings.flags.gpuRasterization);
   addInputListener(menuBar, settings.menuBar);
@@ -234,7 +271,14 @@ window.addEventListener("DOMContentLoaded", () => {
   addSelectListener(theme, settings.theme);
   addInputListener(trayIcon, settings.trayIcon);
   addInputListener(updateFrequency, settings.updateFrequency);
-  addInputListener(enableListenBrainz, settings.ListenBrainz.enabled);
-  addTextAreaListener(ListenBrainzAPI, settings.ListenBrainz.api);
-  addTextAreaListener(ListenBrainzToken, settings.ListenBrainz.token);
+  addInputListener(
+    enableListenBrainz,
+    settings.ListenBrainz.enabled,
+    switchesWithSettings.listenBrainz
+  );
+  addInputListener(ListenBrainzAPI, settings.ListenBrainz.api);
+  addInputListener(ListenBrainzToken, settings.ListenBrainz.token);
+  addInputListener(listenbrainz_delay, settings.ListenBrainz.delay);
+  addInputListener(discord_details_prefix, settings.discord.detailsPrefix);
+  addInputListener(discord_button_text, settings.discord.buttonText);
 });

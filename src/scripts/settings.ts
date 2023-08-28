@@ -1,8 +1,8 @@
 import Store from "electron-store";
 
-import { settings } from "../constants/settings";
-import path from "path";
 import { BrowserWindow } from "electron";
+import path from "path";
+import { settings } from "../constants/settings";
 
 let settingsWindow: BrowserWindow;
 
@@ -18,10 +18,15 @@ export const settingsStore = new Store({
     disableHardwareMediaKeys: false,
     enableCustomHotkeys: false,
     enableDiscord: false,
+    discord: {
+      detailsPrefix: "Listening to ",
+      buttonText: "Play on Tidal",
+    },
     ListenBrainz: {
       enabled: false,
       api: "https://api.listenbrainz.org",
       token: "",
+      delay: 5000,
     },
     flags: {
       disableHardwareMediaKeys: false,
@@ -49,6 +54,13 @@ export const settingsStore = new Store({
         migrationStore.get("disableHardwareMediaKeys") ?? false
       );
     },
+    "5.7.0": (migrationStore) => {
+      console.log("running migrations for 5.7.0");
+      migrationStore.set(
+        settings.ListenBrainz.delay,
+        migrationStore.get(settings.ListenBrainz.delay) ?? 5000
+      );
+    },
   },
 });
 
@@ -59,8 +71,8 @@ const settingsModule = {
 
 export const createSettingsWindow = function () {
   settingsWindow = new BrowserWindow({
-    width: 700,
-    height: 600,
+    width: 650,
+    height: 700,
     resizable: true,
     show: false,
     transparent: true,

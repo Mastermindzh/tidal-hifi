@@ -7,6 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
   <link rel="stylesheet" href="./settings.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body class="settings-window">
@@ -201,6 +202,9 @@
                 <span class="switch__slider"></span>
               </label>
             </div>
+          </div>
+          <div class="group">
+            <p class="group__title">Discord</p>
             <div class="group__option">
               <div class="group__description">
                 <h4>Discord RPC</h4>
@@ -210,6 +214,23 @@
                 <input id="enableDiscord" type="checkbox" />
                 <span class="switch__slider"></span>
               </label>
+            </div>
+            <div id="discord_options">
+              <div class="group__option" class="hidden">
+                <div class="group__description">
+                  <h4>Details prefix</h4>
+                  <p>Prefix for the "details" field of Discord's rich presence.</p>
+                  <input id="discord_details_prefix" type="text" class="text-input" name="discord_details_prefix" />
+                </div>
+              </div>
+
+              <div class="group__option">
+                <div class="group__description">
+                  <h4>Button text</h4>
+                  <p>Text to display on the button below the song information.</p>
+                  <input id="discord_button_text" type="text" class="text-input" name="discord_button_text" />
+                </div>
+              </div>
             </div>
           </div>
           <div class="group">
@@ -224,21 +245,27 @@
                 <span class="switch__slider"></span>
               </label>
             </div>
-            <div id="listenbrainz__options" hidden="true">
+            <div id="listenbrainz__options" class="hidden">
               <div class="group__option">
                 <div class="group__description">
                   <h4>ListenBrainz API Url</h4>
                   <p>There are multiple instances for ListenBrainz you can set the corresponding API url below.</p>
+                  <input id="ListenBrainzAPI" type="text" class="text-input" name="ListenBrainzAPI" />
                 </div>
               </div>
-              <textarea id="ListenBrainzAPI" class="textarea" cols="1" rows="1" spellcheck="false"></textarea>
               <div class="group__option">
                 <div class="group__description">
                   <h4>ListenBrainz User Token</h4>
                   <p>Provide the user token you can get from the settings page.</p>
+                  <input id="ListenBrainzToken" type="text" class="text-input" name="ListenBrainzToken" />
                 </div>
               </div>
-              <textarea id="ListenBrainzToken" class="textarea" cols="1" rows="1" spellcheck="false"></textarea>
+            </div>
+            <div class="group__description">
+              <h4>ScrobbleDelay</h4>
+              <p>The delay (in ms) to send a song to ListenBrainz. Prevents spamming the API when you fast forward
+                immediately</p>
+              <input id="listenbrainz_delay" type="number" class="text-input" name="listenbrainz_delay" />
             </div>
           </div>
         </section>
@@ -250,7 +277,7 @@
               <div class="group__description">
                 <h4>Update frequency</h4>
                 <p>
-                  The amount of time, in milliseconds, that tidal-hifi will refresh its playback info by scraping the
+                  The amount of time, in milliseconds, that TIDAL Hi-Fi will refresh its playback info by scraping the
                   website.
                   The default of 500 seems to work in more cases but if you are fine with a bit more resource usage you
                   can decrease it as well.
@@ -300,7 +327,7 @@
               <div class="group__description">
                 <h4>Wayland support</h4>
                 <p>
-                  Adds a couple of Electron flags to help Tidal-hifi run smoothly on the Wayland window system.
+                  Adds a couple of Electron flags to help TIDAL Hi-Fi run smoothly on the Wayland window system.
                 </p>
               </div>
               <label class="switch">
@@ -360,21 +387,24 @@
 
         <section id="about-section" class="tabs__section about-section">
           <img alt="tidal icon" class="about-section__icon" src="./icon.png" />
-          <p class="about-section__text">
-            <a class="external-link" data-url="https://github.com/Mastermindzh/tidal-hifi">TIDAL Hi-Fi</a>
-            is made by
-            <a class="external-link" data-url="https://www.rickvanlieshout.com">
-              Rick van Lieshout</a>. <br />It uses
-            <a class="external-link" data-url="https://castlabs.com/">Castlabs'</a>
-            version of Electron for widevine support.
-          </p>
+          <h4>TIDAL Hi-Fi</h4>
+          <div class="about-section__version">
+            <a href="">5.7.0</a>
+          </div>
+          <div class="about-section__links">
+            <a href="https://github.com/mastermindzh/tidal-hifi/" class="about-section__button">Github <i
+                class="fa fa-external-link"></i></a>
+            <a href="https://github.com/Mastermindzh/tidal-hifi/issues" class="about-section__button">Report an issue <i
+                class="fa fa-external-link"></i></a>
+            <a href="https://github.com/Mastermindzh/tidal-hifi/graphs/contributors"
+              class="about-section__button">Contributors <i class="fa fa-external-link"></i></a>
+          </div>
         </section>
 
         <footer class="footer">
           <p class="footer__note">
-            Some settings may require a restart of TIDAL Hi-Fi. To do so, click the button below:
+            <strong>Note</strong>: some settings may require a restart of TIDAL Hi-Fi.
           </p>
-          <button class="footer__button" id="restart">Restart TIDAL Hi-Fi</button>
         </footer>
       </div>
     </main>

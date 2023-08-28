@@ -1,6 +1,5 @@
 import { app, dialog, Notification } from "@electron/remote";
 import { clipboard, ipcRenderer } from "electron";
-import fs from "fs";
 import Player from "mpris-service";
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
@@ -12,6 +11,7 @@ import {
 import { StoreData } from "./features/listenbrainz/models/storeData";
 import { Logger } from "./features/logger";
 import { Songwhip } from "./features/songwhip/songwhip";
+import { addCustomCss } from "./features/theming/theming";
 import { MediaStatus } from "./models/mediaStatus";
 import { Options } from "./models/options";
 import { downloadFile } from "./scripts/download";
@@ -20,10 +20,12 @@ import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
 
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
-const appName = "Tidal Hifi";
+const appName = "TIDAL Hi-Fi";
 let currentSong = "";
 let player: Player;
 let currentPlayStatus = MediaStatus.paused;
+let currentListenBrainzDelayId: ReturnType<typeof setTimeout>;
+let scrobbleWaitingForDelay = false;
 
 const elements = {
   play: '*[data-test="play"]',
@@ -155,32 +157,6 @@ const elements = {
     return this.get(key).focus();
   },
 };
-
-function addCustomCss() {
-  window.addEventListener("DOMContentLoaded", () => {
-    const selectedTheme = settingsStore.get<string, string>(settings.theme);
-    if (selectedTheme !== "none") {
-      const userThemePath = `${app.getPath("userData")}/themes/${selectedTheme}`;
-      const resourcesThemePath = `${process.resourcesPath}/${selectedTheme}`;
-      const themeFile = fs.existsSync(userThemePath) ? userThemePath : resourcesThemePath;
-      fs.readFile(themeFile, "utf-8", (err, data) => {
-        if (err) {
-          Logger.alert("An error ocurred reading the theme file.", err, alert);
-          return;
-        }
-
-        const themeStyle = document.createElement("style");
-        themeStyle.innerHTML = data;
-        document.head.appendChild(themeStyle);
-      });
-    }
-
-    // read customCSS (it will override the theme)
-    const style = document.createElement("style");
-    style.innerHTML = settingsStore.get<string, string[]>(settings.customCSS).join("\n");
-    document.head.appendChild(style);
-  });
-}
 
 /**
  * Get the update frequency from the store
@@ -395,6 +371,9 @@ function updateMpris(options: Options) {
   }
 }
 
+/**
+ * Update the listenbrainz service with new data based on a few conditions
+ */
 function updateListenBrainz(options: Options) {
   if (settingsStore.get(settings.ListenBrainz.enabled)) {
     const oldData = ListenBrainzStore.get(ListenBrainzConstants.oldData) as StoreData;
@@ -402,12 +381,22 @@ function updateListenBrainz(options: Options) {
       (!oldData && options.status === MediaStatus.playing) ||
       (oldData && oldData.title !== options.title)
     ) {
-      ListenBrainz.scrobble(
-        options.title,
-        options.artists,
-        options.status,
-        convertDuration(options.duration)
-      );
+      if (!scrobbleWaitingForDelay) {
+        scrobbleWaitingForDelay = true;
+        clearTimeout(currentListenBrainzDelayId);
+        currentListenBrainzDelayId = setTimeout(
+          () => {
+            ListenBrainz.scrobble(
+              options.title,
+              options.artists,
+              options.status,
+              convertDuration(options.duration)
+            );
+            scrobbleWaitingForDelay = false;
+          },
+          settingsStore.get(settings.ListenBrainz.delay) ?? 0
+        );
+      }
     }
   }
 }
@@ -531,8 +520,8 @@ setInterval(function () {
 if (process.platform === "linux" && settingsStore.get(settings.mpris)) {
   try {
     player = Player({
-      name: "tidal-hifi",
-      identity: "tidal-hifi",
+      name: "TIDAL Hi-Fi",
+      identity: "TIDAL Hi-Fi",
       supportedUriSchemes: ["file"],
       supportedMimeTypes: [
         "audio/mpeg",
@@ -544,7 +533,6 @@ if (process.platform === "linux" && settingsStore.get(settings.mpris)) {
       supportedInterfaces: ["player"],
       desktopEntry: "tidal-hifi",
     });
-
     // Events
     const events = {
       next: "next",
@@ -582,7 +570,8 @@ if (process.platform === "linux" && settingsStore.get(settings.mpris)) {
     console.log("player api not working");
   }
 }
-addCustomCss();
+
+addCustomCss(app, Logger.bind(this));
 addHotKeys();
 addIPCEventListeners();
 addFullScreenListeners();
