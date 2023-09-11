@@ -50,7 +50,7 @@ let adBlock: HTMLInputElement,
   discord_details_prefix: HTMLInputElement,
   discord_button_text: HTMLInputElement;
 
-addCustomCss(app, Logger.bind(this));
+addCustomCss(app);
 
 function getThemeFiles() {
   const selectElement = document.getElementById("themesList") as HTMLSelectElement;
