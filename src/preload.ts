@@ -354,6 +354,60 @@ function updateMediaInfo(options: Options, notify: boolean) {
   }
 }
 
+function addMPRIS() {
+  if (process.platform === "linux" && settingsStore.get(settings.mpris)) {
+    try {
+      player = Player({
+        name: "tidal-hifi",
+        identity: "tidal-hifi",
+        supportedUriSchemes: ["file"],
+        supportedMimeTypes: [
+          "audio/mpeg",
+          "audio/flac",
+          "audio/x-flac",
+          "application/ogg",
+          "audio/wav",
+        ],
+        supportedInterfaces: ["player"],
+        desktopEntry: "tidal-hifi",
+      });
+      // Events
+      const events = {
+        next: "next",
+        previous: "previous",
+        pause: "pause",
+        playpause: "playpause",
+        stop: "stop",
+        play: "play",
+        loopStatus: "repeat",
+        shuffle: "shuffle",
+        seek: "seek",
+      } as { [key: string]: string };
+      Object.keys(events).forEach(function (eventName) {
+        player.on(eventName, function () {
+          const eventValue = events[eventName];
+          switch (events[eventValue]) {
+            case events.playpause:
+              playPause();
+              break;
+            default:
+              elements.click(eventValue);
+          }
+        });
+      });
+      // Override get position function
+      player.getPosition = function () {
+        return convertDuration(elements.getText("current")) * 1000 * 1000;
+      };
+      player.on("quit", function () {
+        app.quit();
+      });
+    } catch (exception) {
+      Logger.log("MPRIS player api not working", exception);
+    }
+  }
+}
+
 function updateMpris(options: Options) {
   if (player) {
     player.metadata = {
@@ -517,61 +571,8 @@ setInterval(function () {
   }
 }, getUpdateFrequency());
 
-if (process.platform === "linux" && settingsStore.get(settings.mpris)) {
-  try {
-    player = Player({
-      name: "TIDAL Hi-Fi",
-      identity: "TIDAL Hi-Fi",
-      supportedUriSchemes: ["file"],
-      supportedMimeTypes: [
-        "audio/mpeg",
-        "audio/flac",
-        "audio/x-flac",
-        "application/ogg",
-        "audio/wav",
-      ],
-      supportedInterfaces: ["player"],
-      desktopEntry: "tidal-hifi",
-    });
-    // Events
-    const events = {
-      next: "next",
-      previous: "previous",
-      pause: "pause",
-      playpause: "playpause",
-      stop: "stop",
-      play: "play",
-      loopStatus: "repeat",
-      shuffle: "shuffle",
-      seek: "seek",
-    } as { [key: string]: string };
-    Object.keys(events).forEach(function (eventName) {
-      player.on(eventName, function () {
-        const eventValue = events[eventName];
-        switch (events[eventValue]) {
-          case events.playpause:
-            playPause();
-            break;
-
-          default:
-            elements.click(eventValue);
-        }
-      });
-    });
-    // Override get position function
-    player.getPosition = function () {
-      return convertDuration(elements.getText("current")) * 1000 * 1000;
-    };
-
-    player.on("quit", function () {
-      app.quit();
-    });
-  } catch (exception) {
-    console.log("player api not working");
-  }
-}
-
-addCustomCss(app, Logger.bind(this));
+addMPRIS();
+addCustomCss(app);
 addHotKeys();
 addIPCEventListeners();
 addFullScreenListeners();

@@ -4,7 +4,7 @@ import { settingsStore } from "../../scripts/settings";
 import { Logger } from "../logger";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function addCustomCss(app: any, logger: typeof Logger) {
+export function addCustomCss(app: any) {
   window.addEventListener("DOMContentLoaded", () => {
     const selectedTheme = settingsStore.get<string, string>(settings.theme);
     if (selectedTheme !== "none") {
@@ -13,7 +13,7 @@ export function addCustomCss(app: any, logger: typeof Logger) {
       const themeFile = fs.existsSync(userThemePath) ? userThemePath : resourcesThemePath;
       fs.readFile(themeFile, "utf-8", (err, data) => {
         if (err) {
-          logger.alert("An error ocurred reading the theme file.", err, alert);
+          Logger.alert("An error ocurred reading the theme file.", err, alert);
           return;
         }
 
