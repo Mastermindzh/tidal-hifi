@@ -11,6 +11,7 @@ export const mediaInfo = {
   current: "",
   duration: "",
   image: "tidal-hifi-icon",
+  favorite: false,
 };
 
 export const updateMediaInfo = (arg: MediaInfo) => {
@@ -23,6 +24,7 @@ export const updateMediaInfo = (arg: MediaInfo) => {
   mediaInfo.current = propOrDefault(arg.current);
   mediaInfo.duration = propOrDefault(arg.duration);
   mediaInfo.image = propOrDefault(arg.image);
+  mediaInfo.favorite = arg.favorite;
 };
 
 /**

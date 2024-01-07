@@ -10,4 +10,5 @@ export interface MediaInfo {
   current: string;
   duration: string;
   image: string;
+  favorite: boolean;
 }

@@ -9,4 +9,5 @@ export interface Options {
   "app-name": string;
   image: string;
   icon: string;
+  favorite: boolean;
 }

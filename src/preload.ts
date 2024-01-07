@@ -54,6 +54,7 @@ const elements = {
   album_name_cell: '[class^="album"]',
   tracklist_row: '[data-test="tracklist-row"]',
   volume: '*[data-test="volume"]',
+  favorite: '*[data-test="footer-favorite-button"]',
   /**
    * Get an element from the dom
    * @param {*} key key in elements object to fetch
@@ -131,6 +132,10 @@ const elements = {
     return this.get("volume").getAttribute("aria-checked") === "false"; // it's muted if aria-checked is false
   },
 
+  isFavorite: function () {
+    return this.get("favorite").getAttribute("aria-checked") === "true";
+  },
+
   /**
    * Shorthand function to get the text of a dom element
    * @param {*} key key in elements object to fetch
@@ -206,6 +211,10 @@ function addHotKeys() {
     });
     addHotkey("Control+l", function () {
       handleLogout();
+    });
+
+    addHotkey("Control+a", function () {
+      elements.click("favorite");
     });
 
     addHotkey("Control+h", function () {
@@ -305,6 +314,9 @@ function addIPCEventListeners() {
           break;
         case globalEvents.pause:
           elements.click("pause");
+          break;
+        case globalEvents.toggleFavorite:
+          elements.click("favorite");
           break;
         default:
           break;
@@ -516,6 +528,7 @@ setInterval(function () {
     "app-name": appName,
     image: "",
     icon: "",
+    favorite: elements.isFavorite(),
   };
 
   const titleOrArtistsChanged = currentSong !== songDashArtistTitle;

@@ -12,4 +12,5 @@ export const globalEvents = {
   error: "error",
   whip: "whip",
   log: "log",
+  toggleFavorite: "toggleFavorite",
 };
