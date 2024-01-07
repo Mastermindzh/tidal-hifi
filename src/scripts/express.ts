@@ -40,6 +40,9 @@ export const startExpress = (mainWindow: BrowserWindow) => {
 
   if (settingsStore.get(settings.playBackControl)) {
     expressApp.get("/play", (req, res) => handleGlobalEvent(res, globalEvents.play));
+    expressApp.post("/favorite/toggle", (req, res) =>
+      handleGlobalEvent(res, globalEvents.toggleFavorite)
+    );
     expressApp.get("/pause", (req, res) => handleGlobalEvent(res, globalEvents.pause));
     expressApp.get("/next", (req, res) => handleGlobalEvent(res, globalEvents.next));
     expressApp.get("/previous", (req, res) => handleGlobalEvent(res, globalEvents.previous));

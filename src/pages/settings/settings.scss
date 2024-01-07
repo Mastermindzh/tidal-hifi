@@ -323,16 +323,19 @@ html {
     max-width: 500px;
     margin: -15px auto 0;
   }
+
   &__table {
     width: 120px;
-    margin: 0 auto 0;
+    margin: 0 auto;
 
     td {
       text-align: left;
     }
   }
+
   &__version {
-    margin: -10px 0px 30px 0px;
+    margin: -10px 0 30px;
+
     a {
       background-color: $tidal-grey-darker;
       border: none;
@@ -349,6 +352,7 @@ html {
   &__links {
     width: 300px;
     margin: 0 auto;
+
     a {
       border-radius: 10px;
       border: none;
@@ -418,10 +422,11 @@ html {
   align-items: center;
   width: 100%;
   max-width: 100%;
-  padding: 25px 0 25px 0px;
+  padding: 25px 0;
   border: 1px dashed $tidal-grey;
   border-radius: 3px;
   transition: 0.2s;
+
   &.is-active {
     background-color: $black;
   }
@@ -459,6 +464,7 @@ html {
   width: 100%;
   cursor: pointer;
   opacity: 0;
+
   &:focus {
     outline: none;
   }

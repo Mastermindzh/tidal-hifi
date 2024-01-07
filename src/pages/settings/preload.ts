@@ -48,6 +48,7 @@ let adBlock: HTMLInputElement,
   listenbrainz_delay: HTMLInputElement,
   enableWaylandSupport: HTMLInputElement,
   discord_details_prefix: HTMLInputElement,
+  discord_include_timestamps: HTMLInputElement,
   discord_button_text: HTMLInputElement;
 
 addCustomCss(app);
@@ -135,6 +136,7 @@ function refreshSettings() {
     ListenBrainzToken.value = settingsStore.get(settings.ListenBrainz.token);
     listenbrainz_delay.value = settingsStore.get(settings.ListenBrainz.delay);
     discord_details_prefix.value = settingsStore.get(settings.discord.detailsPrefix);
+    discord_include_timestamps.checked = settingsStore.get(settings.discord.includeTimestamps);
     discord_button_text.value = settingsStore.get(settings.discord.buttonText);
 
     // set state of all switches with additional settings
@@ -246,6 +248,7 @@ window.addEventListener("DOMContentLoaded", () => {
   ListenBrainzAPI = get("ListenBrainzAPI");
   ListenBrainzToken = get("ListenBrainzToken");
   discord_details_prefix = get("discord_details_prefix");
+  discord_include_timestamps = get("discord_include_timestamps");
   listenbrainz_delay = get("listenbrainz_delay");
   discord_button_text = get("discord_button_text");
 
@@ -280,5 +283,6 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(ListenBrainzToken, settings.ListenBrainz.token);
   addInputListener(listenbrainz_delay, settings.ListenBrainz.delay);
   addInputListener(discord_details_prefix, settings.discord.detailsPrefix);
+  addInputListener(discord_include_timestamps, settings.discord.includeTimestamps);
   addInputListener(discord_button_text, settings.discord.buttonText);
 });

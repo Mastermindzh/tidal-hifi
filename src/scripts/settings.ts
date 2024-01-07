@@ -21,6 +21,7 @@ export const settingsStore = new Store({
     discord: {
       detailsPrefix: "Listening to ",
       buttonText: "Play on Tidal",
+      includeTimestamps: true,
     },
     ListenBrainz: {
       enabled: false,
@@ -59,6 +60,13 @@ export const settingsStore = new Store({
       migrationStore.set(
         settings.ListenBrainz.delay,
         migrationStore.get(settings.ListenBrainz.delay) ?? 5000
+      );
+    },
+    "5.8.0": (migrationStore) => {
+      console.log("running migrations for 5.8.0");
+      migrationStore.set(
+        settings.discord.includeTimestamps,
+        migrationStore.get(settings.discord.includeTimestamps) ?? true
       );
     },
   },
