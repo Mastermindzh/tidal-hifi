@@ -30,30 +30,38 @@ const observer = () => {
       settingsStore.get<string, string>(settings.discord.detailsPrefix) ?? "Listening to ";
     const buttonText =
       settingsStore.get<string, string>(settings.discord.buttonText) ?? "Play on TIDAL";
+    const includeTimestamps =
+      settingsStore.get<string, boolean>(settings.discord.includeTimestamps) ?? true;
+
+    let activity = {
+      ...idleStatus,
+      ...{
+        startTimestamp: includeTimestamps ? now : undefined,
+        endTimestamp: includeTimestamps ? remaining : undefined,
+      },
+    };
     if (mediaInfo.url) {
-      rpc.setActivity({
-        ...idleStatus,
+      activity = {
+        ...activity,
         ...{
           details: `${detailsPrefix}${mediaInfo.title}`,
           state: mediaInfo.artists ? mediaInfo.artists : "unknown artist(s)",
-          startTimestamp: now,
-          endTimestamp: remaining,
           largeImageKey: mediaInfo.image,
           largeImageText: mediaInfo.album ? mediaInfo.album : `${idleStatus.largeImageText}`,
           buttons: [{ label: buttonText, url: mediaInfo.url }],
         },
-      });
+      };
     } else {
-      rpc.setActivity({
-        ...idleStatus,
+      activity = {
+        ...activity,
         ...{
           details: `Watching ${mediaInfo.title}`,
           state: mediaInfo.artists,
-          startTimestamp: now,
-          endTimestamp: remaining,
         },
-      });
+      };
     }
+
+    rpc.setActivity(activity);
   }
 };
 

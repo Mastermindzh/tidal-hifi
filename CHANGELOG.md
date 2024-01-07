@@ -6,14 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [5.8.0]
 
-- Updated Electron to 28.1.1 for issue [325](https://github.com/Mastermindzh/tidal-hifi/issues/325)
+- Updated Electron to 28.1.1 (fixes [325](https://github.com/Mastermindzh/tidal-hifi/issues/325))
 - Updated dependencies to latest
   - added theme files to stylelint ignore
   - fixed other stylelint errors
-- Added functionality to favorite a song ([fixes #323](https://github.com/Mastermindzh/tidal-hifi/issues/323))
+
+- Added functionality to favorite a song (fixes [#323](https://github.com/Mastermindzh/tidal-hifi/issues/323))
   - Added a hotkey to favorite ("Add to collection") songs: Control+a
   - Added the "favorite" field in the `mediaInfo` and the API `/current` endpoint
   - Added an endpoint to toggle favoriting a song: `http://localhost:47836/favorite/toggle`
+
+- Fixed wrong "end time stamp" for currently playing song (fixes [#282](https://github.com/Mastermindzh/tidal-hifi/issues/282))
+  - Affected the API + all integrations
+  - As requested we also added toggle to sync the timestamps to Discord (default = true)
 
 ## [5.7.1]
 

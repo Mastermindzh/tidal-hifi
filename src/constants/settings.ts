@@ -23,6 +23,7 @@ export const settings = {
   discord: {
     detailsPrefix: "discord.detailsPrefix",
     buttonText: "discord.buttonText",
+    includeTimestamps: "discord.includeTimestamps",
   },
   ListenBrainz: {
     root: "ListenBrainz",

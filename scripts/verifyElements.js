@@ -16,11 +16,12 @@
     search: '[class^="searchField"]',
     shuffle: '*[data-test="shuffle"]',
     repeat: '*[data-test="repeat"]',
-    account: '*[data-test^="profile-image-button"]',
+    account: '*[class^="profileOptions"]',
+    settings: '*[data-test^="open-settings"]',
     media: '*[data-test="current-media-imagery"]',
     image: "img",
     current: '*[data-test="current-time"]',
-    duration: '*[data-test="duration"]',
+    duration: '*[class^=playbackControlsContainer] *[data-test="duration"]',
     bar: '*[data-test="progress-bar"]',
     footer: "#footerPlayer",
     mediaItem: "[data-type='mediaItem']",
@@ -29,6 +30,7 @@
     album_name_cell: '[class^="album"]',
     tracklist_row: '[data-test="tracklist-row"]',
     volume: '*[data-test="volume"]',
+    favorite: '*[data-test="footer-favorite-button"]',
   };
 
   let results = [];
