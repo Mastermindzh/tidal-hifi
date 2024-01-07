@@ -5,6 +5,9 @@
   "extends": [
     "stylelint-config-standard-scss"
   ],
+  "ignoreFiles": [
+    "src/themes/**.scss"
+  ],
   "rules": {
     "prettier/prettier": true,
     "scss/at-extend-no-missing-placeholder": null,
