@@ -229,19 +229,50 @@
 
               <div class="group__option" class="hidden">
                 <div class="group__description">
-                  <h4>Details prefix</h4>
-                  <p>Prefix for the "details" field of Discord's rich presence.</p>
-                  <input id="discord_details_prefix" type="text" class="text-input" name="discord_details_prefix" />
+                  <h4>Show song</h4>
+                  <p>Show the current song in the Discord client</p>
+                </div>
+                <label class="switch">
+                  <input id="discord_show_song" type="checkbox" />
+                  <span class="switch__slider"></span>
+                </label>
+              </div>
+
+              <div class="group__option" class="hidden">
+                <div class="group__description">
+                  <h4>Idle Text</h4>
+                  <p>The text displayed on Discord's rich presence while idling in the app.</p>
+                  <input id="discord_idle_text" type="text" class="text-input" name="discord_idle_text" />
                 </div>
               </div>
 
-              <div class="group__option">
+              <div class="group__option" class="hidden">
                 <div class="group__description">
-                  <h4>Button text</h4>
-                  <p>Text to display on the button below the song information.</p>
-                  <input id="discord_button_text" type="text" class="text-input" name="discord_button_text" />
+                  <h4>Listening Text</h4>
+                  <p>The text displayed on Discord's rich presence while listening to a song.</p>
+                  <input id="discord_listening_text" type="text" class="text-input" name="discord_listening_text" />
                 </div>
               </div>
+
+              <div id="discord_show_song_options" class="hidden">
+
+                <div class="group__option" class="hidden">
+                  <div class="group__description">
+                    <h4>Details prefix</h4>
+                    <p>Prefix for the "details" field of Discord's rich presence.</p>
+                    <input id="discord_details_prefix" type="text" class="text-input" name="discord_details_prefix" />
+                  </div>
+                </div>
+
+                <div class="group__option">
+                  <div class="group__description">
+                    <h4>Button text</h4>
+                    <p>Text to display on the button below the song information.</p>
+                    <input id="discord_button_text" type="text" class="text-input" name="discord_button_text" />
+                  </div>
+                </div>
+              </div>
+
             </div>
           </div>
           <div class="group">

@@ -19,6 +19,9 @@ export const settingsStore = new Store({
     enableCustomHotkeys: false,
     enableDiscord: false,
     discord: {
+      showSong: false,
+      idleText: "Browsing Tidal",
+      listeningText: "Listening Tidal",
       detailsPrefix: "Listening to ",
       buttonText: "Play on Tidal",
       includeTimestamps: true,

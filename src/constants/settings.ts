@@ -24,6 +24,9 @@ export const settings = {
     detailsPrefix: "discord.detailsPrefix",
     buttonText: "discord.buttonText",
     includeTimestamps: "discord.includeTimestamps",
+    showSong: "discord.showSong",
+    idleText: "discord.idleText",
+    listeningText: "discord.listeningText",
   },
   ListenBrainz: {
     root: "ListenBrainz",
