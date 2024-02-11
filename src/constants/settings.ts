@@ -26,7 +26,7 @@ export const settings = {
     includeTimestamps: "discord.includeTimestamps",
     showSong: "discord.showSong",
     idleText: "discord.idleText",
-    listeningText: "discord.listeningText",
+    usingText: "discord.usingText",
   },
   ListenBrainz: {
     root: "ListenBrainz",

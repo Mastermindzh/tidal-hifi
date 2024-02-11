@@ -57,7 +57,7 @@ let adBlock: HTMLInputElement,
   discord_button_text: HTMLInputElement,
   discord_show_song: HTMLInputElement,
   discord_idle_text: HTMLInputElement,
-  discord_listening_text: HTMLInputElement;
+  discord_using_text: HTMLInputElement;
 
 addCustomCss(app);
 
@@ -148,7 +148,7 @@ function refreshSettings() {
     discord_button_text.value = settingsStore.get(settings.discord.buttonText);
     discord_show_song.checked = settingsStore.get(settings.discord.showSong);
     discord_idle_text.value = settingsStore.get(settings.discord.idleText);
-    discord_listening_text.value = settingsStore.get(settings.discord.listeningText);
+    discord_using_text.value = settingsStore.get(settings.discord.usingText);
 
     // set state of all switches with additional settings
     Object.values(switchesWithSettings).forEach((settingSwitch) => {
@@ -263,7 +263,7 @@ window.addEventListener("DOMContentLoaded", () => {
   listenbrainz_delay = get("listenbrainz_delay");
   discord_button_text = get("discord_button_text");
   discord_show_song = get("discord_show_song");
-  discord_listening_text = get("discord_listening_text");
+  discord_using_text = get("discord_using_text");
   discord_idle_text = get("discord_idle_text")
 
   refreshSettings();
@@ -301,5 +301,5 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(discord_button_text, settings.discord.buttonText);
   addInputListener(discord_show_song, settings.discord.showSong, switchesWithSettings.discord_show_song);
   addInputListener(discord_idle_text, settings.discord.idleText);
-  addInputListener(discord_listening_text, settings.discord.listeningText);
+  addInputListener(discord_using_text, settings.discord.usingText);
 });
