@@ -5,6 +5,25 @@ import path from "path";
 import { settings } from "../constants/settings";
 
 let settingsWindow: BrowserWindow;
+/**
+ * Build a migration step for several settings.
+ * All settings will be checked and set to the default if non-existent.
+ * @param version
+ * @param migrationStore
+ * @param options
+ */
+const buildMigration = (
+  version: string,
+  migrationStore: { get: (str: string) => string; set: (str: string, val: unknown) => void },
+  options: Array<{ key: string; value: unknown }>
+) => {
+  console.log(`running migrations for ${version}`);
+  options.forEach(({ key, value }) => {
+    const valueToSet = migrationStore.get(key) ?? value;
+    console.log(`  - setting ${key} to ${value}`);
+    migrationStore.set(key, valueToSet);
+  });
+};
 
 export const settingsStore = new Store({
   defaults: {
@@ -19,9 +38,12 @@ export const settingsStore = new Store({
     enableCustomHotkeys: false,
     enableDiscord: false,
     discord: {
+      showSong: true,
+      idleText: "Browsing Tidal",
+      usingText: "Playing media on TIDAL",
+      includeTimestamps: true,
       detailsPrefix: "Listening to ",
       buttonText: "Play on Tidal",
-      includeTimestamps: true,
     },
     ListenBrainz: {
       enabled: false,
@@ -68,6 +90,16 @@ export const settingsStore = new Store({
         settings.discord.includeTimestamps,
         migrationStore.get(settings.discord.includeTimestamps) ?? true
       );
+    },
+    "5.9.0": (migrationStore) => {
+      buildMigration("5.9.0", migrationStore, [
+        { key: settings.discord.showSong, value: "true" },
+        { key: settings.discord.idleText, value: "Browsing Tidal" },
+        {
+          key: settings.discord.usingText,
+          value: "Playing media on TIDAL",
+        },
+      ]);
     },
   },
 });

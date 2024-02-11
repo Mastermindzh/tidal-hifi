@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.9.0]
+
+- More Discord options:
+  - Added the ability to hide the current song from the discord activity and display a custom text instead
+  - Added the ability to customize the text that is shown when no song is playing
+  - Discord now reacts to pausing/unpausing events
+- Refactored media info updates so it only updates the required info, fixes #342, #306
+- Added 5.9.0 logs/versions/migrations
+
 ## [5.8.0]
 
 - Updated Electron to 28.1.1 (fixes [325](https://github.com/Mastermindzh/tidal-hifi/issues/325))

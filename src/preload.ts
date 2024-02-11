@@ -26,6 +26,8 @@ let player: Player;
 let currentPlayStatus = MediaStatus.paused;
 let currentListenBrainzDelayId: ReturnType<typeof setTimeout>;
 let scrobbleWaitingForDelay = false;
+let wasJustPausedOrResumed = false;
+let currentMediaInfo: Options;
 
 const elements = {
   play: '*[data-test="play"]',
@@ -182,6 +184,7 @@ function getUpdateFrequency() {
  * Play or pause the current song
  */
 function playPause() {
+  wasJustPausedOrResumed = true;
   const play = elements.get("play");
 
   if (play) {
@@ -301,6 +304,8 @@ function addIPCEventListeners() {
     ipcRenderer.on("globalEvent", (_event, args) => {
       switch (args) {
         case globalEvents.playPause:
+        case globalEvents.play:
+        case globalEvents.pause:
           playPause();
           break;
         case globalEvents.next:
@@ -308,12 +313,6 @@ function addIPCEventListeners() {
           break;
         case globalEvents.previous:
           elements.click("previous");
-          break;
-        case globalEvents.play:
-          elements.click("play");
-          break;
-        case globalEvents.pause:
-          elements.click("pause");
           break;
         case globalEvents.toggleFavorite:
           elements.click("favorite");
@@ -357,6 +356,7 @@ function convertDuration(duration: string) {
  */
 function updateMediaInfo(options: Options, notify: boolean) {
   if (options) {
+    currentMediaInfo = options;
     ipcRenderer.send(globalEvents.updateInfo, options);
     if (settingsStore.get(settings.notifications) && notify) {
       new Notification({ title: options.title, body: options.artists, icon: options.icon }).show();
@@ -510,60 +510,69 @@ setInterval(function () {
   const title = elements.getText("title");
   const artistsArray = elements.getArtistsArray();
   const artistsString = elements.getArtistsString(artistsArray);
-  skipArtistsIfFoundInSkippedArtistsList(artistsArray);
-
-  const album = elements.getAlbumName();
-  const current = elements.getText("current");
-  const duration = elements.getText("duration");
   const songDashArtistTitle = `${title} - ${artistsString}`;
-  const currentStatus = getCurrentlyPlayingStatus();
-  const options = {
-    title,
-    artists: artistsString,
-    album: album,
-    status: currentStatus,
-    url: getTrackURL(),
-    current,
-    duration,
-    "app-name": appName,
-    image: "",
-    icon: "",
-    favorite: elements.isFavorite(),
-  };
-
   const titleOrArtistsChanged = currentSong !== songDashArtistTitle;
+  const current = elements.getText("current");
+  const currentStatus = getCurrentlyPlayingStatus();
 
-  // update title, url and play info with new info
-  setTitle(songDashArtistTitle);
-  getTrackURL();
-  currentSong = songDashArtistTitle;
-  currentPlayStatus = currentStatus;
-
-  const image = elements.getSongIcon();
-
-  new Promise<void>((resolve) => {
-    if (image.startsWith("http")) {
-      options.image = image;
-      downloadFile(image, notificationPath).then(
-        () => {
-          options.icon = notificationPath;
-          resolve();
-        },
-        () => {
-          // if the image can't be downloaded then continue without it
-          resolve();
-        }
-      );
-    } else {
-      // if the image can't be found on the page continue without it
-      resolve();
+  // update info if song changed or was just paused/resumed
+  if (titleOrArtistsChanged || wasJustPausedOrResumed) {
+    if (wasJustPausedOrResumed) {
+      wasJustPausedOrResumed = false;
     }
-  }).then(() => {
-    updateMediaInfo(options, titleOrArtistsChanged);
-    if (titleOrArtistsChanged) {
-      updateMediaSession(options);
-    }
-  });
+    skipArtistsIfFoundInSkippedArtistsList(artistsArray);
+
+    const album = elements.getAlbumName();
+    const duration = elements.getText("duration");
+    const options = {
+      title,
+      artists: artistsString,
+      album: album,
+      status: currentStatus,
+      url: getTrackURL(),
+      current,
+      duration,
+      "app-name": appName,
+      image: "",
+      icon: "",
+      favorite: elements.isFavorite(),
+    };
+
+    // update title, url and play info with new info
+    setTitle(songDashArtistTitle);
+    getTrackURL();
+    currentSong = songDashArtistTitle;
+    currentPlayStatus = currentStatus;
+
+    const image = elements.getSongIcon();
+
+    new Promise<void>((resolve) => {
+      if (image.startsWith("http")) {
+        options.image = image;
+        downloadFile(image, notificationPath).then(
+          () => {
+            options.icon = notificationPath;
+            resolve();
+          },
+          () => {
+            // if the image can't be downloaded then continue without it
+            resolve();
+          }
+        );
+      } else {
+        // if the image can't be found on the page continue without it
+        resolve();
+      }
+    }).then(() => {
+      updateMediaInfo(options, titleOrArtistsChanged);
+      if (titleOrArtistsChanged) {
+        updateMediaSession(options);
+      }
+    });
+  } else {
+    // just update the time
+    updateMediaInfo({ ...currentMediaInfo, ...{ current } }, false);
+  }
 
   /**
    * automatically skip a song if the artists are found in the list of artists to skip
