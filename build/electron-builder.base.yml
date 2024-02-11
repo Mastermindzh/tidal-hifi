@@ -11,7 +11,7 @@ extraResources:
   - "themes/**"
 linux:
   category: AudioVideo
-  icon: assets/icons
+  icon: build/icons/256x256.png
   target:
     - dir
   executableName: tidal-hifi

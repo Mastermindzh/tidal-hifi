@@ -12,7 +12,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Discord now reacts to pausing/unpausing events
 - Refactored media info updates so it only updates the required info, fixes #342, #306
 - Added 5.9.0 logs/versions/migrations
-- Fixed chromium mediaSession instance showing up. fixes #338
+
+### Fixed
+
+- Fixed chromium mediaSession instance showing up. fixes #338 #198
+- Set a new icon, should fix #302
 
 ## [5.8.0]
 
