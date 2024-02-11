@@ -9,6 +9,7 @@ import { Logger } from "../logger";
  */
 export function setDefaultFlags(app: App) {
   setFlag(app, "disable-seccomp-filter-sandbox");
+  setFlag(app, "disable-features", "MediaSessionService");
 }
 
 /**
