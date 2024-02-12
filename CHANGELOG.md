@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed chromium mediaSession instance showing up. fixes #338 #198
 - Set a new icon, should fix #302
+- Made sure settingsWindow exists before operating on it. fixes #344
 
 ## [5.8.0]
 

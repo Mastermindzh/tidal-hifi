@@ -138,6 +138,10 @@ export const createSettingsWindow = function () {
 };
 
 export const showSettingsWindow = function (tab = "general") {
+  if (!settingsWindow) {
+    console.log("Settings window is not initialized. Attempting to create it.");
+    createSettingsWindow();
+  }
   settingsWindow.webContents.send("goToTab", tab);
 
   // refresh data just before showing the window
