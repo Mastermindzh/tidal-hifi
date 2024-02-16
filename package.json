@@ -39,7 +39,7 @@
   "homepage": "https://github.com/Mastermindzh/tidal-hifi",
   "license": "MIT",
   "dependencies": {
-    "@electron/remote": "^2.1.1",
+    "@electron/remote": "^2.1.2",
     "axios": "^1.6.5",
     "discord-rpc": "^4.0.1",
     "electron-store": "^8.1.0",
