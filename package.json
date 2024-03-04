@@ -59,7 +59,7 @@
     "@typescript-eslint/parser": "^6.18.0",
     "copyfiles": "^2.4.1",
     "electron": "git+https://github.com/castlabs/electron-releases#v28.1.1+wvcus",
-    "electron-builder": "^24.9.1",
+    "electron-builder": "^24.13.3",
     "eslint": "^8.56.0",
     "js-yaml": "^4.1.0",
     "markdown-toc": "^1.2.0",
