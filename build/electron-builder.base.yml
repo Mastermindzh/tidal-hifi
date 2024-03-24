@@ -11,10 +11,16 @@ extraResources:
   - "themes/**"
 linux:
   category: AudioVideo
-  icon: build/icons/256x256.png
+  icon: build/icons
   target:
     - dir
   executableName: tidal-hifi
+  executableArgs:
+    [
+      "--enable-features=UseOzonePlatform",
+      "--ozone-platform-hint=auto",
+      "--enable-features=WaylandWindowDecorations",
+    ]
   desktop:
     Encoding: UTF-8
     Name: TIDAL Hi-Fi

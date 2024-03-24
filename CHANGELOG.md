@@ -4,6 +4,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.10.0]
+
+- TIDAL will now close the previous notification if a new one is sent whilst the old is still visible. [#364](https://github.com/Mastermindzh/tidal-hifi/pull/364)
+- Updated developer documentation to get started in README [#365](https://github.com/Mastermindzh/tidal-hifi/pull/365)
+- Links in the about window now open in the user's default browser. fixes [#360](https://github.com/Mastermindzh/tidal-hifi/issues/360)
+- Refactored "nowPlaying" code to always display the current state, even when the built-in UI is updated.
+  - fixes [#351](https://github.com/Mastermindzh/tidal-hifi/issues/351)
+  - fixes [#356](https://github.com/Mastermindzh/tidal-hifi/issues/356)
+  - fixes [#370](https://github.com/Mastermindzh/tidal-hifi/issues/370)
+- Reverted to using old icon syntax with icons in the build directory. fixes [#350](https://github.com/Mastermindzh/tidal-hifi/issues/350)
+- Enabled wayland platform flags by default when launching through .desktop file
+  - fixes [#273](https://github.com/Mastermindzh/tidal-hifi/issues/273)
+  - fixes [#347](https://github.com/Mastermindzh/tidal-hifi/issues/347)
+
 ## [5.9.0]
 
 - More Discord options:

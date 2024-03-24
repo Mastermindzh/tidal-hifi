@@ -1,6 +1,6 @@
 import Store from "electron-store";
 
-import { BrowserWindow } from "electron";
+import { BrowserWindow, shell } from "electron";
 import path from "path";
 import { settings } from "../constants/settings";
 
@@ -134,6 +134,10 @@ export const createSettingsWindow = function () {
 
   settingsWindow.loadURL(`file://${__dirname}/../pages/settings/settings.html`);
 
+  settingsWindow.webContents.setWindowOpenHandler(({ url }) => {
+    shell.openExternal(url);
+    return { action: "deny" };
+  });
   settingsModule.settingsWindow = settingsWindow;
 };
 
