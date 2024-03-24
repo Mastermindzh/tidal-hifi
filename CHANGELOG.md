@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - fixes [#351](https://github.com/Mastermindzh/tidal-hifi/issues/351)
   - fixes [#356](https://github.com/Mastermindzh/tidal-hifi/issues/356)
   - fixes [#370](https://github.com/Mastermindzh/tidal-hifi/issues/370)
+- Reverted to using old icon syntax with icons in the build directory. fixes [#350](https://github.com/Mastermindzh/tidal-hifi/issues/350)
 
 ## [5.9.0]
 
