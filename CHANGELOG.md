@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.10.0]
+
+- TIDAL will now close the previous notification if a new one is sent whilst the old is still visible. [#364](https://github.com/Mastermindzh/tidal-hifi/pull/364)
+- Updated developer documentation to get started in README [#365](https://github.com/Mastermindzh/tidal-hifi/pull/365)
+-
+
 ## [5.9.0]
 
 - More Discord options:
