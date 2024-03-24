@@ -28,6 +28,7 @@ let currentListenBrainzDelayId: ReturnType<typeof setTimeout>;
 let scrobbleWaitingForDelay = false;
 let wasJustPausedOrResumed = false;
 let currentMediaInfo: Options;
+let currentNotification: Electron.Notification;
 
 const elements = {
   play: '*[data-test="play"]',
@@ -359,7 +360,9 @@ function updateMediaInfo(options: Options, notify: boolean) {
     currentMediaInfo = options;
     ipcRenderer.send(globalEvents.updateInfo, options);
     if (settingsStore.get(settings.notifications) && notify) {
-      new Notification({ title: options.title, body: options.artists, icon: options.icon }).show();
+      if (currentNotification) currentNotification.close();
+      currentNotification = new Notification({ title: options.title, body: options.artists, icon: options.icon });
+      currentNotification.show();
     }
     updateMpris(options);
     updateListenBrainz(options);
