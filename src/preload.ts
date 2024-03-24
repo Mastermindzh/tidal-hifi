@@ -26,7 +26,8 @@ let player: Player;
 let currentPlayStatus = MediaStatus.paused;
 let currentListenBrainzDelayId: ReturnType<typeof setTimeout>;
 let scrobbleWaitingForDelay = false;
-let wasJustPausedOrResumed = false;
+
+let currentlyPlaying = MediaStatus.paused;
 let currentMediaInfo: Options;
 let currentNotification: Electron.Notification;
 
@@ -185,7 +186,6 @@ function getUpdateFrequency() {
  * Play or pause the current song
  */
 function playPause() {
-  wasJustPausedOrResumed = true;
   const play = elements.get("play");
 
   if (play) {
@@ -361,7 +361,11 @@ function updateMediaInfo(options: Options, notify: boolean) {
     ipcRenderer.send(globalEvents.updateInfo, options);
     if (settingsStore.get(settings.notifications) && notify) {
       if (currentNotification) currentNotification.close();
-      currentNotification = new Notification({ title: options.title, body: options.artists, icon: options.icon });
+      currentNotification = new Notification({
+        title: options.title,
+        body: options.artists,
+        icon: options.icon,
+      });
       currentNotification.show();
     }
     updateMpris(options);
@@ -518,10 +522,12 @@ setInterval(function () {
   const current = elements.getText("current");
   const currentStatus = getCurrentlyPlayingStatus();
 
+  const playStateChanged = currentStatus != currentlyPlaying;
+
   // update info if song changed or was just paused/resumed
-  if (titleOrArtistsChanged || wasJustPausedOrResumed) {
-    if (wasJustPausedOrResumed) {
-      wasJustPausedOrResumed = false;
+  if (titleOrArtistsChanged || playStateChanged) {
+    if (playStateChanged) {
+      currentlyPlaying = currentStatus;
     }
     skipArtistsIfFoundInSkippedArtistsList(artistsArray);
 
