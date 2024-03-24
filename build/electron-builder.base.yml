@@ -15,6 +15,12 @@ linux:
   target:
     - dir
   executableName: tidal-hifi
+  executableArgs:
+    [
+      "--enable-features=UseOzonePlatform",
+      "--ozone-platform-hint=auto",
+      "--enable-features=WaylandWindowDecorations",
+    ]
   desktop:
     Encoding: UTF-8
     Name: TIDAL Hi-Fi

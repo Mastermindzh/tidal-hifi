@@ -14,6 +14,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - fixes [#356](https://github.com/Mastermindzh/tidal-hifi/issues/356)
   - fixes [#370](https://github.com/Mastermindzh/tidal-hifi/issues/370)
 - Reverted to using old icon syntax with icons in the build directory. fixes [#350](https://github.com/Mastermindzh/tidal-hifi/issues/350)
+- Enabled wayland platform flags by default when launching through .desktop file
+  - fixes [#273](https://github.com/Mastermindzh/tidal-hifi/issues/273)
+  - fixes [#347](https://github.com/Mastermindzh/tidal-hifi/issues/347)
 
 ## [5.9.0]
 
