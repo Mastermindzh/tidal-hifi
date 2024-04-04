@@ -493,23 +493,6 @@ function getTrackID() {
   return window.location;
 }
 
-function updateMediaSession(options: Options) {
-  if ("mediaSession" in navigator) {
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title: options.title,
-      artist: options.artists,
-      album: options.album,
-      artwork: [
-        {
-          src: options.icon,
-          sizes: "640x640",
-          type: "image/png",
-        },
-      ],
-    });
-  }
-}
-
 /**
  * Watch for song changes and update title + notify
  */
@@ -574,9 +557,6 @@ setInterval(function () {
       }
     }).then(() => {
       updateMediaInfo(options, titleOrArtistsChanged);
-      if (titleOrArtistsChanged) {
-        updateMediaSession(options);
-      }
     });
   } else {
     // just update the time
