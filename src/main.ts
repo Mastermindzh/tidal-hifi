@@ -3,14 +3,12 @@ import {
   app,
   BrowserWindow,
   components,
-  globalShortcut,
   ipcMain,
   protocol,
   session,
 } from "electron";
 import path from "path";
 import { globalEvents } from "./constants/globalEvents";
-import { mediaKeys } from "./constants/mediaKeys";
 import { settings } from "./constants/settings";
 import { setDefaultFlags, setManagedFlagsFromSettings } from "./features/flags/flags";
 import {
@@ -147,14 +145,6 @@ function registerHttpProtocols() {
   }
 }
 
-function addGlobalShortcuts() {
-  Object.keys(mediaKeys).forEach((key) => {
-    globalShortcut.register(`${key}`, () => {
-      mainWindow.webContents.send("globalEvent", `${(mediaKeys as any)[key]}`);
-    });
-  });
-}
-
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -174,7 +164,6 @@ app.on("ready", async () => {
     createWindow();
     addMenu(mainWindow);
     createSettingsWindow();
-    addGlobalShortcuts();
     if (settingsStore.get(settings.trayIcon)) {
       addTray(mainWindow, { icon });
       refreshTray(mainWindow);
