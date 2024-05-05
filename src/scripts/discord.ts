@@ -3,17 +3,12 @@ import { app, ipcMain } from "electron";
 import { globalEvents } from "../constants/globalEvents";
 import { settings } from "../constants/settings";
 import { Logger } from "../features/logger";
+import { convertDurationToSeconds } from "../features/time/parse";
 import { MediaStatus } from "../models/mediaStatus";
 import { mediaInfo } from "./mediaInfo";
 import { settingsStore } from "./settings";
 
 const clientId = "833617820704440341";
-
-function timeToSeconds(timeArray: string[]) {
-  const minutes = parseInt(timeArray[0]) * 1;
-  const seconds = minutes * 60 + parseInt(timeArray[1]) * 1;
-  return seconds;
-}
 
 export let rpc: Client;
 
@@ -59,7 +54,7 @@ const getActivity = (): Presence => {
     return { includeTimestamps, detailsPrefix, buttonText };
   }
 
-  function setPresenceFromMediaInfo(detailsPrefix: any, buttonText: any) {
+  function setPresenceFromMediaInfo(detailsPrefix: string, buttonText: string) {
     if (mediaInfo.url) {
       presence.details = `${detailsPrefix}${mediaInfo.title}`;
       presence.state = mediaInfo.artists ? mediaInfo.artists : "unknown artist(s)";
@@ -74,10 +69,10 @@ const getActivity = (): Presence => {
     }
   }
 
-  function includeTimeStamps(includeTimestamps: any) {
+  function includeTimeStamps(includeTimestamps: boolean) {
     if (includeTimestamps) {
-      const currentSeconds = timeToSeconds(mediaInfo.current.split(":"));
-      const durationSeconds = timeToSeconds(mediaInfo.duration.split(":"));
+      const currentSeconds = convertDurationToSeconds(mediaInfo.current);
+      const durationSeconds = convertDurationToSeconds(mediaInfo.duration);
       const date = new Date();
       const now = (date.getTime() / 1000) | 0;
       const remaining = date.setSeconds(date.getSeconds() + (durationSeconds - currentSeconds));

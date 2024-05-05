@@ -5,7 +5,9 @@ export interface Options {
   status: string;
   url: string;
   current: string;
+  currentInSeconds: number;
   duration: string;
+  durationInSeconds: number;
   "app-name": string;
   image: string;
   icon: string;

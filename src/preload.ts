@@ -12,6 +12,7 @@ import { StoreData } from "./features/listenbrainz/models/storeData";
 import { Logger } from "./features/logger";
 import { Songwhip } from "./features/songwhip/songwhip";
 import { addCustomCss } from "./features/theming/theming";
+import { convertDurationToSeconds } from "./features/time/parse";
 import { MediaStatus } from "./models/mediaStatus";
 import { Options } from "./models/options";
 import { downloadFile } from "./scripts/download";
@@ -318,6 +319,12 @@ function addIPCEventListeners() {
         case globalEvents.toggleFavorite:
           elements.click("favorite");
           break;
+        case globalEvents.toggleShuffle:
+          elements.click("shuffle");
+          break;
+        case globalEvents.toggleRepeat:
+          elements.click("repeat");
+          break;
         default:
           break;
       }
@@ -493,23 +500,6 @@ function getTrackID() {
   return window.location;
 }
 
-function updateMediaSession(options: Options) {
-  if ("mediaSession" in navigator) {
-    navigator.mediaSession.metadata = new MediaMetadata({
-      title: options.title,
-      artist: options.artists,
-      album: options.album,
-      artwork: [
-        {
-          src: options.icon,
-          sizes: "640x640",
-          type: "image/png",
-        },
-      ],
-    });
-  }
-}
-
 /**
  * Watch for song changes and update title + notify
  */
@@ -540,7 +530,9 @@ setInterval(function () {
       status: currentStatus,
       url: getTrackURL(),
       current,
+      currentInSeconds: convertDurationToSeconds(current),
       duration,
+      durationInSeconds: convertDurationToSeconds(duration),
       "app-name": appName,
       image: "",
       icon: "",
@@ -574,13 +566,13 @@ setInterval(function () {
       }
     }).then(() => {
       updateMediaInfo(options, titleOrArtistsChanged);
-      if (titleOrArtistsChanged) {
-        updateMediaSession(options);
-      }
     });
   } else {
     // just update the time
-    updateMediaInfo({ ...currentMediaInfo, ...{ current } }, false);
+    updateMediaInfo(
+      { ...currentMediaInfo, ...{ current, currentInSeconds: convertDurationToSeconds(current) } },
+      false
+    );
   }
 
   /**

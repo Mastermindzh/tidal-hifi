@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.11.0]
+
+- Re-implemented the API, added support for duration/current in seconds & shuffle+repeat
+  - made the original API "legacy" (still works the same)
+  - Now using the correct HTTP verb for all new endpoints
+- Implemented TIDAL's universal links. All links are now universal.
+- Custom `tidal://` protocol fixed - By [TheRockYT](https://github.com/TheRockYT)
+- Global media shortcuts removed since TIDAL includes them by default - By [TheRockYT](https://github.com/TheRockYT)
+
+- Fixes
+  - [#390](https://github.com/Mastermindzh/tidal-hifi/issues/390)
+  - [#376](https://github.com/Mastermindzh/tidal-hifi/issues/376)
+  - [#383](https://github.com/Mastermindzh/tidal-hifi/issues/383)
+  - [#393](https://github.com/Mastermindzh/tidal-hifi/issues/393)
+
 ## [5.10.0]
 
 - TIDAL will now close the previous notification if a new one is sent whilst the old is still visible. [#364](https://github.com/Mastermindzh/tidal-hifi/pull/364)

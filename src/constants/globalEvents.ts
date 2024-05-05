@@ -13,4 +13,6 @@ export const globalEvents = {
   whip: "whip",
   log: "log",
   toggleFavorite: "toggleFavorite",
+  toggleShuffle: "toggleShuffle",
+  toggleRepeat: "toggleRepeat",
 };

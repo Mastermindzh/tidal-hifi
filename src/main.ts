@@ -1,17 +1,9 @@
 import { enable, initialize } from "@electron/remote/main";
-import {
-  app,
-  BrowserWindow,
-  components,
-  globalShortcut,
-  ipcMain,
-  protocol,
-  session,
-} from "electron";
+import { BrowserWindow, app, components, ipcMain, session } from "electron";
 import path from "path";
 import { globalEvents } from "./constants/globalEvents";
-import { mediaKeys } from "./constants/mediaKeys";
 import { settings } from "./constants/settings";
+import { startApi } from "./features/api";
 import { setDefaultFlags, setManagedFlagsFromSettings } from "./features/flags/flags";
 import {
   acquireInhibitorIfInactive,
@@ -22,7 +14,6 @@ import { Songwhip } from "./features/songwhip/songwhip";
 import { MediaInfo } from "./models/mediaInfo";
 import { MediaStatus } from "./models/mediaStatus";
 import { initRPC, rpc, unRPC } from "./scripts/discord";
-import { startExpress } from "./scripts/express";
 import { updateMediaInfo } from "./scripts/mediaInfo";
 import { addMenu } from "./scripts/menu";
 import {
@@ -61,20 +52,31 @@ function syncMenuBarWithStore() {
 }
 
 /**
- * Determine whether the current window is the main window
- * if singleInstance is requested.
- * If singleInstance isn't requested simply return true
- * @returns true if singInstance is not requested, otherwise true/false based on whether the current window is the main window
+ * @returns true/false based on whether the current window is the main window
  */
-function isMainInstanceOrMultipleInstancesAllowed() {
-  if (settingsStore.get(settings.singleInstance)) {
-    const gotTheLock = app.requestSingleInstanceLock();
+function isMainInstance() {
+  return app.requestSingleInstanceLock();
+}
 
-    if (!gotTheLock) {
-      return false;
-    }
+/**
+ * @returns true/false based on whether multiple instances are allowed
+ */
+function isMultipleInstancesAllowed() {
+  return !settingsStore.get(settings.singleInstance);
+}
+
+/**
+ * @param args the arguments passed to the app
+ * @returns the custom protocol url if it exists, otherwise null
+ */
+function getCustomProtocolUrl(args: string[]) {
+  const customProtocolArg = args.find((arg) => arg.startsWith(PROTOCOL_PREFIX));
+
+  if (!customProtocolArg) {
+    return null;
   }
-  return true;
+
+  return tidalUrl + "/" + customProtocolArg.substring(PROTOCOL_PREFIX.length + 3);
 }
 
 function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
@@ -98,8 +100,16 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
   registerHttpProtocols();
   syncMenuBarWithStore();
 
-  // load the Tidal website
-  mainWindow.loadURL(tidalUrl);
+  // find the custom protocol argument
+  const customProtocolUrl = getCustomProtocolUrl(process.argv);
+
+  if (customProtocolUrl) {
+    // load the url received from the custom protocol
+    mainWindow.loadURL(customProtocolUrl);
+  } else {
+    // load the Tidal website
+    mainWindow.loadURL(tidalUrl);
+  }
 
   if (settingsStore.get(settings.disableBackgroundThrottle)) {
     // prevent setInterval lag
@@ -139,27 +149,32 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
 }
 
 function registerHttpProtocols() {
-  protocol.registerHttpProtocol(PROTOCOL_PREFIX, (request) => {
-    mainWindow.loadURL(`${tidalUrl}/${request.url.substring(PROTOCOL_PREFIX.length + 3)}`);
-  });
   if (!app.isDefaultProtocolClient(PROTOCOL_PREFIX)) {
     app.setAsDefaultProtocolClient(PROTOCOL_PREFIX);
   }
-}
-
-function addGlobalShortcuts() {
-  Object.keys(mediaKeys).forEach((key) => {
-    globalShortcut.register(`${key}`, () => {
-      mainWindow.webContents.send("globalEvent", `${(mediaKeys as any)[key]}`);
-    });
-  });
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
-  if (isMainInstanceOrMultipleInstancesAllowed()) {
+  // check if the app is the main instance and multiple instances are not allowed
+  if (isMainInstance() && !isMultipleInstancesAllowed()) {
+    app.on("second-instance", (_, commandLine) => {
+      const customProtocolUrl = getCustomProtocolUrl(commandLine);
+
+      if (customProtocolUrl) {
+        mainWindow.loadURL(customProtocolUrl);
+      }
+
+      if (mainWindow) {
+        if (mainWindow.isMinimized()) mainWindow.restore();
+        mainWindow.focus();
+      }
+    });
+  }
+
+  if (isMainInstance() || isMultipleInstancesAllowed()) {
     await components.whenReady();
 
     // Adblock
@@ -174,12 +189,11 @@ app.on("ready", async () => {
     createWindow();
     addMenu(mainWindow);
     createSettingsWindow();
-    addGlobalShortcuts();
     if (settingsStore.get(settings.trayIcon)) {
       addTray(mainWindow, { icon });
       refreshTray(mainWindow);
     }
-    settingsStore.get(settings.api) && startExpress(mainWindow);
+    settingsStore.get(settings.api) && startApi(mainWindow);
     settingsStore.get(settings.enableDiscord) && initRPC();
   } else {
     app.quit();
