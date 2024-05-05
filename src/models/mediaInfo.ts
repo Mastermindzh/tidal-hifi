@@ -8,7 +8,9 @@ export interface MediaInfo {
   status: MediaStatus;
   url: string;
   current: string;
+  currentInSeconds?: number;
   duration: string;
+  durationInSeconds?: number;
   image: string;
   favorite: boolean;
 }

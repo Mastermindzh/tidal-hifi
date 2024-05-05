@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [next]
 
+- Re-implemented the API, added support for duration/current in seconds & shuffle+repeat
+  - made the original API "legacy" (still works the same)
+  - Now using the correct HTTP verb for all new endpoints
 - Implemented TIDAL's universal links. All links are now universal.
 - Custom `tidal://` protocol fixed - By [TheRockYT](https://github.com/TheRockYT)
 - Global media shortcuts removed since TIDAL includes them by default - By [TheRockYT]
@@ -14,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - [#390](https://github.com/Mastermindzh/tidal-hifi/issues/390)
   - [#376](https://github.com/Mastermindzh/tidal-hifi/issues/376)
   - [#383](https://github.com/Mastermindzh/tidal-hifi/issues/383)
+  - [#393](https://github.com/Mastermindzh/tidal-hifi/issues/393)
 
 ## [5.10.0]
 

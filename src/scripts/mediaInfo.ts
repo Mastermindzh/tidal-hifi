@@ -9,7 +9,9 @@ export const mediaInfo = {
   status: MediaStatus.paused as string,
   url: "",
   current: "",
+  currentInSeconds: 0,
   duration: "",
+  durationInSeconds: 0,
   image: "tidal-hifi-icon",
   favorite: false,
 };
@@ -22,7 +24,9 @@ export const updateMediaInfo = (arg: MediaInfo) => {
   mediaInfo.url = toUniversalUrl(propOrDefault(arg.url));
   mediaInfo.status = propOrDefault(arg.status);
   mediaInfo.current = propOrDefault(arg.current);
+  mediaInfo.currentInSeconds = arg.currentInSeconds ?? 0;
   mediaInfo.duration = propOrDefault(arg.duration);
+  mediaInfo.durationInSeconds = arg.durationInSeconds ?? 0;
   mediaInfo.image = propOrDefault(arg.image);
   mediaInfo.favorite = arg.favorite;
 };

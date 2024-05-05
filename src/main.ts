@@ -1,14 +1,9 @@
 import { enable, initialize } from "@electron/remote/main";
-import {
-  app,
-  BrowserWindow,
-  components,
-  ipcMain,
-  session,
-} from "electron";
+import { BrowserWindow, app, components, ipcMain, session } from "electron";
 import path from "path";
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
+import { startApi } from "./features/api";
 import { setDefaultFlags, setManagedFlagsFromSettings } from "./features/flags/flags";
 import {
   acquireInhibitorIfInactive,
@@ -19,7 +14,6 @@ import { Songwhip } from "./features/songwhip/songwhip";
 import { MediaInfo } from "./models/mediaInfo";
 import { MediaStatus } from "./models/mediaStatus";
 import { initRPC, rpc, unRPC } from "./scripts/discord";
-import { startExpress } from "./scripts/express";
 import { updateMediaInfo } from "./scripts/mediaInfo";
 import { addMenu } from "./scripts/menu";
 import {
@@ -61,7 +55,7 @@ function syncMenuBarWithStore() {
  * @returns true/false based on whether the current window is the main window
  */
 function isMainInstance() {
-    return app.requestSingleInstanceLock();
+  return app.requestSingleInstanceLock();
 }
 
 /**
@@ -82,7 +76,7 @@ function getCustomProtocolUrl(args: string[]) {
     return null;
   }
 
-  return tidalUrl + "/" + customProtocolArg.substring(PROTOCOL_PREFIX.length + 3)
+  return tidalUrl + "/" + customProtocolArg.substring(PROTOCOL_PREFIX.length + 3);
 }
 
 function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
@@ -109,7 +103,7 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
   // find the custom protocol argument
   const customProtocolUrl = getCustomProtocolUrl(process.argv);
 
-  if(customProtocolUrl) {
+  if (customProtocolUrl) {
     // load the url received from the custom protocol
     mainWindow.loadURL(customProtocolUrl);
   } else {
@@ -164,10 +158,9 @@ function registerHttpProtocols() {
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on("ready", async () => {
-
   // check if the app is the main instance and multiple instances are not allowed
   if (isMainInstance() && !isMultipleInstancesAllowed()) {
-    app.on('second-instance', (_, commandLine) => {
+    app.on("second-instance", (_, commandLine) => {
       const customProtocolUrl = getCustomProtocolUrl(commandLine);
 
       if (customProtocolUrl) {
@@ -200,7 +193,7 @@ app.on("ready", async () => {
       addTray(mainWindow, { icon });
       refreshTray(mainWindow);
     }
-    settingsStore.get(settings.api) && startExpress(mainWindow);
+    settingsStore.get(settings.api) && startApi(mainWindow);
     settingsStore.get(settings.enableDiscord) && initRPC();
   } else {
     app.quit();
