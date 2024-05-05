@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Now using the correct HTTP verb for all new endpoints
 - Implemented TIDAL's universal links. All links are now universal.
 - Custom `tidal://` protocol fixed - By [TheRockYT](https://github.com/TheRockYT)
-- Global media shortcuts removed since TIDAL includes them by default - By [TheRockYT]
+- Global media shortcuts removed since TIDAL includes them by default - By [TheRockYT](https://github.com/TheRockYT)
 
 - Fixes
   - [#390](https://github.com/Mastermindzh/tidal-hifi/issues/390)
