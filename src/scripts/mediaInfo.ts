@@ -19,7 +19,7 @@ export const updateMediaInfo = (arg: MediaInfo) => {
   mediaInfo.artists = propOrDefault(arg.artists);
   mediaInfo.album = propOrDefault(arg.album);
   mediaInfo.icon = propOrDefault(arg.icon);
-  mediaInfo.url = propOrDefault(arg.url);
+  mediaInfo.url = toUniversalUrl(propOrDefault(arg.url));
   mediaInfo.status = propOrDefault(arg.status);
   mediaInfo.current = propOrDefault(arg.current);
   mediaInfo.duration = propOrDefault(arg.duration);
@@ -33,5 +33,18 @@ export const updateMediaInfo = (arg: MediaInfo) => {
  * @param {*} defaultValue defaults to ""
  */
 function propOrDefault(prop: string, defaultValue = "") {
-  return prop ? prop : defaultValue;
+  return prop || defaultValue;
+}
+
+/**
+ * Append the universal link syntax (?u) to any url
+ * @param url url to append the universal link syntax to
+ * @returns url with `?u` appended, or the original value of url if falsy
+ */
+function toUniversalUrl(url: string) {
+  if (url) {
+    const queryParamsSet = url.indexOf("?");
+    return queryParamsSet > -1 ? `${url}&u` : `${url}?u`;
+  }
+  return url;
 }
