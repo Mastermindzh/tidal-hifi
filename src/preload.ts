@@ -19,7 +19,7 @@ import { downloadFile } from "./scripts/download";
 import { addHotkey } from "./scripts/hotkeys";
 import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
-import {RepeatState} from "./models/repeatState";
+import { RepeatState } from "./models/repeatState";
 
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 const appName = "TIDAL Hi-Fi";

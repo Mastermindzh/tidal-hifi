@@ -1,6 +1,6 @@
 import { MediaInfo } from "../models/mediaInfo";
 import { MediaStatus } from "../models/mediaStatus";
-import {RepeatState} from "../models/repeatState";
+import { RepeatState } from "../models/repeatState";
 
 export const mediaInfo = {
   title: "",

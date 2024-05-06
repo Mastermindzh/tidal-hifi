@@ -1,5 +1,5 @@
 import { MediaStatus } from "./mediaStatus";
-import {MediaPlayerInfo} from "./mediaPlayerInfo";
+import { MediaPlayerInfo } from "./mediaPlayerInfo";
 
 export interface MediaInfo {
   title: string;
