@@ -19,6 +19,7 @@ import { downloadFile } from "./scripts/download";
 import { addHotkey } from "./scripts/hotkeys";
 import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
+import {RepeatState} from "./models/repeatState";
 
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 const appName = "TIDAL Hi-Fi";
@@ -29,6 +30,8 @@ let currentListenBrainzDelayId: ReturnType<typeof setTimeout>;
 let scrobbleWaitingForDelay = false;
 
 let currentlyPlaying = MediaStatus.paused;
+let currentRepeatState: RepeatState = RepeatState.off;
+let currentShuffleState = false;
 let currentMediaInfo: Options;
 let currentNotification: Electron.Notification;
 
@@ -348,6 +351,23 @@ function getCurrentlyPlayingStatus() {
   return status;
 }
 
+function getCurrentShuffleState() {
+  const shuffle = elements.get("shuffle");
+  return shuffle?.getAttribute("aria-checked") === "true";
+}
+
+function getCurrentRepeatState() {
+  const repeat = elements.get("repeat");
+  switch (repeat?.getAttribute("data-type")) {
+    case "button__repeatAll":
+      return RepeatState.all;
+    case "button__repeatSingle":
+      return RepeatState.single;
+    default:
+      return RepeatState.off;
+  }
+}
+
 /**
  * Convert the duration from MM:SS to seconds
  * @param {*} duration
@@ -511,14 +531,21 @@ setInterval(function () {
   const titleOrArtistsChanged = currentSong !== songDashArtistTitle;
   const current = elements.getText("current");
   const currentStatus = getCurrentlyPlayingStatus();
+  const shuffleState = getCurrentShuffleState();
+  const repeatState = getCurrentRepeatState();
 
   const playStateChanged = currentStatus != currentlyPlaying;
+  const shuffleStateChanged = shuffleState != currentShuffleState;
+  const repeatStateChanged = repeatState != currentRepeatState;
+
+  const hasStateChanged = playStateChanged || shuffleStateChanged || repeatStateChanged;
 
   // update info if song changed or was just paused/resumed
-  if (titleOrArtistsChanged || playStateChanged) {
-    if (playStateChanged) {
-      currentlyPlaying = currentStatus;
-    }
+  if (titleOrArtistsChanged || hasStateChanged) {
+    if (playStateChanged) currentlyPlaying = currentStatus;
+    if (shuffleStateChanged) currentShuffleState = shuffleState;
+    if (repeatStateChanged) currentRepeatState = repeatState;
+
     skipArtistsIfFoundInSkippedArtistsList(artistsArray);
 
     const album = elements.getAlbumName();
@@ -537,6 +564,12 @@ setInterval(function () {
       image: "",
       icon: "",
       favorite: elements.isFavorite(),
+
+      player: {
+        status: currentStatus,
+        shuffle: shuffleState,
+        repeat: repeatState,
+      },
     };
 
     // update title, url and play info with new info

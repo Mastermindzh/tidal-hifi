@@ -1,5 +1,6 @@
 import { MediaInfo } from "../models/mediaInfo";
 import { MediaStatus } from "../models/mediaStatus";
+import {RepeatState} from "../models/repeatState";
 
 export const mediaInfo = {
   title: "",
@@ -14,6 +15,12 @@ export const mediaInfo = {
   durationInSeconds: 0,
   image: "tidal-hifi-icon",
   favorite: false,
+
+  player: {
+    status: MediaStatus.paused as string,
+    shuffle: false,
+    repeat: RepeatState.off as string,
+  }
 };
 
 export const updateMediaInfo = (arg: MediaInfo) => {
@@ -29,6 +36,10 @@ export const updateMediaInfo = (arg: MediaInfo) => {
   mediaInfo.durationInSeconds = arg.durationInSeconds ?? 0;
   mediaInfo.image = propOrDefault(arg.image);
   mediaInfo.favorite = arg.favorite;
+
+  mediaInfo.player.status = propOrDefault(arg.player?.status);
+  mediaInfo.player.shuffle = arg.player.shuffle;
+  mediaInfo.player.repeat = propOrDefault(arg.player?.repeat);
 };
 
 /**

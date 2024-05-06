@@ -1,4 +1,5 @@
 import { MediaStatus } from "./mediaStatus";
+import {MediaPlayerInfo} from "./mediaPlayerInfo";
 
 export interface MediaInfo {
   title: string;
@@ -13,4 +14,5 @@ export interface MediaInfo {
   durationInSeconds?: number;
   image: string;
   favorite: boolean;
+  player: MediaPlayerInfo;
 }
