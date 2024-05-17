@@ -11,8 +11,9 @@ export const globalEvents = {
   storeChanged: "storeChanged",
   error: "error",
   whip: "whip",
+  downloadCover: "downloadCover",
   log: "log",
   toggleFavorite: "toggleFavorite",
   toggleShuffle: "toggleShuffle",
   toggleRepeat: "toggleRepeat",
-};
+} as const;

@@ -57,4 +57,4 @@ export const settings = {
     width: "windowBounds.width",
     height: "windowBounds.height",
   },
-};
+} as const;
