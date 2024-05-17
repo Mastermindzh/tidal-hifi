@@ -1,5 +1,7 @@
 export type TidalState = {
   status: "Playing" | "Paused" | "Stopped";
+  repeat: "Off" | "All" | "Single";
+  shuffle: boolean;
   currentTrack?: {
     id: number;
     title: string;

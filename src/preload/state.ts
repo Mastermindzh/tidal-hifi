@@ -1,4 +1,4 @@
-import { getTidalReduxStore, ReduxState, TidalReduxStore } from "./redux";
+import { getTidalReduxStore, ReduxState, RepeatMode, TidalReduxStore } from "./redux";
 import { createStore } from "zustand/vanilla";
 import { ipcRenderer } from "electron";
 import { globalEvents } from "../constants/globalEvents";
@@ -7,6 +7,8 @@ import { TidalState } from "../models/tidalState";
 
 export const $tidalState = createStore<TidalState>(() => ({
   status: "Stopped",
+  repeat: "Off",
+  shuffle: false,
 }));
 
 export let reduxStore: TidalReduxStore | undefined;
@@ -133,8 +135,10 @@ export const coverArtPaths = new Map<string, Promise<string>>();
       };
     }
     const oldState = $tidalState.getState();
-    const newState = {
+    const newState: TidalState = {
       status: playbackStatusMap[state.playbackControls.playbackState] ?? "Stopped",
+      repeat: repeatModeMap[state.playQueue.repeatMode] ?? "Off",
+      shuffle: state.playQueue.shuffleModeEnabled,
       currentTrack: track,
     };
     if (!equal(oldState, newState)) {
@@ -152,4 +156,10 @@ const playbackStatusMap = {
   NOT_PLAYING: "Paused",
   IDLE: "Stopped",
   STALLED: "Stopped",
+} as const;
+
+const repeatModeMap = {
+  [RepeatMode.REPEAT_OFF]: "Off",
+  [RepeatMode.REPEAT_ALL]: "All",
+  [RepeatMode.REPEAT_SINGLE]: "Single",
 } as const;

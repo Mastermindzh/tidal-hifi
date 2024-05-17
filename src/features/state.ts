@@ -2,6 +2,8 @@ import { TidalState } from "../models/tidalState";
 
 export const mainTidalState: TidalState = {
   status: "Stopped",
+  repeat: "Off",
+  shuffle: false,
 };
 
 export function getLegacyMediaInfo() {
@@ -25,5 +27,10 @@ export function getLegacyMediaInfo() {
     durationInSeconds: mainTidalState.currentTrack?.duration ?? 0,
     image: "tidal-hifi-icon",
     favorite: false,
+    player: {
+      status: mainTidalState.status.toLowerCase(),
+      shuffle: mainTidalState.shuffle,
+      repeat: mainTidalState.repeat,
+    },
   };
 }

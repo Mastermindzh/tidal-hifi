@@ -85,7 +85,7 @@ export type ReduxState = {
   };
 };
 
-const enum RepeatMode {
+export const enum RepeatMode {
   REPEAT_OFF = 0,
   REPEAT_ALL = 1,
   REPEAT_SINGLE = 2,
