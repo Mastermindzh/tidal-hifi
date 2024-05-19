@@ -11,10 +11,7 @@ import {
 } from "./features/idleInhibitor/idleInhibitor";
 import { Logger } from "./features/logger";
 import { Songwhip } from "./features/songwhip/songwhip";
-import { MediaInfo } from "./models/mediaInfo";
-import { MediaStatus } from "./models/mediaStatus";
 import { initRPC, rpc, unRPC } from "./scripts/discord";
-import { updateMediaInfo } from "./scripts/mediaInfo";
 import { addMenu } from "./scripts/menu";
 import {
   closeSettingsWindow,
@@ -24,6 +21,10 @@ import {
   showSettingsWindow,
 } from "./scripts/settings";
 import { addTray, refreshTray } from "./scripts/tray";
+import axios from "axios";
+import { existsSync, createWriteStream } from "fs";
+import { mainTidalState } from "./features/state";
+import { TidalState } from "./models/tidalState";
 const tidalUrl = "https://listen.tidal.com";
 let mainInhibitorId = -1;
 
@@ -91,9 +92,8 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
     autoHideMenuBar: true,
     webPreferences: {
       ...windowPreferences,
-      ...{
-        preload: path.join(__dirname, "preload.js"),
-      },
+      preload: path.join(__dirname, "preload/index.js"),
+      contextIsolation: false,
     },
   });
   enable(mainWindow.webContents);
@@ -213,9 +213,9 @@ app.on("browser-window-created", (_, window) => {
 });
 
 // IPC
-ipcMain.on(globalEvents.updateInfo, (_event, arg: MediaInfo) => {
-  updateMediaInfo(arg);
-  if (arg.status === MediaStatus.playing) {
+ipcMain.on(globalEvents.updateInfo, (_event, arg: TidalState) => {
+  Object.assign(mainTidalState, arg);
+  if (arg.status === "Playing") {
     mainInhibitorId = acquireInhibitorIfInactive(mainInhibitorId);
   } else {
     releaseInhibitorIfActive(mainInhibitorId);
@@ -248,8 +248,21 @@ ipcMain.on(globalEvents.error, (event) => {
   console.log(event);
 });
 
-ipcMain.handle(globalEvents.whip, async (event, url) => {
+ipcMain.handle(globalEvents.whip, async (_, url) => {
   return Songwhip.whip(url);
+});
+
+ipcMain.handle(globalEvents.downloadCover, async (_, id, url) => {
+  const targetPath = `${app.getPath("userData")}/cover-${id}.jpg`;
+  if (existsSync(targetPath)) return targetPath;
+  const res = await axios.get(url, {
+    responseType: "stream",
+  });
+  res.data.pipe(createWriteStream(targetPath));
+  return new Promise((resolve, reject) => {
+    res.data.on("end", () => resolve(targetPath));
+    res.data.on("error", reject);
+  });
 });
 
 Logger.watch(ipcMain);

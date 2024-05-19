@@ -2,8 +2,6 @@ import { BrowserWindow } from "electron";
 import { Response, Router } from "express";
 import { globalEvents } from "../../constants/globalEvents";
 import { settings } from "../../constants/settings";
-import { MediaStatus } from "../../models/mediaStatus";
-import { mediaInfo } from "../../scripts/mediaInfo";
 import { settingsStore } from "../../scripts/settings";
 import { getCurrentImage } from "./features/current";
 
@@ -26,13 +24,7 @@ export const addLegacyApi = (expressApp: Router, mainWindow: BrowserWindow) => {
     expressApp.get("/pause", (req, res) => handleGlobalEvent(res, globalEvents.pause));
     expressApp.get("/next", (req, res) => handleGlobalEvent(res, globalEvents.next));
     expressApp.get("/previous", (req, res) => handleGlobalEvent(res, globalEvents.previous));
-    expressApp.get("/playpause", (req, res) => {
-      if (mediaInfo.status === MediaStatus.playing) {
-        handleGlobalEvent(res, globalEvents.pause);
-      } else {
-        handleGlobalEvent(res, globalEvents.play);
-      }
-    });
+    expressApp.get("/playpause", (req, res) => handleGlobalEvent(res, globalEvents.playPause));
   }
 
   /**

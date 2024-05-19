@@ -24,8 +24,8 @@ const switchesWithSettings = {
     switch: "discord_show_song",
     classToHide: "discord_show_song_options",
     settingsKey: settings.discord.showSong,
-  }
-};
+  },
+} as const;
 
 let adBlock: HTMLInputElement,
   api: HTMLInputElement,
@@ -138,7 +138,7 @@ function refreshSettings() {
     theme.value = settingsStore.get(settings.theme);
     skippedArtists.value = settingsStore.get<string, string[]>(settings.skippedArtists).join("\n");
     trayIcon.checked = settingsStore.get(settings.trayIcon);
-    updateFrequency.value = settingsStore.get(settings.updateFrequency);
+    updateFrequency.value = settingsStore.get(settings.updateFrequency).toString();
     enableListenBrainz.checked = settingsStore.get(settings.ListenBrainz.enabled);
     ListenBrainzAPI.value = settingsStore.get(settings.ListenBrainz.api);
     ListenBrainzToken.value = settingsStore.get(settings.ListenBrainz.token);
@@ -151,9 +151,12 @@ function refreshSettings() {
     discord_using_text.value = settingsStore.get(settings.discord.usingText);
 
     // set state of all switches with additional settings
-    Object.values(switchesWithSettings).forEach((settingSwitch) => {
-      setElementHidden(settingsStore.get(settingSwitch.settingsKey), settingSwitch);
-    });
+    for (const settingSwitch of Object.values(switchesWithSettings)) {
+      setElementHidden(
+        settingsStore.get(settingSwitch.settingsKey as any) as boolean,
+        settingSwitch
+      );
+    }
   } catch (error) {
     Logger.log("Refreshing settings failed.", error);
   }
@@ -264,7 +267,7 @@ window.addEventListener("DOMContentLoaded", () => {
   discord_button_text = get("discord_button_text");
   discord_show_song = get("discord_show_song");
   discord_using_text = get("discord_using_text");
-  discord_idle_text = get("discord_idle_text")
+  discord_idle_text = get("discord_idle_text");
 
   refreshSettings();
   addInputListener(adBlock, settings.adBlock);
@@ -299,7 +302,11 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(discord_details_prefix, settings.discord.detailsPrefix);
   addInputListener(discord_include_timestamps, settings.discord.includeTimestamps);
   addInputListener(discord_button_text, settings.discord.buttonText);
-  addInputListener(discord_show_song, settings.discord.showSong, switchesWithSettings.discord_show_song);
+  addInputListener(
+    discord_show_song,
+    settings.discord.showSong,
+    switchesWithSettings.discord_show_song
+  );
   addInputListener(discord_idle_text, settings.discord.idleText);
   addInputListener(discord_using_text, settings.discord.usingText);
 });

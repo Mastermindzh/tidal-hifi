@@ -1,20 +1,15 @@
 import { Request, Response, Router } from "express";
-import fs from "fs";
-import { mediaInfo } from "../../../scripts/mediaInfo";
+import { getLegacyMediaInfo, mainTidalState } from "../../state";
 
 export const addCurrentInfo = (expressApp: Router) => {
-  expressApp.get("/current", (req, res) => res.json({ ...mediaInfo, artist: mediaInfo.artists }));
+  expressApp.get("/current", (_, res) => res.json(getLegacyMediaInfo()));
   expressApp.get("/current/image", getCurrentImage);
 };
 
-export const getCurrentImage = (req: Request, res: Response) => {
-  const stream = fs.createReadStream(mediaInfo.icon);
-  stream.on("open", function () {
-    res.set("Content-Type", "image/png");
-    stream.pipe(res);
-  });
-  stream.on("error", function () {
-    res.set("Content-Type", "text/plain");
-    res.status(404).end("Not found");
-  });
+export const getCurrentImage = (_: Request, res: Response) => {
+  if (!mainTidalState.currentTrack) {
+    res.sendStatus(404).end("No song is playing");
+    return;
+  }
+  res.redirect(mainTidalState.currentTrack.image);
 };

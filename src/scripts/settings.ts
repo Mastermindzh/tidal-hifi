@@ -117,6 +117,7 @@ export const createSettingsWindow = function () {
     show: false,
     transparent: true,
     frame: false,
+    type: "dialog",
     title: "TIDAL Hi-Fi settings",
     webPreferences: {
       preload: path.join(__dirname, "../pages/settings/preload.js"),

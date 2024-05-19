@@ -1,7 +1,7 @@
 import { BrowserWindow, Menu, app } from "electron";
 import { showSettingsWindow } from "./settings";
+
 const isMac = process.platform === "darwin";
-import name from "./../constants/values";
 
 const settingsMenuEntry = {
   label: "Settings",
@@ -31,7 +31,7 @@ export const getMenu = function (mainWindow: BrowserWindow) {
     ...(isMac
       ? [
           {
-            label: name,
+            label: "TIDAL Hi-Fi",
             submenu: [
               settingsMenuEntry,
               { type: "separator" },

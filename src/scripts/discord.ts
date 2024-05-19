@@ -3,10 +3,8 @@ import { app, ipcMain } from "electron";
 import { globalEvents } from "../constants/globalEvents";
 import { settings } from "../constants/settings";
 import { Logger } from "../features/logger";
-import { convertDurationToSeconds } from "../features/time/parse";
-import { MediaStatus } from "../models/mediaStatus";
-import { mediaInfo } from "./mediaInfo";
 import { settingsStore } from "./settings";
+import { mainTidalState } from "../features/state";
 
 const clientId = "833617820704440341";
 
@@ -27,7 +25,7 @@ const defaultPresence = {
 const getActivity = (): Presence => {
   const presence: Presence = { ...defaultPresence };
 
-  if (mediaInfo.status === MediaStatus.paused) {
+  if (mainTidalState.status === "Paused") {
     presence.details =
       settingsStore.get<string, string>(settings.discord.idleText) ?? "Browsing Tidal";
   } else {
@@ -55,24 +53,26 @@ const getActivity = (): Presence => {
   }
 
   function setPresenceFromMediaInfo(detailsPrefix: string, buttonText: string) {
-    if (mediaInfo.url) {
-      presence.details = `${detailsPrefix}${mediaInfo.title}`;
-      presence.state = mediaInfo.artists ? mediaInfo.artists : "unknown artist(s)";
-      presence.largeImageKey = mediaInfo.image;
-      if (mediaInfo.album) {
-        presence.largeImageText = mediaInfo.album;
+    const track = mainTidalState.currentTrack;
+    if (!track) return;
+    if (track.url) {
+      presence.details = `${detailsPrefix}${track.title}`;
+      presence.state = track.artists.join(", ");
+      presence.largeImageKey = track.image;
+      if (track.album) {
+        presence.largeImageText = track.album;
       }
-      presence.buttons = [{ label: buttonText, url: mediaInfo.url }];
+      presence.buttons = [{ label: buttonText, url: track.url }];
     } else {
-      presence.details = `Watching ${mediaInfo.title}`;
-      presence.state = mediaInfo.artists;
+      presence.details = `Watching ${track.title}`;
+      presence.state = track.artists.join(", ");
     }
   }
 
   function includeTimeStamps(includeTimestamps: boolean) {
     if (includeTimestamps) {
-      const currentSeconds = convertDurationToSeconds(mediaInfo.current);
-      const durationSeconds = convertDurationToSeconds(mediaInfo.duration);
+      const currentSeconds = mainTidalState.currentTrack?.current ?? 0;
+      const durationSeconds = mainTidalState.currentTrack?.duration ?? 0;
       const date = new Date();
       const now = (date.getTime() / 1000) | 0;
       const remaining = date.setSeconds(date.getSeconds() + (durationSeconds - currentSeconds));
