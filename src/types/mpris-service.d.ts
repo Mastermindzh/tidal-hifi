@@ -43,7 +43,7 @@ declare module "mpris-service" {
     playlists: string[];
     activePlaylist: string;
 
-    getPosition(): number | bigint;
+    getPosition(): number;
     seeked(): void;
     getTrackIndex(trackId: number): number;
     getTrack(trackId: number): string;

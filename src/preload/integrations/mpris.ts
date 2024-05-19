@@ -23,8 +23,8 @@ function toMicroseconds(seconds: number) {
 if (settingsStore.get(settings.mpris) && process.platform === "linux") {
   try {
     const player = Player({
-      name: "tidal-hifi2",
-      identity: "tidal-hifi2",
+      name: "tidal-hifi",
+      identity: "tidal-hifi",
       supportedUriSchemes: ["file"],
       supportedMimeTypes: [
         "audio/mpeg",
@@ -34,7 +34,7 @@ if (settingsStore.get(settings.mpris) && process.platform === "linux") {
         "audio/wav",
       ],
       supportedInterfaces: ["player"],
-      desktopEntry: "tidal-hifi2",
+      desktopEntry: "tidal-hifi",
     });
     player.on("playPause", playPause);
     player.on("next", next);
@@ -47,7 +47,7 @@ if (settingsStore.get(settings.mpris) && process.platform === "linux") {
     player.on("quit", app.quit);
 
     player.getPosition = function () {
-      return toMicroseconds($tidalState.getState().currentTrack?.current ?? 0);
+      return Number(toMicroseconds($tidalState.getState().currentTrack?.current ?? 0));
     };
 
     $tidalState.subscribe(async (state) => {
