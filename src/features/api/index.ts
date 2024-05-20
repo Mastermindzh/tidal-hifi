@@ -8,6 +8,7 @@ import { addCurrentInfo } from "./features/current";
 import { addPlaybackControl } from "./features/player";
 import { addSettingsAPI } from "./features/settings/settings";
 import { addLegacyApi } from "./legacy";
+import cors from "cors";
 
 /**
  * Function to enable TIDAL Hi-Fi's express api
@@ -44,6 +45,7 @@ export const startApi = (mainWindow: BrowserWindow) => {
   });
 
   const expressApp = express();
+  expressApp.use(cors());
   expressApp.use(express.json());
   expressApp.use("/docs", swaggerUi.serve, swaggerUi.setup(specs));
   expressApp.get("/", (req, res) => res.send("Hello World!"));
