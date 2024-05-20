@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.13.0]
+
+- Fixed [#403](https://github.com/Mastermindzh/tidal-hifi/issues/403) "cannot read shuffle of undefined" error
+- Added an API to add & delete entries from the skippedArtists list in the settings. fixes [#405](https://github.com/Mastermindzh/tidal-hifi/issues/405)
+  - `GET /settings/skipped-artists` -> get list of skipped artists
+  - `POST /settings/skipped-artists` -> add to the list of skipped artists
+  - `POST /settings/skipped-artists/delete` -> delete from the list of skipped artists
+  - `POST /settings/skipped-artists/current` -> skip the current artist
+  - `DELETE /settings/skipped-artists/current` -> delete the current artist from the skip list
+  - Added Swagger documentation to the new endpoints:
+    ![picture of swagger documentation](./docs/images/swagger.png)
+- CORS support added by [Mjokfox](https://github.com/Mjokfox)
+
 ## [5.12.0]
 
 - Added Shuffle and Repeat state to API response - By [ThatGravyBoat](https://github.com/ThatGravyBoat)

@@ -20,7 +20,7 @@ export const mediaInfo = {
     status: MediaStatus.paused as string,
     shuffle: false,
     repeat: RepeatState.off as string,
-  }
+  },
 };
 
 export const updateMediaInfo = (arg: MediaInfo) => {
@@ -37,9 +37,11 @@ export const updateMediaInfo = (arg: MediaInfo) => {
   mediaInfo.image = propOrDefault(arg.image);
   mediaInfo.favorite = arg.favorite;
 
-  mediaInfo.player.status = propOrDefault(arg.player?.status);
-  mediaInfo.player.shuffle = arg.player.shuffle;
-  mediaInfo.player.repeat = propOrDefault(arg.player?.repeat);
+  mediaInfo.player = {
+    status: propOrDefault(arg.player?.status),
+    shuffle: arg.player?.shuffle ?? false,
+    repeat: propOrDefault(arg.player?.repeat),
+  };
 };
 
 /**
