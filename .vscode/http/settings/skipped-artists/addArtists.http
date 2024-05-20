@@ -1,0 +1,5 @@
+POST /settings/skipped-artists HTTP/1.1
+Host: localhost:47836
+Content-Type: application/json
+
+["abc", "def"]
