@@ -14,5 +14,5 @@ export interface MediaInfo {
   durationInSeconds?: number;
   image: string;
   favorite: boolean;
-  player: MediaPlayerInfo;
+  player?: MediaPlayerInfo;
 }
