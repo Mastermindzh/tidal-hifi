@@ -19,7 +19,7 @@ export const startApi = (mainWindow: BrowserWindow) => {
       openapi: "3.1.0",
       info: {
         title: "TIDAL Hi-Fi API",
-        version: "5.12.0",
+        version: "5.13.0",
         description: "",
         license: {
           name: "MIT",
