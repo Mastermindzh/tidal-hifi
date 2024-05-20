@@ -177,7 +177,7 @@ export const addSkippedArtists = (artists: string[]) => {
 export const removeSkippedArtists = (artists: string[]) => {
   const { skippedArtists } = settings;
   const previousStoreValue = settingsStore.get<string, string[]>(skippedArtists);
-  const filteredArtists = previousStoreValue.filter((value) => !artists.includes(value));
+  const filteredArtists = previousStoreValue.filter((value) => ![...artists].includes(value));
 
   settingsStore.set(skippedArtists, filteredArtists);
 };
