@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `DELETE /settings/skipped-artists/current` -> delete the current artist from the skip list
   - Added Swagger documentation to the new endpoints:
     ![picture of swagger documentation](./docs/images/swagger.png)
+- CORS support added by [Mjokfox](https://github.com/Mjokfox)
 
 ## [5.12.0]
 
