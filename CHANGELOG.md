@@ -13,6 +13,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `POST /settings/skipped-artists/delete` -> delete from the list of skipped artists
   - `POST /settings/skipped-artists/current` -> skip the current artist
   - `DELETE /settings/skipped-artists/current` -> delete the current artist from the skip list
+  - Added Swagger documentation to the new endpoints:
+    ![picture of swagger documentation](./docs/images/swagger.png)
 
 ## [5.12.0]
 
