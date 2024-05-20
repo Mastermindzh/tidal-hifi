@@ -159,3 +159,25 @@ export const hideSettingsWindow = function () {
 export const closeSettingsWindow = function () {
   settingsWindow = null;
 };
+
+/**
+ * add artists to the list of skipped artists
+ * @param artists list of artists to append
+ */
+export const addSkippedArtists = (artists: string[]) => {
+  const { skippedArtists } = settings;
+  const previousStoreValue = settingsStore.get<string, string[]>(skippedArtists);
+  settingsStore.set(skippedArtists, Array.from(new Set([...previousStoreValue, ...artists])));
+};
+
+/**
+ * Remove artists from the list of skipped artists
+ * @param artists list of artists to remove
+ */
+export const removeSkippedArtists = (artists: string[]) => {
+  const { skippedArtists } = settings;
+  const previousStoreValue = settingsStore.get<string, string[]>(skippedArtists);
+  const filteredArtists = previousStoreValue.filter((value) => !artists.includes(value));
+
+  settingsStore.set(skippedArtists, filteredArtists);
+};
