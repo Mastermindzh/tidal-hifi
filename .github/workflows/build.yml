@@ -9,6 +9,7 @@ on:
     branches-ignore:
       - master
       - develop
+  workflow_dispatch:
 jobs:
   build_on_linux:
     runs-on: ubuntu-latest
