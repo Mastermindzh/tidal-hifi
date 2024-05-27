@@ -1,6 +1,6 @@
 {
   "name": "tidal-hifi",
-  "version": "5.13.0",
+  "version": "5.13.1",
   "description": "Tidal on Electron with widevine(hifi) support",
   "main": "ts-dist/main.js",
   "scripts": {
@@ -58,7 +58,7 @@
     "@types/cors": "^2.8.17",
     "@types/discord-rpc": "^4.0.8",
     "@types/express": "^4.17.21",
-    "@types/node": "^20.10.6",
+    "@types/node": "^20.12.12",
     "@types/request": "^2.48.12",
     "@types/swagger-ui-express": "^4.1.6",
     "@typescript-eslint/eslint-plugin": "^6.18.0",
