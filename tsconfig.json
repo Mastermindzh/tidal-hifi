@@ -8,6 +8,7 @@
     "sourceMap": true,
     "allowJs": true,
     "outDir": "ts-dist",
+    "resolveJsonModule": true,
     "esModuleInterop": true,
     "baseUrl": ".",
     "paths": {

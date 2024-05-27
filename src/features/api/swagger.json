@@ -1,0 +1,135 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "TIDAL Hi-Fi API",
+    "version": "5.13.1",
+    "description": "",
+    "license": {
+      "name": "MIT",
+      "url": "https://github.com/Mastermindzh/tidal-hifi/blob/master/LICENSE"
+    },
+    "contact": {
+      "name": "Rick <mastermindzh> van Lieshout",
+      "url": "https://www.rickvanlieshout.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "http://localhost:47836"
+    }
+  ],
+  "externalDocs": {
+    "description": "swagger.json",
+    "url": "swagger.json"
+  },
+  "paths": {
+    "/settings/skipped-artists": {
+      "get": {
+        "summary": "get a list of artists that TIDAL Hi-Fi will skip if skipping is enabled",
+        "tags": [
+          "settings"
+        ],
+        "responses": {
+          "200": {
+            "description": "The list book.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StringArray"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Add new artists to the list of skipped artists",
+        "tags": [
+          "settings"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StringArray"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ok"
+          }
+        }
+      }
+    },
+    "/settings/skipped-artists/delete": {
+      "post": {
+        "summary": "Remove artists from the list of skipped artists",
+        "tags": [
+          "settings"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/StringArray"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Ok"
+          }
+        }
+      }
+    },
+    "/settings/skipped-artists/current": {
+      "post": {
+        "summary": "Add the current artist to the list of skipped artists",
+        "tags": [
+          "settings"
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Remove the current artist from the list of skipped artists",
+        "tags": [
+          "settings"
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "StringArray": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        },
+        "example": [
+          "Artist1",
+          "Artist2"
+        ]
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "settings",
+      "description": "The settings management API"
+    }
+  ]
+}

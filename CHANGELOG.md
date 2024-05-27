@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.13.1]
+
+- removed Swagger generation step in favor of pre-generated file.
+  - This also fixes the API issue [#409](https://github.com/Mastermindzh/tidal-hifi/issues/409)
+  - This also stops TIDAL-hifi from scanning your entire home directory... the glob was very broad apparently.
+
 ## [5.13.0]
 
 - Fixed [#403](https://github.com/Mastermindzh/tidal-hifi/issues/403) "cannot read shuffle of undefined" error
