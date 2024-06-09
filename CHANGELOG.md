@@ -4,12 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Next]
+## [5.14]
 
 - Simplified `MediaInfo` & `Options` types
 - Added `playingFrom` information to the info API
   - also changed the way we update Album info since Playing From now shows the correct Album.
 - API now allows you to set the `hostname` so you can control who can interact with the API.
+- Reworked swagger generation hotfix to properly generate `swagger.json` during the compile step
+  - Might switch to tsoa in the future, idk yet.
 
 ## [5.13.1]
 
