@@ -58,6 +58,7 @@ const elements = {
   mediaItem: "[data-type='mediaItem']",
   album_header_title: '*[class^="playingFrom"] span:nth-child(2)',
   playing_from: '*[class^="playingFrom"] span:nth-child(2)',
+  queue_album: "*[class^=playQueueItemsContainer] *[class^=groupTitle] span:nth-child(2)",
   currentlyPlaying: "[class^='isPlayingIcon'], [data-test-is-playing='true']",
   album_name_cell: '[class^="album"]',
   tracklist_row: '[data-test="tracklist-row"]',
@@ -131,6 +132,12 @@ const elements = {
           return row.querySelector(this.album_name_cell).textContent;
         }
       }
+    }
+
+    // see whether we're on the queue page and get it from there
+    const queueAlbumName = elements.getText("queue_album");
+    if (queueAlbumName) {
+      return queueAlbumName;
     }
 
     return "";
