@@ -13,16 +13,15 @@ import { Logger } from "./features/logger";
 import { Songwhip } from "./features/songwhip/songwhip";
 import { addCustomCss } from "./features/theming/theming";
 import { convertDurationToSeconds } from "./features/time/parse";
+import { MediaInfo } from "./models/mediaInfo";
 import { MediaStatus } from "./models/mediaStatus";
-import { Options } from "./models/options";
+import { RepeatState } from "./models/repeatState";
 import { downloadFile } from "./scripts/download";
 import { addHotkey } from "./scripts/hotkeys";
 import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
-import { RepeatState } from "./models/repeatState";
 
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
-const appName = "TIDAL Hi-Fi";
 let currentSong = "";
 let player: Player;
 let currentPlayStatus = MediaStatus.paused;
@@ -32,7 +31,7 @@ let scrobbleWaitingForDelay = false;
 let currentlyPlaying = MediaStatus.paused;
 let currentRepeatState: RepeatState = RepeatState.off;
 let currentShuffleState = false;
-let currentMediaInfo: Options;
+let currentMediaInfo: MediaInfo;
 let currentNotification: Electron.Notification;
 
 const elements = {
@@ -57,7 +56,8 @@ const elements = {
   bar: '*[data-test="progress-bar"]',
   footer: "#footerPlayer",
   mediaItem: "[data-type='mediaItem']",
-  album_header_title: '.header-details [data-test="title"]',
+  album_header_title: '*[class^="playingFrom"] span:nth-child(2)',
+  playing_from: '*[class^="playingFrom"] span:nth-child(2)',
   currentlyPlaying: "[class^='isPlayingIcon'], [data-test-is-playing='true']",
   album_name_cell: '[class^="album"]',
   tracklist_row: '[data-test="tracklist-row"]',
@@ -380,23 +380,24 @@ function convertDuration(duration: string) {
 /**
  * Update Tidal-hifi's media info
  *
- * @param {*} options
+ * @param {*} mediaInfo
  */
-function updateMediaInfo(options: Options, notify: boolean) {
-  if (options) {
-    currentMediaInfo = options;
-    ipcRenderer.send(globalEvents.updateInfo, options);
+function updateMediaInfo(mediaInfo: MediaInfo, notify: boolean) {
+  if (mediaInfo) {
+    currentMediaInfo = mediaInfo;
+    ipcRenderer.send(globalEvents.updateInfo, mediaInfo);
     if (settingsStore.get(settings.notifications) && notify) {
       if (currentNotification) currentNotification.close();
       currentNotification = new Notification({
-        title: options.title,
-        body: options.artists,
-        icon: options.icon,
+        title: mediaInfo.title,
+        body: mediaInfo.artists,
+        icon: mediaInfo.icon,
       });
       currentNotification.show();
     }
-    updateMpris(options);
-    updateListenBrainz(options);
+
+    updateMpris(mediaInfo);
+    updateListenBrainz(mediaInfo);
   }
 }
 
@@ -454,32 +455,32 @@ function addMPRIS() {
   }
 }
 
-function updateMpris(options: Options) {
+function updateMpris(mediaInfo: MediaInfo) {
   if (player) {
     player.metadata = {
       ...player.metadata,
       ...{
-        "xesam:title": options.title,
-        "xesam:artist": [options.artists],
-        "xesam:album": options.album,
-        "mpris:artUrl": options.image,
-        "mpris:length": convertDuration(options.duration) * 1000 * 1000,
+        "xesam:title": mediaInfo.title,
+        "xesam:artist": [mediaInfo.artists],
+        "xesam:album": mediaInfo.album,
+        "mpris:artUrl": mediaInfo.image,
+        "mpris:length": convertDuration(mediaInfo.duration) * 1000 * 1000,
         "mpris:trackid": "/org/mpris/MediaPlayer2/track/" + getTrackID(),
       },
     };
-    player.playbackStatus = options.status === MediaStatus.paused ? "Paused" : "Playing";
+    player.playbackStatus = mediaInfo.status === MediaStatus.paused ? "Paused" : "Playing";
   }
 }
 
 /**
  * Update the listenbrainz service with new data based on a few conditions
  */
-function updateListenBrainz(options: Options) {
+function updateListenBrainz(mediaInfo: MediaInfo) {
   if (settingsStore.get(settings.ListenBrainz.enabled)) {
     const oldData = ListenBrainzStore.get(ListenBrainzConstants.oldData) as StoreData;
     if (
-      (!oldData && options.status === MediaStatus.playing) ||
-      (oldData && oldData.title !== options.title)
+      (!oldData && mediaInfo.status === MediaStatus.playing) ||
+      (oldData && oldData.title !== mediaInfo.title)
     ) {
       if (!scrobbleWaitingForDelay) {
         scrobbleWaitingForDelay = true;
@@ -487,10 +488,10 @@ function updateListenBrainz(options: Options) {
         currentListenBrainzDelayId = setTimeout(
           () => {
             ListenBrainz.scrobble(
-              options.title,
-              options.artists,
-              options.status,
-              convertDuration(options.duration)
+              mediaInfo.title,
+              mediaInfo.artists,
+              mediaInfo.status,
+              convertDuration(mediaInfo.duration)
             );
             scrobbleWaitingForDelay = false;
           },
@@ -547,20 +548,19 @@ setInterval(function () {
     if (repeatStateChanged) currentRepeatState = repeatState;
 
     skipArtistsIfFoundInSkippedArtistsList(artistsArray);
-
     const album = elements.getAlbumName();
     const duration = elements.getText("duration");
-    const options = {
+    const options: MediaInfo = {
       title,
       artists: artistsString,
       album: album,
+      playingFrom: elements.getText("playing_from"),
       status: currentStatus,
       url: getTrackURL(),
       current,
       currentInSeconds: convertDurationToSeconds(current),
       duration,
       durationInSeconds: convertDurationToSeconds(duration),
-      "app-name": appName,
       image: "",
       icon: "",
       favorite: elements.isFavorite(),

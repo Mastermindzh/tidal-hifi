@@ -50,6 +50,7 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
   - [ListenBrainz](https://listenbrainz.org/?redirect=false) integration
   - Songwhip.com integration (hotkey `ctrl + w`)
   - Discord RPC integration (showing "now listening", "Browsing", etc)
+    - Flatpak version only works if both Discord and Tidal-HiFi are flatpaks
   - MPRIS integration
 - UI + Json config (`~/.config/tidal-hifi/`, or `~/.var/app/com.mastermindzh.tidal-hifi/` for Flatpak)
 

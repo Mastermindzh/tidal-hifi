@@ -14,6 +14,7 @@ export const settings = {
   apiSettings: {
     root: "apiSettings",
     port: "apiSettings.port",
+    hostname: "apiSettings.hostname",
   },
   customCSS: "customCSS",
   disableBackgroundThrottle: "disableBackgroundThrottle",

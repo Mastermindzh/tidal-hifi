@@ -2,12 +2,13 @@ import { MediaInfo } from "../models/mediaInfo";
 import { MediaStatus } from "../models/mediaStatus";
 import { RepeatState } from "../models/repeatState";
 
-export const mediaInfo = {
+const defaultInfo: MediaInfo = {
   title: "",
   artists: "",
   album: "",
   icon: "",
-  status: MediaStatus.paused as string,
+  playingFrom: "",
+  status: MediaStatus.paused,
   url: "",
   current: "",
   currentInSeconds: 0,
@@ -17,41 +18,18 @@ export const mediaInfo = {
   favorite: false,
 
   player: {
-    status: MediaStatus.paused as string,
+    status: MediaStatus.paused,
     shuffle: false,
-    repeat: RepeatState.off as string,
+    repeat: RepeatState.off,
   },
 };
 
+export let mediaInfo: MediaInfo = { ...defaultInfo };
+
 export const updateMediaInfo = (arg: MediaInfo) => {
-  mediaInfo.title = propOrDefault(arg.title);
-  mediaInfo.artists = propOrDefault(arg.artists);
-  mediaInfo.album = propOrDefault(arg.album);
-  mediaInfo.icon = propOrDefault(arg.icon);
-  mediaInfo.url = toUniversalUrl(propOrDefault(arg.url));
-  mediaInfo.status = propOrDefault(arg.status);
-  mediaInfo.current = propOrDefault(arg.current);
-  mediaInfo.currentInSeconds = arg.currentInSeconds ?? 0;
-  mediaInfo.duration = propOrDefault(arg.duration);
-  mediaInfo.durationInSeconds = arg.durationInSeconds ?? 0;
-  mediaInfo.image = propOrDefault(arg.image);
-  mediaInfo.favorite = arg.favorite;
-
-  mediaInfo.player = {
-    status: propOrDefault(arg.player?.status),
-    shuffle: arg.player?.shuffle ?? false,
-    repeat: propOrDefault(arg.player?.repeat),
-  };
+  mediaInfo = { ...defaultInfo, ...arg };
+  mediaInfo.url = toUniversalUrl(mediaInfo.url);
 };
-
-/**
- * Return the property or a default value
- * @param {*} prop property to check
- * @param {*} defaultValue defaults to ""
- */
-function propOrDefault(prop: string, defaultValue = "") {
-  return prop || defaultValue;
-}
 
 /**
  * Append the universal link syntax (?u) to any url

@@ -24,7 +24,7 @@ const switchesWithSettings = {
     switch: "discord_show_song",
     classToHide: "discord_show_song_options",
     settingsKey: settings.discord.showSong,
-  }
+  },
 };
 
 let adBlock: HTMLInputElement,
@@ -35,6 +35,7 @@ let adBlock: HTMLInputElement,
   enableCustomHotkeys: HTMLInputElement,
   enableDiscord: HTMLInputElement,
   gpuRasterization: HTMLInputElement,
+  hostname: HTMLInputElement,
   menuBar: HTMLInputElement,
   minimizeOnClose: HTMLInputElement,
   mpris: HTMLInputElement,
@@ -127,6 +128,7 @@ function refreshSettings() {
     enableDiscord.checked = settingsStore.get(settings.enableDiscord);
     enableWaylandSupport.checked = settingsStore.get(settings.flags.enableWaylandSupport);
     gpuRasterization.checked = settingsStore.get(settings.flags.gpuRasterization);
+    hostname.value = settingsStore.get(settings.apiSettings.hostname);
     menuBar.checked = settingsStore.get(settings.menuBar);
     minimizeOnClose.checked = settingsStore.get(settings.minimizeOnClose);
     mpris.checked = settingsStore.get(settings.mpris);
@@ -243,6 +245,7 @@ window.addEventListener("DOMContentLoaded", () => {
   enableDiscord = get("enableDiscord");
   enableWaylandSupport = get("enableWaylandSupport");
   gpuRasterization = get("gpuRasterization");
+  hostname = get("hostname");
   menuBar = get("menuBar");
   minimizeOnClose = get("minimizeOnClose");
   mpris = get("mprisCheckbox");
@@ -264,7 +267,7 @@ window.addEventListener("DOMContentLoaded", () => {
   discord_button_text = get("discord_button_text");
   discord_show_song = get("discord_show_song");
   discord_using_text = get("discord_using_text");
-  discord_idle_text = get("discord_idle_text")
+  discord_idle_text = get("discord_idle_text");
 
   refreshSettings();
   addInputListener(adBlock, settings.adBlock);
@@ -276,6 +279,7 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(enableDiscord, settings.enableDiscord, switchesWithSettings.discord);
   addInputListener(enableWaylandSupport, settings.flags.enableWaylandSupport);
   addInputListener(gpuRasterization, settings.flags.gpuRasterization);
+  addInputListener(hostname, settings.apiSettings.hostname);
   addInputListener(menuBar, settings.menuBar);
   addInputListener(minimizeOnClose, settings.minimizeOnClose);
   addInputListener(mpris, settings.mpris);
@@ -299,7 +303,11 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(discord_details_prefix, settings.discord.detailsPrefix);
   addInputListener(discord_include_timestamps, settings.discord.includeTimestamps);
   addInputListener(discord_button_text, settings.discord.buttonText);
-  addInputListener(discord_show_song, settings.discord.showSong, switchesWithSettings.discord_show_song);
+  addInputListener(
+    discord_show_song,
+    settings.discord.showSong,
+    switchesWithSettings.discord_show_song
+  );
   addInputListener(discord_idle_text, settings.discord.idleText);
   addInputListener(discord_using_text, settings.discord.usingText);
 });
