@@ -18,6 +18,7 @@ import { MediaStatus } from "./models/mediaStatus";
 import { RepeatState } from "./models/repeatState";
 import { downloadFile } from "./scripts/download";
 import { addHotkey } from "./scripts/hotkeys";
+import { ObjectToDotNotation } from "./scripts/objectUtilities";
 import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
 
@@ -474,6 +475,7 @@ function updateMpris(mediaInfo: MediaInfo) {
         "mpris:length": convertDuration(mediaInfo.duration) * 1000 * 1000,
         "mpris:trackid": "/org/mpris/MediaPlayer2/track/" + getTrackID(),
       },
+      ...ObjectToDotNotation(mediaInfo, "custom:"),
     };
     player.playbackStatus = mediaInfo.status === MediaStatus.paused ? "Paused" : "Playing";
   }

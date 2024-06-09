@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [5.14.1]
 
 - Fixed `getAlbumName` not finding album name whilst on queue page
+- Added all mediaInfo to mpris interface using the `custom:` prefix
 
 ## [5.14]
 
