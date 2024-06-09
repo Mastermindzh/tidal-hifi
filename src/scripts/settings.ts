@@ -31,6 +31,7 @@ export const settingsStore = new Store({
     api: true,
     apiSettings: {
       port: 47836,
+      hostname: "127.0.0.1",
     },
     customCSS: [],
     disableBackgroundThrottle: true,
@@ -99,6 +100,11 @@ export const settingsStore = new Store({
           key: settings.discord.usingText,
           value: "Playing media on TIDAL",
         },
+      ]);
+    },
+    "5.14.0": (migrationStore) => {
+      buildMigration("5.14.0", migrationStore, [
+        { key: settings.apiSettings.hostname, value: "127.0.0.1" },
       ]);
     },
   },

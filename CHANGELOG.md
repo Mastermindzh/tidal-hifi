@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Simplified `MediaInfo` & `Options` types
 - Added `playingFrom` information to the info API
   - also changed the way we update Album info since Playing From now shows the correct Album.
+- API now allows you to set the `hostname` so you can control who can interact with the API.
 
 ## [5.13.1]
 
