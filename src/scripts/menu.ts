@@ -11,6 +11,23 @@ const settingsMenuEntry = {
   accelerator: "Control+=",
 };
 
+const tidalMagazineEntry = {
+  label: "Magazine",
+  click() {
+    const magazineWindow = new BrowserWindow({
+      autoHideMenuBar: true,
+      webPreferences: {
+        sandbox: false,
+        plugins: true,
+        devTools: true, // I like tinkering, others might too
+      },
+    });
+    magazineWindow.loadURL("https://tidal.com/magazine/");
+    magazineWindow.show();
+  },
+  accelerator: "Control+M",
+};
+
 const quitMenuEntry = {
   label: "Quit",
   click() {
@@ -41,6 +58,7 @@ export const getMenu = function (mainWindow: BrowserWindow) {
               { role: "hideothers" },
               { role: "unhide" },
               { type: "separator" },
+              tidalMagazineEntry,
               quitMenuEntry,
             ],
           },
@@ -48,7 +66,7 @@ export const getMenu = function (mainWindow: BrowserWindow) {
       : []),
     {
       label: "File",
-      submenu: [settingsMenuEntry, isMac ? { role: "close" } : quitMenuEntry],
+      submenu: [settingsMenuEntry, tidalMagazineEntry, isMac ? { role: "close" } : quitMenuEntry],
     },
     {
       label: "Edit",
@@ -101,6 +119,7 @@ export const getMenu = function (mainWindow: BrowserWindow) {
     },
     settingsMenuEntry,
     toggleWindow,
+    tidalMagazineEntry,
     quitMenuEntry,
   ];
 

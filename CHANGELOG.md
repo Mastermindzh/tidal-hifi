@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - API now allows you to set the `hostname` so you can control who can interact with the API.
 - Reworked swagger generation hotfix to properly generate `swagger.json` during the compile step
   - Might switch to tsoa in the future, idk yet.
+- Added [Tidal Magazine](https://tidal.com/magazine/) integration (in the menubar or use `Ctrl + M`)
 
 ## [5.13.1]
 
