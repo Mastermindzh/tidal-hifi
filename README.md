@@ -131,7 +131,7 @@ nix-env -iA nixpkgs.tidal-hifi
 
 To install and work with the code on this project follow these steps:
 
-- `git clone [https://github.com/Mastermindzh/tidal-hifi.git](https://github.com/Mastermindzh/tidal-hifi.git)`
+- `git clone https://github.com/Mastermindzh/tidal-hifi.git`
 - `cd tidal-hifi`
 - `npm install`
 - `npm run watch` to watch for auto-reload of Typescript/SCSS changes.
