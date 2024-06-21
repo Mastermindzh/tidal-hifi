@@ -18,6 +18,152 @@
     "url": "swagger.json"
   },
   "paths": {
+    "/current": {
+      "get": {
+        "summary": "Get current media info",
+        "tags": [
+          "current"
+        ],
+        "responses": {
+          "200": {
+            "description": "Current media info",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MediaInfo"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/current/image": {
+      "get": {
+        "summary": "Get current media image",
+        "tags": [
+          "current"
+        ],
+        "responses": {
+          "200": {
+            "description": "Current media image",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    },
+    "/play": {
+      "get": {
+        "summary": "Play action",
+        "responses": {
+          "200": {
+            "description": "Action performed",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/favorite/toggle": {
+      "post": {
+        "summary": "Toggle favorite",
+        "responses": {
+          "200": {
+            "description": "Action performed",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pause": {
+      "get": {
+        "summary": "Pause action",
+        "responses": {
+          "200": {
+            "description": "Action performed",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/next": {
+      "get": {
+        "summary": "Next action",
+        "responses": {
+          "200": {
+            "description": "Action performed",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/previous": {
+      "get": {
+        "summary": "Previous action",
+        "responses": {
+          "200": {
+            "description": "Action performed",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/playpause": {
+      "get": {
+        "summary": "Toggle play/pause",
+        "responses": {
+          "200": {
+            "description": "Action performed",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/settings/skipped-artists": {
       "get": {
         "summary": "get a list of artists that TIDAL Hi-Fi will skip if skipping is enabled",
@@ -105,10 +251,121 @@
           }
         }
       }
+    },
+    "/image": {
+      "get": {
+        "summary": "Get current image",
+        "deprecated": true,
+        "responses": {
+          "200": {
+            "description": "Current image",
+            "content": {
+              "image/png": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
     }
   },
   "components": {
     "schemas": {
+      "MediaInfo": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "artists": {
+            "type": "string"
+          },
+          "album": {
+            "type": "string"
+          },
+          "icon": {
+            "type": "string",
+            "format": "uri"
+          },
+          "playingFrom": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "url": {
+            "type": "string",
+            "format": "uri"
+          },
+          "current": {
+            "type": "string"
+          },
+          "currentInSeconds": {
+            "type": "integer"
+          },
+          "duration": {
+            "type": "string"
+          },
+          "durationInSeconds": {
+            "type": "integer"
+          },
+          "image": {
+            "type": "string",
+            "format": "uri"
+          },
+          "favorite": {
+            "type": "boolean"
+          },
+          "player": {
+            "type": "object",
+            "properties": {
+              "status": {
+                "type": "string"
+              },
+              "shuffle": {
+                "type": "boolean"
+              },
+              "repeat": {
+                "type": "string"
+              }
+            }
+          },
+          "artist": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "title": "Sample Title",
+          "artists": "Sample Artist",
+          "album": "Sample Album",
+          "icon": "/path/to/sample/icon.jpg",
+          "playingFrom": "Sample Playlist",
+          "status": "playing",
+          "url": "https://tidal.com/browse/track/sample",
+          "current": "1:23",
+          "currentInSeconds": 83,
+          "duration": "3:45",
+          "durationInSeconds": 225,
+          "image": "https://example.com/sample-image.jpg",
+          "favorite": true,
+          "player": {
+            "status": "playing",
+            "shuffle": true,
+            "repeat": "one"
+          },
+          "artist": "Sample Artist"
+        }
+      },
+      "OkResponse": {
+        "type": "string",
+        "example": "OK"
+      },
       "StringArray": {
         "type": "array",
         "items": {
@@ -122,6 +379,14 @@
     }
   },
   "tags": [
+    {
+      "name": "current",
+      "description": "The current media info API"
+    },
+    {
+      "name": "player",
+      "description": "The player control API"
+    },
     {
       "name": "settings",
       "description": "The settings management API"

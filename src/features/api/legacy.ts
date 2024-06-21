@@ -13,6 +13,23 @@ import { getCurrentImage } from "./features/current";
  * @param mainWindow
  */
 export const addLegacyApi = (expressApp: Router, mainWindow: BrowserWindow) => {
+  /**
+   * @swagger
+   * /image:
+   *   get:
+   *     summary: Get current image
+   *     deprecated: true
+   *     responses:
+   *       200:
+   *         description: Current image
+   *         content:
+   *           image/png:
+   *             schema:
+   *               type: string
+   *               format: binary
+   *       404:
+   *         description: Not found
+   */
   expressApp.get("/image", getCurrentImage);
 
   if (settingsStore.get(settings.playBackControl)) {
