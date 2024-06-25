@@ -29,12 +29,13 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
   if (settingsStore.get(settings.playBackControl)) {
     /**
      * @swagger
-     * /play:
-     *   get:
-     *     summary: Play action
+     * /player/play:
+     *   post:
+     *     summary: Play the current media
+     *     tags: [player]
      *     responses:
      *       200:
-     *         description: Action performed
+     *         description: Ok
      *         content:
      *           text/plain:
      *             schema:
@@ -44,12 +45,13 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
 
     /**
      * @swagger
-     * /favorite/toggle:
+     * /player/favorite/toggle:
      *   post:
-     *     summary: Toggle favorite
+     *     summary: Add the current media to your favorites, or remove it if its already added to your favorites
+     *     tags: [player]
      *     responses:
      *       200:
-     *         description: Action performed
+     *         description: Ok
      *         content:
      *           text/plain:
      *             schema:
@@ -59,12 +61,13 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
 
     /**
      * @swagger
-     * /pause:
-     *   get:
-     *     summary: Pause action
+     * /player/pause:
+     *   post:
+     *     summary: Pause the current media
+     *     tags: [player]
      *     responses:
      *       200:
-     *         description: Action performed
+     *         description: Ok
      *         content:
      *           text/plain:
      *             schema:
@@ -74,12 +77,13 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
 
     /**
      * @swagger
-     * /next:
-     *   get:
-     *     summary: Next action
+     * /player/next:
+     *   post:
+     *     summary: Play the next song
+     *     tags: [player]
      *     responses:
      *       200:
-     *         description: Action performed
+     *         description: Ok
      *         content:
      *           text/plain:
      *             schema:
@@ -89,12 +93,13 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
 
     /**
      * @swagger
-     * /previous:
-     *   get:
-     *     summary: Previous action
+     * /player/previous:
+     *   post:
+     *     summary: Play the previous song
+     *     tags: [player]
      *     responses:
      *       200:
-     *         description: Action performed
+     *         description: Ok
      *         content:
      *           text/plain:
      *             schema:
@@ -102,17 +107,47 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
      */
     createPlayerAction("/previous", globalEvents.previous);
 
+    /**
+     * @swagger
+     * /player/shuffle/toggle:
+     *   post:
+     *     summary: Play the previous song
+     *     tags: [player]
+     *     responses:
+     *       200:
+     *         description: Ok
+     *         content:
+     *           text/plain:
+     *             schema:
+     *               $ref: '#/components/schemas/OkResponse'
+     */
     createPlayerAction("/shuffle/toggle", globalEvents.toggleShuffle);
+
+    /**
+     * @swagger
+     * /player/repeat/toggle:
+     *   post:
+     *     summary: Toggle the repeat status, toggles between "off" , "single" and "all"
+     *     tags: [player]
+     *     responses:
+     *       200:
+     *         description: Ok
+     *         content:
+     *           text/plain:
+     *             schema:
+     *               $ref: '#/components/schemas/OkResponse'
+     */
     createPlayerAction("/repeat/toggle", globalEvents.toggleRepeat);
 
     /**
      * @swagger
-     * /playpause:
-     *   get:
-     *     summary: Toggle play/pause
+     * /player/playpause:
+     *   post:
+     *     summary: Start playing the media if paused, or pause the media if playing
+     *     tags: [player]
      *     responses:
      *       200:
-     *         description: Action performed
+     *         description: Ok
      *         content:
      *           text/plain:
      *             schema:

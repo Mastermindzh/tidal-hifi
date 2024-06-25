@@ -62,29 +62,15 @@
         }
       }
     },
-    "/play": {
-      "get": {
-        "summary": "Play action",
-        "responses": {
-          "200": {
-            "description": "Action performed",
-            "content": {
-              "text/plain": {
-                "schema": {
-                  "$ref": "#/components/schemas/OkResponse"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/favorite/toggle": {
+    "/player/play": {
       "post": {
-        "summary": "Toggle favorite",
+        "summary": "Play action",
+        "tags": [
+          "player"
+        ],
         "responses": {
           "200": {
-            "description": "Action performed",
+            "description": "Ok",
             "content": {
               "text/plain": {
                 "schema": {
@@ -96,12 +82,35 @@
         }
       }
     },
-    "/pause": {
-      "get": {
+    "/player/favorite/toggle": {
+      "post": {
+        "summary": "Add the current song to your favorites, or remove it if its already added to your favorites",
+        "tags": [
+          "player"
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/player/pause": {
+      "post": {
         "summary": "Pause action",
+        "tags": [
+          "player"
+        ],
         "responses": {
           "200": {
-            "description": "Action performed",
+            "description": "Ok",
             "content": {
               "text/plain": {
                 "schema": {
@@ -113,12 +122,15 @@
         }
       }
     },
-    "/next": {
-      "get": {
-        "summary": "Next action",
+    "/player/next": {
+      "post": {
+        "summary": "Play the next song",
+        "tags": [
+          "player"
+        ],
         "responses": {
           "200": {
-            "description": "Action performed",
+            "description": "Ok",
             "content": {
               "text/plain": {
                 "schema": {
@@ -130,12 +142,35 @@
         }
       }
     },
-    "/previous": {
-      "get": {
+    "/player/previous": {
+      "post": {
+        "summary": "Play the previous song",
+        "tags": [
+          "player"
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/player/shuffle/toggle": {
+      "post": {
         "summary": "Previous action",
+        "tags": [
+          "player"
+        ],
         "responses": {
           "200": {
-            "description": "Action performed",
+            "description": "Ok",
             "content": {
               "text/plain": {
                 "schema": {
@@ -147,12 +182,35 @@
         }
       }
     },
-    "/playpause": {
-      "get": {
-        "summary": "Toggle play/pause",
+    "/player/repeat/toggle": {
+      "post": {
+        "summary": "Toggle the repeat status, toggles between \"off\" , \"single\" and \"all\"",
+        "tags": [
+          "player"
+        ],
         "responses": {
           "200": {
-            "description": "Action performed",
+            "description": "Ok",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/player/playpause": {
+      "post": {
+        "summary": "Toggle play/pause",
+        "tags": [
+          "player"
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
             "content": {
               "text/plain": {
                 "schema": {
@@ -255,6 +313,9 @@
     "/image": {
       "get": {
         "summary": "Get current image",
+        "tags": [
+          "legacy"
+        ],
         "deprecated": true,
         "responses": {
           "200": {
@@ -270,6 +331,132 @@
           },
           "404": {
             "description": "Not found"
+          }
+        }
+      }
+    },
+    "/play": {
+      "get": {
+        "summary": "Play action",
+        "tags": [
+          "legacy"
+        ],
+        "deprecated": true,
+        "responses": {
+          "200": {
+            "description": "Action performed",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/favorite/toggle": {
+      "get": {
+        "summary": "Add the current song to your favorites, or remove it if its already added to your favorites",
+        "tags": [
+          "legacy"
+        ],
+        "deprecated": true,
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/pause": {
+      "get": {
+        "summary": "Pause action",
+        "tags": [
+          "legacy"
+        ],
+        "deprecated": true,
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/next": {
+      "get": {
+        "summary": "Play the next song",
+        "tags": [
+          "legacy"
+        ],
+        "deprecated": true,
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/previous": {
+      "get": {
+        "summary": "Play the previous song",
+        "tags": [
+          "legacy"
+        ],
+        "deprecated": true,
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/playpause": {
+      "get": {
+        "summary": "Toggle play/pause",
+        "tags": [
+          "legacy"
+        ],
+        "deprecated": true,
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
           }
         }
       }
