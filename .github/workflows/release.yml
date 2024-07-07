@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
-          node-version: 19
+          node-version: 20
       - run: npm install
       - run: npm run build
       - uses: actions/upload-artifact@master
@@ -35,7 +35,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
-          node-version: 19
+          node-version: 20
       - run: npm install
       - run: npm run build
       - uses: actions/upload-artifact@master
@@ -49,7 +49,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
-          node-version: 19
+          node-version: 20
       - run: npm install
       - run: npm run build
       - uses: actions/upload-artifact@master
