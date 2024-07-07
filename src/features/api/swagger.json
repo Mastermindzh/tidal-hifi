@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "TIDAL Hi-Fi API",
-    "version": "5.14.1",
+    "version": "5.15.0",
     "description": "",
     "license": {
       "name": "MIT",
@@ -64,7 +64,7 @@
     },
     "/player/play": {
       "post": {
-        "summary": "Play action",
+        "summary": "Play the current media",
         "tags": [
           "player"
         ],
@@ -84,7 +84,7 @@
     },
     "/player/favorite/toggle": {
       "post": {
-        "summary": "Add the current song to your favorites, or remove it if its already added to your favorites",
+        "summary": "Add the current media to your favorites, or remove it if its already added to your favorites",
         "tags": [
           "player"
         ],
@@ -104,7 +104,7 @@
     },
     "/player/pause": {
       "post": {
-        "summary": "Pause action",
+        "summary": "Pause the current media",
         "tags": [
           "player"
         ],
@@ -164,7 +164,7 @@
     },
     "/player/shuffle/toggle": {
       "post": {
-        "summary": "Previous action",
+        "summary": "Play the previous song",
         "tags": [
           "player"
         ],
@@ -204,7 +204,7 @@
     },
     "/player/playpause": {
       "post": {
-        "summary": "Toggle play/pause",
+        "summary": "Start playing the media if paused, or pause the media if playing",
         "tags": [
           "player"
         ],
@@ -337,7 +337,7 @@
     },
     "/play": {
       "get": {
-        "summary": "Play action",
+        "summary": "Play the current media",
         "tags": [
           "legacy"
         ],
@@ -358,7 +358,7 @@
     },
     "/favorite/toggle": {
       "get": {
-        "summary": "Add the current song to your favorites, or remove it if its already added to your favorites",
+        "summary": "Add the current media to your favorites, or remove it if its already added to your favorites",
         "tags": [
           "legacy"
         ],
@@ -379,7 +379,7 @@
     },
     "/pause": {
       "get": {
-        "summary": "Pause action",
+        "summary": "Pause the current media",
         "tags": [
           "legacy"
         ],

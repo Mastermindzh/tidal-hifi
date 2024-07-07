@@ -26,7 +26,7 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
     - [Using source](#using-source)
   - [Integrations](#integrations)
   - [Known bugs](#known-bugs)
-    - [DRM not working on Windows](#drm-not-working-on-windows)
+    - [DRM not working on Windows (error S6007)](#drm-not-working-on-windows-error-s6007)
   - [Special thanks to](#special-thanks-to)
   - [Donations](#donations)
   - [Images](#images)
@@ -153,10 +153,12 @@ Integrations with other projects that are not included natively:
 
 ## Known bugs
 
-### DRM not working on Windows
+### DRM not working on Windows (error S6007)
 
 Most Windows users run into DRM issues when trying to use TIDAL Hi-Fi.
 Nothing I can do about that I'm afraid... Tidal is working on removing/changing DRM so when they finish with that we can give it another shot.
+
+Until then you'll have to use the official app unfortunately.
 
 ## Special thanks to
 
