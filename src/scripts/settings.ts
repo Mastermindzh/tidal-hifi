@@ -28,6 +28,9 @@ const buildMigration = (
 export const settingsStore = new Store({
   defaults: {
     adBlock: false,
+    advanced: {
+      tidalUrl: "https://listen.tidal.com",
+    },
     api: true,
     apiSettings: {
       port: 47836,
@@ -105,6 +108,11 @@ export const settingsStore = new Store({
     "5.14.0": (migrationStore) => {
       buildMigration("5.14.0", migrationStore, [
         { key: settings.apiSettings.hostname, value: "127.0.0.1" },
+      ]);
+    },
+    "5.15.0": (migrationStore) => {
+      buildMigration("5.15.0", migrationStore, [
+        { key: settings.advanced.tidalUrl, value: "https://listen.tidal.com" },
       ]);
     },
   },

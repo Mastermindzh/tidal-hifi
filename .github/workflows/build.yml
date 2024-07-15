@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
-          node-version: 19
+          node-version: 22.4
       - run: npm install
       - run: npm run build
 
@@ -31,7 +31,7 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
-          node-version: 19
+          node-version: 22.4
       - run: npm install
       - run: npm run build
 
@@ -41,6 +41,6 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
-          node-version: 19
+          node-version: 22.4
       - run: npm install
       - run: npm run build

@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.15.0]
+
+- Added all missing swagger/openApi info with the help of [Times-Z](https://github.com/Times-Z)
+- Updated most dependency versions
+  - This includes Electron 31!
+
+- Added a channel selector so we can now use Tidal's staging environment directly from the app
+  - implements [#437](https://github.com/Mastermindzh/tidal-hifi/issues/437)
+
 ## [5.14.1]
 
 - Fixed `getAlbumName` not finding album name whilst on queue page

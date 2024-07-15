@@ -10,6 +10,10 @@
  */
 export const settings = {
   adBlock: "adBlock",
+  advanced: {
+    root: "advanced",
+    tidalUrl: "advanced.tidalUrl",
+  },
   api: "api",
   apiSettings: {
     root: "apiSettings",

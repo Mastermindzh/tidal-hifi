@@ -29,6 +29,7 @@ const switchesWithSettings = {
 
 let adBlock: HTMLInputElement,
   api: HTMLInputElement,
+  channel: HTMLSelectElement,
   customCSS: HTMLInputElement,
   disableBackgroundThrottle: HTMLInputElement,
   disableHardwareMediaKeys: HTMLInputElement,
@@ -121,6 +122,7 @@ function refreshSettings() {
   try {
     adBlock.checked = settingsStore.get(settings.adBlock);
     api.checked = settingsStore.get(settings.api);
+    channel.value = settingsStore.get(settings.advanced.tidalUrl);
     customCSS.value = settingsStore.get<string, string[]>(settings.customCSS).join("\n");
     disableBackgroundThrottle.checked = settingsStore.get(settings.disableBackgroundThrottle);
     disableHardwareMediaKeys.checked = settingsStore.get(settings.flags.disableHardwareMediaKeys);
@@ -238,6 +240,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   adBlock = get("adBlock");
   api = get("apiCheckbox");
+  channel = get<HTMLSelectElement>("channel");
   customCSS = get("customCSS");
   disableBackgroundThrottle = get("disableBackgroundThrottle");
   disableHardwareMediaKeys = get("disableHardwareMediaKeys");
@@ -272,6 +275,7 @@ window.addEventListener("DOMContentLoaded", () => {
   refreshSettings();
   addInputListener(adBlock, settings.adBlock);
   addInputListener(api, settings.api);
+  addSelectListener(channel, settings.advanced.tidalUrl);
   addTextAreaListener(customCSS, settings.customCSS);
   addInputListener(disableBackgroundThrottle, settings.disableBackgroundThrottle);
   addInputListener(disableHardwareMediaKeys, settings.flags.disableHardwareMediaKeys);

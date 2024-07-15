@@ -49,7 +49,7 @@
             <div class="group__option">
               <div class="group__description">
                 <h4>Notifications</h4>
-                <p>Show a notification when a new song starts.</p>
+                <p>Show a notification when new media starts.</p>
               </div>
               <label class="switch">
                 <input id="notifications" type="checkbox" />
@@ -147,7 +147,7 @@
             <p class="group__title">API</p>
             <div class="group__description">
               <p>
-                TIDAL Hi-Fi has a built-in web API to allow users to get current song information.
+                TIDAL Hi-Fi has a built-in web API to allow users to get current media information.
                 You can optionally enable playback control as well.
               </p>
             </div>
@@ -245,8 +245,8 @@
 
               <div class="group__option" class="hidden">
                 <div class="group__description">
-                  <h4>Show song</h4>
-                  <p>Show the current song in the Discord client</p>
+                  <h4>Show media</h4>
+                  <p>Show the current media in the Discord client</p>
                 </div>
                 <label class="switch">
                   <input id="discord_show_song" type="checkbox" />
@@ -278,7 +278,7 @@
                 <div class="group__option">
                   <div class="group__description">
                     <h4>Button text</h4>
-                    <p>Text to display on the button below the song information.</p>
+                    <p>Text to display on the button below the media information.</p>
                     <input id="discord_button_text" type="text" class="text-input" name="discord_button_text" />
                   </div>
                 </div>
@@ -316,7 +316,7 @@
             </div>
             <div class="group__description">
               <h4>ScrobbleDelay</h4>
-              <p>The delay (in ms) to send a song to ListenBrainz. Prevents spamming the API when you fast forward
+              <p>The delay (in ms) to send a listen to ListenBrainz. Prevents spamming the API when you fast forward
                 immediately</p>
               <input id="listenbrainz_delay" type="number" class="text-input" name="listenbrainz_delay" />
             </div>
@@ -336,6 +336,20 @@
                   can decrease it as well.
                 </p>
                 <input id="updateFrequency" type="number" class="text-input" name="updateFrequency" />
+              </div>
+            </div>
+
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Tidal channel / URL</h4>
+                <p>
+                  Which URL Tidal Hi-Fi should use.
+                  <strong>note! Beta might break at any time</strong>
+                </p>
+                <select class="select-input" id="channel" name="channel">
+                  <option value="https://listen.tidal.com">Stable (listen.tidal.com)</option>
+                  <option value="https://listen.stage.tidal.com">Staging (listen.stage.tidal.com)</option>
+                </select>
               </div>
             </div>
           </div>
@@ -443,7 +457,7 @@
           <h4>TIDAL Hi-Fi</h4>
           <div class="about-section__version">
             <a target="_blank" rel="noopener"
-              href="https://github.com/Mastermindzh/tidal-hifi/releases/tag/5.14.1">5.14.1</a>
+              href="https://github.com/Mastermindzh/tidal-hifi/releases/tag/5.15.0">5.15.0</a>
           </div>
           <div class="about-section__links">
             <a target="_blank" rel="noopener" href="https://github.com/mastermindzh/tidal-hifi/"

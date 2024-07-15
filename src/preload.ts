@@ -74,7 +74,7 @@ const elements = {
   },
 
   /**
-   * Get the icon of the current song
+   * Get the icon of the current media
    */
   getSongIcon: function () {
     const figure = this.get("media");
@@ -90,7 +90,7 @@ const elements = {
   },
 
   /**
-   * returns an array of all artists in the current song
+   * returns an array of all artists in the current media
    * @returns {Array} artists
    */
   getArtistsArray: function () {
@@ -195,7 +195,7 @@ function getUpdateFrequency() {
 }
 
 /**
- * Play or pause the current song
+ * Play or pause the current media
  */
 function playPause() {
   const play = elements.get("play");
