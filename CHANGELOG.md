@@ -10,6 +10,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Updated most dependency versions
   - This includes Electron 31!
 
+- Added a channel selector so we can now use Tidal's staging environment directly from the app
+  - implements [#437](https://github.com/Mastermindzh/tidal-hifi/issues/437)
+
 ## [5.14.1]
 
 - Fixed `getAlbumName` not finding album name whilst on queue page

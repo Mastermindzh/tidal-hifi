@@ -48,6 +48,9 @@ export class ListenBrainz {
       } else {
         // Fetches the oldData required for scrobbling and proceeds to construct a playing_now data payload for the Playing Now area
         const oldData = ListenBrainzStore.get(ListenBrainzConstants.oldData) as StoreData;
+        const tidalUrl =
+          settingsStore.get<string, string>(settings.advanced.tidalUrl) ||
+          "https://listen.tidal.com";
         const playing_data = {
           listen_type: "playing_now",
           payload: [
@@ -95,7 +98,7 @@ export class ListenBrainz {
                     additional_info: {
                       media_player: "Tidal Hi-Fi",
                       submission_client: "Tidal Hi-Fi",
-                      music_service: "listen.tidal.com",
+                      music_service: tidalUrl,
                       duration: oldData.duration,
                     },
                     artist_name: oldData.artists,

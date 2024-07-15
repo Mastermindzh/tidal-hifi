@@ -24,7 +24,6 @@ import {
   showSettingsWindow,
 } from "./scripts/settings";
 import { addTray, refreshTray } from "./scripts/tray";
-const tidalUrl = "https://listen.tidal.com";
 let mainInhibitorId = -1;
 
 initialize();
@@ -39,6 +38,9 @@ const windowPreferences = {
 
 setDefaultFlags(app);
 setManagedFlagsFromSettings(app);
+
+const tidalUrl =
+  settingsStore.get<string, string>(settings.advanced.tidalUrl) || "https://listen.tidal.com";
 
 /**
  * Update the menuBarVisibility according to the store value
