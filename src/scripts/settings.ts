@@ -43,6 +43,7 @@ export const settingsStore = new Store({
     enableDiscord: false,
     discord: {
       showSong: true,
+      showIdle: true,
       idleText: "Browsing Tidal",
       usingText: "Playing media on TIDAL",
       includeTimestamps: true,
