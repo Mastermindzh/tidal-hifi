@@ -60,7 +60,12 @@ const getActivity = (): Presence => {
       presence.state = mediaInfo.artists ? mediaInfo.artists : "unknown artist(s)";
       presence.largeImageKey = mediaInfo.image;
       if (mediaInfo.album) {
-        presence.largeImageText = mediaInfo.album;
+        if (mediaInfo.album.length < 2) {  // Fix for DiscordRPC 2 character minimum
+          presence.largeImageText = mediaInfo.album + " ";
+        }
+        else {
+          presence.largeImageText = mediaInfo.album;
+        }
       }
       presence.buttons = [{ label: buttonText, url: mediaInfo.url }];
     } else {
