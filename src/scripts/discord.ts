@@ -14,6 +14,10 @@ export let rpc: Client;
 
 const observer = () => {
   if (rpc) {
+    const showIdle = settingsStore.get<string, boolean>(settings.discord.showIdle) ?? true;
+    if (mediaInfo.status === MediaStatus.paused && !showIdle) {
+      rpc.clearActivity();
+    } else
     rpc.setActivity(getActivity());
   }
 };
@@ -95,6 +99,10 @@ export const initRPC = () => {
   rpc.login({ clientId }).then(
     () => {
       rpc.on("ready", () => {
+        const showIdle = settingsStore.get<string, boolean>(settings.discord.showIdle) ?? true;
+        if (mediaInfo.status === MediaStatus.paused && !showIdle) {
+          rpc.clearActivity();
+        } else
         rpc.setActivity(getActivity());
       });
       ipcMain.on(globalEvents.updateInfo, observer);
