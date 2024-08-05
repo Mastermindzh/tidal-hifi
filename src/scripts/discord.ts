@@ -1,4 +1,4 @@
-import { Client, Presence } from "discord-rpc";
+import { Client, type SetActivity } from "@xhayper/discord-rpc";
 import { app, ipcMain } from "electron";
 import { globalEvents } from "../constants/globalEvents";
 import { settings } from "../constants/settings";
@@ -14,18 +14,19 @@ export let rpc: Client;
 
 const observer = () => {
   if (rpc) {
-    rpc.setActivity(getActivity());
+    rpc.user.setActivity(getActivity());
   }
 };
 
-const defaultPresence = {
+const defaultPresence: SetActivity = {
+  type: 2,
   largeImageKey: "tidal-hifi-icon",
   largeImageText: `TIDAL Hi-Fi ${app.getVersion()}`,
   instance: false,
 };
 
-const getActivity = (): Presence => {
-  const presence: Presence = { ...defaultPresence };
+const getActivity = (): SetActivity => {
+  const presence: SetActivity = { ...defaultPresence };
 
   if (mediaInfo.status === MediaStatus.paused) {
     presence.details =
@@ -86,11 +87,13 @@ const getActivity = (): Presence => {
  * Set up the discord rpc and listen on globalEvents.updateInfo
  */
 export const initRPC = () => {
-  rpc = new Client({ transport: "ipc" });
-  rpc.login({ clientId }).then(
+  rpc = new Client({ transport: {
+    type: "ipc",
+  }, clientId });
+  rpc.login().then(
     () => {
       rpc.on("ready", () => {
-        rpc.setActivity(getActivity());
+        rpc.user.setActivity(getActivity());
       });
       ipcMain.on(globalEvents.updateInfo, observer);
     },
@@ -105,7 +108,7 @@ export const initRPC = () => {
  */
 export const unRPC = () => {
   if (rpc) {
-    rpc.clearActivity();
+    rpc.user.clearActivity();
     rpc.destroy();
     rpc = null;
     ipcMain.removeListener(globalEvents.updateInfo, observer);
