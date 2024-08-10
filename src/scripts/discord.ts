@@ -14,7 +14,7 @@ export let rpc: Client;
 
 const observer = () => {
   if (rpc) {
-    rpc.setActivity(getActivity());
+    updateActivity();
   }
 };
 
@@ -22,6 +22,15 @@ const defaultPresence = {
   largeImageKey: "tidal-hifi-icon",
   largeImageText: `TIDAL Hi-Fi ${app.getVersion()}`,
   instance: false,
+};
+
+const updateActivity = () => {
+  const showIdle = settingsStore.get<string, boolean>(settings.discord.showIdle) ?? true;
+  if (mediaInfo.status === MediaStatus.paused && !showIdle) {
+    rpc.clearActivity();
+  } else {
+    rpc.setActivity(getActivity());
+  }
 };
 
 const getActivity = (): Presence => {
@@ -54,18 +63,33 @@ const getActivity = (): Presence => {
     return { includeTimestamps, detailsPrefix, buttonText };
   }
 
+  /**
+   * Pad a string using spaces to at least 2 characters
+   * @param input string to pad with 2 characters
+   * @returns
+   */
+  function pad(input: string): string {
+    return input.padEnd(2, " ");
+  }
+
   function setPresenceFromMediaInfo(detailsPrefix: string, buttonText: string) {
+    // discord requires a minimum of 2 characters
+    const title = pad(mediaInfo.title);
+    const album = pad(mediaInfo.album);
+    const artists = pad(mediaInfo.artists);
+
     if (mediaInfo.url) {
-      presence.details = `${detailsPrefix}${mediaInfo.title}`;
-      presence.state = mediaInfo.artists ? mediaInfo.artists : "unknown artist(s)";
+      presence.details = `${detailsPrefix}${title}`;
+      presence.state = artists ? artists : "unknown artist(s)";
       presence.largeImageKey = mediaInfo.image;
-      if (mediaInfo.album) {
-        presence.largeImageText = mediaInfo.album;
+      if (album) {
+        presence.largeImageText = album;
       }
+
       presence.buttons = [{ label: buttonText, url: mediaInfo.url }];
     } else {
-      presence.details = `Watching ${mediaInfo.title}`;
-      presence.state = mediaInfo.artists;
+      presence.details = `Watching ${title}`;
+      presence.state = artists;
     }
   }
 
@@ -90,9 +114,13 @@ export const initRPC = () => {
   rpc.login({ clientId }).then(
     () => {
       rpc.on("ready", () => {
-        rpc.setActivity(getActivity());
+        updateActivity();
       });
-      ipcMain.on(globalEvents.updateInfo, observer);
+
+      const { updateInfo, play, pause, playPause } = globalEvents;
+      [updateInfo, play, pause, playPause].forEach((status) => {
+        ipcMain.on(status, observer);
+      });
     },
     () => {
       Logger.log("Can't connect to Discord, is it running?");
