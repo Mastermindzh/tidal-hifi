@@ -394,18 +394,30 @@ function updateMediaInfo(mediaInfo: MediaInfo, notify: boolean) {
   if (mediaInfo) {
     currentMediaInfo = mediaInfo;
     ipcRenderer.send(globalEvents.updateInfo, mediaInfo);
-    if (settingsStore.get(settings.notifications) && notify) {
-      if (currentNotification) currentNotification.close();
-      currentNotification = new Notification({
-        title: mediaInfo.title,
-        body: mediaInfo.artists,
-        icon: mediaInfo.icon,
-      });
-      currentNotification.show();
-    }
-
     updateMpris(mediaInfo);
     updateListenBrainz(mediaInfo);
+    if (notify) {
+      sendNotification(mediaInfo);
+    }
+  }
+}
+
+/**
+ * send a desktop notification if enabled in settings
+ * @param mediaInfo
+ * @param notify Whether to notify
+ */
+async function sendNotification(mediaInfo: MediaInfo) {
+  if (settingsStore.get(settings.notifications)) {
+    if (currentNotification) {
+      currentNotification.close();
+    }
+    currentNotification = new Notification({
+      title: mediaInfo.title,
+      body: mediaInfo.artists,
+      icon: mediaInfo.icon,
+    });
+    currentNotification.show();
   }
 }
 

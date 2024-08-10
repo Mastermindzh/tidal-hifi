@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix issue #449 Discord RPC stuck on "Browsing Tidal".
 - Fix issue #448 Add option to disable the discord rpc idle text
+- Notifications are now send at the end of the update process, allowing other events to happen sooner.
 
 ## [5.15.0]
 
