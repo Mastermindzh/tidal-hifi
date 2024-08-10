@@ -116,6 +116,9 @@ export const settingsStore = new Store({
         { key: settings.advanced.tidalUrl, value: "https://listen.tidal.com" },
       ]);
     },
+    "5.16.0": (migrationStore) => {
+      buildMigration("5.16.0", migrationStore, [{ key: settings.discord.showIdle, value: "true" }]);
+    },
   },
 });
 
