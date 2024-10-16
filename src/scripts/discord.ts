@@ -1,4 +1,4 @@
-import { Client, Presence } from "discord-rpc";
+import * as DRPC from "discord-rpc";
 import { app, ipcMain } from "electron";
 import { globalEvents } from "../constants/globalEvents";
 import { settings } from "../constants/settings";
@@ -10,7 +10,7 @@ import { settingsStore } from "./settings";
 
 const clientId = "833617820704440341";
 
-export let rpc: Client;
+export let rpc: DRPC.Client;
 
 const observer = () => {
   if (rpc) {
@@ -33,8 +33,10 @@ const updateActivity = () => {
   }
 };
 
-const getActivity = (): Presence => {
-  const presence: Presence = { ...defaultPresence };
+const getActivity = (): DRPC.Presence => {
+  const presence: DRPC.Presence = { ...defaultPresence };
+
+  presence.type = DRPC.ActivityTypes.LISTENING
 
   if (mediaInfo.status === MediaStatus.paused) {
     presence.details =
@@ -110,7 +112,7 @@ const getActivity = (): Presence => {
  * Set up the discord rpc and listen on globalEvents.updateInfo
  */
 export const initRPC = () => {
-  rpc = new Client({ transport: "ipc" });
+  rpc = new DRPC.Client({ transport: "ipc" });
   rpc.login({ clientId }).then(
     () => {
       rpc.on("ready", () => {
