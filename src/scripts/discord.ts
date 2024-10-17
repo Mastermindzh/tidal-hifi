@@ -109,7 +109,7 @@ const getActivity = (): DRPC.Presence => {
       presence.startTimestamp = startTimestamp;
       presence.endTimestamp = endTimestamp;
     }
-  }  
+  }
 };
 
 /**
