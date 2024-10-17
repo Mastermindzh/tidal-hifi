@@ -12,6 +12,8 @@ const clientId = "833617820704440341";
 
 export let rpc: DRPC.Client;
 
+const ACTIVITY_LISTENING = 2;
+
 const observer = () => {
   if (rpc) {
     updateActivity();
@@ -20,7 +22,7 @@ const observer = () => {
 
 const defaultPresence = {
   largeImageKey: "tidal-hifi-icon",
-  largeImageText: `TIDAL Hi-Fi ${app.getVersion()}`,
+  largeImageText: `Tidal`,
   instance: false,
 };
 
@@ -36,7 +38,7 @@ const updateActivity = () => {
 const getActivity = (): DRPC.Presence => {
   const presence: DRPC.Presence = { ...defaultPresence };
 
-  presence.type = DRPC.ActivityTypes.LISTENING
+  presence.type = ACTIVITY_LISTENING;
 
   if (mediaInfo.status === MediaStatus.paused) {
     presence.details =
@@ -52,13 +54,14 @@ const getActivity = (): DRPC.Presence => {
         settingsStore.get<string, string>(settings.discord.usingText) ?? "Playing media on TIDAL";
     }
   }
+
   return presence;
 
   function getFromStore() {
     const includeTimestamps =
       settingsStore.get<string, boolean>(settings.discord.includeTimestamps) ?? true;
     const detailsPrefix =
-      settingsStore.get<string, string>(settings.discord.detailsPrefix) ?? "Listening to ";
+      settingsStore.get<string, string>(settings.discord.detailsPrefix) ?? "";
     const buttonText =
       settingsStore.get<string, string>(settings.discord.buttonText) ?? "Play on TIDAL";
 
@@ -100,12 +103,13 @@ const getActivity = (): DRPC.Presence => {
       const currentSeconds = convertDurationToSeconds(mediaInfo.current);
       const durationSeconds = convertDurationToSeconds(mediaInfo.duration);
       const date = new Date();
-      const now = (date.getTime() / 1000) | 0;
-      const remaining = date.setSeconds(date.getSeconds() + (durationSeconds - currentSeconds));
-      presence.startTimestamp = now;
-      presence.endTimestamp = remaining;
+      const now = Math.floor(date.getTime() / 1000);
+      const startTimestamp = now - currentSeconds;
+      const endTimestamp = startTimestamp + durationSeconds;
+      presence.startTimestamp = startTimestamp;
+      presence.endTimestamp = endTimestamp;
     }
-  }
+  }  
 };
 
 /**
