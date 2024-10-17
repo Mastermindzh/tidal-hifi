@@ -22,7 +22,7 @@ const observer = () => {
 
 const defaultPresence = {
   largeImageKey: "tidal-hifi-icon",
-  largeImageText: `Tidal`,
+  largeImageText: `TIDAL Hi-Fi ${app.getVersion()}`,
   instance: false,
 };
 
@@ -61,7 +61,7 @@ const getActivity = (): DRPC.Presence => {
     const includeTimestamps =
       settingsStore.get<string, boolean>(settings.discord.includeTimestamps) ?? true;
     const detailsPrefix =
-      settingsStore.get<string, string>(settings.discord.detailsPrefix) ?? "";
+      settingsStore.get<string, string>(settings.discord.detailsPrefix) ?? "Listening to ";
     const buttonText =
       settingsStore.get<string, string>(settings.discord.buttonText) ?? "Play on TIDAL";
 

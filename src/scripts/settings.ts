@@ -47,7 +47,7 @@ export const settingsStore = new Store({
       idleText: "Browsing Tidal",
       usingText: "Playing media on TIDAL",
       includeTimestamps: true,
-      detailsPrefix: "",
+      detailsPrefix: "Listening to ",
       buttonText: "Play on Tidal",
     },
     ListenBrainz: {
