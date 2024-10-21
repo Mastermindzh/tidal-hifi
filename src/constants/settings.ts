@@ -57,6 +57,7 @@ export const settings = {
   skippedArtists: "skippedArtists",
   theme: "theme",
   trayIcon: "trayIcon",
+  staticWindowTitle: "staticWindowTitle",
   updateFrequency: "updateFrequency",
   windowBounds: {
     root: "windowBounds",
