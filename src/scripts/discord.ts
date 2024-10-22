@@ -1,4 +1,4 @@
-import * as DRPC from "discord-rpc";
+import { Client, SetActivity } from "@xhayper/discord-rpc";
 import { app, ipcMain } from "electron";
 import { globalEvents } from "../constants/globalEvents";
 import { settings } from "../constants/settings";
@@ -10,7 +10,7 @@ import { settingsStore } from "./settings";
 
 const clientId = "833617820704440341";
 
-export let rpc: DRPC.Client;
+export let rpc: Client;
 
 const ACTIVITY_LISTENING = 2;
 
@@ -29,14 +29,14 @@ const defaultPresence = {
 const updateActivity = () => {
   const showIdle = settingsStore.get<string, boolean>(settings.discord.showIdle) ?? true;
   if (mediaInfo.status === MediaStatus.paused && !showIdle) {
-    rpc.clearActivity();
+    rpc.user?.clearActivity();
   } else {
-    rpc.setActivity(getActivity());
+    rpc.user?.setActivity(getActivity());
   }
 };
 
-const getActivity = (): DRPC.Presence => {
-  const presence: DRPC.Presence = { ...defaultPresence };
+const getActivity = (): SetActivity => {
+  const presence: SetActivity = { ...defaultPresence };
 
   presence.type = ACTIVITY_LISTENING;
 
@@ -104,10 +104,8 @@ const getActivity = (): DRPC.Presence => {
       const durationSeconds = convertDurationToSeconds(mediaInfo.duration);
       const date = new Date();
       const now = Math.floor(date.getTime() / 1000);
-      const startTimestamp = now - currentSeconds;
-      const endTimestamp = startTimestamp + durationSeconds;
-      presence.startTimestamp = startTimestamp;
-      presence.endTimestamp = endTimestamp;
+      presence.startTimestamp = now - currentSeconds;
+      presence.endTimestamp = presence.startTimestamp + durationSeconds;
     }
   }
 };
@@ -116,8 +114,8 @@ const getActivity = (): DRPC.Presence => {
  * Set up the discord rpc and listen on globalEvents.updateInfo
  */
 export const initRPC = () => {
-  rpc = new DRPC.Client({ transport: "ipc" });
-  rpc.login({ clientId }).then(
+  rpc = new Client({ transport: {type: "ipc"}, clientId });
+  rpc.login().then(
     () => {
       rpc.on("ready", () => {
         updateActivity();
@@ -139,7 +137,7 @@ export const initRPC = () => {
  */
 export const unRPC = () => {
   if (rpc) {
-    rpc.clearActivity();
+    rpc.user?.clearActivity();
     rpc.destroy();
     rpc = null;
     ipcMain.removeListener(globalEvents.updateInfo, observer);
