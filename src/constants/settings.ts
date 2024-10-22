@@ -27,10 +27,7 @@ export const settings = {
   enableDiscord: "enableDiscord",
   discord: {
     detailsPrefix: "discord.detailsPrefix",
-    buttonText: "discord.buttonText",
     includeTimestamps: "discord.includeTimestamps",
-    showSong: "discord.showSong",
-    showIdle: "discord.showIdle",
     idleText: "discord.idleText",
     usingText: "discord.usingText",
   },
