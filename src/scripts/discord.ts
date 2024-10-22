@@ -13,6 +13,8 @@ const clientId = "833617820704440341";
 export let rpc: Client;
 
 const ACTIVITY_LISTENING = 2;
+const MAX_RETRIES = 5;
+const RETRY_DELAY = 10000;
 
 const observer = () => {
   if (rpc) {
@@ -78,25 +80,31 @@ const getActivity = (): SetActivity => {
 };
 
 /**
+ * Try to login to RPC and retry if it errors
+ * @param retryCount Max retry count
+ */
+const connectWithRetry = async (retryCount = 0) => {
+  try {
+    await rpc.login();
+    Logger.log('Connected to Discord');
+    rpc.on("ready", updateActivity);
+    Object.values(globalEvents).forEach(event => ipcMain.on(event, observer));
+  } catch (error) {
+    if (retryCount < MAX_RETRIES) {
+      Logger.log(`Failed to connect to Discord, retrying in ${RETRY_DELAY/1000} seconds... (Attempt ${retryCount + 1}/${MAX_RETRIES})`);
+      setTimeout(() => connectWithRetry(retryCount + 1), RETRY_DELAY);
+    } else {
+      Logger.log('Failed to connect to Discord after maximum retry attempts');
+    }
+  }
+};
+
+/**
  * Set up the discord rpc and listen on globalEvents.updateInfo
  */
 export const initRPC = () => {
   rpc = new Client({ transport: {type: "ipc"}, clientId });
-  rpc.login().then(
-    () => {
-      rpc.on("ready", () => {
-        updateActivity();
-      });
-
-      const { updateInfo, play, pause, playPause } = globalEvents;
-      [updateInfo, play, pause, playPause].forEach((status) => {
-        ipcMain.on(status, observer);
-      });
-    },
-    () => {
-      Logger.log("Can't connect to Discord, is it running?");
-    }
-  );
+  connectWithRetry();
 };
 
 /**
