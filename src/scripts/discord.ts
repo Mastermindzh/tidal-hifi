@@ -23,14 +23,15 @@ const observer = () => {
 };
 
 const defaultPresence = {
-  smallImageKey: "tidal-hifi-icon",
-  smallImageText: `TIDAL Hi-Fi ${app.getVersion()}`,
+  largeImageKey: "tidal-hifi-icon",
+  largeImageText: `TIDAL Hi-Fi ${app.getVersion()}`,
   instance: false,
   type: ACTIVITY_LISTENING
 };
 
 const updateActivity = () => {
-  if (mediaInfo.status === MediaStatus.paused) {
+  const showIdle = settingsStore.get<string, boolean>(settings.discord.showIdle) ?? true;
+  if (mediaInfo.status === MediaStatus.paused && !showIdle) {
     rpc.user?.clearActivity();
   } else {
     rpc.user?.setActivity(getActivity());
@@ -40,10 +41,33 @@ const updateActivity = () => {
 const getActivity = (): SetActivity => {
   const presence: SetActivity = { ...defaultPresence };
 
-  includeTimeStamps();
-  setPresenceFromMediaInfo();
+  if (mediaInfo.status === MediaStatus.paused) {
+    presence.details =
+      settingsStore.get<string, string>(settings.discord.idleText) ?? "Browsing Tidal";
+  } else {
+    const showSong = settingsStore.get<string, boolean>(settings.discord.showSong) ?? false;
+    if (showSong) {
+      const { includeTimestamps, detailsPrefix, buttonText } = getFromStore();
+      includeTimeStamps(includeTimestamps);
+      setPresenceFromMediaInfo(detailsPrefix, buttonText);
+    } else {
+      presence.details =
+        settingsStore.get<string, string>(settings.discord.usingText) ?? "Playing media on TIDAL";
+    }
+  }
 
   return presence;
+
+  function getFromStore() {
+    const includeTimestamps =
+      settingsStore.get<string, boolean>(settings.discord.includeTimestamps) ?? true;
+    const detailsPrefix =
+      settingsStore.get<string, string>(settings.discord.detailsPrefix) ?? "Listening to ";
+    const buttonText =
+      settingsStore.get<string, string>(settings.discord.buttonText) ?? "Play on TIDAL";
+
+    return { includeTimestamps, detailsPrefix, buttonText };
+  }
 
   /**
    * Pad a string using spaces to at least 2 characters
@@ -54,28 +78,36 @@ const getActivity = (): SetActivity => {
     return input.padEnd(2, " ");
   }
 
-  function setPresenceFromMediaInfo() {
+  function setPresenceFromMediaInfo(detailsPrefix: string, buttonText: string) {
     // discord requires a minimum of 2 characters
     const title = pad(mediaInfo.title);
     const album = pad(mediaInfo.album);
     const artists = pad(mediaInfo.artists);
 
-    const detailsPrefix = settingsStore.get<string, string>(settings.discord.detailsPrefix) ?? "Listening to ";
-    presence.details = `${detailsPrefix}${title}`;
-    presence.state = artists ? artists : "unknown artist(s)";
     if (mediaInfo.url) {
+      presence.details = `${detailsPrefix}${title}`;
+      presence.state = artists ? artists : "unknown artist(s)";
       presence.largeImageKey = mediaInfo.image;
-      if (album) presence.largeImageText = album;
+      if (album) {
+        presence.largeImageText = album;
+      }
+
+      presence.buttons = [{ label: buttonText, url: mediaInfo.url }];
+    } else {
+      presence.details = `Watching ${title}`;
+      presence.state = artists;
     }
   }
 
-  function includeTimeStamps() {
+  function includeTimeStamps(includeTimestamps: boolean) {
+    if (includeTimestamps) {
       const currentSeconds = convertDurationToSeconds(mediaInfo.current);
       const durationSeconds = convertDurationToSeconds(mediaInfo.duration);
       const date = new Date();
       const now = Math.floor(date.getTime() / 1000);
       presence.startTimestamp = now - currentSeconds;
       presence.endTimestamp = presence.startTimestamp + durationSeconds;
+    }
   }
 };
 

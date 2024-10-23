@@ -20,6 +20,11 @@ const switchesWithSettings = {
     classToHide: "discord_options",
     settingsKey: settings.enableDiscord,
   },
+  discord_show_song: {
+    switch: "discord_show_song",
+    classToHide: "discord_show_song_options",
+    settingsKey: settings.discord.showSong,
+  },
 };
 
 let adBlock: HTMLInputElement,
@@ -49,7 +54,13 @@ let adBlock: HTMLInputElement,
   ListenBrainzToken: HTMLInputElement,
   listenbrainz_delay: HTMLInputElement,
   enableWaylandSupport: HTMLInputElement,
-  discord_details_prefix: HTMLInputElement
+  discord_details_prefix: HTMLInputElement,
+  discord_include_timestamps: HTMLInputElement,
+  discord_button_text: HTMLInputElement,
+  discord_show_song: HTMLInputElement,
+  discord_show_idle: HTMLInputElement,
+  discord_idle_text: HTMLInputElement,
+  discord_using_text: HTMLInputElement;
 
 addCustomCss(app);
 
@@ -138,6 +149,12 @@ function refreshSettings() {
     ListenBrainzToken.value = settingsStore.get(settings.ListenBrainz.token);
     listenbrainz_delay.value = settingsStore.get(settings.ListenBrainz.delay);
     discord_details_prefix.value = settingsStore.get(settings.discord.detailsPrefix);
+    discord_include_timestamps.checked = settingsStore.get(settings.discord.includeTimestamps);
+    discord_button_text.value = settingsStore.get(settings.discord.buttonText);
+    discord_show_song.checked = settingsStore.get(settings.discord.showSong);
+    discord_show_idle.checked = settingsStore.get(settings.discord.showIdle);
+    discord_idle_text.value = settingsStore.get(settings.discord.idleText);
+    discord_using_text.value = settingsStore.get(settings.discord.usingText);
 
     // set state of all switches with additional settings
     Object.values(switchesWithSettings).forEach((settingSwitch) => {
@@ -250,7 +267,13 @@ window.addEventListener("DOMContentLoaded", () => {
   ListenBrainzAPI = get("ListenBrainzAPI");
   ListenBrainzToken = get("ListenBrainzToken");
   discord_details_prefix = get("discord_details_prefix");
+  discord_include_timestamps = get("discord_include_timestamps");
   listenbrainz_delay = get("listenbrainz_delay");
+  discord_button_text = get("discord_button_text");
+  discord_show_song = get("discord_show_song");
+  discord_show_idle = get("discord_show_idle");
+  discord_using_text = get("discord_using_text");
+  discord_idle_text = get("discord_idle_text");
 
   refreshSettings();
   addInputListener(adBlock, settings.adBlock);
@@ -285,4 +308,14 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(ListenBrainzToken, settings.ListenBrainz.token);
   addInputListener(listenbrainz_delay, settings.ListenBrainz.delay);
   addInputListener(discord_details_prefix, settings.discord.detailsPrefix);
+  addInputListener(discord_include_timestamps, settings.discord.includeTimestamps);
+  addInputListener(discord_button_text, settings.discord.buttonText);
+  addInputListener(
+    discord_show_song,
+    settings.discord.showSong,
+    switchesWithSettings.discord_show_song
+  );
+  addInputListener(discord_show_idle, settings.discord.showIdle);
+  addInputListener(discord_idle_text, settings.discord.idleText);
+  addInputListener(discord_using_text, settings.discord.usingText);
 });
