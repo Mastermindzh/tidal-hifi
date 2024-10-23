@@ -595,8 +595,7 @@ setInterval(function () {
     };
 
     // update title, url and play info with new info
-    if(settingsStore.get(settings.staticWindowTitle)) setTitle(staticTitle)
-    else setTitle(songDashArtistTitle);
+    settingsStore.get(settings.staticWindowTitle) ? setTitle(staticTitle) : setTitle(songDashArtistTitle);
     getTrackURL();
     currentSong = songDashArtistTitle;
     currentPlayStatus = currentStatus;

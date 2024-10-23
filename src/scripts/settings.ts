@@ -69,9 +69,9 @@ export const settingsStore = new Store({
     singleInstance: true,
     skipArtists: false,
     skippedArtists: [""],
+    staticWindowTitle: false,
     theme: "none",
     trayIcon: true,
-    staticWindowTitle: false,
     updateFrequency: 500,
     windowBounds: { width: 800, height: 600 },
   },
@@ -128,7 +128,7 @@ const settingsModule = {
   settingsWindow,
 };
 
-export const createSettingsWindow = function() {
+export const createSettingsWindow = function () {
   settingsWindow = new BrowserWindow({
     width: 650,
     height: 700,
@@ -160,7 +160,7 @@ export const createSettingsWindow = function() {
   settingsModule.settingsWindow = settingsWindow;
 };
 
-export const showSettingsWindow = function(tab = "general") {
+export const showSettingsWindow = function (tab = "general") {
   if (!settingsWindow) {
     console.log("Settings window is not initialized. Attempting to create it.");
     createSettingsWindow();
@@ -171,11 +171,11 @@ export const showSettingsWindow = function(tab = "general") {
   settingsWindow.webContents.send("refreshData");
   settingsWindow.show();
 };
-export const hideSettingsWindow = function() {
+export const hideSettingsWindow = function () {
   settingsWindow.hide();
 };
 
-export const closeSettingsWindow = function() {
+export const closeSettingsWindow = function () {
   settingsWindow = null;
 };
 

@@ -46,9 +46,9 @@ let adBlock: HTMLInputElement,
   singleInstance: HTMLInputElement,
   skipArtists: HTMLInputElement,
   skippedArtists: HTMLInputElement,
+  staticWindowTitle: HTMLInputElement,
   theme: HTMLSelectElement,
   trayIcon: HTMLInputElement,
-  staticWindowTitle: HTMLInputElement,
   updateFrequency: HTMLInputElement,
   enableListenBrainz: HTMLInputElement,
   ListenBrainzAPI: HTMLInputElement,
@@ -141,10 +141,10 @@ function refreshSettings() {
     port.value = settingsStore.get(settings.apiSettings.port);
     singleInstance.checked = settingsStore.get(settings.singleInstance);
     skipArtists.checked = settingsStore.get(settings.skipArtists);
-    theme.value = settingsStore.get(settings.theme);
     skippedArtists.value = settingsStore.get<string, string[]>(settings.skippedArtists).join("\n");
-    trayIcon.checked = settingsStore.get(settings.trayIcon);
     staticWindowTitle.checked = settingsStore.get(settings.staticWindowTitle);
+    theme.value = settingsStore.get(settings.theme);
+    trayIcon.checked = settingsStore.get(settings.trayIcon);
     updateFrequency.value = settingsStore.get(settings.updateFrequency);
     enableListenBrainz.checked = settingsStore.get(settings.ListenBrainz.enabled);
     ListenBrainzAPI.value = settingsStore.get(settings.ListenBrainz.api);
@@ -261,9 +261,9 @@ window.addEventListener("DOMContentLoaded", () => {
   port = get("port");
   theme = get<HTMLSelectElement>("themesList");
   trayIcon = get("trayIcon");
-  staticWindowTitle = get("staticWindowTitle");
   skipArtists = get("skipArtists");
   skippedArtists = get("skippedArtists");
+  staticWindowTitle = get("staticWindowTitle");
   singleInstance = get("singleInstance");
   updateFrequency = get("updateFrequency");
   enableListenBrainz = get("enableListenBrainz");
@@ -298,10 +298,10 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(port, settings.apiSettings.port);
   addInputListener(skipArtists, settings.skipArtists);
   addTextAreaListener(skippedArtists, settings.skippedArtists);
+  addInputListener(staticWindowTitle, settings.staticWindowTitle);
   addInputListener(singleInstance, settings.singleInstance);
   addSelectListener(theme, settings.theme);
   addInputListener(trayIcon, settings.trayIcon);
-  addInputListener(staticWindowTitle, settings.staticWindowTitle);
   addInputListener(updateFrequency, settings.updateFrequency);
   addInputListener(
     enableListenBrainz,
