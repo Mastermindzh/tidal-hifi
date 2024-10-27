@@ -18,6 +18,7 @@
     repeat: '*[data-test="repeat"]',
     account: '*[data-test^="profile-image-button"]',
     settings: '*[data-test^="sidebar-menu-button"]',
+    openSettings: '*[data-test^="open-settings"]',
     media: '*[data-test="current-media-imagery"]',
     image: "img",
     current: '*[data-test="current-time"]',

@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added an option to disable the dynamic title and set it to a static one, [#491](https://github.com/Mastermindzh/tidal-hifi/pull/491)
 - Fixed several element names in the dom scraper
+- Removed Songwhip (they shut down) and replaced it with TIDAL's universal link system
 
 ## [5.16.0]
 

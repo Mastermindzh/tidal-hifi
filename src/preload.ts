@@ -10,7 +10,7 @@ import {
 } from "./features/listenbrainz/listenbrainz";
 import { StoreData } from "./features/listenbrainz/models/storeData";
 import { Logger } from "./features/logger";
-import { Songwhip } from "./features/songwhip/songwhip";
+import { SharingService } from "./features/sharingService/sharingService";
 import { addCustomCss } from "./features/theming/theming";
 import { convertDurationToSeconds } from "./features/time/parse";
 import { MediaInfo } from "./models/mediaInfo";
@@ -50,6 +50,7 @@ const elements = {
   repeat: '*[data-test="repeat"]',
   account: '*[data-test^="profile-image-button"]',
   settings: '*[data-test^="sidebar-menu-button"]',
+  openSettings: '*[data-test^="open-settings"]',
   media: '*[data-test="current-media-imagery"]',
   image: "img",
   current: '*[data-test="current-time"]',
@@ -220,9 +221,9 @@ ListenBrainzStore.clear();
 function addHotKeys() {
   if (settingsStore.get(settings.enableCustomHotkeys)) {
     addHotkey("Control+p", function () {
-      elements.click("account");
+      elements.click("settings");
       setTimeout(() => {
-        elements.click("settings");
+        elements.click("openSettings");
       }, 100);
     });
     addHotkey("Control+l", function () {
@@ -254,11 +255,10 @@ function addHotKeys() {
       elements.click("repeat");
     });
     addHotkey("control+w", async function () {
-      const result = await ipcRenderer.invoke(globalEvents.whip, getTrackURL());
-      const url = Songwhip.getWhipUrl(result);
+      const url = SharingService.getUniversalLink(getTrackURL());
       clipboard.writeText(url);
       new Notification({
-        title: `Successfully whipped: `,
+        title: `Universal link generated: `,
         body: `URL copied to clipboard: ${url}`,
       }).show();
     });
@@ -550,7 +550,7 @@ setInterval(function () {
   const artistsArray = elements.getArtistsArray();
   const artistsString = elements.getArtistsString(artistsArray);
   const songDashArtistTitle = `${title} - ${artistsString}`;
-  const staticTitle = "TIDAL Hi-Fi"
+  const staticTitle = "TIDAL Hi-Fi";
   const titleOrArtistsChanged = currentSong !== songDashArtistTitle;
   const current = elements.getText("current");
   const currentStatus = getCurrentlyPlayingStatus();
@@ -595,7 +595,9 @@ setInterval(function () {
     };
 
     // update title, url and play info with new info
-    settingsStore.get(settings.staticWindowTitle) ? setTitle(staticTitle) : setTitle(songDashArtistTitle);
+    settingsStore.get(settings.staticWindowTitle)
+      ? setTitle(staticTitle)
+      : setTitle(songDashArtistTitle);
     getTrackURL();
     currentSong = songDashArtistTitle;
     currentPlayStatus = currentStatus;

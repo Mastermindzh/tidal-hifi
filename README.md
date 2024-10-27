@@ -48,7 +48,6 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
 - AlbumArt in integrations ([best-effort](https://github.com/Mastermindzh/tidal-hifi/pull/88#pullrequestreview-840814847))
 - Custom [integrations](#integrations)
   - [ListenBrainz](https://listenbrainz.org/?redirect=false) integration
-  - Songwhip.com integration (hotkey `ctrl + w`)
   - Discord RPC integration (showing "now listening", "Browsing", etc)
     - Flatpak version only works if both Discord and Tidal-HiFi are flatpaks
   - MPRIS integration
