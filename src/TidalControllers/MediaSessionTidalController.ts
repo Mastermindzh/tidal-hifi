@@ -1,5 +1,5 @@
 import { DomTidalController } from "./DomTidalController";
-import { TidalController } from "./MediaController";
+import { TidalController } from "./TidalController";
 
 export class MediaSessionTidalController implements TidalController {
   public domMediaController: TidalController;

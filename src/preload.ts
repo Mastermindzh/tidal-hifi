@@ -23,7 +23,7 @@ import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
 import { DomTidalController } from "./TidalControllers/DomTidalController";
 import { MediaSessionTidalController } from "./TidalControllers/MediaSessionTidalController";
-import { TidalController } from "./TidalControllers/MediaController";
+import { TidalController } from "./TidalControllers/TidalController";
 
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 let currentSong = "";

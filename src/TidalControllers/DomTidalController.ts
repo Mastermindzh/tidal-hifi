@@ -1,4 +1,4 @@
-import { TidalController } from "./MediaController";
+import { TidalController } from "./TidalController";
 
 export class DomTidalController implements TidalController {
   public elements = {
