@@ -7,8 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [5.17.0]
 
 - Added an option to disable the dynamic title and set it to a static one, [#491](https://github.com/Mastermindzh/tidal-hifi/pull/491)
+- Discord integration now says "Listening to" instead of "playing" [#488](https://github.com/Mastermindzh/tidal-hifi/pull/488) && [#454](https://github.com/Mastermindzh/tidal-hifi/pull/454)
 - Fixed several element names in the dom scraper
-- Removed Songwhip (they shut down) and replaced it with TIDAL's universal link system
+- Removed the Songwhip (they shut down) integration and replaced it with TIDAL's universal link system
 
 ## [5.16.0]
 
