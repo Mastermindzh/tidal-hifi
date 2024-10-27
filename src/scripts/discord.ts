@@ -1,4 +1,4 @@
-import { Client, Presence } from "discord-rpc";
+import { Client, SetActivity } from "@xhayper/discord-rpc";
 import { app, ipcMain } from "electron";
 import { globalEvents } from "../constants/globalEvents";
 import { settings } from "../constants/settings";
@@ -12,6 +12,10 @@ const clientId = "833617820704440341";
 
 export let rpc: Client;
 
+const ACTIVITY_LISTENING = 2;
+const MAX_RETRIES = 5;
+const RETRY_DELAY = 10000;
+
 const observer = () => {
   if (rpc) {
     updateActivity();
@@ -22,19 +26,20 @@ const defaultPresence = {
   largeImageKey: "tidal-hifi-icon",
   largeImageText: `TIDAL Hi-Fi ${app.getVersion()}`,
   instance: false,
+  type: ACTIVITY_LISTENING
 };
 
 const updateActivity = () => {
   const showIdle = settingsStore.get<string, boolean>(settings.discord.showIdle) ?? true;
   if (mediaInfo.status === MediaStatus.paused && !showIdle) {
-    rpc.clearActivity();
+    rpc.user?.clearActivity();
   } else {
-    rpc.setActivity(getActivity());
+    rpc.user?.setActivity(getActivity());
   }
 };
 
-const getActivity = (): Presence => {
-  const presence: Presence = { ...defaultPresence };
+const getActivity = (): SetActivity => {
+  const presence: SetActivity = { ...defaultPresence };
 
   if (mediaInfo.status === MediaStatus.paused) {
     presence.details =
@@ -50,6 +55,7 @@ const getActivity = (): Presence => {
         settingsStore.get<string, string>(settings.discord.usingText) ?? "Playing media on TIDAL";
     }
   }
+
   return presence;
 
   function getFromStore() {
@@ -98,10 +104,29 @@ const getActivity = (): Presence => {
       const currentSeconds = convertDurationToSeconds(mediaInfo.current);
       const durationSeconds = convertDurationToSeconds(mediaInfo.duration);
       const date = new Date();
-      const now = (date.getTime() / 1000) | 0;
-      const remaining = date.setSeconds(date.getSeconds() + (durationSeconds - currentSeconds));
-      presence.startTimestamp = now;
-      presence.endTimestamp = remaining;
+      const now = Math.floor(date.getTime() / 1000);
+      presence.startTimestamp = now - currentSeconds;
+      presence.endTimestamp = presence.startTimestamp + durationSeconds;
+    }
+  }
+};
+
+/**
+ * Try to login to RPC and retry if it errors
+ * @param retryCount Max retry count
+ */
+const connectWithRetry = async (retryCount = 0) => {
+  try {
+    await rpc.login();
+    Logger.log('Connected to Discord');
+    rpc.on("ready", updateActivity);
+    Object.values(globalEvents).forEach(event => ipcMain.on(event, observer));
+  } catch (error) {
+    if (retryCount < MAX_RETRIES) {
+      Logger.log(`Failed to connect to Discord, retrying in ${RETRY_DELAY/1000} seconds... (Attempt ${retryCount + 1}/${MAX_RETRIES})`);
+      setTimeout(() => connectWithRetry(retryCount + 1), RETRY_DELAY);
+    } else {
+      Logger.log('Failed to connect to Discord after maximum retry attempts');
     }
   }
 };
@@ -110,22 +135,8 @@ const getActivity = (): Presence => {
  * Set up the discord rpc and listen on globalEvents.updateInfo
  */
 export const initRPC = () => {
-  rpc = new Client({ transport: "ipc" });
-  rpc.login({ clientId }).then(
-    () => {
-      rpc.on("ready", () => {
-        updateActivity();
-      });
-
-      const { updateInfo, play, pause, playPause } = globalEvents;
-      [updateInfo, play, pause, playPause].forEach((status) => {
-        ipcMain.on(status, observer);
-      });
-    },
-    () => {
-      Logger.log("Can't connect to Discord, is it running?");
-    }
-  );
+  rpc = new Client({ transport: {type: "ipc"}, clientId });
+  connectWithRetry();
 };
 
 /**
@@ -133,7 +144,7 @@ export const initRPC = () => {
  */
 export const unRPC = () => {
   if (rpc) {
-    rpc.clearActivity();
+    rpc.user?.clearActivity();
     rpc.destroy();
     rpc = null;
     ipcMain.removeListener(globalEvents.updateInfo, observer);
