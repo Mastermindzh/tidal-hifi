@@ -21,6 +21,9 @@ import { addHotkey } from "./scripts/hotkeys";
 import { ObjectToDotNotation } from "./scripts/objectUtilities";
 import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
+import { DomTidalController } from "./TidalControllers/DomTidalController";
+import { MediaSessionTidalController } from "./TidalControllers/MediaSessionTidalController";
+import { TidalController } from "./TidalControllers/MediaController";
 
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 let currentSong = "";
@@ -34,6 +37,16 @@ let currentRepeatState: RepeatState = RepeatState.off;
 let currentShuffleState = false;
 let currentMediaInfo: MediaInfo;
 let currentNotification: Electron.Notification;
+
+let tidalController: TidalController;
+
+// TODO: replace with setting
+// eslint-disable-next-line no-constant-condition
+if (true) {
+  tidalController = new DomTidalController();
+} else {
+  tidalController = new MediaSessionTidalController();
+}
 
 const elements = {
   play: '*[data-test="play"]',
@@ -196,19 +209,6 @@ function getUpdateFrequency() {
 }
 
 /**
- * Play or pause the current media
- */
-function playPause() {
-  const play = elements.get("play");
-
-  if (play) {
-    elements.click("play");
-  } else {
-    elements.click("pause");
-  }
-}
-
-/**
  * Clears the old listenbrainz data on launch
  */
 ListenBrainzStore.clear();
@@ -235,7 +235,7 @@ function addHotKeys() {
     });
 
     addHotkey("Control+h", function () {
-      elements.click("home");
+      tidalController.goToHome();
     });
 
     addHotkey("backspace", function () {
@@ -319,7 +319,7 @@ function addIPCEventListeners() {
         case globalEvents.playPause:
         case globalEvents.play:
         case globalEvents.pause:
-          playPause();
+          tidalController.playPause();
           break;
         case globalEvents.next:
           elements.click("next");
@@ -455,7 +455,7 @@ function addMPRIS() {
           const eventValue = events[eventName];
           switch (events[eventValue]) {
             case events.playpause:
-              playPause();
+              tidalController.playPause();
               break;
             default:
               elements.click(eventValue);
