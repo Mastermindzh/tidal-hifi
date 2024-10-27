@@ -550,6 +550,7 @@ setInterval(function () {
   const artistsArray = elements.getArtistsArray();
   const artistsString = elements.getArtistsString(artistsArray);
   const songDashArtistTitle = `${title} - ${artistsString}`;
+  const staticTitle = "TIDAL Hi-Fi"
   const titleOrArtistsChanged = currentSong !== songDashArtistTitle;
   const current = elements.getText("current");
   const currentStatus = getCurrentlyPlayingStatus();
@@ -594,7 +595,7 @@ setInterval(function () {
     };
 
     // update title, url and play info with new info
-    setTitle(songDashArtistTitle);
+    settingsStore.get(settings.staticWindowTitle) ? setTitle(staticTitle) : setTitle(songDashArtistTitle);
     getTrackURL();
     currentSong = songDashArtistTitle;
     currentPlayStatus = currentStatus;

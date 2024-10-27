@@ -46,6 +46,7 @@ let adBlock: HTMLInputElement,
   singleInstance: HTMLInputElement,
   skipArtists: HTMLInputElement,
   skippedArtists: HTMLInputElement,
+  staticWindowTitle: HTMLInputElement,
   theme: HTMLSelectElement,
   trayIcon: HTMLInputElement,
   updateFrequency: HTMLInputElement,
@@ -140,8 +141,9 @@ function refreshSettings() {
     port.value = settingsStore.get(settings.apiSettings.port);
     singleInstance.checked = settingsStore.get(settings.singleInstance);
     skipArtists.checked = settingsStore.get(settings.skipArtists);
-    theme.value = settingsStore.get(settings.theme);
     skippedArtists.value = settingsStore.get<string, string[]>(settings.skippedArtists).join("\n");
+    staticWindowTitle.checked = settingsStore.get(settings.staticWindowTitle);
+    theme.value = settingsStore.get(settings.theme);
     trayIcon.checked = settingsStore.get(settings.trayIcon);
     updateFrequency.value = settingsStore.get(settings.updateFrequency);
     enableListenBrainz.checked = settingsStore.get(settings.ListenBrainz.enabled);
@@ -261,6 +263,7 @@ window.addEventListener("DOMContentLoaded", () => {
   trayIcon = get("trayIcon");
   skipArtists = get("skipArtists");
   skippedArtists = get("skippedArtists");
+  staticWindowTitle = get("staticWindowTitle");
   singleInstance = get("singleInstance");
   updateFrequency = get("updateFrequency");
   enableListenBrainz = get("enableListenBrainz");
@@ -295,6 +298,7 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(port, settings.apiSettings.port);
   addInputListener(skipArtists, settings.skipArtists);
   addTextAreaListener(skippedArtists, settings.skippedArtists);
+  addInputListener(staticWindowTitle, settings.staticWindowTitle);
   addInputListener(singleInstance, settings.singleInstance);
   addSelectListener(theme, settings.theme);
   addInputListener(trayIcon, settings.trayIcon);

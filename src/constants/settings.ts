@@ -55,6 +55,7 @@ export const settings = {
   singleInstance: "singleInstance",
   skipArtists: "skipArtists",
   skippedArtists: "skippedArtists",
+  staticWindowTitle: "staticWindowTitle",
   theme: "theme",
   trayIcon: "trayIcon",
   updateFrequency: "updateFrequency",
