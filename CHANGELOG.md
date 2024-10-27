@@ -4,6 +4,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.17.0]
+
+- Added an option to disable the dynamic title and set it to a static one, [#491](https://github.com/Mastermindzh/tidal-hifi/pull/491)
+- Discord integration now says "Listening to" instead of "playing" [#488](https://github.com/Mastermindzh/tidal-hifi/pull/488) && [#454](https://github.com/Mastermindzh/tidal-hifi/pull/454)
+- Fixed several element names in the dom scraper
+- Removed the Songwhip (they shut down) integration and replaced it with TIDAL's universal link system
+
 ## [5.16.0]
 
 - Fix issue #449 Discord RPC stuck on "Browsing Tidal".

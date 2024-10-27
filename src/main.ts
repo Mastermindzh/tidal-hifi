@@ -10,7 +10,7 @@ import {
   releaseInhibitorIfActive,
 } from "./features/idleInhibitor/idleInhibitor";
 import { Logger } from "./features/logger";
-import { Songwhip } from "./features/songwhip/songwhip";
+import { SharingService } from "./features/sharingService/sharingService";
 import { MediaInfo } from "./models/mediaInfo";
 import { MediaStatus } from "./models/mediaStatus";
 import { initRPC, rpc, unRPC } from "./scripts/discord";
@@ -250,8 +250,8 @@ ipcMain.on(globalEvents.error, (event) => {
   console.log(event);
 });
 
-ipcMain.handle(globalEvents.whip, async (event, url) => {
-  return Songwhip.whip(url);
+ipcMain.handle(globalEvents.getUniversalLink, async (event, url) => {
+  return SharingService.getUniversalLink(url);
 });
 
 Logger.watch(ipcMain);

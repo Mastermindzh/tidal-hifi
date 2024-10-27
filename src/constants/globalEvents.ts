@@ -10,7 +10,7 @@ export const globalEvents = {
   showSettings: "showSettings",
   storeChanged: "storeChanged",
   error: "error",
-  whip: "whip",
+  getUniversalLink: "getUniversalLink",
   log: "log",
   toggleFavorite: "toggleFavorite",
   toggleShuffle: "toggleShuffle",
