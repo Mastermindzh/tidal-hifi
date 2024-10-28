@@ -1,7 +1,20 @@
+import { MediaStatus } from "../models/mediaStatus";
+import { RepeatState } from "../models/repeatState";
 import { TidalController } from "./TidalController";
 
 export class DomTidalController implements TidalController {
-  public elements = {
+  private currentPlayStatus = MediaStatus.paused;
+
+  /**
+   * Convert the duration from MM:SS to seconds
+   * @param {*} duration
+   */
+  private convertDuration(duration: string) {
+    const parts = duration.split(":");
+    return parseInt(parts[1]) + 60 * parseInt(parts[0]);
+  }
+
+  private readonly elements = {
     play: '*[data-test="play"]',
     pause: '*[data-test="pause"]',
     next: '*[data-test="next"]',
@@ -93,15 +106,14 @@ export class DomTidalController implements TidalController {
         globalThis.location.href.includes("/playlist/") ||
         globalThis.location.href.includes("/mix/")
       ) {
-        // TODO: fix
-        // if (currentPlayStatus === MediaStatus.playing) {
-        //   // find the currently playing element from the list (which might be in an album icon), traverse back up to the mediaItem (row) and select the album cell.
-        //   // document.querySelector("[class^='isPlayingIcon'], [data-test-is-playing='true']").closest('[data-type="mediaItem"]').querySelector('[class^="album"]').textContent
-        //   const row = window.document.querySelector(this.currentlyPlaying).closest(this.mediaItem);
-        //   if (row) {
-        //     return row.querySelector(this.album_name_cell).textContent;
-        //   }
-        // }
+        if (this.currentPlayStatus === MediaStatus.playing) {
+          // find the currently playing element from the list (which might be in an album icon), traverse back up to the mediaItem (row) and select the album cell.
+          // document.querySelector("[class^='isPlayingIcon'], [data-test-is-playing='true']").closest('[data-type="mediaItem"]').querySelector('[class^="album"]').textContent
+          const row = window.document.querySelector(this.currentlyPlaying).closest(this.mediaItem);
+          if (row) {
+            return row.querySelector(this.album_name_cell).textContent;
+          }
+        }
       }
 
       // see whether we're on the queue page and get it from there
@@ -162,7 +174,122 @@ export class DomTidalController implements TidalController {
     this.elements.click("home");
   }
 
-  hookup = (): void => {
-    throw new Error("Method not implemented.");
-  };
+  openSettings(): void {
+    this.elements.click("settings");
+    setTimeout(() => {
+      this.elements.click("openSettings");
+    }, 100);
+  }
+
+  toggleFavorite(): void {
+    this.elements.click("favorite");
+  }
+
+  back(): void {
+    this.elements.click("back");
+  }
+  forward(): void {
+    this.elements.click("forward");
+  }
+  repeat(): void {
+    this.elements.click("repeat");
+  }
+
+  next(): void {
+    this.elements.click("next");
+  }
+  previous(): void {
+    this.elements.click("previous");
+  }
+  toggleShuffle(): void {
+    this.elements.click("shuffle");
+  }
+  getCurrentlyPlayingStatus() {
+    const pause = this.elements.get("pause");
+
+    // if pause button is visible tidal is playing
+    if (pause) {
+      return MediaStatus.playing;
+    } else {
+      return MediaStatus.paused;
+    }
+  }
+
+  getCurrentShuffleState() {
+    const shuffle = this.elements.get("shuffle");
+    return shuffle?.getAttribute("aria-checked") === "true";
+  }
+
+  getCurrentRepeatState() {
+    const repeat = this.elements.get("repeat");
+    switch (repeat?.getAttribute("data-type")) {
+      case "button__repeatAll":
+        return RepeatState.all;
+      case "button__repeatSingle":
+        return RepeatState.single;
+      default:
+        return RepeatState.off;
+    }
+  }
+
+  play(): void {
+    this.playPause();
+  }
+  pause(): void {
+    this.playPause();
+  }
+  stop(): void {
+    this.playPause();
+  }
+
+  getCurrentPosition() {
+    return this.elements.getText("current");
+  }
+  getCurrentPositionInSeconds(): number {
+    return this.convertDuration(this.getCurrentPosition()) * 1000 * 1000;
+  }
+
+  getTrackId(): string {
+    const URLelement = this.elements.get("title").querySelector("a");
+    if (URLelement !== null) {
+      const id = URLelement.href.replace(/\D/g, "");
+      return id;
+    }
+
+    return window.location.toString();
+  }
+
+  getCurrentTime(): string {
+    return this.elements.getText("current");
+  }
+  getDuration(): string {
+    return this.elements.getText("duration");
+  }
+
+  getAlbumName(): string {
+    return this.elements.getAlbumName();
+  }
+  getTitle(): string {
+    return this.elements.getText("title");
+  }
+  getArtists(): string[] {
+    return this.elements.getArtistsArray();
+  }
+
+  getArtistsString(): string {
+    return this.elements.getArtistsString(this.getArtists());
+  }
+  getPlayingFrom(): string {
+    return this.elements.getText("playing_from");
+  }
+
+  isFavorite(): boolean {
+    return this.elements.isFavorite();
+  }
+  getSongIcon(): string {
+    return this.elements.getSongIcon();
+  }
+  setPlayStatus(status: MediaStatus): void {
+    this.currentPlayStatus = status;
+  }
 }
