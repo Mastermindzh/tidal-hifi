@@ -38,6 +38,9 @@ const updateActivity = () => {
   }
 };
 
+let prevEndTimestamp = 0;
+let prevStartTimestamp = 0;
+
 const getActivity = (): SetActivity => {
   const presence: SetActivity = { ...defaultPresence };
 
@@ -103,11 +106,11 @@ const getActivity = (): SetActivity => {
     if (includeTimestamps) {
       const currentSeconds = convertDurationToSeconds(mediaInfo.current);
       const durationSeconds = convertDurationToSeconds(mediaInfo.duration);
-      const date = new Date();
-      const now = Math.floor(date.getTime() / 1000);
+      const now = Math.trunc(Date.now() / 1000);
+
       presence.startTimestamp = now - currentSeconds;
       presence.endTimestamp = presence.startTimestamp + durationSeconds;
-    }
+    } 
   }
 };
 
