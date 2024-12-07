@@ -1,5 +1,5 @@
 import fs from "fs";
-import request from "request";
+import axios from "axios";
 
 /**
  * download and save a file
@@ -8,16 +8,16 @@ import request from "request";
  */
 export const downloadFile = function (fileUrl: string, targetPath: string) {
   return new Promise((resolve, reject) => {
-    const req = request({
-      method: "GET",
-      uri: fileUrl,
-    });
+    axios.get(fileUrl, {
+      responseType: 'stream'
+    }).then((req) => {
+      const out = fs.createWriteStream(targetPath);
 
-    const out = fs.createWriteStream(targetPath);
-    req.pipe(out);
+      req.data.pipe(out);
 
-    req.on("end", resolve);
+      out.on("finish", resolve);
 
-    req.on("error", reject);
+      out.on("error", reject);
+    }).catch(reject);
   });
 };
