@@ -103,7 +103,8 @@ const getActivity = (): SetActivity => {
     if (includeTimestamps) {
       const currentSeconds = convertDurationToSeconds(mediaInfo.current);
       const durationSeconds = convertDurationToSeconds(mediaInfo.duration);
-      const now = Math.trunc((Date.now() + 500) / 1000);
+      const date = new Date();
+      const now = Math.floor(date.getTime() / 1000);
       presence.startTimestamp = now - currentSeconds;
       presence.endTimestamp = presence.startTimestamp + durationSeconds;
     }
