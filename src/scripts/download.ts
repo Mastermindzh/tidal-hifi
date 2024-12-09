@@ -8,16 +8,19 @@ import axios from "axios";
  */
 export const downloadFile = function (fileUrl: string, targetPath: string) {
   return new Promise((resolve, reject) => {
-    axios.get(fileUrl, {
-      responseType: 'stream'
-    }).then((req) => {
-      const out = fs.createWriteStream(targetPath);
+    axios
+      .get(fileUrl, {
+        responseType: "stream",
+      })
+      .then((req) => {
+        const out = fs.createWriteStream(targetPath);
 
-      req.data.pipe(out);
+        req.data.pipe(out);
 
-      out.on("finish", resolve);
+        out.on("finish", resolve);
 
-      out.on("error", reject);
-    }).catch(reject);
+        out.on("error", reject);
+      })
+      .catch(reject);
   });
 };
