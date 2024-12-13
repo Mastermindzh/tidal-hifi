@@ -16,7 +16,7 @@ import { convertDurationToSeconds } from "./features/time/parse";
 import { MediaInfo } from "./models/mediaInfo";
 import { MediaStatus } from "./models/mediaStatus";
 import { RepeatState } from "./models/repeatState";
-import { downloadFile } from "./scripts/download";
+import { downloadFile } from "./scripts/downloadPreload";
 import { addHotkey } from "./scripts/hotkeys";
 import { ObjectToDotNotation } from "./scripts/objectUtilities";
 import { settingsStore } from "./scripts/settings";
