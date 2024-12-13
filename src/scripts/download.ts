@@ -15,13 +15,13 @@ export const downloadFile = function (fileUrl: string, targetPath: string) {
       .then((res) => {
         const out = fs.createWriteStream(targetPath);
 
-      res.data.pipe(out);
+        res.data.pipe(out);
 
-      out.on("finish", resolve);
+        out.on("finish", resolve);
 
-      out.on("error", reject);
+        out.on("error", reject);
 
-      res.data.on("error", reject);
-    }).catch(reject);
+        res.data.on("error", reject);
+      }).catch(reject);
   });
 };
