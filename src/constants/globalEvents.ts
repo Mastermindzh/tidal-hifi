@@ -15,4 +15,6 @@ export const globalEvents = {
   toggleFavorite: "toggleFavorite",
   toggleShuffle: "toggleShuffle",
   toggleRepeat: "toggleRepeat",
+  axios: "axios",
+  axiosReply: "axiosReply",
 };

@@ -24,6 +24,7 @@ import {
   showSettingsWindow,
 } from "./scripts/settings";
 import { addTray, refreshTray } from "./scripts/tray";
+import { downloadFile } from "./scripts/download";
 let mainInhibitorId = -1;
 
 initialize();
@@ -248,6 +249,16 @@ ipcMain.on(globalEvents.storeChanged, () => {
 
 ipcMain.on(globalEvents.error, (event) => {
   console.log(event);
+});
+
+ipcMain.on(globalEvents.axios, (event, fileUrl: string, targetPath: string) => {
+  const download = downloadFile(fileUrl, targetPath);
+  download.then(() => {
+    event.reply(globalEvents.axiosReply, fileUrl, targetPath, false);
+  }).catch(() => {
+    // don't send error information, it isn't used anyways
+    event.reply(globalEvents.axiosReply, fileUrl, targetPath, true);
+  });
 });
 
 ipcMain.handle(globalEvents.getUniversalLink, async (event, url) => {
