@@ -3,6 +3,7 @@ import { clipboard, ipcRenderer } from "electron";
 import Player from "mpris-service";
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
+import { downloadIcon } from "./features/icon/downloadIcon";
 import {
   ListenBrainz,
   ListenBrainzConstants,
@@ -10,39 +11,42 @@ import {
 } from "./features/listenbrainz/listenbrainz";
 import { StoreData } from "./features/listenbrainz/models/storeData";
 import { Logger } from "./features/logger";
-import { SharingService } from "./features/sharingService/sharingService";
 import { addCustomCss } from "./features/theming/theming";
+import { getTrackURL, getUniversalLink } from "./features/tidal/url";
 import { convertDurationToSeconds } from "./features/time/parse";
-import { MediaInfo } from "./models/mediaInfo";
+import { getEmptyMediaInfo, MediaInfo } from "./models/mediaInfo";
 import { MediaStatus } from "./models/mediaStatus";
-import { RepeatState } from "./models/repeatState";
-import { downloadFile } from "./scripts/download";
 import { addHotkey } from "./scripts/hotkeys";
 import { ObjectToDotNotation } from "./scripts/objectUtilities";
 import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
-import { DomTidalController } from "./TidalControllers/DomTidalController";
+import { DomControllerOptions } from "./TidalControllers/DomController/DomControllerOptions";
+import { DomTidalController } from "./TidalControllers/DomController/DomTidalController";
 import { MediaSessionTidalController } from "./TidalControllers/MediaSessionTidalController";
 import { TidalController } from "./TidalControllers/TidalController";
 
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
+const staticTitle = "TIDAL Hi-Fi";
+
 let currentSong = "";
 let player: Player;
 let currentListenBrainzDelayId: ReturnType<typeof setTimeout>;
 let scrobbleWaitingForDelay = false;
 
-let currentlyPlaying = MediaStatus.paused;
-let currentRepeatState: RepeatState = RepeatState.off;
-let currentShuffleState = false;
-let currentMediaInfo: MediaInfo;
 let currentNotification: Electron.Notification;
 
 let tidalController: TidalController;
+let controllerOptions = {};
+let currentMediaInfo = getEmptyMediaInfo();
 
 // TODO: replace with setting
 // eslint-disable-next-line no-constant-condition
 if (true) {
   tidalController = new DomTidalController();
+  const domControllerOptions: DomControllerOptions = {
+    refreshInterval: getDomUpdateFrequency(),
+  };
+  controllerOptions = domControllerOptions;
 } else {
   tidalController = new MediaSessionTidalController();
 }
@@ -51,7 +55,7 @@ if (true) {
  * Get the update frequency from the store
  * make sure it returns a number, if not use the default
  */
-function getUpdateFrequency() {
+function getDomUpdateFrequency() {
   const storeValue = settingsStore.get<string, number>(settings.updateFrequency);
   const defaultValue = 500;
 
@@ -105,7 +109,7 @@ function addHotKeys() {
       tidalController.repeat();
     });
     addHotkey("control+w", async function () {
-      const url = SharingService.getUniversalLink(getTrackURL());
+      const url = getUniversalLink(getTrackURL(tidalController.getTrackId()));
       clipboard.writeText(url);
       new Notification({
         title: `Universal link generated: `,
@@ -194,22 +198,12 @@ function addIPCEventListeners() {
 }
 
 /**
- * Convert the duration from MM:SS to seconds
- * @param {*} duration
- */
-function convertDuration(duration: string) {
-  const parts = duration.split(":");
-  return parseInt(parts[1]) + 60 * parseInt(parts[0]);
-}
-
-/**
  * Update Tidal-hifi's media info
  *
  * @param {*} mediaInfo
  */
 function updateMediaInfo(mediaInfo: MediaInfo, notify: boolean) {
   if (mediaInfo) {
-    currentMediaInfo = mediaInfo;
     ipcRenderer.send(globalEvents.updateInfo, mediaInfo);
     updateMpris(mediaInfo);
     updateListenBrainz(mediaInfo);
@@ -320,7 +314,7 @@ function updateMpris(mediaInfo: MediaInfo) {
         "xesam:artist": [mediaInfo.artists],
         "xesam:album": mediaInfo.album,
         "mpris:artUrl": mediaInfo.image,
-        "mpris:length": convertDuration(mediaInfo.duration) * 1000 * 1000,
+        "mpris:length": convertDurationToSeconds(mediaInfo.duration) * 1000 * 1000,
         "mpris:trackid": "/org/mpris/MediaPlayer2/track/" + tidalController.getTrackId(),
       },
       ...ObjectToDotNotation(mediaInfo, "custom:"),
@@ -348,7 +342,7 @@ function updateListenBrainz(mediaInfo: MediaInfo) {
               mediaInfo.title,
               mediaInfo.artists,
               mediaInfo.status,
-              convertDuration(mediaInfo.duration)
+              convertDurationToSeconds(mediaInfo.duration)
             );
             scrobbleWaitingForDelay = false;
           },
@@ -359,103 +353,36 @@ function updateListenBrainz(mediaInfo: MediaInfo) {
   }
 }
 
-/**
- * Checks if Tidal is playing a video or song by grabbing the "a" element from the title.
- * If it's a song it returns the track URL, if not it will return undefined
- */
-function getTrackURL() {
-  const id = tidalController.getTrackId();
-  return `https://tidal.com/browse/track/${id}`;
-}
+tidalController.bootstrap(controllerOptions);
+tidalController.onMediaInfoUpdate(async (newState) => {
+  currentMediaInfo = { ...currentMediaInfo, ...newState };
 
-/**
- * Watch for song changes and update title + notify
- */
-setInterval(function () {
-  const title = tidalController.getTitle();
-  const artistsArray = tidalController.getArtists();
-  const artistsString = tidalController.getArtistsString();
-  const songDashArtistTitle = `${title} - ${artistsString}`;
-  const staticTitle = "TIDAL Hi-Fi";
-  const titleOrArtistsChanged = currentSong !== songDashArtistTitle;
-  const current = tidalController.getCurrentTime();
-  const currentStatus = tidalController.getCurrentlyPlayingStatus();
-  const shuffleState = tidalController.getCurrentShuffleState();
-  const repeatState = tidalController.getCurrentRepeatState();
+  const songDashArtistTitle = `${currentMediaInfo.title} - ${currentMediaInfo.artists}`;
+  const isNewSong = currentSong !== songDashArtistTitle;
 
-  const playStateChanged = currentStatus != currentlyPlaying;
-  const shuffleStateChanged = shuffleState != currentShuffleState;
-  const repeatStateChanged = repeatState != currentRepeatState;
+  if (isNewSong) {
+    // check whether one of the artists is in the "skip artist" array, if so, skip...
+    skipArtistsIfFoundInSkippedArtistsList(currentMediaInfo.artistsArray ?? []);
 
-  const hasStateChanged = playStateChanged || shuffleStateChanged || repeatStateChanged;
+    // update the currently playing song
+    currentSong = songDashArtistTitle;
 
-  // update info if song changed or was just paused/resumed
-  if (titleOrArtistsChanged || hasStateChanged) {
-    if (playStateChanged) currentlyPlaying = currentStatus;
-    if (shuffleStateChanged) currentShuffleState = shuffleState;
-    if (repeatStateChanged) currentRepeatState = repeatState;
-
-    skipArtistsIfFoundInSkippedArtistsList(artistsArray);
-    const album = tidalController.getAlbumName();
-    const duration = tidalController.getDuration();
-    const options: MediaInfo = {
-      title,
-      artists: artistsString,
-      album: album,
-      playingFrom: tidalController.getPlayingFrom(),
-      status: currentStatus,
-      url: getTrackURL(),
-      current,
-      currentInSeconds: convertDurationToSeconds(current),
-      duration,
-      durationInSeconds: convertDurationToSeconds(duration),
-      image: "",
-      icon: "",
-      favorite: tidalController.isFavorite(),
-
-      player: {
-        status: currentStatus,
-        shuffle: shuffleState,
-        repeat: repeatState,
-      },
-    };
-
-    // update title, url and play info with new info
+    // update the window title with the new info
     settingsStore.get(settings.staticWindowTitle)
       ? setTitle(staticTitle)
-      : setTitle(songDashArtistTitle);
-    getTrackURL();
-    currentSong = songDashArtistTitle;
-    tidalController.setPlayStatus(currentStatus);
+      : setTitle(`${currentMediaInfo.title} - ${currentMediaInfo.artists}`);
 
-    const image = tidalController.getSongIcon();
+    // download a new icon and use it for the media info
+    if (!newState.icon && newState.image) {
+      currentMediaInfo.icon = await downloadIcon(currentMediaInfo.image, notificationPath);
+    } else {
+      currentMediaInfo.icon = "";
+    }
 
-    new Promise<void>((resolve) => {
-      if (image.startsWith("http")) {
-        options.image = image;
-        downloadFile(image, notificationPath).then(
-          () => {
-            options.icon = notificationPath;
-            resolve();
-          },
-          () => {
-            // if the image can't be downloaded then continue without it
-            resolve();
-          }
-        );
-      } else {
-        // if the image can't be found on the page continue without it
-        resolve();
-      }
-    }).then(() => {
-      updateMediaInfo(options, titleOrArtistsChanged);
-    });
+    updateMediaInfo(currentMediaInfo, true);
   } else {
-    // just update the time
-    updateMediaInfo(
-      { ...currentMediaInfo, ...{ current, currentInSeconds: convertDurationToSeconds(current) } },
-      false
-    );
+    // if titleOrArtists didn't change then only minor mediaInfo (like timings) changed, so don't bother the user with notifications
+    updateMediaInfo(currentMediaInfo, false);
   }
 
   /**
@@ -475,8 +402,7 @@ setInterval(function () {
       }
     }
   }
-}, getUpdateFrequency());
-
+});
 addMPRIS();
 addCustomCss(app);
 addHotKeys();

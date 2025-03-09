@@ -1,7 +1,8 @@
+import { MediaInfo } from "../models/mediaInfo";
 import { MediaStatus } from "../models/mediaStatus";
 import { RepeatState } from "../models/repeatState";
 
-export interface TidalController {
+export interface TidalController<TBootstrapOptions = object> {
   goToHome(): void;
   openSettings(): void;
 
@@ -21,6 +22,17 @@ export interface TidalController {
   toggleShuffle(): void;
 
   /**
+   * Optional setup/startup/bootstrap for this controller
+   */
+  bootstrap(options: TBootstrapOptions): void;
+
+  /**
+   * Method that triggers every time the MediaInfo updates
+   * @param callback function that receives the updated media info
+   */
+  onMediaInfoUpdate(callback: (state: Partial<MediaInfo>) => void): void;
+
+  /**
    * Update the current status of tidal (e.g playing or paused)
    */
   getCurrentlyPlayingStatus(): MediaStatus;
@@ -37,11 +49,5 @@ export interface TidalController {
   getArtistsString(): string;
   getPlayingFrom(): string;
   getSongIcon(): string;
-
   isFavorite(): boolean;
-  // add an observable to react on instead of a hookup function
-  // onMediaChange(): any;
-
-  // this can probably be removed after ^
-  setPlayStatus(status: MediaStatus): void;
 }

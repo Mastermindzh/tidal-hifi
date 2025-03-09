@@ -1,6 +1,7 @@
+import { MediaInfo } from "../models/mediaInfo";
 import { MediaStatus } from "../models/mediaStatus";
 import { RepeatState } from "../models/repeatState";
-import { DomTidalController } from "./DomTidalController";
+import { DomTidalController } from "./DomController/DomTidalController";
 import { TidalController } from "./TidalController";
 
 export class MediaSessionTidalController implements TidalController {
@@ -9,15 +10,20 @@ export class MediaSessionTidalController implements TidalController {
   constructor() {
     this.domMediaController = new DomTidalController();
   }
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  onMediaInfoUpdate(callback: (state: Partial<MediaInfo>) => void): void {
+    globalThis.alert("method not implemented");
+    throw new Error("Method not implemented.");
+  }
+  bootstrap(): void {
+    globalThis.alert("Method not implemented: ");
+    throw new Error("Method not implemented.");
+  }
   // example of using the original domMediaController as a fallback
   goToHome(): void {
     this.domMediaController.goToHome();
   }
 
-  setPlayStatus(status: MediaStatus): void {
-    globalThis.alert("Method not implemented: " + status);
-    throw new Error("Method not implemented.");
-  }
   getDuration(): string {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
