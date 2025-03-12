@@ -54,7 +54,7 @@ const elements = {
   media: '*[data-test="current-media-imagery"]',
   image: "img",
   current: '*[data-test="current-time"]',
-  duration: '*[class^=playbackControlsContainer] *[data-test="duration"]',
+  duration: '*[class^=_playbackControlsContainer] *[data-test="duration"]',
   bar: '*[data-test="progress-bar"]',
   footer: "#footerPlayer",
   mediaItem: "[data-type='mediaItem']",
