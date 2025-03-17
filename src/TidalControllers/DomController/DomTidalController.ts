@@ -30,7 +30,7 @@ export class DomTidalController implements TidalController<DomControllerOptions>
     media: '*[data-test="current-media-imagery"]',
     image: "img",
     current: '*[data-test="current-time"]',
-    duration: '*[class^=playbackControlsContainer] *[data-test="duration"]',
+    duration: '*[class^=_playbackControlsContainer] *[data-test="duration"]',
     bar: '*[data-test="progress-bar"]',
     footer: "#footerPlayer",
     mediaItem: "[data-type='mediaItem']",
@@ -47,7 +47,7 @@ export class DomTidalController implements TidalController<DomControllerOptions>
      * @param {*} key key in elements object to fetch
      */
     get: function (key: string) {
-      return globalThis.document.querySelector(this[key.toLowerCase()]);
+      return globalThis.document.querySelector(this[key.toLowerCase()]) ?? "";
     },
 
     /**
