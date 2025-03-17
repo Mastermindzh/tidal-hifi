@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added all missing swagger/openApi info with the help of [Times-Z](https://github.com/Times-Z)
 - Updated most dependency versions
+
   - This includes Electron 31!
 
 - Added a channel selector so we can now use Tidal's staging environment directly from the app
@@ -112,10 +113,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated Electron to 28.1.1 (fixes [325](https://github.com/Mastermindzh/tidal-hifi/issues/325))
 - Updated dependencies to latest
+
   - added theme files to stylelint ignore
   - fixed other stylelint errors
 
 - Added functionality to favorite a song (fixes [#323](https://github.com/Mastermindzh/tidal-hifi/issues/323))
+
   - Added a hotkey to favorite ("Add to collection") songs: Control+a
   - Added the "favorite" field in the `mediaInfo` and the API `/current` endpoint
   - Added an endpoint to toggle favoriting a song: `http://localhost:47836/favorite/toggle`
@@ -136,10 +139,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added settings to customize the Discord rich presence information
   - Discord settings are now also collapsible like the ListenBrainz ones are
 - Restyled settings menu to include version number and useful links on the about page
-    ![The new about page](./docs/images/new-about.png)
+  ![The new about page](./docs/images/new-about.png)
 - The ListenBrainz integration has been extended with a configurable (5 seconds by default) delay in song reporting so that it doesn't spam the API when you are cycling through songs.
 - Custom CSS now also applies to settings window
-    ![Tokyo Night theme on settings window](./docs/images/customcss-menu.png)
+  ![Tokyo Night theme on settings window](./docs/images/customcss-menu.png)
 
 ## [5.6.0]
 
