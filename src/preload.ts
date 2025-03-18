@@ -313,6 +313,7 @@ function updateMpris(mediaInfo: MediaInfo) {
         "xesam:title": mediaInfo.title,
         "xesam:artist": [mediaInfo.artists],
         "xesam:album": mediaInfo.album,
+        "xesam:url": mediaInfo.url,
         "mpris:artUrl": mediaInfo.image,
         "mpris:length": convertDurationToSeconds(mediaInfo.duration) * 1000 * 1000,
         "mpris:trackid": "/org/mpris/MediaPlayer2/track/" + tidalController.getTrackId(),
