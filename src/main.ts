@@ -26,7 +26,6 @@ import {
 import { addTray, refreshTray } from "./scripts/tray";
 let mainInhibitorId = -1;
 
-initialize();
 let mainWindow: BrowserWindow;
 const icon = path.join(__dirname, "../assets/icon.png");
 const PROTOCOL_PREFIX = "tidal";
@@ -98,6 +97,7 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
       },
     },
   });
+
   enable(mainWindow.webContents);
   registerHttpProtocols();
   syncMenuBarWithStore();
@@ -126,6 +126,7 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
     }
     return false;
   });
+
   // Emitted when the window is closed.
   mainWindow.on("closed", function () {
     releaseInhibitorIfActive(mainInhibitorId);
@@ -178,6 +179,7 @@ app.on("ready", async () => {
 
   if (isMainInstance() || isMultipleInstancesAllowed()) {
     await components.whenReady();
+    initialize();
 
     // Adblock
     if (settingsStore.get(settings.adBlock)) {
@@ -187,6 +189,8 @@ app.on("ready", async () => {
         else callback({ cancel: false });
       });
     }
+
+    Logger.log("components ready:", components.status());
 
     createWindow();
     addMenu(mainWindow);
