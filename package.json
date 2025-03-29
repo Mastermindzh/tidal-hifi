@@ -43,7 +43,7 @@
     "@electron/remote": "^2.1.2",
     "@types/swagger-jsdoc": "^6.0.4",
     "@xhayper/discord-rpc": "^1.2.1",
-    "axios": "^1.7.9",
+    "axios": "^1.8.3",
     "cors": "^2.8.5",
     "electron-store": "^8.2.0",
     "express": "^4.21.2",
