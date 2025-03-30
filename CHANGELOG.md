@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.18.2]
+
+- Reverted to sass 1.79.4 to fix `Nix` builds
+- Changed electron-builder.base.yml to now generate the correct .desktop entries again
+  - Should fix flatpak build
+
 ## [5.18.1]
 
 - Fixed the login bug
