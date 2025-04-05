@@ -45,7 +45,7 @@
     "@xhayper/discord-rpc": "^1.2.1",
     "axios": "^1.8.4",
     "electron-store": "^8.2.0",
-    "express": "^4.21.2",
+    "express": "^5.0.1",
     "hotkeys-js": "^3.13.9",
     "mpris-service": "^2.1.2",
     "sass": "1.79.4",
