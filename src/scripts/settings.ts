@@ -30,6 +30,7 @@ export const settingsStore = new Store({
     adBlock: false,
     advanced: {
       tidalUrl: "https://listen.tidal.com",
+      controllerType: "domController",
     },
     api: true,
     apiSettings: {
@@ -119,6 +120,11 @@ export const settingsStore = new Store({
     },
     "5.16.0": (migrationStore) => {
       buildMigration("5.16.0", migrationStore, [{ key: settings.discord.showIdle, value: "true" }]);
+    },
+    "5.19.0": (migrationStore) => {
+      buildMigration("5.19.0", migrationStore, [
+        { key: settings.advanced.controllerType, value: "domController" },
+      ]);
     },
   },
 });

@@ -22,8 +22,8 @@ import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
 import { DomControllerOptions } from "./TidalControllers/DomController/DomControllerOptions";
 import { DomTidalController } from "./TidalControllers/DomController/DomTidalController";
-import { MediaSessionTidalController } from "./TidalControllers/MediaSessionTidalController";
 import { TidalController } from "./TidalControllers/TidalController";
+import { tidalControllers } from "./constants/controller";
 
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 const staticTitle = "TIDAL Hi-Fi";
@@ -39,16 +39,21 @@ let tidalController: TidalController;
 let controllerOptions = {};
 let currentMediaInfo = getEmptyMediaInfo();
 
-// TODO: replace with setting
-// eslint-disable-next-line no-constant-condition
-if (true) {
-  tidalController = new DomTidalController();
-  const domControllerOptions: DomControllerOptions = {
-    refreshInterval: getDomUpdateFrequency(),
-  };
-  controllerOptions = domControllerOptions;
-} else {
-  tidalController = new MediaSessionTidalController();
+switch (settingsStore.get(settings.advanced.controllerType)) {
+  case tidalControllers.stateController: {
+    Logger.log("stateController initialized");
+    break;
+  }
+
+  default: {
+    tidalController = new DomTidalController();
+    const domControllerOptions: DomControllerOptions = {
+      refreshInterval: getDomUpdateFrequency(),
+    };
+    controllerOptions = domControllerOptions;
+    Logger.log("domController initialized");
+    break;
+  }
 }
 
 /**
