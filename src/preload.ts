@@ -40,8 +40,8 @@ let controllerOptions = {};
 let currentMediaInfo = getEmptyMediaInfo();
 
 switch (settingsStore.get(settings.advanced.controllerType)) {
-  case tidalControllers.stateController: {
-    Logger.log("stateController initialized");
+  case tidalControllers.mediaSessionController: {
+    Logger.log("mediaSessionController initialized");
     break;
   }
 

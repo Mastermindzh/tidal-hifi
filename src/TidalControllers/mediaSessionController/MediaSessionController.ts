@@ -5,7 +5,7 @@ import { RepeatState } from "../../models/repeatState";
 import { DomTidalController } from "../DomController/DomTidalController";
 import { TidalController } from "../TidalController";
 
-export class StateController implements TidalController {
+export class MediaSessionController implements TidalController {
   public domMediaController: TidalController;
 
   constructor() {
@@ -132,10 +132,6 @@ export class StateController implements TidalController {
     throw new Error("Method not implemented.");
   }
   playPause(): void {
-    globalThis.alert("Method not implemented");
-    throw new Error("Method not implemented.");
-  }
-  hookup(): void {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
