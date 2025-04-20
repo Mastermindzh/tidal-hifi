@@ -2,15 +2,35 @@
   "version": "0.2.0",
   "configurations": [
     {
+      // we can use this to debug the main process
       "name": "Electron: Main",
       "type": "node",
       "request": "launch",
-      "program": "${workspaceFolder}/node_modules/electron/dist/electron",
-      "args": ["."],
+      "runtimeExecutable": "${workspaceFolder}/node_modules/electron/dist/electron",
+      "args": [
+        "${workspaceFolder}/ts-dist/main.js",
+        "--no-sandbox",
+        "--disable-gpu",
+        "--disable-software-rasterizer",
+        "--in-process-gpu",
+        "--inspect=0.0.0.0:5858",
+        "--remote-debugging-port=8315"
+      ],
       "protocol": "inspector",
       "env": {
         "ELECTRON_DISABLE_SECURITY_WARNINGS": "false"
-      }
+      },
+      "outputCapture": "std"
+    },
+    // first run, then connect this to make sure we debug the UI
+    {
+      "name": "Electron: Renderer",
+      "type": "chrome",
+      "request": "attach",
+      "port": 8315,
+      "webRoot": "${workspaceFolder}",
+      "sourceMaps": true,
+      "skipFiles": ["<node_internals>/**"]
     }
   ]
 }

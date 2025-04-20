@@ -103,7 +103,7 @@ export class DomTidalController implements TidalController<DomControllerOptions>
         globalThis.location.href.includes("/playlist/") ||
         globalThis.location.href.includes("/mix/")
       ) {
-        if (this.getCurrentlyPlayingStatus() === MediaStatus.playing) {
+        if (this.currentlyPlaying === MediaStatus.playing) {
           // find the currently playing element from the list (which might be in an album icon), traverse back up to the mediaItem (row) and select the album cell.
           // document.querySelector("[class^='isPlayingIcon'], [data-test-is-playing='true']").closest('[data-type="mediaItem"]').querySelector('[class^="album"]').textContent
           const row = window.document.querySelector(this.currentlyPlaying).closest(this.mediaItem);
