@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.19.0]
+
+- Fixed the issue where media updates would cease to work after album names can't be found
+  - Will simply report an empty string when it can't find the album
+- Updated various dependencies
+
 ## [5.18.2]
 
 - Reverted to sass 1.79.4 to fix `Nix` builds

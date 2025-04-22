@@ -115,34 +115,38 @@ const elements = {
   },
 
   getAlbumName: function () {
-    //If listening to an album, get its name from the header title
-    if (window.location.href.includes("/album/")) {
-      const albumName = window.document.querySelector(this.album_header_title);
-      if (albumName) {
-        return albumName.textContent;
-      }
-      //If listening to a playlist or a mix, get album name from the list
-    } else if (
-      window.location.href.includes("/playlist/") ||
-      window.location.href.includes("/mix/")
-    ) {
-      if (currentPlayStatus === MediaStatus.playing) {
-        // find the currently playing element from the list (which might be in an album icon), traverse back up to the mediaItem (row) and select the album cell.
-        // document.querySelector("[class^='isPlayingIcon'], [data-test-is-playing='true']").closest('[data-type="mediaItem"]').querySelector('[class^="album"]').textContent
-        const row = window.document.querySelector(this.currentlyPlaying).closest(this.mediaItem);
-        if (row) {
-          return row.querySelector(this.album_name_cell).textContent;
+    try {
+      //If listening to an album, get its name from the header title
+      if (globalThis.location.href.includes("/album/")) {
+        const albumName = globalThis.document.querySelector(this.album_header_title);
+        if (albumName) {
+          return albumName.textContent;
+        }
+        //If listening to a playlist or a mix, get album name from the list
+      } else if (
+        globalThis.location.href.includes("/playlist/") ||
+        globalThis.location.href.includes("/mix/")
+      ) {
+        if (this.currentlyPlaying === MediaStatus.playing) {
+          // find the currently playing element from the list (which might be in an album icon), traverse back up to the mediaItem (row) and select the album cell.
+          // document.querySelector("[class^='isPlayingIcon'], [data-test-is-playing='true']").closest('[data-type="mediaItem"]').querySelector('[class^="album"]').textContent
+          const row = window.document.querySelector(this.currentlyPlaying).closest(this.mediaItem);
+          if (row) {
+            return row.querySelector(this.album_name_cell).textContent;
+          }
         }
       }
-    }
 
-    // see whether we're on the queue page and get it from there
-    const queueAlbumName = elements.getText("queue_album");
-    if (queueAlbumName) {
-      return queueAlbumName;
-    }
+      // see whether we're on the queue page and get it from there
+      const queueAlbumName = this.getText("queue_album");
+      if (queueAlbumName) {
+        return queueAlbumName;
+      }
 
-    return "";
+      return "";
+    } catch {
+      return "";
+    }
   },
 
   isMuted: function () {

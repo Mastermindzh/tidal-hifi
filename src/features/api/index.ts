@@ -21,8 +21,12 @@ export const startApi = (mainWindow: BrowserWindow) => {
   expressApp.use(cors());
   expressApp.use(express.json());
   expressApp.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-  expressApp.get("/", (req, res) => res.send("Hello World!"));
-  expressApp.get("/swagger.json", (req, res) => res.json(swaggerSpec));
+  expressApp.get("/", (req, res) => {
+    res.send("Hello World!");
+  });
+  expressApp.get("/swagger.json", (req, res) => {
+    res.json(swaggerSpec);
+  });
 
   // add features
   addLegacyApi(expressApp, mainWindow);

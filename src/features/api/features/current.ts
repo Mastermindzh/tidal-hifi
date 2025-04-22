@@ -88,8 +88,9 @@ export const addCurrentInfo = (expressApp: Router) => {
    *             schema:
    *               $ref: '#/components/schemas/MediaInfo'
    */
-  expressApp.get("/current", (req, res) => res.json({ ...mediaInfo, artist: mediaInfo.artists }));
-
+  expressApp.get("/current", (_req, res) => {
+    res.json({ ...mediaInfo, artist: mediaInfo.artists });
+  });
   /**
    * @swagger
    * /current/image:
