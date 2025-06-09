@@ -20,6 +20,7 @@ linux:
       "--ozone-platform-hint=auto",
       "--enable-features=WaylandWindowDecorations",
       "--enable-wayland-ime",
+      "--use-angle",
     ]
   desktop:
     entry:
