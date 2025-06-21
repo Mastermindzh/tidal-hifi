@@ -42,7 +42,7 @@
   "dependencies": {
     "@electron/remote": "^2.1.2",
     "@types/swagger-jsdoc": "^6.0.4",
-    "@xhayper/discord-rpc": "^1.2.1",
+    "@xhayper/discord-rpc": "^1.2.2",
     "axios": "^1.9.0",
     "electron-store": "^8.2.0",
     "express": "^5.1.0",
