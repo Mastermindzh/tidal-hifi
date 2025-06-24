@@ -17,9 +17,10 @@ linux:
   executableName: tidal-hifi
   executableArgs:
     [
-      "--enable-features=UseOzonePlatform",
       "--ozone-platform-hint=auto",
       "--enable-features=WaylandWindowDecorations",
+      "--enable-wayland-ime",
+      "--use-angle",
     ]
   desktop:
     entry:
