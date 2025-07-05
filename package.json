@@ -46,7 +46,7 @@
     "axios": "^1.9.0",
     "electron-store": "^8.2.0",
     "express": "^5.1.0",
-    "hotkeys-js": "^3.13.10",
+    "hotkeys-js": "^3.13.11",
     "mpris-service": "^2.1.2",
     "sass": "1.89.1",
     "swagger-ui-express": "^5.0.1",
