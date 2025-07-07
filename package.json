@@ -63,7 +63,7 @@
     "@typescript-eslint/eslint-plugin": "^7.18.0",
     "@typescript-eslint/parser": "^7.18.0",
     "copyfiles": "^2.4.1",
-    "electron": "github:castlabs/electron-releases#v35.1.1+wvcus",
+    "electron": "github:castlabs/electron-releases#v35.7.0+wvcus",
     "electron-builder": "~26.0.12",
     "eslint": "^8.57.0",
     "js-yaml": "^4.1.0",
