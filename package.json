@@ -65,7 +65,7 @@
     "copyfiles": "^2.4.1",
     "electron": "github:castlabs/electron-releases#v35.7.0+wvcus",
     "electron-builder": "~26.0.12",
-    "eslint": "^8.57.0",
+    "eslint": "^9.0.0",
     "js-yaml": "^4.1.0",
     "markdown-toc": "^1.2.0",
     "nodemon": "^3.1.9",
