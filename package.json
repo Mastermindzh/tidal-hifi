@@ -57,7 +57,7 @@
     "@mastermindzh/prettier-config": "^1.0.0",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
-    "@types/node": "^20.17.30",
+    "@types/node": "^22.0.0",
     "@types/request": "^2.48.12",
     "@types/swagger-ui-express": "^4.1.8",
     "@typescript-eslint/eslint-plugin": "^7.18.0",
