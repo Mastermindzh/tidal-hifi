@@ -48,7 +48,7 @@
     "express": "^5.1.0",
     "hotkeys-js": "^3.13.11",
     "mpris-service": "^2.1.2",
-    "sass": "1.89.1",
+    "sass": "1.89.2",
     "swagger-ui-express": "^5.0.1",
     "cors": "^2.8.5",
     "request": "^2.88.2"
