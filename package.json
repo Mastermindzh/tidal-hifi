@@ -76,7 +76,7 @@
     "stylelint-prettier": "^5.0.3",
     "swagger-jsdoc": "^6.2.8",
     "ts-node": "^10.9.2",
-    "tsc-watch": "^6.2.1",
+    "tsc-watch": "^7.0.0",
     "typescript": "^5.8.3"
   },
   "prettier": "@mastermindzh/prettier-config"
