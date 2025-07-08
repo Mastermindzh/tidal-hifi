@@ -44,7 +44,7 @@
     "@types/swagger-jsdoc": "^6.0.4",
     "@xhayper/discord-rpc": "^1.2.1",
     "axios": "^1.9.0",
-    "electron-store": "^8.2.0",
+    "electron-store": "^10.0.0",
     "express": "^5.1.0",
     "hotkeys-js": "^3.13.11",
     "mpris-service": "^2.1.2",
