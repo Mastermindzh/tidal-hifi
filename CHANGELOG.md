@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.19.1]
+
+- Removes the `--enable-features=UseOzonePlatform` flag, as the Ozone platform has been the default on Linux since Electron 28 and this flag is no longer necessary.
+- Adds the `--enable-wayland-ime` flag to enable Input Method Editor (IME) support in Wayland environments, improving the input experience for CJK and other users.
+- Updated various dependencies
+
 ## [5.19.0]
 
 - Fixed the issue where media updates would cease to work after album names can't be found

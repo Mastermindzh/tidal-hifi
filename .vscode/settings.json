@@ -17,7 +17,9 @@
     "trackid",
     "tracklist",
     "widevine",
-    "xesam"
+    "wvcus",
+    "xesam",
+    "xhayper"
   ],
   "sonarlint.connectedMode.project": {
     "connectionId": "public-sonarcloud",
