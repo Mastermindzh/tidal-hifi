@@ -150,7 +150,7 @@
     },
     "/player/shuffle/toggle": {
       "post": {
-        "summary": "Play the previous song",
+        "summary": "Toggle shuffle mode",
         "tags": ["player"],
         "responses": {
           "200": {
