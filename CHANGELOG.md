@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removes the `--enable-features=UseOzonePlatform` flag, as the Ozone platform has been the default on Linux since Electron 28 and this flag is no longer necessary.
 - Adds the `--enable-wayland-ime` flag to enable Input Method Editor (IME) support in Wayland environments, improving the input experience for CJK and other users.
 - Updated various dependencies
+- Updated Electron to 37, potentially fixing [#580](https://github.com/Mastermindzh/tidal-hifi/issues/580)
 
 ## [5.19.0]
 
