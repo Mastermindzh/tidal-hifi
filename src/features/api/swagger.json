@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "TIDAL Hi-Fi API",
-    "version": "5.20.0",
+    "version": "5.20.1",
     "description": "",
     "license": {
       "name": "MIT",
@@ -150,7 +150,7 @@
     },
     "/player/shuffle/toggle": {
       "post": {
-        "summary": "Toggle shuffle mode",
+        "summary": "Play the previous song",
         "tags": ["player"],
         "responses": {
           "200": {
