@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "TIDAL Hi-Fi API",
-    "version": "5.20.0",
+    "version": "5.20.1",
     "description": "",
     "license": {
       "name": "MIT",
@@ -21,9 +21,7 @@
     "/current": {
       "get": {
         "summary": "Get current media info",
-        "tags": [
-          "current"
-        ],
+        "tags": ["current"],
         "responses": {
           "200": {
             "description": "Current media info",
@@ -41,9 +39,7 @@
     "/current/image": {
       "get": {
         "summary": "Get current media image",
-        "tags": [
-          "current"
-        ],
+        "tags": ["current"],
         "responses": {
           "200": {
             "description": "Current media image",
@@ -65,9 +61,7 @@
     "/player/play": {
       "post": {
         "summary": "Play the current media",
-        "tags": [
-          "player"
-        ],
+        "tags": ["player"],
         "responses": {
           "200": {
             "description": "Ok",
@@ -85,9 +79,7 @@
     "/player/favorite/toggle": {
       "post": {
         "summary": "Add the current media to your favorites, or remove it if its already added to your favorites",
-        "tags": [
-          "player"
-        ],
+        "tags": ["player"],
         "responses": {
           "200": {
             "description": "Ok",
@@ -105,9 +97,7 @@
     "/player/pause": {
       "post": {
         "summary": "Pause the current media",
-        "tags": [
-          "player"
-        ],
+        "tags": ["player"],
         "responses": {
           "200": {
             "description": "Ok",
@@ -125,9 +115,7 @@
     "/player/next": {
       "post": {
         "summary": "Play the next song",
-        "tags": [
-          "player"
-        ],
+        "tags": ["player"],
         "responses": {
           "200": {
             "description": "Ok",
@@ -145,9 +133,7 @@
     "/player/previous": {
       "post": {
         "summary": "Play the previous song",
-        "tags": [
-          "player"
-        ],
+        "tags": ["player"],
         "responses": {
           "200": {
             "description": "Ok",
@@ -165,9 +151,7 @@
     "/player/shuffle/toggle": {
       "post": {
         "summary": "Play the previous song",
-        "tags": [
-          "player"
-        ],
+        "tags": ["player"],
         "responses": {
           "200": {
             "description": "Ok",
@@ -185,9 +169,7 @@
     "/player/repeat/toggle": {
       "post": {
         "summary": "Toggle the repeat status, toggles between \"off\" , \"single\" and \"all\"",
-        "tags": [
-          "player"
-        ],
+        "tags": ["player"],
         "responses": {
           "200": {
             "description": "Ok",
@@ -205,9 +187,7 @@
     "/player/playpause": {
       "post": {
         "summary": "Start playing the media if paused, or pause the media if playing",
-        "tags": [
-          "player"
-        ],
+        "tags": ["player"],
         "responses": {
           "200": {
             "description": "Ok",
@@ -225,9 +205,7 @@
     "/settings/skipped-artists": {
       "get": {
         "summary": "get a list of artists that TIDAL Hi-Fi will skip if skipping is enabled",
-        "tags": [
-          "settings"
-        ],
+        "tags": ["settings"],
         "responses": {
           "200": {
             "description": "The list book.",
@@ -243,9 +221,7 @@
       },
       "post": {
         "summary": "Add new artists to the list of skipped artists",
-        "tags": [
-          "settings"
-        ],
+        "tags": ["settings"],
         "requestBody": {
           "required": true,
           "content": {
@@ -266,9 +242,7 @@
     "/settings/skipped-artists/delete": {
       "post": {
         "summary": "Remove artists from the list of skipped artists",
-        "tags": [
-          "settings"
-        ],
+        "tags": ["settings"],
         "requestBody": {
           "required": true,
           "content": {
@@ -289,9 +263,7 @@
     "/settings/skipped-artists/current": {
       "post": {
         "summary": "Add the current artist to the list of skipped artists",
-        "tags": [
-          "settings"
-        ],
+        "tags": ["settings"],
         "responses": {
           "200": {
             "description": "Ok"
@@ -300,9 +272,7 @@
       },
       "delete": {
         "summary": "Remove the current artist from the list of skipped artists",
-        "tags": [
-          "settings"
-        ],
+        "tags": ["settings"],
         "responses": {
           "200": {
             "description": "Ok"
@@ -313,9 +283,7 @@
     "/image": {
       "get": {
         "summary": "Get current image",
-        "tags": [
-          "legacy"
-        ],
+        "tags": ["legacy"],
         "deprecated": true,
         "responses": {
           "200": {
@@ -338,9 +306,7 @@
     "/play": {
       "get": {
         "summary": "Play the current media",
-        "tags": [
-          "legacy"
-        ],
+        "tags": ["legacy"],
         "deprecated": true,
         "responses": {
           "200": {
@@ -359,9 +325,7 @@
     "/favorite/toggle": {
       "get": {
         "summary": "Add the current media to your favorites, or remove it if its already added to your favorites",
-        "tags": [
-          "legacy"
-        ],
+        "tags": ["legacy"],
         "deprecated": true,
         "responses": {
           "200": {
@@ -380,9 +344,7 @@
     "/pause": {
       "get": {
         "summary": "Pause the current media",
-        "tags": [
-          "legacy"
-        ],
+        "tags": ["legacy"],
         "deprecated": true,
         "responses": {
           "200": {
@@ -401,9 +363,7 @@
     "/next": {
       "get": {
         "summary": "Play the next song",
-        "tags": [
-          "legacy"
-        ],
+        "tags": ["legacy"],
         "deprecated": true,
         "responses": {
           "200": {
@@ -422,9 +382,7 @@
     "/previous": {
       "get": {
         "summary": "Play the previous song",
-        "tags": [
-          "legacy"
-        ],
+        "tags": ["legacy"],
         "deprecated": true,
         "responses": {
           "200": {
@@ -443,9 +401,7 @@
     "/playpause": {
       "get": {
         "summary": "Toggle play/pause",
-        "tags": [
-          "legacy"
-        ],
+        "tags": ["legacy"],
         "deprecated": true,
         "responses": {
           "200": {
@@ -558,10 +514,7 @@
         "items": {
           "type": "string"
         },
-        "example": [
-          "Artist1",
-          "Artist2"
-        ]
+        "example": ["Artist1", "Artist2"]
       }
     }
   },
