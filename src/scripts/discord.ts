@@ -85,6 +85,8 @@ const getActivity = (): SetActivity => {
     const artists = pad(mediaInfo.artists);
 
     if (mediaInfo.url) {
+      presence.name = "TIDAL";
+      presence.statusDisplayType = 1;
       presence.details = `${detailsPrefix}${title}`;
       presence.state = artists ? artists : "unknown artist(s)";
       presence.largeImageKey = mediaInfo.image;

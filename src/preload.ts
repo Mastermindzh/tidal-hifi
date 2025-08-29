@@ -143,6 +143,15 @@ const elements = {
         return queueAlbumName;
       }
 
+      // playing from link
+      const playingFromLink = document.querySelector('a[data-test="playing-from-links"]') as HTMLAnchorElement | null;
+      const albumFromLink = (playingFromLink?.href?.includes("/album/")
+        ? playingFromLink.textContent?.trim()
+        : "") || "";
+      if (albumFromLink) {
+        return albumFromLink;
+      }
+
       return "";
     } catch {
       return "";
