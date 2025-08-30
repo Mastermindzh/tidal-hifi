@@ -24,7 +24,6 @@ const observer = () => {
 
 const defaultPresence = {
   largeImageKey: "tidal-hifi-icon",
-  largeImageText: `TIDAL Hi-Fi ${app.getVersion()}`,
   instance: false,
   type: ACTIVITY_LISTENING
 };
@@ -85,12 +84,13 @@ const getActivity = (): SetActivity => {
     const artists = pad(mediaInfo.artists);
 
     if (mediaInfo.url) {
-      presence.name = "TIDAL";
       presence.statusDisplayType = 1;
       presence.details = `${detailsPrefix}${title}`;
       presence.state = artists ? artists : "unknown artist(s)";
       presence.largeImageKey = mediaInfo.image;
-      if (album) {
+
+      // Only set largeImageText if album is different from song title
+      if (album && mediaInfo.album !== mediaInfo.title) {
         presence.largeImageText = album;
       }
 
@@ -105,9 +105,9 @@ const getActivity = (): SetActivity => {
     if (includeTimestamps) {
       const currentSeconds = convertDurationToSeconds(mediaInfo.current);
       const durationSeconds = convertDurationToSeconds(mediaInfo.duration);
-      const now = Math.trunc((Date.now() + 500) / 1000);
-      presence.startTimestamp = now - currentSeconds;
-      presence.endTimestamp = presence.startTimestamp + durationSeconds;
+      const now = Date.now();
+      presence.startTimestamp = now - (currentSeconds * 1000);
+      presence.endTimestamp = presence.startTimestamp + (durationSeconds * 1000);
     }
   }
 };
