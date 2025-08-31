@@ -152,6 +152,13 @@ ListenBrainzStore.clear();
  */
 function addHotKeys() {
   if (settingsStore.get(settings.enableCustomHotkeys)) {
+    addHotkey("Control+p", function () {
+      ipcRenderer.send(globalEvents.showSettings);
+    });
+    addHotkey("Control+l", function () {
+      handleLogout();
+    });
+
     addHotkey("Control+a", function () {
       elements.click("favorite");
     });
@@ -193,6 +200,35 @@ function addHotKeys() {
   addHotkey("control+0", function () {
     ipcRenderer.send(globalEvents.showSettings);
   });
+}
+
+/**
+ * This function will ask the user whether he/she wants to log out.
+ * It will log the user out if he/she selects "yes"
+ */
+function handleLogout() {
+  const logoutOptions = ["Cancel", "Yes, please", "No, thanks"];
+
+  dialog
+    .showMessageBox(null, {
+      type: "question",
+      title: "Logging out",
+      message: "Are you sure you want to log out?",
+      buttons: logoutOptions,
+      defaultId: 2,
+    })
+    .then((result: { response: number }) => {
+      if (logoutOptions.indexOf("Yes, please") === result.response) {
+        for (let i = 0; i < window.localStorage.length; i++) {
+          const key = window.localStorage.key(i);
+          if (key.startsWith("_TIDAL_activeSession")) {
+            window.localStorage.removeItem(key);
+            break;
+          }
+        }
+        window.location.reload();
+      }
+    });
 }
 
 function addFullScreenListeners() {
