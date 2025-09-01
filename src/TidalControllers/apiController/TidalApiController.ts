@@ -5,13 +5,12 @@ import { RepeatState } from "../../models/repeatState";
 import { DomTidalController } from "../DomController/DomTidalController";
 import { TidalController } from "../TidalController";
 
-export class MediaSessionController implements TidalController {
+export class TidalApiController implements TidalController {
   public domMediaController: TidalController;
 
   constructor() {
     this.domMediaController = new DomTidalController();
-
-    Logger.log("Initialized domController as a backup controller");
+    Logger.log("[TidalApiController] - Initialized domController as a backup controller");
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onMediaInfoUpdate(callback: (state: Partial<MediaInfo>) => void): void {

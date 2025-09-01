@@ -1,6 +1,7 @@
 import { app, dialog, Notification } from "@electron/remote";
 import { clipboard, ipcRenderer } from "electron";
 import Player from "mpris-service";
+import { tidalControllers } from "./constants/controller";
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
 import { downloadIcon } from "./features/icon/downloadIcon";
@@ -20,10 +21,10 @@ import { addHotkey } from "./scripts/hotkeys";
 import { ObjectToDotNotation } from "./scripts/objectUtilities";
 import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
+import { TidalApiController } from "./TidalControllers/apiController/TidalApiController";
 import { DomControllerOptions } from "./TidalControllers/DomController/DomControllerOptions";
 import { DomTidalController } from "./TidalControllers/DomController/DomTidalController";
 import { TidalController } from "./TidalControllers/TidalController";
-import { tidalControllers } from "./constants/controller";
 
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
 const staticTitle = "TIDAL Hi-Fi";
@@ -40,8 +41,9 @@ let controllerOptions = {};
 let currentMediaInfo = getEmptyMediaInfo();
 
 switch (settingsStore.get(settings.advanced.controllerType)) {
-  case tidalControllers.mediaSessionController: {
-    Logger.log("mediaSessionController initialized");
+  case tidalControllers.tidalApiController: {
+    tidalController = new TidalApiController();
+    Logger.log("TidalApiController initialized");
     break;
   }
 
@@ -348,11 +350,11 @@ function updateListenBrainz(mediaInfo: MediaInfo) {
               mediaInfo.title,
               mediaInfo.artists,
               mediaInfo.status,
-              convertDurationToSeconds(mediaInfo.duration)
+              convertDurationToSeconds(mediaInfo.duration),
             );
             scrobbleWaitingForDelay = false;
           },
-          settingsStore.get(settings.ListenBrainz.delay) ?? 0
+          settingsStore.get(settings.ListenBrainz.delay) ?? 0,
         );
       }
     }
