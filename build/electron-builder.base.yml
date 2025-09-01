@@ -1,7 +1,7 @@
 appId: com.rickvanlieshout.tidal-hifi
-electronVersion: 35.1.1
+electronVersion: 37.2.5
 electronDownload:
-  version: 35.1.1+wvcus
+  version: 37.2.5+wvcus
   mirror: https://github.com/castlabs/electron-releases/releases/download/v
 snap:
   plugs:
@@ -17,9 +17,10 @@ linux:
   executableName: tidal-hifi
   executableArgs:
     [
-      "--enable-features=UseOzonePlatform",
       "--ozone-platform-hint=auto",
       "--enable-features=WaylandWindowDecorations",
+      "--enable-wayland-ime",
+      "--use-angle",
     ]
   desktop:
     entry:
