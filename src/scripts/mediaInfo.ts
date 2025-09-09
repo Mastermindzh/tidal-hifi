@@ -1,28 +1,6 @@
-import { MediaInfo } from "../models/mediaInfo";
-import { MediaStatus } from "../models/mediaStatus";
-import { RepeatState } from "../models/repeatState";
+import { getEmptyMediaInfo, MediaInfo } from "../models/mediaInfo";
 
-const defaultInfo: MediaInfo = {
-  title: "",
-  artists: "",
-  album: "",
-  icon: "",
-  playingFrom: "",
-  status: MediaStatus.paused,
-  url: "",
-  current: "",
-  currentInSeconds: 0,
-  duration: "",
-  durationInSeconds: 0,
-  image: "tidal-hifi-icon",
-  favorite: false,
-
-  player: {
-    status: MediaStatus.paused,
-    shuffle: false,
-    repeat: RepeatState.off,
-  },
-};
+const defaultInfo: MediaInfo = getEmptyMediaInfo();
 
 export let mediaInfo: MediaInfo = { ...defaultInfo };
 
