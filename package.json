@@ -4,7 +4,7 @@
   "description": "Tidal on Electron with widevine(hifi) support",
   "main": "ts-dist/main.js",
   "scripts": {
-    "start": "electron --inspect=0.0.0.0:5858 --remote-debugging-port=8315 --remote-allow-origins=* .",
+    "start": "electron --inspect=0.0.0.0:5858 --remote-debugging-port=8315 --remote-allow-origins=\"*\" --no-sandbox --disable-gpu-sandbox .",
     "watchStart": "nodemon dist -x \"npm run start\"",
     "compile": "tsc && npm run sass-and-copy",
     "deps": "npm run watch",
