@@ -102,6 +102,18 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
   registerHttpProtocols();
   syncMenuBarWithStore();
 
+  // get bearer token from network requests
+  mainWindow.webContents.session.webRequest.onBeforeSendHeaders(
+    { urls: ['*://*.tidal.com/*'] },
+    (details, callback) => {
+      const authHeader = details.requestHeaders['authorization'];
+      if (authHeader && authHeader.startsWith('Bearer ')) {
+        mainWindow.webContents.send('bearer-token-intercepted', authHeader);
+      }
+      callback({ requestHeaders: details.requestHeaders });
+    }
+  );
+
   // find the custom protocol argument
   const customProtocolUrl = getCustomProtocolUrl(process.argv);
 
