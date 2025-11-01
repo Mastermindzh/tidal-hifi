@@ -13,6 +13,7 @@ export const settings = {
   advanced: {
     root: "advanced",
     tidalUrl: "advanced.tidalUrl",
+    controllerType: "advanced.controllerType",
   },
   api: "api",
   apiSettings: {
