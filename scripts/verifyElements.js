@@ -30,7 +30,6 @@
     playing_from: '*[class^="_playingFrom"] span:nth-child(2)',
     queue_album: "*[class^=playQueueItemsContainer] *[class^=groupTitle] span:nth-child(2)",
     currentlyPlaying: "[class^='isPlayingIcon'], [data-test-is-playing='true']",
-    album_name_cell: '[class^="album"]',
     tracklist_row: '[data-test="tracklist-row"]',
     volume: '*[data-test="volume"]',
     favorite: '*[data-test="footer-favorite-button"]',
