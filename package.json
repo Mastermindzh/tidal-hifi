@@ -50,7 +50,7 @@
     "hotkeys-js": "^3.13.15",
     "mpris-service": "^2.1.2",
     "request": "^2.88.2",
-    "sass": "1.94.2",
+    "sass": "1.95.0",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
