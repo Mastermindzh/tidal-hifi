@@ -39,7 +39,7 @@ setDefaultFlags(app);
 setManagedFlagsFromSettings(app);
 
 const tidalUrl =
-  settingsStore.get<string, string>(settings.advanced.tidalUrl) || "https://listen.tidal.com";
+  settingsStore.get<string, string>(settings.advanced.tidalUrl) || "https://tidal.com";
 
 /**
  * Update the menuBarVisibility according to the store value
