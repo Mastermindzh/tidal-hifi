@@ -29,7 +29,7 @@ export const settingsStore = new Store({
   defaults: {
     adBlock: false,
     advanced: {
-      tidalUrl: "https://listen.tidal.com",
+      tidalUrl: "https://tidal.com",
     },
     api: true,
     apiSettings: {

@@ -38,8 +38,8 @@ const windowPreferences = {
 setDefaultFlags(app);
 setManagedFlagsFromSettings(app);
 
-const tidalUrl =
-  settingsStore.get<string, string>(settings.advanced.tidalUrl) || "https://listen.tidal.com";
+export const tidalUrl =
+  settingsStore.get<string, string>(settings.advanced.tidalUrl) || "https://tidal.com";
 
 /**
  * Update the menuBarVisibility according to the store value
@@ -183,7 +183,7 @@ app.on("ready", async () => {
 
     // Adblock
     if (settingsStore.get(settings.adBlock)) {
-      const filter = { urls: ["https://listen.tidal.com/*"] };
+      const filter = { urls: [tidalUrl + "/*"] };
       session.defaultSession.webRequest.onBeforeRequest(filter, (details, callback) => {
         if (details.url.match(/\/users\/.*\d\?country/)) callback({ cancel: true });
         else callback({ cancel: false });
