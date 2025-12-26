@@ -1,10 +1,12 @@
 import { BrowserWindow, Tray } from "electron";
+import { getSystemTrayIcon } from "./iconHelper";
 import { getMenu } from "./menu";
 
 let tray: Tray;
 
 export const addTray = function (mainWindow: BrowserWindow, options = { icon: "" }) {
-  tray = new Tray(options.icon);
+  const iconPath = getSystemTrayIcon(options.icon);
+  tray = new Tray(iconPath);
   tray.setIgnoreDoubleClickEvents(true);
   tray.setToolTip("Tidal-hifi");
 
