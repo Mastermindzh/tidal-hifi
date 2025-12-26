@@ -190,7 +190,6 @@ app.on("ready", async () => {
         else callback({ cancel: false });
       });
     }
-
     Logger.log("components ready:", components.status());
 
     createWindow();

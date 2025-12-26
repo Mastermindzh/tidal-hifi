@@ -49,5 +49,6 @@ export interface TidalController<TBootstrapOptions = object> {
   getArtistsString(): string;
   getPlayingFrom(): string;
   getSongIcon(): string;
+  getSongImage(): string;
   isFavorite(): boolean;
 }

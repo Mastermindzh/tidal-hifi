@@ -23,7 +23,12 @@ import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
 import { TidalApiController } from "./TidalControllers/apiController/TidalApiController";
 import { DomControllerOptions } from "./TidalControllers/DomController/DomControllerOptions";
+import { getDomUpdateFrequency } from "./TidalControllers/DomController/domUpdateFrequency";
 import { DomTidalController } from "./TidalControllers/DomController/DomTidalController";
+import {
+  MediaSessionController,
+  MediaSessionControllerOptions,
+} from "./TidalControllers/MediaSessionController/MediaSessionController";
 import { TidalController } from "./TidalControllers/TidalController";
 
 const notificationPath = `${app.getPath("userData")}/notification.jpg`;
@@ -47,29 +52,28 @@ switch (settingsStore.get(settings.advanced.controllerType)) {
     break;
   }
 
+  case tidalControllers.mediaSessionController: {
+    tidalController = new MediaSessionController();
+    const mediaSessionControllerOptions: MediaSessionControllerOptions = {
+      refreshInterval: getDomUpdateFrequency(
+        settingsStore.get<string, number>(settings.updateFrequency),
+      ),
+    };
+    controllerOptions = mediaSessionControllerOptions;
+    Logger.log("MediaSessionController initialized");
+    break;
+  }
+
   default: {
     tidalController = new DomTidalController();
     const domControllerOptions: DomControllerOptions = {
-      refreshInterval: getDomUpdateFrequency(),
+      refreshInterval: getDomUpdateFrequency(
+        settingsStore.get<string, number>(settings.updateFrequency),
+      ),
     };
     controllerOptions = domControllerOptions;
     Logger.log("domController initialized");
     break;
-  }
-}
-
-/**
- * Get the update frequency from the store
- * make sure it returns a number, if not use the default
- */
-function getDomUpdateFrequency() {
-  const storeValue = settingsStore.get<string, number>(settings.updateFrequency);
-  const defaultValue = 500;
-
-  if (!isNaN(storeValue)) {
-    return storeValue;
-  } else {
-    return defaultValue;
   }
 }
 
@@ -380,9 +384,21 @@ tidalController.onMediaInfoUpdate(async (newState) => {
       ? setTitle(staticTitle)
       : setTitle(`${currentMediaInfo.title} - ${currentMediaInfo.artists}`);
 
-    // download a new icon and use it for the media info
-    if (!newState.icon && newState.image) {
-      currentMediaInfo.icon = await downloadIcon(currentMediaInfo.image, notificationPath);
+    // Always download an image for notifications to work properly
+    let imageUrlToDownload = tidalController.getSongImage(); // Try high-res first
+
+    // Fallback to standard image if high-res not available
+    if (!imageUrlToDownload && newState.image) {
+      imageUrlToDownload = newState.image;
+    }
+
+    // Fallback to icon if no image available
+    if (!imageUrlToDownload && newState.icon) {
+      imageUrlToDownload = newState.icon;
+    }
+
+    if (imageUrlToDownload) {
+      currentMediaInfo.icon = await downloadIcon(imageUrlToDownload, notificationPath);
     } else {
       currentMediaInfo.icon = "";
     }
@@ -392,7 +408,6 @@ tidalController.onMediaInfoUpdate(async (newState) => {
     // if titleOrArtists didn't change then only minor mediaInfo (like timings) changed, so don't bother the user with notifications
     updateMediaInfo(currentMediaInfo, false);
   }
-
   /**
    * automatically skip a song if the artists are found in the list of artists to skip
    * @param {*} artists array of artists

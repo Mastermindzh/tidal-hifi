@@ -58,6 +58,10 @@ export class TidalApiController implements TidalController {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
+  getSongImage(): string {
+    globalThis.alert("Method not implemented");
+    throw new Error("Method not implemented.");
+  }
   getCurrentTime(): string {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");

@@ -4,6 +4,7 @@ import { MediaStatus } from "../../models/mediaStatus";
 import { RepeatState } from "../../models/repeatState";
 import { TidalController } from "../TidalController";
 import { DomControllerOptions } from "./DomControllerOptions";
+import { getTrackURL } from "../../features/tidal/url";
 
 export class DomTidalController implements TidalController<DomControllerOptions> {
   private updateSubscriber: (state: Partial<MediaInfo>) => void;
@@ -168,15 +169,6 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   }
 
   bootstrap(options: DomControllerOptions): void {
-    /**
-     * Checks if Tidal is playing a video or song by grabbing the "a" element from the title.
-     * If it's a song it returns the track URL, if not it will return undefined
-     */
-    const getTrackURL = () => {
-      const id = this.getTrackId();
-      return `https://tidal.com/browse/track/${id}`;
-    };
-
     setInterval(async () => {
       const title = this.getTitle();
       const artistsArray = this.getArtists();
@@ -204,12 +196,13 @@ export class DomTidalController implements TidalController<DomControllerOptions>
         album: album,
         playingFrom: this.getPlayingFrom(),
         status: currentStatus,
-        url: getTrackURL(),
+        url: getTrackURL(this.getTrackId()),
         current,
         currentInSeconds: convertDurationToSeconds(current),
         duration,
         durationInSeconds: convertDurationToSeconds(duration),
         image: this.getSongIcon(),
+        icon: this.getSongIcon(),
         favorite: this.isFavorite(),
         player: {
           status: currentStatus,
@@ -349,6 +342,9 @@ export class DomTidalController implements TidalController<DomControllerOptions>
     return this.elements.isFavorite();
   }
   getSongIcon(): string {
+    return this.elements.getSongIcon();
+  }
+  getSongImage(): string {
     return this.elements.getSongIcon();
   }
 }
