@@ -16,6 +16,7 @@ export interface MediaInfo {
   duration: string;
   durationInSeconds?: number;
   image: string;
+  localAlbumArt?: string; // Local path to downloaded album art
   favorite: boolean;
   player?: MediaPlayerInfo;
 }
@@ -35,6 +36,7 @@ export const getEmptyMediaInfo = () => {
     durationInSeconds: 100,
     image: "",
     icon: "",
+    localAlbumArt: "",
     favorite: true,
 
     player: {
