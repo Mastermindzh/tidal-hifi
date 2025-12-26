@@ -506,6 +506,10 @@
             "type": "string",
             "format": "uri"
           },
+          "albumArt": {
+            "type": "string",
+            "description": "Local path to downloaded album art file"
+          },
           "favorite": {
             "type": "boolean"
           },
@@ -540,6 +544,7 @@
           "duration": "3:45",
           "durationInSeconds": 225,
           "image": "https://example.com/sample-image.jpg",
+          "albumArt": "/path/to/downloaded/current.jpg",
           "favorite": true,
           "player": {
             "status": "playing",

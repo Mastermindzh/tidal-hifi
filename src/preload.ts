@@ -4,7 +4,7 @@ import Player from "mpris-service";
 import { tidalControllers } from "./constants/controller";
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
-import { downloadIcon } from "./features/icon/downloadIcon";
+import { downloadImage } from "./features/icon/downloadImage";
 import {
   ListenBrainz,
   ListenBrainzConstants,
@@ -31,7 +31,7 @@ import {
 } from "./TidalControllers/MediaSessionController/MediaSessionController";
 import { TidalController } from "./TidalControllers/TidalController";
 
-const notificationPath = `${app.getPath("userData")}/notification.jpg`;
+const albumArtPath = `${app.getPath("userData")}/current.jpg`;
 const staticTitle = "TIDAL Hi-Fi";
 
 let currentSong = "";
@@ -237,12 +237,11 @@ async function sendNotification(mediaInfo: MediaInfo) {
     currentNotification = new Notification({
       title: mediaInfo.title,
       body: mediaInfo.artists,
-      icon: mediaInfo.icon,
+      icon: mediaInfo.localAlbumArt || mediaInfo.image || mediaInfo.icon,
     });
     currentNotification.show();
   }
 }
-
 function addMPRIS() {
   if (process.platform === "linux" && settingsStore.get(settings.mpris)) {
     try {
@@ -318,6 +317,9 @@ function addMPRIS() {
 
 function updateMpris(mediaInfo: MediaInfo) {
   if (player) {
+    // Use high-resolution image URL for better quality in media players
+    const highResImageUrl = tidalController.getSongImage() || mediaInfo.image;
+
     player.metadata = {
       ...player.metadata,
       ...{
@@ -325,7 +327,7 @@ function updateMpris(mediaInfo: MediaInfo) {
         "xesam:artist": [mediaInfo.artists],
         "xesam:album": mediaInfo.album,
         "xesam:url": mediaInfo.url,
-        "mpris:artUrl": mediaInfo.image,
+        "mpris:artUrl": highResImageUrl,
         "mpris:length": convertDurationToSeconds(mediaInfo.duration) * 1000 * 1000,
         "mpris:trackid": "/org/mpris/MediaPlayer2/track/" + tidalController.getTrackId(),
       },
@@ -384,23 +386,21 @@ tidalController.onMediaInfoUpdate(async (newState) => {
       ? setTitle(staticTitle)
       : setTitle(`${currentMediaInfo.title} - ${currentMediaInfo.artists}`);
 
-    // Always download an image for notifications to work properly
-    let imageUrlToDownload = tidalController.getSongImage(); // Try high-res first
+    // Download the best available image for local use
+    let imageUrlToDownload = "";
 
-    // Fallback to standard image if high-res not available
-    if (!imageUrlToDownload && newState.image) {
+    // Try to download image first, fallback to icon
+    if (newState.image) {
       imageUrlToDownload = newState.image;
-    }
-
-    // Fallback to icon if no image available
-    if (!imageUrlToDownload && newState.icon) {
+    } else if (newState.icon) {
       imageUrlToDownload = newState.icon;
     }
 
     if (imageUrlToDownload) {
-      currentMediaInfo.icon = await downloadIcon(imageUrlToDownload, notificationPath);
+      const downloadedImagePath = await downloadImage(imageUrlToDownload, albumArtPath);
+      currentMediaInfo.localAlbumArt = downloadedImagePath;
     } else {
-      currentMediaInfo.icon = "";
+      currentMediaInfo.localAlbumArt = "";
     }
 
     updateMediaInfo(currentMediaInfo, true);
