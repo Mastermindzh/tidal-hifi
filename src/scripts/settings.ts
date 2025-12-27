@@ -29,8 +29,8 @@ export const settingsStore = new Store({
   defaults: {
     adBlock: false,
     advanced: {
-      tidalUrl: "https://listen.tidal.com",
-      controllerType: "domController",
+      tidalUrl: "https://tidal.com",
+      controllerType: "mediaSessionController",
     },
     api: true,
     apiSettings: {

@@ -375,9 +375,9 @@
                   <strong>note! Beta might break at any time</strong>
                 </p>
                 <select class="select-input" id="channel" name="channel">
-                  <option value="https://listen.tidal.com">Stable (listen.tidal.com)</option>
-                  <option value="https://listen.stage.tidal.com">
-                    Staging (listen.stage.tidal.com)
+                  <option value="https://tidal.com">Stable (tidal.com)</option>
+                  <option value="https://stage.tidal.com">Staging (stage.tidal.com)</option>
+                  Staging (listen.stage.tidal.com)
                   </option>
                 </select>
               </div>
@@ -387,9 +387,9 @@
                 <h4>Controller Type</h4>
                 <p>Select the type of controller to use.</p>
                 <select id="controllerType" class="select-input">
-                  <option value="domController">DOM Controller</option>
+                  <option value="mediaSessionController">Media Session Controller (default)</option>
+                  <option value="domController">DOM Controller (fallback)</option>
                   <option value="tidalApiController">Tidal Api Controller (beta)</option>
-                  <option value="mediaSessionController">Media Session Controller (beta)</option>
                 </select>
               </div>
             </div>
