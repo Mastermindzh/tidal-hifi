@@ -7,6 +7,7 @@ import { DomTidalController } from "../DomController/DomTidalController";
 import { DomControllerOptions } from "../DomController/DomControllerOptions";
 import { getTrackURL } from "../../features/tidal/url";
 import { convertDurationToSeconds } from "../../features/time/parse";
+import { constrainPollingInterval } from "../../utility/pollingConstraints";
 
 export interface MediaSessionControllerOptions {
   refreshInterval?: number;
@@ -111,7 +112,7 @@ export class MediaSessionController implements TidalController<MediaSessionContr
 
   bootstrap(options: MediaSessionControllerOptions): void {
     if (options?.refreshInterval) {
-      this.refreshInterval = options.refreshInterval;
+      this.refreshInterval = constrainPollingInterval(options.refreshInterval);
     }
 
     // Configure fallback DOM controller if options provided (but don't bootstrap it)

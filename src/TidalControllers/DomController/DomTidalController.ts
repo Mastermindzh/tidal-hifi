@@ -5,6 +5,7 @@ import { RepeatState } from "../../models/repeatState";
 import { TidalController } from "../TidalController";
 import { DomControllerOptions } from "./DomControllerOptions";
 import { getTrackURL } from "../../features/tidal/url";
+import { constrainPollingInterval } from "../../utility/pollingConstraints";
 
 export class DomTidalController implements TidalController<DomControllerOptions> {
   private updateSubscriber: (state: Partial<MediaInfo>) => void;
@@ -169,6 +170,7 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   }
 
   bootstrap(options: DomControllerOptions): void {
+    const constrainedInterval = constrainPollingInterval(options.refreshInterval);
     setInterval(async () => {
       const title = this.getTitle();
       const artistsArray = this.getArtists();
@@ -212,7 +214,7 @@ export class DomTidalController implements TidalController<DomControllerOptions>
       };
 
       this.updateSubscriber(updatedInfo);
-    }, options.refreshInterval);
+    }, constrainedInterval);
   }
 
   playPause = (): void => {
