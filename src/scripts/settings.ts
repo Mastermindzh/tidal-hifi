@@ -132,7 +132,10 @@ export const settingsStore = new Store({
       ]);
     },
     "6.1.0": (migrationStore) => {
-      buildMigration("6.1.0", migrationStore, [{ key: settings.disableAltMenuBar, value: false }]);
+      buildMigration("6.1.0", migrationStore, [
+        { key: settings.disableAltMenuBar, value: false },
+        { key: settings.advanced.userAgent, value: "" },
+      ]);
     },
   },
 });
