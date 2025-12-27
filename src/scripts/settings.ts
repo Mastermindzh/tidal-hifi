@@ -3,6 +3,7 @@ import Store from "electron-store";
 import { BrowserWindow, shell } from "electron";
 import path from "path";
 import { settings } from "../constants/settings";
+import values from "../constants/values";
 
 let settingsWindow: BrowserWindow;
 /**
@@ -30,7 +31,7 @@ export const settingsStore = new Store({
     adBlock: false,
     advanced: {
       tidalUrl: "https://listen.tidal.com",
-      userAgent: "default",
+      userAgent: values.defaultUserAgent,
     },
     api: true,
     apiSettings: {
