@@ -4,12 +4,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-### Added
-
-- Added "Start Minimized" option in Settings → Theming to hide the main window on startup
-
 ## [6.0.0]
 
 ### Breaking Changes
@@ -26,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Tidal Hi-Fi now downloads the best quality album art to use in notifications/api/etc
 - Added `/health` endpoint to the API for health checks and monitoring
 - Root API endpoint (`/`) now redirects to `/docs` for immediate access to interactive documentation
+- Added "Start Minimized" option in Settings → Theming to hide the main window on startup
 
 ### fixes
 
@@ -38,6 +33,7 @@ fixes [#717](https://github.com/Mastermindzh/tidal-hifi/issues/717)
 fixes [#505](https://github.com/Mastermindzh/tidal-hifi/issues/505)
 fixes [#712](https://github.com/Mastermindzh/tidal-hifi/issues/712)
 fixes [#563](https://github.com/Mastermindzh/tidal-hifi/issues/563)
+fixes [#385](https://github.com/Mastermindzh/tidal-hifi/issues/385)
 
 ## [5.20.1]
 
