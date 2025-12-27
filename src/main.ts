@@ -89,6 +89,7 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
     icon,
     backgroundColor: options.backgroundColor,
     autoHideMenuBar: true,
+    transparent: true,
     webPreferences: {
       ...windowPreferences,
       ...{
