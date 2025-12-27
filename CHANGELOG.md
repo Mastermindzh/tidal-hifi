@@ -26,6 +26,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added option to disable alt key menu bar activation in Settings → General → UI
 - Added option to customize the user agent
 
+### removed
+
+- Removed non-functioning hotkeys
+
 ### fixes
 
 - pressing delete no longer searches for "Delete" in the song search

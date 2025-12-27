@@ -21,10 +21,6 @@ export class TidalApiController implements TidalController {
     globalThis.alert("Method not implemented: ");
     throw new Error("Method not implemented.");
   }
-  // example of using the original domMediaController as a fallback
-  goToHome(): void {
-    this.domMediaController.goToHome();
-  }
 
   getDuration(): string {
     globalThis.alert("Method not implemented");
@@ -123,10 +119,6 @@ export class TidalApiController implements TidalController {
     throw new Error("Method not implemented.");
   }
   toggleShuffle(): void {
-    globalThis.alert("Method not implemented");
-    throw new Error("Method not implemented.");
-  }
-  openSettings(): void {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }

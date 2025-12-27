@@ -27,8 +27,6 @@ export class DomTidalController implements TidalController<DomControllerOptions>
     shuffle: '*[data-test="shuffle"]',
     repeat: '*[data-test="repeat"]',
     account: '*[data-test^="profile-image-button"]',
-    settings: '*[data-test^="sidebar-menu-button"]',
-    openSettings: '*[data-test^="open-settings"]',
     media: '*[data-test="current-media-imagery"]',
     image: "img",
     current: '*[data-test="current-time"]',
@@ -226,17 +224,6 @@ export class DomTidalController implements TidalController<DomControllerOptions>
       this.elements.click("pause");
     }
   };
-
-  goToHome(): void {
-    this.elements.click("home");
-  }
-
-  openSettings(): void {
-    this.elements.click("settings");
-    setTimeout(() => {
-      this.elements.click("openSettings");
-    }, 100);
-  }
 
   toggleFavorite(): void {
     this.elements.click("favorite");

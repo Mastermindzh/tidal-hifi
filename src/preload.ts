@@ -89,26 +89,11 @@ ListenBrainzStore.clear();
  */
 function addHotKeys() {
   if (settingsStore.get(settings.enableCustomHotkeys)) {
-    addHotkey("Control+p", () => {
-      tidalController.openSettings();
-    });
     addHotkey("Control+l", () => {
       handleLogout();
     });
     addHotkey("Control+a", () => {
       tidalController.toggleFavorite();
-    });
-
-    addHotkey("Control+h", () => {
-      tidalController.goToHome();
-    });
-
-    addHotkey("backspace", function () {
-      tidalController.back();
-    });
-
-    addHotkey("shift+backspace", function () {
-      tidalController.forward();
     });
 
     addHotkey("control+u", function () {

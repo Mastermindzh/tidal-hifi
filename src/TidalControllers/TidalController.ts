@@ -3,9 +3,6 @@ import { MediaStatus } from "../models/mediaStatus";
 import { RepeatState } from "../models/repeatState";
 
 export interface TidalController<TBootstrapOptions = object> {
-  goToHome(): void;
-  openSettings(): void;
-
   /**
    * Play or pause the current media
    */

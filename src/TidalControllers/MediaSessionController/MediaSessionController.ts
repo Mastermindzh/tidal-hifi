@@ -257,14 +257,6 @@ export class MediaSessionController implements TidalController<MediaSessionContr
     this.fallbackDomController.toggleFavorite();
   }
 
-  goToHome(): void {
-    this.fallbackDomController.goToHome();
-  }
-
-  openSettings(): void {
-    this.fallbackDomController.openSettings();
-  }
-
   back(): void {
     this.fallbackDomController.back();
   }
