@@ -411,6 +411,10 @@ html {
     &:hover {
       background: $tidal-grey-darker-focus;
     }
+
+    &--with-margin {
+      margin-top: 10px;
+    }
   }
 }
 

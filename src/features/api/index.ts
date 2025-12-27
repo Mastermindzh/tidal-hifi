@@ -5,6 +5,7 @@ import swaggerUi from "swagger-ui-express";
 import { settingsStore } from "../../scripts/settings";
 import { settings } from "./../../constants/settings";
 import { addCurrentInfo } from "./features/current";
+import { addHealthEndpoint } from "./features/health";
 import { addPlaybackControl } from "./features/player";
 import { addSettingsAPI } from "./features/settings/settings";
 import { addLegacyApi } from "./legacy";
@@ -22,13 +23,14 @@ export const startApi = (mainWindow: BrowserWindow) => {
   expressApp.use(express.json());
   expressApp.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
   expressApp.get("/", (req, res) => {
-    res.send("Hello World!");
+    res.redirect("/docs");
   });
   expressApp.get("/swagger.json", (req, res) => {
     res.json(swaggerSpec);
   });
 
   // add features
+  addHealthEndpoint(expressApp);
   addLegacyApi(expressApp, mainWindow);
   addPlaybackControl(expressApp, mainWindow);
   addCurrentInfo(expressApp);

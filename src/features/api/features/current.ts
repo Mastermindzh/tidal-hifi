@@ -1,6 +1,7 @@
 import { Request, Response, Router } from "express";
 import fs from "fs";
 import { mediaInfo } from "../../../scripts/mediaInfo";
+import { Logger } from "../../logger";
 
 export const addCurrentInfo = (expressApp: Router) => {
   /**
@@ -40,6 +41,9 @@ export const addCurrentInfo = (expressApp: Router) => {
    *         image:
    *           type: string
    *           format: uri
+   *         localAlbumArt:
+   *           type: string
+   *           description: Local path to downloaded album art file
    *         favorite:
    *           type: boolean
    *         player:
@@ -66,6 +70,7 @@ export const addCurrentInfo = (expressApp: Router) => {
    *         duration: "3:45"
    *         durationInSeconds: 225
    *         image: "https://example.com/sample-image.jpg"
+   *         localAlbumArt: "/path/to/downloaded/current.jpg"
    *         favorite: true
    *         player:
    *           status: "playing"
@@ -112,7 +117,15 @@ export const addCurrentInfo = (expressApp: Router) => {
 };
 
 export const getCurrentImage = (req: Request, res: Response) => {
-  const stream = fs.createReadStream(mediaInfo.icon);
+  // Use downloaded album art if available, fallback to image URL
+  const imagePath = mediaInfo.localAlbumArt || mediaInfo.image || mediaInfo.icon;
+
+  if (!imagePath) {
+    res.set("Content-Type", "text/plain");
+    res.status(404).end("No image available");
+    return;
+  }
+  const stream = fs.createReadStream(imagePath);
   stream.on("open", function () {
     res.set("Content-Type", "image/png");
     stream.pipe(res);

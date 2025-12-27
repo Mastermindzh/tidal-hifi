@@ -3,6 +3,7 @@ import Store from "electron-store";
 import { BrowserWindow, shell } from "electron";
 import path from "path";
 import { settings } from "../constants/settings";
+import values from "../constants/values";
 
 let settingsWindow: BrowserWindow;
 /**
@@ -15,7 +16,7 @@ let settingsWindow: BrowserWindow;
 const buildMigration = (
   version: string,
   migrationStore: { get: (str: string) => string; set: (str: string, val: unknown) => void },
-  options: Array<{ key: string; value: unknown }>
+  options: Array<{ key: string; value: unknown }>,
 ) => {
   console.log(`running migrations for ${version}`);
   options.forEach(({ key, value }) => {
@@ -29,7 +30,9 @@ export const settingsStore = new Store({
   defaults: {
     adBlock: false,
     advanced: {
-      tidalUrl: "https://listen.tidal.com",
+      tidalUrl: "https://tidal.com",
+      controllerType: "mediaSessionController",
+      userAgent: values.defaultUserAgent,
     },
     api: true,
     apiSettings: {
@@ -37,6 +40,7 @@ export const settingsStore = new Store({
       hostname: "127.0.0.1",
     },
     customCSS: [],
+    disableAltMenuBar: false,
     disableBackgroundThrottle: true,
     disableHardwareMediaKeys: false,
     enableCustomHotkeys: false,
@@ -69,9 +73,11 @@ export const settingsStore = new Store({
     singleInstance: true,
     skipArtists: false,
     skippedArtists: [""],
+    startMinimized: false,
     staticWindowTitle: false,
     theme: "none",
     trayIcon: true,
+    trayIconPath: "",
     updateFrequency: 500,
     windowBounds: { width: 800, height: 600 },
   },
@@ -80,21 +86,21 @@ export const settingsStore = new Store({
       console.log("running migrations for 3.1.0");
       migrationStore.set(
         settings.flags.disableHardwareMediaKeys,
-        migrationStore.get("disableHardwareMediaKeys") ?? false
+        migrationStore.get("disableHardwareMediaKeys") ?? false,
       );
     },
     "5.7.0": (migrationStore) => {
       console.log("running migrations for 5.7.0");
       migrationStore.set(
         settings.ListenBrainz.delay,
-        migrationStore.get(settings.ListenBrainz.delay) ?? 5000
+        migrationStore.get(settings.ListenBrainz.delay) ?? 5000,
       );
     },
     "5.8.0": (migrationStore) => {
       console.log("running migrations for 5.8.0");
       migrationStore.set(
         settings.discord.includeTimestamps,
-        migrationStore.get(settings.discord.includeTimestamps) ?? true
+        migrationStore.get(settings.discord.includeTimestamps) ?? true,
       );
     },
     "5.9.0": (migrationStore) => {
@@ -119,6 +125,17 @@ export const settingsStore = new Store({
     },
     "5.16.0": (migrationStore) => {
       buildMigration("5.16.0", migrationStore, [{ key: settings.discord.showIdle, value: "true" }]);
+    },
+    "6.0.0": (migrationStore) => {
+      buildMigration("6.0.0", migrationStore, [
+        { key: settings.advanced.controllerType, value: "mediaSessionController" },
+      ]);
+    },
+    "6.1.0": (migrationStore) => {
+      buildMigration("6.1.0", migrationStore, [
+        { key: settings.disableAltMenuBar, value: false },
+        { key: settings.advanced.userAgent, value: "" },
+      ]);
     },
   },
 });

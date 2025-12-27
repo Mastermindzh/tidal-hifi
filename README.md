@@ -2,7 +2,7 @@
 
 ![GitHub release](https://img.shields.io/github/release/Mastermindzh/tidal-hifi.svg) [![github builds](https://github.com/mastermindzh/tidal-hifi/actions/workflows/build.yml/badge.svg)](https://github.com/Mastermindzh/tidal-hifi/actions) [![Build Status](https://ci.mastermindzh.tech/api/badges/Mastermindzh/tidal-hifi/status.svg)](https://ci.mastermindzh.tech/Mastermindzh/tidal-hifi) [![Discord logo](./docs/images/discord.png)](https://discord.gg/yhNwf4v4He)
 
-The web version of [listen.tidal.com](https://listen.tidal.com) running in electron with Hi-Fi (High & Max) support thanks to widevine.
+The web version of [TIDAL](https://tidal.com) running in electron with Hi-Fi (High & Max) support thanks to widevine.
 
 ![TIDAL Hi-Fi preview](./docs/images/preview.png)
 
@@ -43,6 +43,7 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
 - Custom hotkeys ([source](https://defkey.com/tidal-desktop-shortcuts))
 - Better icons thanks to [Papirus-icon-theme](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/)
 - [Settings feature](./docs/images/settings.png) to disable certain functionality. (`ctrl+=` or `ctrl+0`)
+- Multiple [controller types](./docs/tidal-controllers.md) for different interaction methods with Tidal
 - API for status, playback and settings (see the [/docs](http://localhost:47836/docs/) route)
 - Disabled audio & visual ads, unlocked lyrics, suggested track, track info, and unlimited skips thanks to uBlockOrigin custom filters ([source](https://github.com/uBlockOrigin/uAssets/issues/17495))
 - AlbumArt in integrations ([best-effort](https://github.com/Mastermindzh/tidal-hifi/pull/88#pullrequestreview-840814847))
