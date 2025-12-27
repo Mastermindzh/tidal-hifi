@@ -71,6 +71,7 @@ export const settingsStore = new Store({
     singleInstance: true,
     skipArtists: false,
     skippedArtists: [""],
+    startMinimized: false,
     staticWindowTitle: false,
     theme: "none",
     trayIcon: true,

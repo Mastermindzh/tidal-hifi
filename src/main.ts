@@ -101,6 +101,7 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
     icon,
     backgroundColor: options.backgroundColor,
     autoHideMenuBar: true,
+    transparent: true,
     webPreferences: {
       ...windowPreferences,
       ...{
@@ -211,6 +212,11 @@ app.on("ready", async () => {
     }
     settingsStore.get(settings.api) && startApi(mainWindow);
     settingsStore.get(settings.enableDiscord) && initRPC();
+    
+    // Hide window on startup if startMinimized is enabled
+    if (settingsStore.get(settings.startMinimized)) {
+      mainWindow.hide();
+    }
   } else {
     app.quit();
   }
@@ -244,6 +250,10 @@ ipcMain.on(globalEvents.hideSettings, () => {
 });
 ipcMain.on(globalEvents.showSettings, () => {
   showSettingsWindow();
+});
+
+ipcMain.on(globalEvents.resetZoom, () => {
+  mainWindow.webContents.setZoomFactor(1.0);
 });
 
 ipcMain.on(globalEvents.refreshMenuBar, () => {
