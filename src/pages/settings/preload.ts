@@ -119,6 +119,44 @@ function setElementHidden(
 }
 
 /**
+ * Validate tray icon path and show feedback
+ * @param path the path to validate
+ * @param validationElement the element to show validation messages
+ * @returns true if valid
+ */
+function validateTrayIconPath(path: string, validationElement: HTMLElement): boolean {
+  const trimmedPath = path.trim();
+  
+  // Empty or "default" is valid
+  if (trimmedPath === "" || trimmedPath.toLowerCase() === "default") {
+    validationElement.style.display = "none";
+    return true;
+  }
+  
+  // Check for supported extensions (SVG not supported)
+  const supportedExtensions = [".png", ".jpg", ".jpeg", ".ico", ".bmp", ".gif"];
+  const lowerPath = trimmedPath.toLowerCase();
+  const hasValidExtension = supportedExtensions.some((ext) => lowerPath.endsWith(ext));
+  
+  if (!hasValidExtension) {
+    validationElement.textContent = "⚠️ Unsupported file format. Use PNG, JPG, JPEG, ICO, BMP, or GIF (SVG not supported).";
+    validationElement.style.display = "block";
+    return false;
+  }
+  
+  // Check if file exists
+  if (!fs.existsSync(trimmedPath)) {
+    validationElement.textContent = "⚠️ File not found. Please check the path.";
+    validationElement.style.display = "block";
+    return false;
+  }
+  
+  // Valid!
+  validationElement.style.display = "none";
+  return true;
+}
+
+/**
  * Sync the UI forms with the current settings
  */
 function refreshSettings() {
@@ -147,6 +185,13 @@ function refreshSettings() {
     theme.value = settingsStore.get(settings.theme);
     trayIcon.checked = settingsStore.get(settings.trayIcon);
     trayIconPath.value = settingsStore.get(settings.trayIconPath) || "";
+    
+    // Validate tray icon path on load
+    const validationElement = document.getElementById("trayIconPathValidation");
+    if (validationElement) {
+      validateTrayIconPath(trayIconPath.value, validationElement);
+    }
+    
     updateFrequency.value = settingsStore.get(settings.updateFrequency);
     enableListenBrainz.checked = settingsStore.get(settings.ListenBrainz.enabled);
     ListenBrainzAPI.value = settingsStore.get(settings.ListenBrainz.api);
@@ -236,6 +281,25 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function addTrayIconPathListener(source: HTMLInputElement, key: string) {
+    const validationElement = document.getElementById("trayIconPathValidation");
+    
+    source.addEventListener("input", () => {
+      const isValid = validateTrayIconPath(source.value, validationElement);
+      settingsStore.set(key, source.value);
+      
+      // Only send storeChanged if valid to avoid unnecessary reloads
+      if (isValid) {
+        ipcRenderer.send(globalEvents.storeChanged);
+      }
+    });
+    
+    // Also validate on blur (when user leaves the field)
+    source.addEventListener("blur", () => {
+      validateTrayIconPath(source.value, validationElement);
+    });
+  }
+
   ipcRenderer.on("refreshData", () => {
     refreshSettings();
   });
@@ -305,7 +369,7 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(singleInstance, settings.singleInstance);
   addSelectListener(theme, settings.theme);
   addInputListener(trayIcon, settings.trayIcon);
-  addInputListener(trayIconPath, settings.trayIconPath);
+  addTrayIconPathListener(trayIconPath, settings.trayIconPath);
   addInputListener(updateFrequency, settings.updateFrequency);
   addInputListener(
     enableListenBrainz,

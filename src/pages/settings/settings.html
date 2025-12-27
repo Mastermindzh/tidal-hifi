@@ -479,8 +479,10 @@
                 <h4>Custom tray icon path</h4>
                 <p>
                   Provide a custom path to an icon file for the system tray. Leave empty or set to "default" to use the bundled icon.
+                  Supported formats: PNG, JPG, JPEG, ICO, BMP, GIF (SVG is not supported).
                 </p>
                 <input id="trayIconPath" type="text" class="text-input" name="trayIconPath" placeholder="default or /path/to/icon.png" />
+                <p id="trayIconPathValidation" class="validation-message" style="color: #ff6b6b; margin-top: 5px; display: none;"></p>
               </div>
             </div>
           </div>
