@@ -46,9 +46,21 @@ setManagedFlagsFromSettings(app);
  */
 function syncMenuBarWithStore() {
   const fixedMenuBar = !!settingsStore.get(settings.menuBar);
+  const disableAltMenuBar = !!settingsStore.get(settings.disableAltMenuBar);
 
-  mainWindow.autoHideMenuBar = !fixedMenuBar;
-  mainWindow.setMenuBarVisibility(fixedMenuBar);
+  if (fixedMenuBar) {
+    // Menu bar is always visible
+    mainWindow.autoHideMenuBar = false;
+    mainWindow.setMenuBarVisibility(true);
+  } else if (disableAltMenuBar) {
+    // Menu bar is completely hidden (no Alt key activation)
+    mainWindow.autoHideMenuBar = false;
+    mainWindow.setMenuBarVisibility(false);
+  } else {
+    // Menu bar is hidden but can be shown with Alt key
+    mainWindow.autoHideMenuBar = true;
+    mainWindow.setMenuBarVisibility(false);
+  }
 }
 
 /**
@@ -198,9 +210,13 @@ app.on("ready", async () => {
       addTray(mainWindow, { icon });
       refreshTray(mainWindow);
     }
-    settingsStore.get(settings.api) && startApi(mainWindow);
-    settingsStore.get(settings.enableDiscord) && initRPC();
-    
+    if (settingsStore.get(settings.api)) {
+      startApi(mainWindow);
+    }
+    if (settingsStore.get(settings.enableDiscord)) {
+      initRPC();
+    }
+
     // Hide window on startup if startMinimized is enabled
     if (settingsStore.get(settings.startMinimized)) {
       mainWindow.hide();
