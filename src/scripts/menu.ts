@@ -15,6 +15,7 @@ const tidalMagazineEntry = {
   label: "Magazine",
   click() {
     const magazineWindow = new BrowserWindow({
+      transparent: true,
       autoHideMenuBar: true,
       webPreferences: {
         sandbox: false,

@@ -26,7 +26,7 @@ const defaultPresence = {
   largeImageKey: "tidal-hifi-icon",
   largeImageText: `TIDAL Hi-Fi ${app.getVersion()}`,
   instance: false,
-  type: ACTIVITY_LISTENING
+  type: ACTIVITY_LISTENING,
 };
 
 const updateActivity = () => {
@@ -118,15 +118,17 @@ const getActivity = (): SetActivity => {
 const connectWithRetry = async (retryCount = 0) => {
   try {
     await rpc.login();
-    Logger.log('Connected to Discord');
+    Logger.log("Connected to Discord");
     rpc.on("ready", updateActivity);
-    Object.values(globalEvents).forEach(event => ipcMain.on(event, observer));
+    Object.values(globalEvents).forEach((event) => ipcMain.on(event, observer));
   } catch (error) {
     if (retryCount < MAX_RETRIES) {
-      Logger.log(`Failed to connect to Discord, retrying in ${RETRY_DELAY/1000} seconds... (Attempt ${retryCount + 1}/${MAX_RETRIES})`);
+      Logger.log(
+        `Failed to connect to Discord, retrying in ${RETRY_DELAY / 1000} seconds... (Attempt ${retryCount + 1}/${MAX_RETRIES})`
+      );
       setTimeout(() => connectWithRetry(retryCount + 1), RETRY_DELAY);
     } else {
-      Logger.log('Failed to connect to Discord after maximum retry attempts');
+      Logger.log("Failed to connect to Discord after maximum retry attempts");
     }
   }
 };
@@ -135,7 +137,7 @@ const connectWithRetry = async (retryCount = 0) => {
  * Set up the discord rpc and listen on globalEvents.updateInfo
  */
 export const initRPC = () => {
-  rpc = new Client({ transport: {type: "ipc"}, clientId });
+  rpc = new Client({ transport: { type: "ipc" }, clientId });
   connectWithRetry();
 };
 

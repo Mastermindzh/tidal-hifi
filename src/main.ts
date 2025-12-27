@@ -25,6 +25,7 @@ import {
   showSettingsWindow,
 } from "./scripts/settings";
 import { addTray, refreshTray } from "./scripts/tray";
+import { tidalUrl } from "./features/tidal/url";
 let mainInhibitorId = -1;
 
 let mainWindow: BrowserWindow;
@@ -33,14 +34,12 @@ const PROTOCOL_PREFIX = "tidal";
 const windowPreferences = {
   sandbox: false,
   plugins: true,
-  devTools: true, // I like tinkering, others might too
+  devTools: true, // Ensure devTools is enabled for debugging
+  contextIsolation: false, // Disable context isolation for debugging
 };
 
 setDefaultFlags(app);
 setManagedFlagsFromSettings(app);
-
-const tidalUrl =
-  settingsStore.get<string, string>(settings.advanced.tidalUrl) || "https://listen.tidal.com";
 
 /**
  * Update the menuBarVisibility according to the store value
@@ -48,9 +47,21 @@ const tidalUrl =
  */
 function syncMenuBarWithStore() {
   const fixedMenuBar = !!settingsStore.get(settings.menuBar);
+  const disableAltMenuBar = !!settingsStore.get(settings.disableAltMenuBar);
 
-  mainWindow.autoHideMenuBar = !fixedMenuBar;
-  mainWindow.setMenuBarVisibility(fixedMenuBar);
+  if (fixedMenuBar) {
+    // Menu bar is always visible
+    mainWindow.autoHideMenuBar = false;
+    mainWindow.setMenuBarVisibility(true);
+  } else if (disableAltMenuBar) {
+    // Menu bar is completely hidden (no Alt key activation)
+    mainWindow.autoHideMenuBar = false;
+    mainWindow.setMenuBarVisibility(false);
+  } else {
+    // Menu bar is hidden but can be shown with Alt key
+    mainWindow.autoHideMenuBar = true;
+    mainWindow.setMenuBarVisibility(false);
+  }
 }
 
 /**
@@ -101,6 +112,7 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
     icon,
     backgroundColor: options.backgroundColor,
     autoHideMenuBar: true,
+    transparent: true,
     webPreferences: {
       ...windowPreferences,
       ...{
@@ -195,13 +207,12 @@ app.on("ready", async () => {
 
     // Adblock
     if (settingsStore.get(settings.adBlock)) {
-      const filter = { urls: ["https://listen.tidal.com/*"] };
+      const filter = { urls: [tidalUrl + "/*"] };
       session.defaultSession.webRequest.onBeforeRequest(filter, (details, callback) => {
         if (details.url.match(/\/users\/.*\d\?country/)) callback({ cancel: true });
         else callback({ cancel: false });
       });
     }
-
     Logger.log("components ready:", components.status());
 
     createWindow();
@@ -211,8 +222,17 @@ app.on("ready", async () => {
       addTray(mainWindow, { icon });
       refreshTray(mainWindow);
     }
-    settingsStore.get(settings.api) && startApi(mainWindow);
-    settingsStore.get(settings.enableDiscord) && initRPC();
+    if (settingsStore.get(settings.api)) {
+      startApi(mainWindow);
+    }
+    if (settingsStore.get(settings.enableDiscord)) {
+      initRPC();
+    }
+
+    // Hide window on startup if startMinimized is enabled
+    if (settingsStore.get(settings.startMinimized)) {
+      mainWindow.hide();
+    }
   } else {
     app.quit();
   }
@@ -246,6 +266,10 @@ ipcMain.on(globalEvents.hideSettings, () => {
 });
 ipcMain.on(globalEvents.showSettings, () => {
   showSettingsWindow();
+});
+
+ipcMain.on(globalEvents.resetZoom, () => {
+  mainWindow.webContents.setZoomFactor(1.0);
 });
 
 ipcMain.on(globalEvents.refreshMenuBar, () => {

@@ -4,6 +4,45 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.0.0]
+
+### Breaking Changes
+
+- **Default controller changed to MediaSession Controller**: While this change should not break existing installations (settings are preserved), we've marked this as a breaking change due to the significant shift in the default interaction method with Tidal. If you experience any issues, you can revert to the previous behavior by changing the controller type back to "DOM Controller" in Settings → Advanced → Controller Type.
+
+### Added
+
+- Added [TidalControllers](./docs/tidal-controllers.md)
+  - Changed default implementation to `mediaSessionController`
+- Implemented a min of 100ms and max of 60000ms on polling intervals
+- Switched primary URL from [https://listen.tidal.com](https://listen.tidal.com) to [https://tidal.com](https://tidal.com)
+- added `albumArt` key to the API
+  - Tidal Hi-Fi now downloads the best quality album art to use in notifications/api/etc
+- Option to reset zoom to 100% from settings -> Theming
+- Added `/health` endpoint to the API for health checks and monitoring
+- Root API endpoint (`/`) now redirects to `/docs` for immediate access to interactive documentation
+- Added "Start Minimized" option in Settings → Theming to hide the main window on startup
+- Ability to use transparent themes.
+- Added option to disable alt key menu bar activation in Settings → General → UI
+
+### fixes
+
+- pressing delete no longer searches for "Delete" in the song search
+  - Now matches tidal.com -> does nothing
+
+fixes [#779](https://github.com/Mastermindzh/tidal-hifi/issues/779)
+fixes [#768](https://github.com/Mastermindzh/tidal-hifi/issues/768)
+fixes [#717](https://github.com/Mastermindzh/tidal-hifi/issues/717)
+fixes [#505](https://github.com/Mastermindzh/tidal-hifi/issues/505)
+fixes [#712](https://github.com/Mastermindzh/tidal-hifi/issues/712)
+fixes [#750](https://github.com/Mastermindzh/tidal-hifi/issues/750)
+fixes [#563](https://github.com/Mastermindzh/tidal-hifi/issues/563)
+fixes [#385](https://github.com/Mastermindzh/tidal-hifi/issues/385)
+fixes [#443](https://github.com/Mastermindzh/tidal-hifi/issues/443)
+fixes [#772](https://github.com/Mastermindzh/tidal-hifi/issues/772)
+fixes [#438](https://github.com/Mastermindzh/tidal-hifi/issues/438)
+fixes [#529](https://github.com/Mastermindzh/tidal-hifi/issues/529)
+
 ## [5.20.1]
 
 - Updated electron to 37.2.5
@@ -57,6 +96,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added all missing swagger/openApi info with the help of [Times-Z](https://github.com/Times-Z)
 - Updated most dependency versions
+
   - This includes Electron 31!
 
 - Added a channel selector so we can now use Tidal's staging environment directly from the app
@@ -148,10 +188,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Updated Electron to 28.1.1 (fixes [325](https://github.com/Mastermindzh/tidal-hifi/issues/325))
 - Updated dependencies to latest
+
   - added theme files to stylelint ignore
   - fixed other stylelint errors
 
 - Added functionality to favorite a song (fixes [#323](https://github.com/Mastermindzh/tidal-hifi/issues/323))
+
   - Added a hotkey to favorite ("Add to collection") songs: Control+a
   - Added the "favorite" field in the `mediaInfo` and the API `/current` endpoint
   - Added an endpoint to toggle favoriting a song: `http://localhost:47836/favorite/toggle`
@@ -172,10 +214,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added settings to customize the Discord rich presence information
   - Discord settings are now also collapsible like the ListenBrainz ones are
 - Restyled settings menu to include version number and useful links on the about page
-    ![The new about page](./docs/images/new-about.png)
+  ![The new about page](./docs/images/new-about.png)
 - The ListenBrainz integration has been extended with a configurable (5 seconds by default) delay in song reporting so that it doesn't spam the API when you are cycling through songs.
 - Custom CSS now also applies to settings window
-    ![Tokyo Night theme on settings window](./docs/images/customcss-menu.png)
+  ![Tokyo Night theme on settings window](./docs/images/customcss-menu.png)
 
 ## [5.6.0]
 
