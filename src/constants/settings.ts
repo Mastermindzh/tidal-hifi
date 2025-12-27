@@ -22,6 +22,7 @@ export const settings = {
     hostname: "apiSettings.hostname",
   },
   customCSS: "customCSS",
+  disableAltMenuBar: "disableAltMenuBar",
   disableBackgroundThrottle: "disableBackgroundThrottle",
   disableHardwareMediaKeys: "disableHardwareMediaKeys",
   enableCustomHotkeys: "enableCustomHotkeys",

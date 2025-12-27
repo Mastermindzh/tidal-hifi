@@ -38,6 +38,7 @@ export const settingsStore = new Store({
       hostname: "127.0.0.1",
     },
     customCSS: [],
+    disableAltMenuBar: false,
     disableBackgroundThrottle: true,
     disableHardwareMediaKeys: false,
     enableCustomHotkeys: false,
@@ -126,6 +127,9 @@ export const settingsStore = new Store({
       buildMigration("6.0.0", migrationStore, [
         { key: settings.advanced.controllerType, value: "mediaSessionController" },
       ]);
+    },
+    "6.1.0": (migrationStore) => {
+      buildMigration("6.1.0", migrationStore, [{ key: settings.disableAltMenuBar, value: false }]);
     },
   },
 });

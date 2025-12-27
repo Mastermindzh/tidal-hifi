@@ -32,6 +32,7 @@ let adBlock: HTMLInputElement,
   api: HTMLInputElement,
   channel: HTMLSelectElement,
   customCSS: HTMLInputElement,
+  disableAltMenuBar: HTMLInputElement,
   disableBackgroundThrottle: HTMLInputElement,
   disableHardwareMediaKeys: HTMLInputElement,
   enableCustomHotkeys: HTMLInputElement,
@@ -177,6 +178,7 @@ function refreshSettings() {
     api.checked = settingsStore.get(settings.api);
     channel.value = settingsStore.get(settings.advanced.tidalUrl);
     customCSS.value = settingsStore.get<string, string[]>(settings.customCSS).join("\n");
+    disableAltMenuBar.checked = settingsStore.get(settings.disableAltMenuBar);
     disableBackgroundThrottle.checked = settingsStore.get(settings.disableBackgroundThrottle);
     disableHardwareMediaKeys.checked = settingsStore.get(settings.flags.disableHardwareMediaKeys);
     enableCustomHotkeys.checked = settingsStore.get(settings.enableCustomHotkeys);
@@ -325,6 +327,7 @@ window.addEventListener("DOMContentLoaded", () => {
   api = get("apiCheckbox");
   channel = get<HTMLSelectElement>("channel");
   customCSS = get("customCSS");
+  disableAltMenuBar = get("disableAltMenuBar");
   disableBackgroundThrottle = get("disableBackgroundThrottle");
   disableHardwareMediaKeys = get("disableHardwareMediaKeys");
   enableCustomHotkeys = get("enableCustomHotkeys");
@@ -364,6 +367,7 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(api, settings.api);
   addSelectListener(channel, settings.advanced.tidalUrl);
   addTextAreaListener(customCSS, settings.customCSS);
+  addInputListener(disableAltMenuBar, settings.disableAltMenuBar);
   addInputListener(disableBackgroundThrottle, settings.disableBackgroundThrottle);
   addInputListener(disableHardwareMediaKeys, settings.flags.disableHardwareMediaKeys);
   addInputListener(enableCustomHotkeys, settings.enableCustomHotkeys);
