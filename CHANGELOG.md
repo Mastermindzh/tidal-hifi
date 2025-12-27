@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Option to reset zoom to 100% from settings -> Theming
 - Added `/health` endpoint to the API for health checks and monitoring
 - Root API endpoint (`/`) now redirects to `/docs` for immediate access to interactive documentation
+- Added "Start Minimized" option in Settings → Theming to hide the main window on startup
 - Ability to use transparent themes.
 
 ### fixes
@@ -35,6 +36,7 @@ fixes [#505](https://github.com/Mastermindzh/tidal-hifi/issues/505)
 fixes [#712](https://github.com/Mastermindzh/tidal-hifi/issues/712)
 fixes [#750](https://github.com/Mastermindzh/tidal-hifi/issues/750)
 fixes [#563](https://github.com/Mastermindzh/tidal-hifi/issues/563)
+fixes [#385](https://github.com/Mastermindzh/tidal-hifi/issues/385)
 fixes [#443](https://github.com/Mastermindzh/tidal-hifi/issues/443)
 fixes [#772](https://github.com/Mastermindzh/tidal-hifi/issues/772)
 fixes [#438](https://github.com/Mastermindzh/tidal-hifi/issues/438)

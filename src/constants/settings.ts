@@ -56,6 +56,7 @@ export const settings = {
   singleInstance: "singleInstance",
   skipArtists: "skipArtists",
   skippedArtists: "skippedArtists",
+  startMinimized: "startMinimized",
   staticWindowTitle: "staticWindowTitle",
   theme: "theme",
   trayIcon: "trayIcon",
