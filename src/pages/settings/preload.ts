@@ -3,6 +3,7 @@ import { ipcRenderer, shell } from "electron";
 import fs from "fs";
 import { globalEvents } from "../../constants/globalEvents";
 import { settings } from "../../constants/settings";
+import { SUPPORTED_TRAY_ICON_EXTENSIONS } from "../../constants/trayIcon";
 import { Logger } from "../../features/logger";
 import { addCustomCss } from "../../features/theming/theming";
 import { settingsStore } from "./../../scripts/settings";
@@ -121,10 +122,21 @@ function setElementHidden(
 /**
  * Validate tray icon path and show feedback
  * @param path the path to validate
- * @param validationElement the element to show validation messages
+ * @param validationElement the element to show validation messages (null if not found)
  * @returns true if valid
  */
-function validateTrayIconPath(path: string, validationElement: HTMLElement): boolean {
+function validateTrayIconPath(path: string, validationElement: HTMLElement | null): boolean {
+  if (!validationElement) {
+    // If validation element doesn't exist, still validate but don't show UI feedback
+    const trimmedPath = path.trim();
+    if (trimmedPath === "" || trimmedPath.toLowerCase() === "default") {
+      return true;
+    }
+    const lowerPath = trimmedPath.toLowerCase();
+    const hasValidExtension = SUPPORTED_TRAY_ICON_EXTENSIONS.some((ext) => lowerPath.endsWith(ext));
+    return hasValidExtension && fs.existsSync(trimmedPath);
+  }
+  
   const trimmedPath = path.trim();
   
   // Empty or "default" is valid
@@ -134,9 +146,8 @@ function validateTrayIconPath(path: string, validationElement: HTMLElement): boo
   }
   
   // Check for supported extensions (SVG not supported)
-  const supportedExtensions = [".png", ".jpg", ".jpeg", ".ico", ".bmp", ".gif"];
   const lowerPath = trimmedPath.toLowerCase();
-  const hasValidExtension = supportedExtensions.some((ext) => lowerPath.endsWith(ext));
+  const hasValidExtension = SUPPORTED_TRAY_ICON_EXTENSIONS.some((ext) => lowerPath.endsWith(ext));
   
   if (!hasValidExtension) {
     validationElement.textContent = "⚠️ Unsupported file format. Use PNG, JPG, JPEG, ICO, BMP, or GIF (SVG not supported).";

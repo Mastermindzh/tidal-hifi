@@ -1,16 +1,11 @@
 import { BrowserWindow, Tray } from "electron";
 import { existsSync } from "fs";
 import { settings } from "../constants/settings";
+import { SUPPORTED_TRAY_ICON_EXTENSIONS } from "../constants/trayIcon";
 import { settingsStore } from "./settings";
 import { getMenu } from "./menu";
 
 let tray: Tray;
-
-/**
- * Supported image extensions for tray icons
- * SVG is not supported by Electron as documented in https://github.com/electron/electron/issues/9642
- */
-const SUPPORTED_EXTENSIONS = [".png", ".jpg", ".jpeg", ".ico", ".bmp", ".gif"];
 
 /**
  * Check if the file has a supported image extension
@@ -19,7 +14,7 @@ const SUPPORTED_EXTENSIONS = [".png", ".jpg", ".jpeg", ".ico", ".bmp", ".gif"];
  */
 function hasSupportedExtension(filePath: string): boolean {
   const lowerPath = filePath.toLowerCase();
-  return SUPPORTED_EXTENSIONS.some((ext) => lowerPath.endsWith(ext));
+  return SUPPORTED_TRAY_ICON_EXTENSIONS.some((ext) => lowerPath.endsWith(ext));
 }
 
 /**
