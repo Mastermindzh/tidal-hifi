@@ -61,7 +61,8 @@ let adBlock: HTMLInputElement,
   discord_show_song: HTMLInputElement,
   discord_show_idle: HTMLInputElement,
   discord_idle_text: HTMLInputElement,
-  discord_using_text: HTMLInputElement;
+  discord_using_text: HTMLInputElement,
+  userAgent: HTMLInputElement;
 
 addCustomCss(app);
 
@@ -157,6 +158,7 @@ function refreshSettings() {
     discord_show_idle.checked = settingsStore.get(settings.discord.showIdle);
     discord_idle_text.value = settingsStore.get(settings.discord.idleText);
     discord_using_text.value = settingsStore.get(settings.discord.usingText);
+    userAgent.value = settingsStore.get(settings.advanced.userAgent);
 
     // set state of all switches with additional settings
     Object.values(switchesWithSettings).forEach((settingSwitch) => {
@@ -277,6 +279,7 @@ window.addEventListener("DOMContentLoaded", () => {
   discord_show_idle = get("discord_show_idle");
   discord_using_text = get("discord_using_text");
   discord_idle_text = get("discord_idle_text");
+  userAgent = get("userAgent");
 
   refreshSettings();
   addInputListener(adBlock, settings.adBlock);
@@ -322,4 +325,5 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(discord_show_idle, settings.discord.showIdle);
   addInputListener(discord_idle_text, settings.discord.idleText);
   addInputListener(discord_using_text, settings.discord.usingText);
+  addInputListener(userAgent, settings.advanced.userAgent);
 });

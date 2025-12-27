@@ -30,6 +30,7 @@ export const settingsStore = new Store({
     adBlock: false,
     advanced: {
       tidalUrl: "https://listen.tidal.com",
+      userAgent: "default",
     },
     api: true,
     apiSettings: {

@@ -102,6 +102,12 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
   registerHttpProtocols();
   syncMenuBarWithStore();
 
+  // Set custom user agent if configured
+  const customUserAgent = settingsStore.get<string, string>(settings.advanced.userAgent);
+  if (customUserAgent && customUserAgent !== "default" && customUserAgent.trim() !== "") {
+    mainWindow.webContents.setUserAgent(customUserAgent);
+  }
+
   // find the custom protocol argument
   const customProtocolUrl = getCustomProtocolUrl(process.argv);
 
