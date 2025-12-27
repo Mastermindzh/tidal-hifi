@@ -4,12 +4,6 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [6.1.0]
-
-### Added
-
-- Added option to disable alt key menu bar activation in Settings → General → UI
-
 ## [6.0.0]
 
 ### Breaking Changes
@@ -29,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Root API endpoint (`/`) now redirects to `/docs` for immediate access to interactive documentation
 - Added "Start Minimized" option in Settings → Theming to hide the main window on startup
 - Ability to use transparent themes.
+- Added option to disable alt key menu bar activation in Settings → General → UI
 
 ### fixes
 
@@ -46,6 +41,7 @@ fixes [#385](https://github.com/Mastermindzh/tidal-hifi/issues/385)
 fixes [#443](https://github.com/Mastermindzh/tidal-hifi/issues/443)
 fixes [#772](https://github.com/Mastermindzh/tidal-hifi/issues/772)
 fixes [#438](https://github.com/Mastermindzh/tidal-hifi/issues/438)
+fixes [#529](https://github.com/Mastermindzh/tidal-hifi/issues/529)
 
 ## [5.20.1]
 
