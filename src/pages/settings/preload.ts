@@ -193,6 +193,9 @@ window.addEventListener("DOMContentLoaded", () => {
   handleFileUploads();
 
   document.getElementById("close").addEventListener("click", hide);
+  document.getElementById("resetZoom")?.addEventListener("click", () => {
+    ipcRenderer.send(globalEvents.resetZoom);
+  });
   document.querySelectorAll(".external-link").forEach((elem) =>
     elem.addEventListener("click", function (event) {
       openExternal((event.target as HTMLElement).getAttribute("data-url"));

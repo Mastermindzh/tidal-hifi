@@ -236,6 +236,10 @@ ipcMain.on(globalEvents.showSettings, () => {
   showSettingsWindow();
 });
 
+ipcMain.on(globalEvents.resetZoom, () => {
+  mainWindow.webContents.setZoomFactor(1.0);
+});
+
 ipcMain.on(globalEvents.refreshMenuBar, () => {
   syncMenuBarWithStore();
 });
