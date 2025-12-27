@@ -27,14 +27,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added option to customize the user agent
 - Enabled middle click autoscroll behaviour
 
+### Fixed
+
+- Fixed ListenBrainz scrobbling to follow official guidelines - now sends "playing_now" when tracks start and "single" (scrobble) after half duration or 4 minutes, whichever is sooner. This properly handles looped tracks, replays, and any listening scenario ([#528](https://github.com/Mastermindzh/tidal-hifi/issues/528))
+- Added album information to ListenBrainz scrobbles for better metadata accuracy
+- Simplified ListenBrainz implementation by removing legacy cross-track dependencies and oldData storage
+
+- pressing delete no longer searches for "Delete" in the song search
+  - Now matches tidal.com -> does nothing
+
 ### removed
 
 - Removed non-functioning hotkeys
 
 ### fixes
-
-- pressing delete no longer searches for "Delete" in the song search
-  - Now matches tidal.com -> does nothing
 
 fixes [#779](https://github.com/Mastermindzh/tidal-hifi/issues/779)
 fixes [#768](https://github.com/Mastermindzh/tidal-hifi/issues/768)
@@ -50,6 +56,8 @@ fixes [#438](https://github.com/Mastermindzh/tidal-hifi/issues/438)
 fixes [#529](https://github.com/Mastermindzh/tidal-hifi/issues/529)
 fixes [#309](https://github.com/Mastermindzh/tidal-hifi/issues/309)
 fixes [#465](https://github.com/Mastermindzh/tidal-hifi/issues/465)
+fixes [#433](https://github.com/Mastermindzh/tidal-hifi/issues/433)
+fixes [#528](https://github.com/Mastermindzh/tidal-hifi/issues/528)
 
 ## [5.20.1]
 
