@@ -119,6 +119,7 @@ function addHotKeys() {
     addHotkey("control+r", function () {
       tidalController.repeat();
     });
+    addHotkey("delete", function () {});
     addHotkey("control+w", async function () {
       const url = getUniversalLink(getTrackURL(tidalController.getTrackId()));
       clipboard.writeText(url);

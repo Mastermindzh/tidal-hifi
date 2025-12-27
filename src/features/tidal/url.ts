@@ -1,8 +1,14 @@
+import { settings } from "../../constants/settings";
+import { settingsStore } from "../../scripts/settings";
+
+export const tidalUrl =
+  settingsStore.get<string, string>(settings.advanced.tidalUrl) || "https://tidal.com";
+
 /**
  * Build a track url given the id
  */
 export const getTrackURL = (trackId: string) => {
-  return `https://tidal.com/browse/track/${trackId}`;
+  return `${tidalUrl}/browse/track/${trackId}`;
 };
 
 /**

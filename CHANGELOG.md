@@ -6,10 +6,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [6.0.0]
 
+### Breaking Changes
+
+- **Default controller changed to MediaSession Controller**: While this change should not break existing installations (settings are preserved), we've marked this as a breaking change due to the significant shift in the default interaction method with Tidal. If you experience any issues, you can revert to the previous behavior by changing the controller type back to "DOM Controller" in Settings → Advanced → Controller Type.
+
+### Added
+
 - Added [TidalControllers](./docs/tidal-controllers.md)
   - Changed default implementation to `mediaSessionController`
 - Implemented a min of 100ms and max of 60000ms on polling intervals
 - Switched primary URL from [https://listen.tidal.com](https://listen.tidal.com) to [https://tidal.com](https://tidal.com)
+- added `albumArt` key to the API
+  - Tidal Hi-Fi now downloads the best quality album art to use in notifications/api/etc
+
+### fixes
+
+- pressing delete no longer searches for "Delete" in the song search
+  - Now matches tidal.com -> does nothing
+
+fixes [#779](https://github.com/Mastermindzh/tidal-hifi/issues/779)
+fixes [#768](https://github.com/Mastermindzh/tidal-hifi/issues/768)
+fixes [#717](https://github.com/Mastermindzh/tidal-hifi/issues/717)
+fixes [#505](https://github.com/Mastermindzh/tidal-hifi/issues/505)
+fixes [#712](https://github.com/Mastermindzh/tidal-hifi/issues/712)
 
 ## [5.20.1]
 

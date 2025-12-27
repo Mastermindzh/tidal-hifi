@@ -5,7 +5,7 @@ import { MediaStatus } from "../../models/mediaStatus";
 import { settingsStore } from "../../scripts/settings";
 import { Logger } from "../logger";
 import { StoreData } from "./models/storeData";
-import { tidalUrl } from "../../main";
+import { tidalUrl } from "../tidal/url";
 
 const ListenBrainzStore = new Store({ name: "listenbrainz" });
 
@@ -41,7 +41,7 @@ export class ListenBrainz {
     title: string,
     artists: string,
     status: string,
-    duration: number
+    duration: number,
   ): Promise<void> {
     try {
       if (status === MediaStatus.paused) {
@@ -74,15 +74,15 @@ export class ListenBrainz {
             headers: {
               "Content-Type": "application/json",
               Authorization: `Token ${settingsStore.get<string, string>(
-                settings.ListenBrainz.token
+                settings.ListenBrainz.token,
               )}`,
             },
-          }
+          },
         );
         if (!oldData) {
           ListenBrainzStore.set(
             ListenBrainzConstants.oldData,
-            this.constructStoreData(title, artists, duration)
+            this.constructStoreData(title, artists, duration),
           );
         } else {
           if (oldData.title !== title) {
@@ -112,14 +112,14 @@ export class ListenBrainz {
                 headers: {
                   "Content-Type": "application/json",
                   Authorization: `Token ${settingsStore.get<string, string>(
-                    settings.ListenBrainz.token
+                    settings.ListenBrainz.token,
                   )}`,
                 },
-              }
+              },
             );
             ListenBrainzStore.set(
               ListenBrainzConstants.oldData,
-              this.constructStoreData(title, artists, duration)
+              this.constructStoreData(title, artists, duration),
             );
           }
         }
