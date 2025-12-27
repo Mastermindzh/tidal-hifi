@@ -3,6 +3,7 @@ import { ipcRenderer, shell } from "electron";
 import fs from "fs";
 import { globalEvents } from "../../constants/globalEvents";
 import { settings } from "../../constants/settings";
+import { SUPPORTED_TRAY_ICON_EXTENSIONS } from "../../constants/trayIcon";
 import { Logger } from "../../features/logger";
 import { addCustomCss } from "../../features/theming/theming";
 import { settingsStore } from "./../../scripts/settings";
@@ -49,6 +50,7 @@ let adBlock: HTMLInputElement,
   staticWindowTitle: HTMLInputElement,
   theme: HTMLSelectElement,
   trayIcon: HTMLInputElement,
+  trayIconPath: HTMLInputElement,
   updateFrequency: HTMLInputElement,
   enableListenBrainz: HTMLInputElement,
   ListenBrainzAPI: HTMLInputElement,
@@ -61,7 +63,8 @@ let adBlock: HTMLInputElement,
   discord_show_song: HTMLInputElement,
   discord_show_idle: HTMLInputElement,
   discord_idle_text: HTMLInputElement,
-  discord_using_text: HTMLInputElement;
+  discord_using_text: HTMLInputElement,
+  controllerType: HTMLSelectElement;
 
 addCustomCss(app);
 
@@ -118,6 +121,54 @@ function setElementHidden(
 }
 
 /**
+ * Validate tray icon path and show feedback
+ * @param path the path to validate
+ * @param validationElement the element to show validation messages (null if not found)
+ * @returns true if valid
+ */
+function validateTrayIconPath(path: string, validationElement: HTMLElement | null): boolean {
+  if (!validationElement) {
+    // If validation element doesn't exist, still validate but don't show UI feedback
+    const trimmedPath = path.trim();
+    if (trimmedPath === "" || trimmedPath.toLowerCase() === "default") {
+      return true;
+    }
+    const lowerPath = trimmedPath.toLowerCase();
+    const hasValidExtension = SUPPORTED_TRAY_ICON_EXTENSIONS.some((ext) => lowerPath.endsWith(ext));
+    return hasValidExtension && fs.existsSync(trimmedPath);
+  }
+  
+  const trimmedPath = path.trim();
+  
+  // Empty or "default" is valid
+  if (trimmedPath === "" || trimmedPath.toLowerCase() === "default") {
+    validationElement.style.display = "none";
+    return true;
+  }
+  
+  // Check for supported extensions (SVG not supported)
+  const lowerPath = trimmedPath.toLowerCase();
+  const hasValidExtension = SUPPORTED_TRAY_ICON_EXTENSIONS.some((ext) => lowerPath.endsWith(ext));
+  
+  if (!hasValidExtension) {
+    validationElement.textContent = "⚠️ Unsupported file format. Use PNG, JPG, JPEG, ICO, BMP, or GIF (SVG not supported).";
+    validationElement.style.display = "block";
+    return false;
+  }
+  
+  // Check if file exists
+  if (!fs.existsSync(trimmedPath)) {
+    validationElement.textContent = "⚠️ File not found. Please check the path.";
+    validationElement.style.display = "block";
+    return false;
+  }
+  
+  // Valid!
+  validationElement.style.display = "none";
+  return true;
+}
+
+/**
  * Sync the UI forms with the current settings
  */
 function refreshSettings() {
@@ -145,6 +196,14 @@ function refreshSettings() {
     staticWindowTitle.checked = settingsStore.get(settings.staticWindowTitle);
     theme.value = settingsStore.get(settings.theme);
     trayIcon.checked = settingsStore.get(settings.trayIcon);
+    trayIconPath.value = settingsStore.get(settings.trayIconPath) || "";
+    
+    // Validate tray icon path on load
+    const validationElement = document.getElementById("trayIconPathValidation");
+    if (validationElement) {
+      validateTrayIconPath(trayIconPath.value, validationElement);
+    }
+    
     updateFrequency.value = settingsStore.get(settings.updateFrequency);
     enableListenBrainz.checked = settingsStore.get(settings.ListenBrainz.enabled);
     ListenBrainzAPI.value = settingsStore.get(settings.ListenBrainz.api);
@@ -157,6 +216,7 @@ function refreshSettings() {
     discord_show_idle.checked = settingsStore.get(settings.discord.showIdle);
     discord_idle_text.value = settingsStore.get(settings.discord.idleText);
     discord_using_text.value = settingsStore.get(settings.discord.usingText);
+    controllerType.value = settingsStore.get(settings.advanced.controllerType);
 
     // set state of all switches with additional settings
     Object.values(switchesWithSettings).forEach((settingSwitch) => {
@@ -237,6 +297,25 @@ window.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function addTrayIconPathListener(source: HTMLInputElement, key: string) {
+    const validationElement = document.getElementById("trayIconPathValidation");
+    
+    source.addEventListener("input", () => {
+      const isValid = validateTrayIconPath(source.value, validationElement);
+      settingsStore.set(key, source.value);
+      
+      // Only send storeChanged if valid to avoid unnecessary reloads
+      if (isValid) {
+        ipcRenderer.send(globalEvents.storeChanged);
+      }
+    });
+    
+    // Also validate on blur (when user leaves the field)
+    source.addEventListener("blur", () => {
+      validateTrayIconPath(source.value, validationElement);
+    });
+  }
+
   ipcRenderer.on("refreshData", () => {
     refreshSettings();
   });
@@ -264,6 +343,7 @@ window.addEventListener("DOMContentLoaded", () => {
   port = get("port");
   theme = get<HTMLSelectElement>("themesList");
   trayIcon = get("trayIcon");
+  trayIconPath = get("trayIconPath");
   skipArtists = get("skipArtists");
   skippedArtists = get("skippedArtists");
   staticWindowTitle = get("staticWindowTitle");
@@ -280,6 +360,7 @@ window.addEventListener("DOMContentLoaded", () => {
   discord_show_idle = get("discord_show_idle");
   discord_using_text = get("discord_using_text");
   discord_idle_text = get("discord_idle_text");
+  controllerType = get<HTMLSelectElement>("controllerType");
 
   refreshSettings();
   addInputListener(adBlock, settings.adBlock);
@@ -305,6 +386,7 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(singleInstance, settings.singleInstance);
   addSelectListener(theme, settings.theme);
   addInputListener(trayIcon, settings.trayIcon);
+  addTrayIconPathListener(trayIconPath, settings.trayIconPath);
   addInputListener(updateFrequency, settings.updateFrequency);
   addInputListener(
     enableListenBrainz,
@@ -325,4 +407,5 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(discord_show_idle, settings.discord.showIdle);
   addInputListener(discord_idle_text, settings.discord.idleText);
   addInputListener(discord_using_text, settings.discord.usingText);
+  addSelectListener(controllerType, settings.advanced.controllerType);
 });

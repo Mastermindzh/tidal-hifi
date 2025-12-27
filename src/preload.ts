@@ -1,8 +1,10 @@
 import { app, dialog, Notification } from "@electron/remote";
 import { clipboard, ipcRenderer } from "electron";
 import Player from "mpris-service";
+import { tidalControllers } from "./constants/controller";
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
+import { downloadImage } from "./features/icon/downloadImage";
 import {
   ListenBrainz,
   ListenBrainzConstants,
@@ -10,205 +12,68 @@ import {
 } from "./features/listenbrainz/listenbrainz";
 import { StoreData } from "./features/listenbrainz/models/storeData";
 import { Logger } from "./features/logger";
-import { SharingService } from "./features/sharingService/sharingService";
 import { addCustomCss } from "./features/theming/theming";
+import { getTrackURL, getUniversalLink } from "./features/tidal/url";
 import { convertDurationToSeconds } from "./features/time/parse";
-import { MediaInfo } from "./models/mediaInfo";
+import { getEmptyMediaInfo, MediaInfo } from "./models/mediaInfo";
 import { MediaStatus } from "./models/mediaStatus";
-import { RepeatState } from "./models/repeatState";
-import { downloadFile } from "./scripts/download";
 import { addHotkey } from "./scripts/hotkeys";
 import { ObjectToDotNotation } from "./scripts/objectUtilities";
 import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
+import { TidalApiController } from "./TidalControllers/apiController/TidalApiController";
+import { DomControllerOptions } from "./TidalControllers/DomController/DomControllerOptions";
+import { getDomUpdateFrequency } from "./TidalControllers/DomController/domUpdateFrequency";
+import { DomTidalController } from "./TidalControllers/DomController/DomTidalController";
+import {
+  MediaSessionController,
+  MediaSessionControllerOptions,
+} from "./TidalControllers/MediaSessionController/MediaSessionController";
+import { TidalController } from "./TidalControllers/TidalController";
 
-const notificationPath = `${app.getPath("userData")}/notification.jpg`;
+const albumArtPath = `${app.getPath("userData")}/current.jpg`;
+const staticTitle = "TIDAL Hi-Fi";
+
 let currentSong = "";
 let player: Player;
-let currentPlayStatus = MediaStatus.paused;
 let currentListenBrainzDelayId: ReturnType<typeof setTimeout>;
 let scrobbleWaitingForDelay = false;
 
-let currentlyPlaying = MediaStatus.paused;
-let currentRepeatState: RepeatState = RepeatState.off;
-let currentShuffleState = false;
-let currentMediaInfo: MediaInfo;
 let currentNotification: Electron.Notification;
 
-const elements = {
-  play: '*[data-test="play"]',
-  pause: '*[data-test="pause"]',
-  next: '*[data-test="next"]',
-  previous: 'button[data-test="previous"]',
-  title: '*[data-test^="footer-track-title"]',
-  artists: '*[data-test^="grid-item-detail-text-title-artist"]',
-  home: '*[data-test="menu--home"]',
-  back: '[title^="Back"]',
-  forward: '[title^="Next"]',
-  search: '[class^="searchField"]',
-  shuffle: '*[data-test="shuffle"]',
-  repeat: '*[data-test="repeat"]',
-  account: '*[data-test^="profile-image-button"]',
-  settings: '*[data-test^="sidebar-menu-button"]',
-  openSettings: '*[data-test^="open-settings"]',
-  media: '*[data-test="current-media-imagery"]',
-  image: "img",
-  current: '*[data-test="current-time"]',
-  duration: '*[class^=_playbackControlsContainer] *[data-test="duration"]',
-  bar: '*[data-test="progress-bar"]',
-  footer: "#footerPlayer",
-  mediaItem: "[data-type='mediaItem']",
-  album_header_title: '*[class^="_playingFrom"] span:nth-child(2)',
-  playing_from: '*[class^="_playingFrom"] span:nth-child(2)',
-  queue_album: "*[class^=playQueueItemsContainer] *[class^=groupTitle] span:nth-child(2)",
-  currentlyPlaying: "[class^='isPlayingIcon'], [data-test-is-playing='true']",
-  album_name_cell: '[class^="album"]',
-  tracklist_row: '[data-test="tracklist-row"]',
-  volume: '*[data-test="volume"]',
-  favorite: '*[data-test="footer-favorite-button"]',
-  /**
-   * Get an element from the dom
-   * @param {*} key key in elements object to fetch
-   */
-  get: function (key: string) {
-    return window.document.querySelector(this[key.toLowerCase()]);
-  },
+let tidalController: TidalController;
+let controllerOptions = {};
+let currentMediaInfo = getEmptyMediaInfo();
 
-  /**
-   * Get the icon of the current media
-   */
-  getSongIcon: function () {
-    const figure = this.get("media");
-
-    if (figure) {
-      const mediaElement = figure.querySelector(this["image"]);
-      if (mediaElement) {
-        return mediaElement.src.replace("80x80", "640x640");
-      }
-    }
-
-    return "";
-  },
-
-  /**
-   * returns an array of all artists in the current media
-   * @returns {Array} artists
-   */
-  getArtistsArray: function () {
-    const footer = this.get("footer");
-
-    if (footer) {
-      const artists = footer.querySelectorAll(this.artists);
-      if (artists) return Array.from(artists).map((artist) => (artist as HTMLElement).textContent);
-    }
-    return [];
-  },
-
-  /**
-   * unify the artists array into a string separated by commas
-   * @param {Array} artistsArray
-   * @returns {String} artists
-   */
-  getArtistsString: function (artistsArray: string[]) {
-    if (artistsArray.length > 0) return artistsArray.join(", ");
-    return "unknown artist(s)";
-  },
-
-  getAlbumName: function () {
-    try {
-      //If listening to an album, get its name from the header title
-      if (globalThis.location.href.includes("/album/")) {
-        const albumName = globalThis.document.querySelector(this.album_header_title);
-        if (albumName) {
-          return albumName.textContent;
-        }
-        //If listening to a playlist or a mix, get album name from the list
-      } else if (
-        globalThis.location.href.includes("/playlist/") ||
-        globalThis.location.href.includes("/mix/")
-      ) {
-        if (this.currentlyPlaying === MediaStatus.playing) {
-          // find the currently playing element from the list (which might be in an album icon), traverse back up to the mediaItem (row) and select the album cell.
-          // document.querySelector("[class^='isPlayingIcon'], [data-test-is-playing='true']").closest('[data-type="mediaItem"]').querySelector('[class^="album"]').textContent
-          const row = window.document.querySelector(this.currentlyPlaying).closest(this.mediaItem);
-          if (row) {
-            return row.querySelector(this.album_name_cell).textContent;
-          }
-        }
-      }
-
-      // see whether we're on the queue page and get it from there
-      const queueAlbumName = this.getText("queue_album");
-      if (queueAlbumName) {
-        return queueAlbumName;
-      }
-
-      return "";
-    } catch {
-      return "";
-    }
-  },
-
-  isMuted: function () {
-    return this.get("volume").getAttribute("aria-checked") === "false"; // it's muted if aria-checked is false
-  },
-
-  isFavorite: function () {
-    return this.get("favorite").getAttribute("aria-checked") === "true";
-  },
-
-  /**
-   * Shorthand function to get the text of a dom element
-   * @param {*} key key in elements object to fetch
-   */
-  getText: function (key: string) {
-    const element = this.get(key);
-    return element ? element.textContent : "";
-  },
-
-  /**
-   * Shorthand function to click a dom element
-   * @param {*} key key in elements object to fetch
-   */
-  click: function (key: string) {
-    this.get(key).click();
-    return this;
-  },
-
-  /**
-   * Shorthand function to focus a dom element
-   * @param {*} key key in elements object to fetch
-   */
-  focus: function (key: string) {
-    return this.get(key).focus();
-  },
-};
-
-/**
- * Get the update frequency from the store
- * make sure it returns a number, if not use the default
- */
-function getUpdateFrequency() {
-  const storeValue = settingsStore.get<string, number>(settings.updateFrequency);
-  const defaultValue = 500;
-
-  if (!isNaN(storeValue)) {
-    return storeValue;
-  } else {
-    return defaultValue;
+switch (settingsStore.get(settings.advanced.controllerType)) {
+  case tidalControllers.tidalApiController: {
+    tidalController = new TidalApiController();
+    Logger.log("TidalApiController initialized");
+    break;
   }
-}
 
-/**
- * Play or pause the current media
- */
-function playPause() {
-  const play = elements.get("play");
+  case tidalControllers.mediaSessionController: {
+    tidalController = new MediaSessionController();
+    const mediaSessionControllerOptions: MediaSessionControllerOptions = {
+      refreshInterval: getDomUpdateFrequency(
+        settingsStore.get<string, number>(settings.updateFrequency),
+      ),
+    };
+    controllerOptions = mediaSessionControllerOptions;
+    Logger.log("MediaSessionController initialized");
+    break;
+  }
 
-  if (play) {
-    elements.click("play");
-  } else {
-    elements.click("pause");
+  default: {
+    tidalController = new DomTidalController();
+    const domControllerOptions: DomControllerOptions = {
+      refreshInterval: getDomUpdateFrequency(
+        settingsStore.get<string, number>(settings.updateFrequency),
+      ),
+    };
+    controllerOptions = domControllerOptions;
+    Logger.log("domController initialized");
+    break;
   }
 }
 
@@ -224,30 +89,26 @@ ListenBrainzStore.clear();
  */
 function addHotKeys() {
   if (settingsStore.get(settings.enableCustomHotkeys)) {
-    addHotkey("Control+p", function () {
-      elements.click("settings");
-      setTimeout(() => {
-        elements.click("openSettings");
-      }, 100);
+    addHotkey("Control+p", () => {
+      tidalController.openSettings();
     });
-    addHotkey("Control+l", function () {
+    addHotkey("Control+l", () => {
       handleLogout();
     });
-
-    addHotkey("Control+a", function () {
-      elements.click("favorite");
+    addHotkey("Control+a", () => {
+      tidalController.toggleFavorite();
     });
 
-    addHotkey("Control+h", function () {
-      elements.click("home");
+    addHotkey("Control+h", () => {
+      tidalController.goToHome();
     });
 
     addHotkey("backspace", function () {
-      elements.click("back");
+      tidalController.back();
     });
 
     addHotkey("shift+backspace", function () {
-      elements.click("forward");
+      tidalController.forward();
     });
 
     addHotkey("control+u", function () {
@@ -256,10 +117,11 @@ function addHotKeys() {
     });
 
     addHotkey("control+r", function () {
-      elements.click("repeat");
+      tidalController.repeat();
     });
+    addHotkey("delete", function () {});
     addHotkey("control+w", async function () {
-      const url = SharingService.getUniversalLink(getTrackURL());
+      const url = getUniversalLink(getTrackURL(tidalController.getTrackId()));
       clipboard.writeText(url);
       new Notification({
         title: `Universal link generated: `,
@@ -323,22 +185,22 @@ function addIPCEventListeners() {
         case globalEvents.playPause:
         case globalEvents.play:
         case globalEvents.pause:
-          playPause();
+          tidalController.playPause();
           break;
         case globalEvents.next:
-          elements.click("next");
+          tidalController.next();
           break;
         case globalEvents.previous:
-          elements.click("previous");
+          tidalController.previous();
           break;
         case globalEvents.toggleFavorite:
-          elements.click("favorite");
+          tidalController.toggleFavorite();
           break;
         case globalEvents.toggleShuffle:
-          elements.click("shuffle");
+          tidalController.toggleShuffle();
           break;
         case globalEvents.toggleRepeat:
-          elements.click("repeat");
+          tidalController.repeat();
           break;
         default:
           break;
@@ -348,55 +210,12 @@ function addIPCEventListeners() {
 }
 
 /**
- * Update the current status of tidal (e.g playing or paused)
- */
-function getCurrentlyPlayingStatus() {
-  const pause = elements.get("pause");
-  let status = undefined;
-
-  // if pause button is visible tidal is playing
-  if (pause) {
-    status = MediaStatus.playing;
-  } else {
-    status = MediaStatus.paused;
-  }
-  return status;
-}
-
-function getCurrentShuffleState() {
-  const shuffle = elements.get("shuffle");
-  return shuffle?.getAttribute("aria-checked") === "true";
-}
-
-function getCurrentRepeatState() {
-  const repeat = elements.get("repeat");
-  switch (repeat?.getAttribute("data-type")) {
-    case "button__repeatAll":
-      return RepeatState.all;
-    case "button__repeatSingle":
-      return RepeatState.single;
-    default:
-      return RepeatState.off;
-  }
-}
-
-/**
- * Convert the duration from MM:SS to seconds
- * @param {*} duration
- */
-function convertDuration(duration: string) {
-  const parts = duration.split(":");
-  return parseInt(parts[1]) + 60 * parseInt(parts[0]);
-}
-
-/**
  * Update Tidal-hifi's media info
  *
  * @param {*} mediaInfo
  */
 function updateMediaInfo(mediaInfo: MediaInfo, notify: boolean) {
   if (mediaInfo) {
-    currentMediaInfo = mediaInfo;
     ipcRenderer.send(globalEvents.updateInfo, mediaInfo);
     updateMpris(mediaInfo);
     updateListenBrainz(mediaInfo);
@@ -419,12 +238,11 @@ async function sendNotification(mediaInfo: MediaInfo) {
     currentNotification = new Notification({
       title: mediaInfo.title,
       body: mediaInfo.artists,
-      icon: mediaInfo.icon,
+      icon: mediaInfo.localAlbumArt || mediaInfo.image || mediaInfo.icon,
     });
     currentNotification.show();
   }
 }
-
 function addMPRIS() {
   if (process.platform === "linux" && settingsStore.get(settings.mpris)) {
     try {
@@ -459,16 +277,35 @@ function addMPRIS() {
           const eventValue = events[eventName];
           switch (events[eventValue]) {
             case events.playpause:
-              playPause();
+              tidalController.playPause();
               break;
-            default:
-              elements.click(eventValue);
+            case events.next:
+              tidalController.next();
+              break;
+            case events.previous:
+              tidalController.previous();
+              break;
+            case events.pause:
+              tidalController.pause();
+              break;
+            case events.stop:
+              tidalController.stop();
+              break;
+            case events.play:
+              tidalController.play();
+              break;
+            case events.loopStatus:
+              tidalController.repeat();
+              break;
+            case events.shuffle:
+              tidalController.toggleShuffle();
+              break;
           }
         });
       });
       // Override get position function
       player.getPosition = function () {
-        return convertDuration(elements.getText("current")) * 1000 * 1000;
+        return tidalController.getCurrentPositionInSeconds();
       };
       player.on("quit", function () {
         app.quit();
@@ -481,6 +318,9 @@ function addMPRIS() {
 
 function updateMpris(mediaInfo: MediaInfo) {
   if (player) {
+    // Use high-resolution image URL for better quality in media players
+    const highResImageUrl = tidalController.getSongImage() || mediaInfo.image;
+
     player.metadata = {
       ...player.metadata,
       ...{
@@ -488,9 +328,9 @@ function updateMpris(mediaInfo: MediaInfo) {
         "xesam:artist": [mediaInfo.artists],
         "xesam:album": mediaInfo.album,
         "xesam:url": mediaInfo.url,
-        "mpris:artUrl": mediaInfo.image,
-        "mpris:length": convertDuration(mediaInfo.duration) * 1000 * 1000,
-        "mpris:trackid": "/org/mpris/MediaPlayer2/track/" + getTrackID(),
+        "mpris:artUrl": highResImageUrl,
+        "mpris:length": convertDurationToSeconds(mediaInfo.duration) * 1000 * 1000,
+        "mpris:trackid": "/org/mpris/MediaPlayer2/track/" + tidalController.getTrackId(),
       },
       ...ObjectToDotNotation(mediaInfo, "custom:"),
     };
@@ -517,126 +357,58 @@ function updateListenBrainz(mediaInfo: MediaInfo) {
               mediaInfo.title,
               mediaInfo.artists,
               mediaInfo.status,
-              convertDuration(mediaInfo.duration)
+              convertDurationToSeconds(mediaInfo.duration),
             );
             scrobbleWaitingForDelay = false;
           },
-          settingsStore.get(settings.ListenBrainz.delay) ?? 0
+          settingsStore.get(settings.ListenBrainz.delay) ?? 0,
         );
       }
     }
   }
 }
 
-/**
- * Checks if Tidal is playing a video or song by grabbing the "a" element from the title.
- * If it's a song it returns the track URL, if not it will return undefined
- */
-function getTrackURL() {
-  const id = getTrackID();
-  return `https://tidal.com/browse/track/${id}`;
-}
+tidalController.bootstrap(controllerOptions);
+tidalController.onMediaInfoUpdate(async (newState) => {
+  currentMediaInfo = { ...currentMediaInfo, ...newState };
 
-function getTrackID() {
-  const URLelement = elements.get("title").querySelector("a");
-  if (URLelement !== null) {
-    const id = URLelement.href.replace(/\D/g, "");
-    return id;
-  }
+  const songDashArtistTitle = `${currentMediaInfo.title} - ${currentMediaInfo.artists}`;
+  const isNewSong = currentSong !== songDashArtistTitle;
 
-  return window.location;
-}
+  if (isNewSong) {
+    // check whether one of the artists is in the "skip artist" array, if so, skip...
+    skipArtistsIfFoundInSkippedArtistsList(currentMediaInfo.artistsArray ?? []);
 
-/**
- * Watch for song changes and update title + notify
- */
-setInterval(function () {
-  const title = elements.getText("title");
-  const artistsArray = elements.getArtistsArray();
-  const artistsString = elements.getArtistsString(artistsArray);
-  const songDashArtistTitle = `${title} - ${artistsString}`;
-  const staticTitle = "TIDAL Hi-Fi";
-  const titleOrArtistsChanged = currentSong !== songDashArtistTitle;
-  const current = elements.getText("current");
-  const currentStatus = getCurrentlyPlayingStatus();
-  const shuffleState = getCurrentShuffleState();
-  const repeatState = getCurrentRepeatState();
+    // update the currently playing song
+    currentSong = songDashArtistTitle;
 
-  const playStateChanged = currentStatus != currentlyPlaying;
-  const shuffleStateChanged = shuffleState != currentShuffleState;
-  const repeatStateChanged = repeatState != currentRepeatState;
-
-  const hasStateChanged = playStateChanged || shuffleStateChanged || repeatStateChanged;
-
-  // update info if song changed or was just paused/resumed
-  if (titleOrArtistsChanged || hasStateChanged) {
-    if (playStateChanged) currentlyPlaying = currentStatus;
-    if (shuffleStateChanged) currentShuffleState = shuffleState;
-    if (repeatStateChanged) currentRepeatState = repeatState;
-
-    skipArtistsIfFoundInSkippedArtistsList(artistsArray);
-    const album = elements.getAlbumName();
-    const duration = elements.getText("duration");
-    const options: MediaInfo = {
-      title,
-      artists: artistsString,
-      album: album,
-      playingFrom: elements.getText("playing_from"),
-      status: currentStatus,
-      url: getTrackURL(),
-      current,
-      currentInSeconds: convertDurationToSeconds(current),
-      duration,
-      durationInSeconds: convertDurationToSeconds(duration),
-      image: "",
-      icon: "",
-      favorite: elements.isFavorite(),
-
-      player: {
-        status: currentStatus,
-        shuffle: shuffleState,
-        repeat: repeatState,
-      },
-    };
-
-    // update title, url and play info with new info
+    // update the window title with the new info
     settingsStore.get(settings.staticWindowTitle)
       ? setTitle(staticTitle)
-      : setTitle(songDashArtistTitle);
-    getTrackURL();
-    currentSong = songDashArtistTitle;
-    currentPlayStatus = currentStatus;
+      : setTitle(`${currentMediaInfo.title} - ${currentMediaInfo.artists}`);
 
-    const image = elements.getSongIcon();
+    // Download the best available image for local use
+    let imageUrlToDownload = "";
 
-    new Promise<void>((resolve) => {
-      if (image.startsWith("http")) {
-        options.image = image;
-        downloadFile(image, notificationPath).then(
-          () => {
-            options.icon = notificationPath;
-            resolve();
-          },
-          () => {
-            // if the image can't be downloaded then continue without it
-            resolve();
-          }
-        );
-      } else {
-        // if the image can't be found on the page continue without it
-        resolve();
-      }
-    }).then(() => {
-      updateMediaInfo(options, titleOrArtistsChanged);
-    });
+    // Try to download image first, fallback to icon
+    if (newState.image) {
+      imageUrlToDownload = newState.image;
+    } else if (newState.icon) {
+      imageUrlToDownload = newState.icon;
+    }
+
+    if (imageUrlToDownload) {
+      const downloadedImagePath = await downloadImage(imageUrlToDownload, albumArtPath);
+      currentMediaInfo.localAlbumArt = downloadedImagePath;
+    } else {
+      currentMediaInfo.localAlbumArt = "";
+    }
+
+    updateMediaInfo(currentMediaInfo, true);
   } else {
-    // just update the time
-    updateMediaInfo(
-      { ...currentMediaInfo, ...{ current, currentInSeconds: convertDurationToSeconds(current) } },
-      false
-    );
+    // if titleOrArtists didn't change then only minor mediaInfo (like timings) changed, so don't bother the user with notifications
+    updateMediaInfo(currentMediaInfo, false);
   }
-
   /**
    * automatically skip a song if the artists are found in the list of artists to skip
    * @param {*} artists array of artists
@@ -649,13 +421,12 @@ setInterval(function () {
         const artistNames = Object.values(artists).map((artist) => artist);
         const foundArtist = artistNames.some((artist) => artistsToSkip.includes(artist));
         if (foundArtist) {
-          elements.click("next");
+          tidalController.next();
         }
       }
     }
   }
-}, getUpdateFrequency());
-
+});
 addMPRIS();
 addCustomCss(app);
 addHotKeys();

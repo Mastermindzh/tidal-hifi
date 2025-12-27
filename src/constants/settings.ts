@@ -13,6 +13,7 @@ export const settings = {
   advanced: {
     root: "advanced",
     tidalUrl: "advanced.tidalUrl",
+    controllerType: "advanced.controllerType",
   },
   api: "api",
   apiSettings: {
@@ -58,6 +59,7 @@ export const settings = {
   staticWindowTitle: "staticWindowTitle",
   theme: "theme",
   trayIcon: "trayIcon",
+  trayIconPath: "trayIconPath",
   updateFrequency: "updateFrequency",
   windowBounds: {
     root: "windowBounds",
