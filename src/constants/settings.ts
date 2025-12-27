@@ -58,6 +58,7 @@ export const settings = {
   staticWindowTitle: "staticWindowTitle",
   theme: "theme",
   trayIcon: "trayIcon",
+  trayIconPath: "trayIconPath",
   updateFrequency: "updateFrequency",
   windowBounds: {
     root: "windowBounds",
