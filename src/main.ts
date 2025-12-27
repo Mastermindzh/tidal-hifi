@@ -54,7 +54,7 @@ function syncMenuBarWithStore() {
     mainWindow.setMenuBarVisibility(true);
   } else if (disableAltMenuBar) {
     // Menu bar is completely hidden (no Alt key activation)
-    mainWindow.setAutoHideMenuBar(false);
+    mainWindow.autoHideMenuBar = false;
     mainWindow.setMenuBarVisibility(false);
   } else {
     // Menu bar is hidden but can be shown with Alt key
