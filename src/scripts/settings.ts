@@ -72,6 +72,7 @@ export const settingsStore = new Store({
     staticWindowTitle: false,
     theme: "none",
     trayIcon: true,
+    trayIconPath: "",
     updateFrequency: 500,
     windowBounds: { width: 800, height: 600 },
   },

@@ -15,14 +15,17 @@ let tray: Tray;
 function getTrayIconPath(defaultIcon: string): string {
   const customPath = settingsStore.get<string>(settings.trayIconPath);
   
+  // Trim once and reuse
+  const trimmedPath = customPath?.trim() || "";
+  
   // If no custom path or set to "default", use the default icon
-  if (!customPath || customPath.trim() === "" || customPath.trim().toLowerCase() === "default") {
+  if (trimmedPath === "" || trimmedPath.toLowerCase() === "default") {
     return defaultIcon;
   }
   
   // Check if the custom path exists
-  if (existsSync(customPath)) {
-    return customPath;
+  if (existsSync(trimmedPath)) {
+    return trimmedPath;
   }
   
   // If path doesn't exist, fallback to default
