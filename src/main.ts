@@ -32,7 +32,8 @@ const PROTOCOL_PREFIX = "tidal";
 const windowPreferences = {
   sandbox: false,
   plugins: true,
-  devTools: true, // I like tinkering, others might too
+  devTools: true, // Ensure devTools is enabled for debugging
+  contextIsolation: false, // Disable context isolation for debugging
 };
 
 setDefaultFlags(app);
@@ -189,7 +190,6 @@ app.on("ready", async () => {
         else callback({ cancel: false });
       });
     }
-
     Logger.log("components ready:", components.status());
 
     createWindow();
