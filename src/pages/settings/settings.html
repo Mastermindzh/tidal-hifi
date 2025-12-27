@@ -403,6 +403,20 @@
                 </select>
               </div>
             </div>
+
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Custom User Agent</h4>
+                <p>
+                  Customize the browser user agent string sent to Tidal.
+                  <br />
+                  <strong>Warning:</strong> Tidal may block your requests if you modify this value.
+                  <br />
+                  Leave as "default" or empty to use the standard Electron user agent.
+                </p>
+                <input id="userAgent" type="text" class="text-input" name="userAgent" placeholder="default" />
+              </div>
+            </div>
           </div>
           <div class="group">
             <p class="group__title">Flags</p>

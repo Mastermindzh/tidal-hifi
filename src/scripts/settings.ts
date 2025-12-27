@@ -3,6 +3,7 @@ import Store from "electron-store";
 import { BrowserWindow, shell } from "electron";
 import path from "path";
 import { settings } from "../constants/settings";
+import values from "../constants/values";
 
 let settingsWindow: BrowserWindow;
 /**
@@ -31,6 +32,7 @@ export const settingsStore = new Store({
     advanced: {
       tidalUrl: "https://tidal.com",
       controllerType: "mediaSessionController",
+      userAgent: values.defaultUserAgent,
     },
     api: true,
     apiSettings: {
@@ -130,7 +132,10 @@ export const settingsStore = new Store({
       ]);
     },
     "6.1.0": (migrationStore) => {
-      buildMigration("6.1.0", migrationStore, [{ key: settings.disableAltMenuBar, value: false }]);
+      buildMigration("6.1.0", migrationStore, [
+        { key: settings.disableAltMenuBar, value: false },
+        { key: settings.advanced.userAgent, value: "" },
+      ]);
     },
   },
 });

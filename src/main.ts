@@ -3,6 +3,7 @@ import { BrowserWindow, app, components, ipcMain, session } from "electron";
 import path from "path";
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
+import values from "./constants/values";
 import { startApi } from "./features/api";
 import { setDefaultFlags, setManagedFlagsFromSettings } from "./features/flags/flags";
 import {
@@ -91,6 +92,16 @@ function getCustomProtocolUrl(args: string[]) {
   return tidalUrl + "/" + customProtocolArg.substring(PROTOCOL_PREFIX.length + 3);
 }
 
+/**
+ * Configure custom user agent if specified in settings
+ */
+function configureUserAgent() {
+  const customUserAgent = settingsStore.get<string, string>(settings.advanced.userAgent);
+  if (customUserAgent && customUserAgent !== values.defaultUserAgent && customUserAgent.trim() !== "") {
+    mainWindow.webContents.setUserAgent(customUserAgent);
+  }
+}
+
 function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -113,6 +124,7 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
   enable(mainWindow.webContents);
   registerHttpProtocols();
   syncMenuBarWithStore();
+  configureUserAgent();
 
   // find the custom protocol argument
   const customProtocolUrl = getCustomProtocolUrl(process.argv);

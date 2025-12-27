@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added "Start Minimized" option in Settings → Theming to hide the main window on startup
 - Ability to use transparent themes.
 - Added option to disable alt key menu bar activation in Settings → General → UI
+- Added option to customize the user agent
 
 ### fixes
 
@@ -42,6 +43,7 @@ fixes [#443](https://github.com/Mastermindzh/tidal-hifi/issues/443)
 fixes [#772](https://github.com/Mastermindzh/tidal-hifi/issues/772)
 fixes [#438](https://github.com/Mastermindzh/tidal-hifi/issues/438)
 fixes [#529](https://github.com/Mastermindzh/tidal-hifi/issues/529)
+fixes [#309](https://github.com/Mastermindzh/tidal-hifi/issues/309)
 
 ## [5.20.1]
 

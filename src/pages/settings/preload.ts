@@ -66,6 +66,7 @@ let adBlock: HTMLInputElement,
   discord_show_idle: HTMLInputElement,
   discord_idle_text: HTMLInputElement,
   discord_using_text: HTMLInputElement,
+  userAgent: HTMLInputElement,
   controllerType: HTMLSelectElement;
 
 addCustomCss(app);
@@ -115,7 +116,7 @@ function handleFileUploads() {
  */
 function setElementHidden(
   checked: boolean,
-  toggleOptions: { switch: string; classToHide: string }
+  toggleOptions: { switch: string; classToHide: string },
 ) {
   const element = document.getElementById(toggleOptions.classToHide);
 
@@ -139,32 +140,33 @@ function validateTrayIconPath(path: string, validationElement: HTMLElement | nul
     const hasValidExtension = SUPPORTED_TRAY_ICON_EXTENSIONS.some((ext) => lowerPath.endsWith(ext));
     return hasValidExtension && fs.existsSync(trimmedPath);
   }
-  
+
   const trimmedPath = path.trim();
-  
+
   // Empty or "default" is valid
   if (trimmedPath === "" || trimmedPath.toLowerCase() === "default") {
     validationElement.style.display = "none";
     return true;
   }
-  
+
   // Check for supported extensions (SVG not supported)
   const lowerPath = trimmedPath.toLowerCase();
   const hasValidExtension = SUPPORTED_TRAY_ICON_EXTENSIONS.some((ext) => lowerPath.endsWith(ext));
-  
+
   if (!hasValidExtension) {
-    validationElement.textContent = "⚠️ Unsupported file format. Use PNG, JPG, JPEG, ICO, BMP, or GIF (SVG not supported).";
+    validationElement.textContent =
+      "⚠️ Unsupported file format. Use PNG, JPG, JPEG, ICO, BMP, or GIF (SVG not supported).";
     validationElement.style.display = "block";
     return false;
   }
-  
+
   // Check if file exists
   if (!fs.existsSync(trimmedPath)) {
     validationElement.textContent = "⚠️ File not found. Please check the path.";
     validationElement.style.display = "block";
     return false;
   }
-  
+
   // Valid!
   validationElement.style.display = "none";
   return true;
@@ -201,13 +203,13 @@ function refreshSettings() {
     theme.value = settingsStore.get(settings.theme);
     trayIcon.checked = settingsStore.get(settings.trayIcon);
     trayIconPath.value = settingsStore.get(settings.trayIconPath) || "";
-    
+
     // Validate tray icon path on load
     const validationElement = document.getElementById("trayIconPathValidation");
     if (validationElement) {
       validateTrayIconPath(trayIconPath.value, validationElement);
     }
-    
+
     updateFrequency.value = settingsStore.get(settings.updateFrequency);
     enableListenBrainz.checked = settingsStore.get(settings.ListenBrainz.enabled);
     ListenBrainzAPI.value = settingsStore.get(settings.ListenBrainz.api);
@@ -220,6 +222,7 @@ function refreshSettings() {
     discord_show_idle.checked = settingsStore.get(settings.discord.showIdle);
     discord_idle_text.value = settingsStore.get(settings.discord.idleText);
     discord_using_text.value = settingsStore.get(settings.discord.usingText);
+    userAgent.value = settingsStore.get(settings.advanced.userAgent);
     controllerType.value = settingsStore.get(settings.advanced.controllerType);
 
     // set state of all switches with additional settings
@@ -263,13 +266,13 @@ window.addEventListener("DOMContentLoaded", () => {
   document.querySelectorAll(".external-link").forEach((elem) =>
     elem.addEventListener("click", function (event) {
       openExternal((event.target as HTMLElement).getAttribute("data-url"));
-    })
+    }),
   );
 
   function addInputListener(
     source: HTMLInputElement,
     key: string,
-    toggleOptions?: { switch: string; classToHide: string }
+    toggleOptions?: { switch: string; classToHide: string },
   ) {
     source.addEventListener("input", () => {
       if (source.value === "on") {
@@ -303,17 +306,17 @@ window.addEventListener("DOMContentLoaded", () => {
 
   function addTrayIconPathListener(source: HTMLInputElement, key: string) {
     const validationElement = document.getElementById("trayIconPathValidation");
-    
+
     source.addEventListener("input", () => {
       const isValid = validateTrayIconPath(source.value, validationElement);
       settingsStore.set(key, source.value);
-      
+
       // Only send storeChanged if valid to avoid unnecessary reloads
       if (isValid) {
         ipcRenderer.send(globalEvents.storeChanged);
       }
     });
-    
+
     // Also validate on blur (when user leaves the field)
     source.addEventListener("blur", () => {
       validateTrayIconPath(source.value, validationElement);
@@ -366,6 +369,7 @@ window.addEventListener("DOMContentLoaded", () => {
   discord_show_idle = get("discord_show_idle");
   discord_using_text = get("discord_using_text");
   discord_idle_text = get("discord_idle_text");
+  userAgent = get("userAgent");
   controllerType = get<HTMLSelectElement>("controllerType");
 
   refreshSettings();
@@ -399,7 +403,7 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(
     enableListenBrainz,
     settings.ListenBrainz.enabled,
-    switchesWithSettings.listenBrainz
+    switchesWithSettings.listenBrainz,
   );
   addInputListener(ListenBrainzAPI, settings.ListenBrainz.api);
   addInputListener(ListenBrainzToken, settings.ListenBrainz.token);
@@ -410,10 +414,11 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(
     discord_show_song,
     settings.discord.showSong,
-    switchesWithSettings.discord_show_song
+    switchesWithSettings.discord_show_song,
   );
   addInputListener(discord_show_idle, settings.discord.showIdle);
   addInputListener(discord_idle_text, settings.discord.idleText);
   addInputListener(discord_using_text, settings.discord.usingText);
+  addInputListener(userAgent, settings.advanced.userAgent);
   addSelectListener(controllerType, settings.advanced.controllerType);
 });
