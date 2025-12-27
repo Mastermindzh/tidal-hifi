@@ -199,6 +199,11 @@ app.on("ready", async () => {
     }
     settingsStore.get(settings.api) && startApi(mainWindow);
     settingsStore.get(settings.enableDiscord) && initRPC();
+    
+    // Hide window on startup if startMinimized is enabled
+    if (settingsStore.get(settings.startMinimized)) {
+      mainWindow.hide();
+    }
   } else {
     app.quit();
   }
