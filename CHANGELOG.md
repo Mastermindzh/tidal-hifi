@@ -25,6 +25,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ability to use transparent themes.
 - Added option to disable alt key menu bar activation in Settings → General → UI
 - Added option to customize the user agent
+- Enabled middle click autoscroll behaviour
 
 ### removed
 
@@ -48,6 +49,7 @@ fixes [#772](https://github.com/Mastermindzh/tidal-hifi/issues/772)
 fixes [#438](https://github.com/Mastermindzh/tidal-hifi/issues/438)
 fixes [#529](https://github.com/Mastermindzh/tidal-hifi/issues/529)
 fixes [#309](https://github.com/Mastermindzh/tidal-hifi/issues/309)
+fixes [#465](https://github.com/Mastermindzh/tidal-hifi/issues/465)
 
 ## [5.20.1]
 
