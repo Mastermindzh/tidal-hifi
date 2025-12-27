@@ -89,6 +89,7 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
     icon,
     backgroundColor: options.backgroundColor,
     autoHideMenuBar: true,
+    transparent: true,
     webPreferences: {
       ...windowPreferences,
       ...{
@@ -237,6 +238,10 @@ ipcMain.on(globalEvents.hideSettings, () => {
 });
 ipcMain.on(globalEvents.showSettings, () => {
   showSettingsWindow();
+});
+
+ipcMain.on(globalEvents.resetZoom, () => {
+  mainWindow.webContents.setZoomFactor(1.0);
 });
 
 ipcMain.on(globalEvents.refreshMenuBar, () => {
