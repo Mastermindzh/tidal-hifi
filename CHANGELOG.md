@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Switched primary URL from [https://listen.tidal.com](https://listen.tidal.com) to [https://tidal.com](https://tidal.com)
 - added `albumArt` key to the API
   - Tidal Hi-Fi now downloads the best quality album art to use in notifications/api/etc
+- Option to reset zoom to 100% from settings -> Theming
 - Added `/health` endpoint to the API for health checks and monitoring
 - Root API endpoint (`/`) now redirects to `/docs` for immediate access to interactive documentation
 - Ability to use transparent themes.
@@ -32,6 +33,7 @@ fixes [#768](https://github.com/Mastermindzh/tidal-hifi/issues/768)
 fixes [#717](https://github.com/Mastermindzh/tidal-hifi/issues/717)
 fixes [#505](https://github.com/Mastermindzh/tidal-hifi/issues/505)
 fixes [#712](https://github.com/Mastermindzh/tidal-hifi/issues/712)
+fixes [#750](https://github.com/Mastermindzh/tidal-hifi/issues/750)
 fixes [#563](https://github.com/Mastermindzh/tidal-hifi/issues/563)
 fixes [#443](https://github.com/Mastermindzh/tidal-hifi/issues/443)
 fixes [#772](https://github.com/Mastermindzh/tidal-hifi/issues/772)
