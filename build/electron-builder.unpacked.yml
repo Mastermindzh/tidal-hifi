@@ -1,4 +1,19 @@
 extends: ./build/electron-builder.base.yml
 linux:
   target:
-    - dir
+    - tar.gz
+  # Force desktop file creation for unpacked build
+  desktop:
+    entry:
+      Encoding: "UTF-8"
+      Name: "TIDAL Hi-Fi"
+      GenericName: "TIDAL Hi-Fi"
+      Comment: "The web version of tidal.com running in electron with hifi support thanks to widevine."
+      Icon: "tidal-hifi"
+      StartupNotify: "true"
+      Terminal: "false"
+      Type: "Application"
+      Categories: "Network;Application;Audio;Video;AudioVideo"
+      StartupWMClass: "tidal-hifi"
+      X-PulseAudio-Properties: "media.role=music"
+      MimeType: "x-scheme-handler/tidal;"

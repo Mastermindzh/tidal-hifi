@@ -68,6 +68,9 @@ fixes [#433](https://github.com/Mastermindzh/tidal-hifi/issues/433)
 fixes [#528](https://github.com/Mastermindzh/tidal-hifi/issues/528)
 fixes [#769](https://github.com/Mastermindzh/tidal-hifi/issues/769)
 fixes [#513](https://github.com/Mastermindzh/tidal-hifi/issues/513)
+fixes [#767](https://github.com/Mastermindzh/tidal-hifi/issues/767)
+fixes [#601](https://github.com/Mastermindzh/tidal-hifi/issues/601)
+fixes [#496](https://github.com/Mastermindzh/tidal-hifi/issues/496)
 
 ## [5.20.1]
 

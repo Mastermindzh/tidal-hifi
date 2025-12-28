@@ -108,16 +108,6 @@
             <p class="group__title">System</p>
             <div class="group__option">
               <div class="group__description">
-                <h4>Tray icon</h4>
-                <p>Show TIDAL Hi-Fi's tray icon.</p>
-              </div>
-              <label class="switch">
-                <input id="trayIcon" type="checkbox" />
-                <span class="switch__slider"></span>
-              </label>
-            </div>
-            <div class="group__option">
-              <div class="group__description">
                 <h4>Static Window Title</h4>
                 <p>
                   Makes the window title "TIDAL Hi-Fi" instead of changing to the currently
@@ -126,16 +116,6 @@
               </div>
               <label class="switch">
                 <input id="staticWindowTitle" type="checkbox" />
-                <span class="switch__slider"></span>
-              </label>
-            </div>
-            <div class="group__option">
-              <div class="group__description">
-                <h4>Minimize on Close</h4>
-                <p>Minimize window on close instead.</p>
-              </div>
-              <label class="switch">
-                <input id="minimizeOnClose" type="checkbox" />
                 <span class="switch__slider"></span>
               </label>
             </div>
@@ -161,6 +141,54 @@
                 <input id="singleInstance" type="checkbox" />
                 <span class="switch__slider"></span>
               </label>
+            </div>
+          </div>
+
+          <div class="group">
+            <p class="group__title">Tray Icon</p>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Tray icon</h4>
+                <p>Show TIDAL Hi-Fi's tray icon.</p>
+              </div>
+              <label class="switch">
+                <input id="trayIcon" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Minimize to tray on Close</h4>
+                <p>Hide the main window to system tray on close instead.</p>
+              </div>
+              <label class="switch">
+                <input id="minimizeOnClose" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Start Minimized</h4>
+                <p>Hide the main window on startup.</p>
+              </div>
+              <label class="switch">
+                <input id="startMinimized" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Custom tray icon path</h4>
+                <p>
+                  Provide a custom path to an icon file for the system tray. Leave empty or set to "default" to use the
+                  bundled icon.
+                  Supported formats: PNG, JPG, JPEG, ICO, BMP, GIF (SVG is not supported).
+                </p>
+                <input id="trayIconPath" type="text" class="text-input" name="trayIconPath"
+                  placeholder="default or /path/to/icon.png" />
+                <p id="trayIconPathValidation" class="validation-message"
+                  style="color: #ff6b6b; margin-top: 5px; display: none;"></p>
+              </div>
             </div>
           </div>
         </section>
@@ -476,16 +504,6 @@
             <p class="group__title">Theming</p>
             <div class="group__option">
               <div class="group__description">
-                <h4>Start Minimized</h4>
-                <p>Hide the main window on startup.</p>
-              </div>
-              <label class="switch">
-                <input id="startMinimized" type="checkbox" />
-                <span class="switch__slider"></span>
-              </label>
-            </div>
-            <div class="group__option">
-              <div class="group__description">
                 <h4>Custom CSS</h4>
                 <p>
                   The css that you put in here will be injected into a style tag in the head of
@@ -525,7 +543,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="group">
             <p class="group__title">Zoom</p>
             <div class="group__option">
@@ -539,20 +557,6 @@
             </div>
           </div>
 
-          <div class="group">
-            <p class="group__title">Tray Icon</p>
-            <div class="group__option">
-              <div class="group__description">
-                <h4>Custom tray icon path</h4>
-                <p>
-                  Provide a custom path to an icon file for the system tray. Leave empty or set to "default" to use the bundled icon.
-                  Supported formats: PNG, JPG, JPEG, ICO, BMP, GIF (SVG is not supported).
-                </p>
-                <input id="trayIconPath" type="text" class="text-input" name="trayIconPath" placeholder="default or /path/to/icon.png" />
-                <p id="trayIconPathValidation" class="validation-message" style="color: #ff6b6b; margin-top: 5px; display: none;"></p>
-              </div>
-            </div>
-          </div>
         </section>
 
         <section id="about-section" class="tabs__section about-section">

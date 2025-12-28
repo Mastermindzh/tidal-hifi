@@ -71,6 +71,7 @@ export class ListenBrainz {
       // Ensure data is properly serializable by creating a clean copy
       const serializedData = JSON.parse(JSON.stringify(data));
 
+      // CodeQL [js/request-forgery] - User-configured API endpoint is intentional for ListenBrainz integration
       await axios.post(apiUrl, serializedData, {
         headers: {
           "Content-Type": "application/json",
