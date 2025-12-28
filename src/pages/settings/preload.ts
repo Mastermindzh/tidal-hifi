@@ -99,11 +99,15 @@ function handleFileUploads() {
   fileMessage.innerText = "or drag and drop files here";
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  document.getElementById("theme-files").addEventListener("change", function (e: any) {
-    Array.from(e.target.files).forEach((file: File) => {
+  document.getElementById("theme-files").addEventListener("change", async function (e: any) {
+    for (const file of Array.from(e.target.files) as File[]) {
       const destination = `${app.getPath("userData")}/themes/${file.name}`;
-      fs.copyFileSync(file.path, destination, null);
-    });
+
+      const arrayBuffer = await file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      fs.writeFileSync(destination, buffer);
+      Logger.log("written file!", { destination });
+    }
     fileMessage.innerText = `${e.target.files.length} files successfully uploaded`;
     getThemeFiles();
   });

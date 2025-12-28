@@ -48,6 +48,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Removed non-functioning hotkeys
 
+### updated
+
+- Moved to Electron 39.2.4
+
 ### fixes
 
 fixes [#779](https://github.com/Mastermindzh/tidal-hifi/issues/779)
