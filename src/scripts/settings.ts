@@ -4,6 +4,7 @@ import { BrowserWindow, shell } from "electron";
 import path from "path";
 import { settings } from "../constants/settings";
 import values from "../constants/values";
+import { Logger } from "../features/logger";
 
 let settingsWindow: BrowserWindow;
 /**
@@ -16,12 +17,12 @@ let settingsWindow: BrowserWindow;
 const buildMigration = (
   version: string,
   migrationStore: { get: (str: string) => string; set: (str: string, val: unknown) => void },
-  options: Array<{ key: string; value: unknown }>,
+  options: Array<{ key: string; value: unknown; override?: boolean }>,
 ) => {
   console.log(`running migrations for ${version}`);
-  options.forEach(({ key, value }) => {
-    const valueToSet = migrationStore.get(key) ?? value;
-    console.log(`  - setting ${key} to ${value}`);
+  options.forEach(({ key, value, override = false }) => {
+    const valueToSet = override ? value : (migrationStore.get(key) ?? value);
+    console.log(`  - setting ${key} to ${valueToSet}${override ? " (override)" : ""}`);
     migrationStore.set(key, valueToSet);
   });
 };
@@ -56,7 +57,7 @@ export const settingsStore = new Store({
     },
     ListenBrainz: {
       enabled: false,
-      api: "https://api.listenbrainz.org",
+      api: "https://api.listenbrainz.org/1/submit-listens",
       token: "",
       delay: 5000,
     },
@@ -127,14 +128,20 @@ export const settingsStore = new Store({
       buildMigration("5.16.0", migrationStore, [{ key: settings.discord.showIdle, value: "true" }]);
     },
     "6.0.0": (migrationStore) => {
+      Logger.log("OLD STORE", { api: migrationStore.get(settings.ListenBrainz.api) });
+
+      const currentApi = migrationStore.get(settings.ListenBrainz.api);
+
       buildMigration("6.0.0", migrationStore, [
-        { key: settings.advanced.controllerType, value: "mediaSessionController" },
-      ]);
-    },
-    "6.1.0": (migrationStore) => {
-      buildMigration("6.1.0", migrationStore, [
-        { key: settings.disableAltMenuBar, value: false },
         { key: settings.advanced.userAgent, value: "" },
+        { key: settings.disableAltMenuBar, value: false },
+        { key: settings.advanced.controllerType, value: "mediaSessionController", override: true },
+        { key: settings.advanced.tidalUrl, value: "https://tidal.com", override: true },
+        {
+          key: settings.ListenBrainz.api,
+          value: "https://api.listenbrainz.org/1/submit-listens",
+          override: currentApi === "https://api.listenbrainz.org",
+        },
       ]);
     },
   },

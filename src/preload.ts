@@ -5,7 +5,6 @@ import { tidalControllers } from "./constants/controller";
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
 import { downloadImage } from "./features/icon/downloadImage";
-import { ListenBrainz } from "./features/listenbrainz/listenbrainz";
 import { Logger } from "./features/logger";
 import { addCustomCss } from "./features/theming/theming";
 import { getTrackURL, getUniversalLink } from "./features/tidal/url";
@@ -31,30 +30,6 @@ const staticTitle = "TIDAL Hi-Fi";
 
 let currentSong = "";
 let player: Player;
-let currentPlayingNowDelayId: ReturnType<typeof setTimeout>;
-let currentTrackKey = ""; // title + album + artists
-let currentTrackScrobbled = false;
-let currentTrackDuration = 0;
-let lastKnownPosition = 0; // Track position to detect restarts
-
-/**
- * Execute a "playing_now" operation with delay, cancelling any pending "playing_now" operations
- */
-function executePlayingNowWithDelay(operation: () => Promise<void> | void): void {
-  // Cancel any pending "playing_now" operation
-  clearTimeout(currentPlayingNowDelayId);
-
-  currentPlayingNowDelayId = setTimeout(
-    async () => {
-      try {
-        await operation();
-      } catch (error) {
-        Logger.log("ListenBrainz playing_now error:", { error: JSON.stringify(error) });
-      }
-    },
-    settingsStore.get(settings.ListenBrainz.delay) ?? 0,
-  );
-}
 
 let currentNotification: Electron.Notification;
 
@@ -215,7 +190,6 @@ function updateMediaInfo(mediaInfo: MediaInfo, notify: boolean) {
   if (mediaInfo) {
     ipcRenderer.send(globalEvents.updateInfo, mediaInfo);
     updateMpris(mediaInfo);
-    updateListenBrainz(mediaInfo);
     if (notify) {
       sendNotification(mediaInfo);
     }
@@ -332,69 +306,6 @@ function updateMpris(mediaInfo: MediaInfo) {
       ...ObjectToDotNotation(mediaInfo, "custom:"),
     };
     player.playbackStatus = mediaInfo.status === MediaStatus.paused ? "Paused" : "Playing";
-  }
-}
-
-/**
- * Update the listenbrainz service with new data based on ListenBrainz guidelines:
- * - Send "playing_now" when a new song starts
- * - Send "single" (scrobble) after half duration or 4 minutes, whichever is sooner
- */
-function updateListenBrainz(mediaInfo: MediaInfo) {
-  if (
-    settingsStore.get(settings.ListenBrainz.enabled) &&
-    mediaInfo.status === MediaStatus.playing
-  ) {
-    const trackKey = `${mediaInfo.title}|${mediaInfo.album}|${mediaInfo.artists}`;
-    const currentInSeconds = mediaInfo.currentInSeconds ?? 0;
-    const durationInSeconds =
-      mediaInfo.durationInSeconds ?? convertDurationToSeconds(mediaInfo.duration);
-
-    // Check if this is a new track or if the same track has restarted
-    const hasRestarted = trackKey === currentTrackKey && currentInSeconds < lastKnownPosition - 30;
-
-    if (trackKey !== currentTrackKey || hasRestarted) {
-      currentTrackKey = trackKey;
-      currentTrackScrobbled = false;
-      currentTrackDuration = durationInSeconds;
-
-      // Send "playing_now" for new track, cancelling any pending old "playing_now" operations
-      executePlayingNowWithDelay(() => {
-        return ListenBrainz.sendPlayingNow(
-          mediaInfo.title,
-          mediaInfo.artists,
-          mediaInfo.album,
-          durationInSeconds,
-        );
-      });
-    } else if (!currentTrackScrobbled) {
-      // Check if we should scrobble (half duration or 4 minutes, whichever is sooner)
-      const scrobbleThreshold = Math.min(currentTrackDuration / 2, 240);
-
-      if (currentInSeconds >= scrobbleThreshold) {
-        currentTrackScrobbled = true;
-
-        // Send "single" listen (actual scrobble) - no delay needed due to natural listening time throttling
-        try {
-          ListenBrainz.scrobbleSingle(
-            mediaInfo.title,
-            mediaInfo.artists,
-            mediaInfo.album,
-            currentTrackDuration,
-          );
-          Logger.log("scrobbled single listen", {
-            track: trackKey,
-            playedSeconds: currentInSeconds,
-            threshold: scrobbleThreshold,
-          });
-        } catch (error) {
-          Logger.log("ListenBrainz scrobble error:", { error: JSON.stringify(error) });
-        }
-      }
-    }
-
-    // Update last known position for restart detection
-    lastKnownPosition = currentInSeconds;
   }
 }
 

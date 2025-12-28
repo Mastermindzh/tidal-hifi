@@ -1,13 +1,42 @@
-import axios from "axios";
-import Store from "electron-store";
+import axios, { AxiosError } from "axios";
 import { settings } from "../../constants/settings";
 import { settingsStore } from "../../scripts/settings";
+import { convertDurationToSeconds } from "../time/parse";
 import { Logger } from "../logger";
 import { tidalUrl } from "../tidal/url";
+import { MediaInfo } from "../../models/mediaInfo";
+import { MediaStatus } from "../../models/mediaStatus";
+import { constrainPollingInterval } from "../../utility/pollingConstraints";
 
 export class ListenBrainz {
+  // Internal state for tracking scrobbling
+  private static currentTrackKey = "";
+  private static currentTrackScrobbled = false;
+  private static currentTrackDuration = 0;
+  private static lastKnownPosition = 0;
+  private static currentPlayingNowDelayId: ReturnType<typeof setTimeout>;
+
+  /**
+   * Execute a "playing_now" operation with delay, cancelling any pending "playing_now" operations
+   */
+  private static executePlayingNowWithDelay(operation: () => Promise<void> | void): void {
+    // Cancel any pending "playing_now" operation
+    clearTimeout(this.currentPlayingNowDelayId);
+    const startPlayingNowDelay = constrainPollingInterval(
+      settingsStore.get(settings.ListenBrainz.delay),
+    );
+    this.currentPlayingNowDelayId = setTimeout(async () => {
+      try {
+        await operation();
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        Logger.log("ListenBrainz playing_now error:", { error: errorMessage });
+      }
+    }, startPlayingNowDelay);
+  }
   /**
    * Create track metadata object for ListenBrainz API
+   * Ensures all data is properly serializable for multi-scrobbler compatibility
    */
   private static createTrackMetadata(
     title: string,
@@ -15,33 +44,53 @@ export class ListenBrainz {
     album: string,
     duration: number,
   ) {
-    return {
+    // Create a clean, serializable object
+    const metadata = {
       additional_info: {
         media_player: "Tidal Hi-Fi",
         submission_client: "Tidal Hi-Fi",
         music_service: tidalUrl,
-        duration: duration,
+        duration: Number(duration) || 0,
       },
-      artist_name: artists,
-      track_name: title,
-      release_name: album,
+      artist_name: String(artists || ""),
+      track_name: String(title || ""),
+      release_name: String(album || ""),
     };
+
+    return metadata;
   }
 
   /**
    * Send data to ListenBrainz API
    */
   private static async sendToListenBrainz(data: any): Promise<void> {
-    await axios.post(
-      `${settingsStore.get<string, string>(settings.ListenBrainz.api)}/1/submit-listens`,
-      data,
-      {
+    const apiUrl = settingsStore.get<string, string>(settings.ListenBrainz.api);
+    const token = settingsStore.get<string, string>(settings.ListenBrainz.token);
+
+    try {
+      // Ensure data is properly serializable by creating a clean copy
+      const serializedData = JSON.parse(JSON.stringify(data));
+
+      await axios.post(apiUrl, serializedData, {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Token ${settingsStore.get<string, string>(settings.ListenBrainz.token)}`,
+          Authorization: `Token ${token}`,
         },
-      },
-    );
+      });
+    } catch (error: unknown) {
+      const isAxiosError = error && typeof error === "object" && "response" in error;
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const status = isAxiosError ? (error as any).response?.status : undefined;
+
+      Logger.log("ListenBrainz API error details:", {
+        url: apiUrl,
+        listen_type: data.listen_type,
+        error: errorMessage,
+        status,
+        data: data,
+      });
+      throw error;
+    }
   }
 
   /**
@@ -64,8 +113,13 @@ export class ListenBrainz {
       };
 
       await this.sendToListenBrainz(playing_data);
-    } catch (error) {
-      Logger.log("ListenBrainz playing_now error:", error);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      Logger.log("ListenBrainz playing_now error:", {
+        error: errorMessage,
+        track: { title, artists, album, duration },
+      });
+      throw error;
     }
   }
 
@@ -85,19 +139,78 @@ export class ListenBrainz {
     listenedAt?: number,
   ): Promise<void> {
     try {
+      const timestamp = listenedAt ?? Math.floor(Date.now() / 1000);
       const scrobble_data = {
         listen_type: "single",
         payload: [
           {
-            listened_at: listenedAt ?? Math.floor(Date.now() / 1000),
+            listened_at: timestamp,
             track_metadata: this.createTrackMetadata(title, artists, album, duration),
           },
         ],
       };
 
       await this.sendToListenBrainz(scrobble_data);
-    } catch (error) {
-      Logger.log("ListenBrainz scrobble error:", error);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      Logger.log("ListenBrainz scrobble error:", {
+        error: errorMessage,
+        track: { title, artists, album, duration },
+      });
+    }
+  }
+
+  /**
+   * Handle media info updates for ListenBrainz integration
+   * Encapsulates all scrobbling logic and state management
+   */
+  public static handleMediaUpdate(mediaInfo: MediaInfo): void {
+    if (
+      settingsStore.get(settings.ListenBrainz.enabled) &&
+      mediaInfo.status === MediaStatus.playing
+    ) {
+      const trackKey = `${mediaInfo.title}|${mediaInfo.album}|${mediaInfo.artists}`;
+      const currentInSeconds = mediaInfo.currentInSeconds ?? 0;
+      const durationInSeconds =
+        mediaInfo.durationInSeconds ?? convertDurationToSeconds(mediaInfo.duration);
+
+      // Check if this is a new track or if the same track has restarted
+      const hasRestarted =
+        trackKey === this.currentTrackKey && currentInSeconds < this.lastKnownPosition - 30;
+
+      if (trackKey !== this.currentTrackKey || hasRestarted) {
+        this.currentTrackKey = trackKey;
+        this.currentTrackScrobbled = false;
+        this.currentTrackDuration = durationInSeconds;
+
+        // Send "playing_now" for new track, cancelling any pending old "playing_now" operations
+        this.executePlayingNowWithDelay(() => {
+          return this.sendPlayingNow(
+            mediaInfo.title,
+            mediaInfo.artists,
+            mediaInfo.album,
+            durationInSeconds,
+          );
+        });
+      } else if (!this.currentTrackScrobbled) {
+        // Check if we should scrobble (half duration or 4 minutes, whichever is sooner)
+        const scrobbleThreshold = Math.min(this.currentTrackDuration / 2, 240);
+
+        if (currentInSeconds >= scrobbleThreshold) {
+          this.currentTrackScrobbled = true;
+
+          // Send "single" listen (actual scrobble) - no delay needed due to natural listening time throttling
+          this.scrobbleSingle(
+            mediaInfo.title,
+            mediaInfo.artists,
+            mediaInfo.album,
+            this.currentTrackDuration,
+          );
+        }
+      }
+
+      // Update last known position for restart detection
+      this.lastKnownPosition = currentInSeconds;
     }
   }
 }

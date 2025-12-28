@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - **Default controller changed to MediaSession Controller**: While this change should not break existing installations (settings are preserved), we've marked this as a breaking change due to the significant shift in the default interaction method with Tidal. If you experience any issues, you can revert to the previous behavior by changing the controller type back to "DOM Controller" in Settings → Advanced → Controller Type.
 
+- **ListenBrainz API URL format change**: The ListenBrainz API setting now requires the full endpoint URL (e.g., `https://api.listenbrainz.org/1/submit-listens`) instead of just the base URL. While existing users with the default URL will be automatically migrated, users with custom ListenBrainz instances will need to update their API URL manually to include the full `/1/submit-listens` endpoint path.
+
 ### Added
 
 - Added [TidalControllers](./docs/tidal-controllers.md)
@@ -26,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added option to disable alt key menu bar activation in Settings → General → UI
 - Added option to customize the user agent
 - Enabled middle click autoscroll behaviour
+- Added [custom scrobbler setup guide](./docs/custom-scrobbler.md) for configuring multi-scrobbler as a proxy to scrobble to multiple services simultaneously
 
 ### Fixed
 
@@ -35,6 +38,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - pressing delete no longer searches for "Delete" in the song search
   - Now matches tidal.com -> does nothing
+
+- major revamp of listenbrainz code to support custom listenbrainz instances
+  - **breaking**: the url in settings now NEEDS to be the full url we post to, Tidal Hi-Fi won't append anything
+    - A migration is made to do this automatically if the old **default** URL is detected in settings.
+  - main (electron) code now handles listenbrainz instead of the preload (renderer) process.
 
 ### removed
 
@@ -58,6 +66,8 @@ fixes [#309](https://github.com/Mastermindzh/tidal-hifi/issues/309)
 fixes [#465](https://github.com/Mastermindzh/tidal-hifi/issues/465)
 fixes [#433](https://github.com/Mastermindzh/tidal-hifi/issues/433)
 fixes [#528](https://github.com/Mastermindzh/tidal-hifi/issues/528)
+fixes [#769](https://github.com/Mastermindzh/tidal-hifi/issues/769)
+fixes [#513](https://github.com/Mastermindzh/tidal-hifi/issues/513)
 
 ## [5.20.1]
 

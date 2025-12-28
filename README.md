@@ -146,6 +146,12 @@ You can find these in the settings menu (`ctrl + =` by default) under the "integ
 
 ![integrations menu, showing a list of integrations](./docs/images/integrations.png)
 
+### Custom Scrobbling with Multi-Scrobbler
+
+For advanced scrobbling setups, you can use [multi-scrobbler](https://github.com/FoxxMD/multi-scrobbler) to proxy scrobbles to multiple services simultaneously. This allows you to scrobble to ListenBrainz, Last.fm, Maloja, and other services from a single configuration.
+
+📖 **[Read the complete setup guide →](./docs/custom-scrobbler.md)**
+
 Integrations with other projects that are not included natively:
 
 - [i3 blocks config](https://github.com/Mastermindzh/dotfiles/commit/9714b2fa1d670108ce811d5511fd3b7a43180647) - My dotfiles where I use this app to fetch currently playing music (direct commit)

@@ -10,8 +10,10 @@ import {
   acquireInhibitorIfInactive,
   releaseInhibitorIfActive,
 } from "./features/idleInhibitor/idleInhibitor";
+import { ListenBrainz } from "./features/listenbrainz/listenbrainz";
 import { Logger } from "./features/logger";
 import { SharingService } from "./features/sharingService/sharingService";
+import { tidalUrl } from "./features/tidal/url";
 import { MediaInfo } from "./models/mediaInfo";
 import { MediaStatus } from "./models/mediaStatus";
 import { initRPC, rpc, unRPC } from "./scripts/discord";
@@ -25,7 +27,6 @@ import {
   showSettingsWindow,
 } from "./scripts/settings";
 import { addTray, refreshTray } from "./scripts/tray";
-import { tidalUrl } from "./features/tidal/url";
 let mainInhibitorId = -1;
 
 let mainWindow: BrowserWindow;
@@ -97,7 +98,11 @@ function getCustomProtocolUrl(args: string[]) {
  */
 function configureUserAgent() {
   const customUserAgent = settingsStore.get<string, string>(settings.advanced.userAgent);
-  if (customUserAgent && customUserAgent !== values.defaultUserAgent && customUserAgent.trim() !== "") {
+  if (
+    customUserAgent &&
+    customUserAgent !== values.defaultUserAgent &&
+    customUserAgent.trim() !== ""
+  ) {
     mainWindow.webContents.setUserAgent(customUserAgent);
   }
 }
@@ -253,6 +258,7 @@ app.on("browser-window-created", (_, window) => {
 // IPC
 ipcMain.on(globalEvents.updateInfo, (_event, arg: MediaInfo) => {
   updateMediaInfo(arg);
+  ListenBrainz.handleMediaUpdate(arg);
   if (arg.status === MediaStatus.playing) {
     mainInhibitorId = acquireInhibitorIfInactive(mainInhibitorId);
   } else {
