@@ -3,14 +3,17 @@ import { BrowserWindow, app, components, ipcMain, session } from "electron";
 import path from "path";
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
+import values from "./constants/values";
 import { startApi } from "./features/api";
 import { setDefaultFlags, setManagedFlagsFromSettings } from "./features/flags/flags";
 import {
   acquireInhibitorIfInactive,
   releaseInhibitorIfActive,
 } from "./features/idleInhibitor/idleInhibitor";
+import { ListenBrainz } from "./features/listenbrainz/listenbrainz";
 import { Logger } from "./features/logger";
 import { SharingService } from "./features/sharingService/sharingService";
+import { tidalUrl } from "./features/tidal/url";
 import { MediaInfo } from "./models/mediaInfo";
 import { MediaStatus } from "./models/mediaStatus";
 import { initRPC, rpc, unRPC } from "./scripts/discord";
@@ -32,14 +35,12 @@ const PROTOCOL_PREFIX = "tidal";
 const windowPreferences = {
   sandbox: false,
   plugins: true,
-  devTools: true, // I like tinkering, others might too
+  devTools: true, // Ensure devTools is enabled for debugging
+  contextIsolation: false, // Disable context isolation for debugging
 };
 
 setDefaultFlags(app);
 setManagedFlagsFromSettings(app);
-
-const tidalUrl =
-  settingsStore.get<string, string>(settings.advanced.tidalUrl) || "https://listen.tidal.com";
 
 /**
  * Update the menuBarVisibility according to the store value
@@ -47,9 +48,21 @@ const tidalUrl =
  */
 function syncMenuBarWithStore() {
   const fixedMenuBar = !!settingsStore.get(settings.menuBar);
+  const disableAltMenuBar = !!settingsStore.get(settings.disableAltMenuBar);
 
-  mainWindow.autoHideMenuBar = !fixedMenuBar;
-  mainWindow.setMenuBarVisibility(fixedMenuBar);
+  if (fixedMenuBar) {
+    // Menu bar is always visible
+    mainWindow.autoHideMenuBar = false;
+    mainWindow.setMenuBarVisibility(true);
+  } else if (disableAltMenuBar) {
+    // Menu bar is completely hidden (no Alt key activation)
+    mainWindow.autoHideMenuBar = false;
+    mainWindow.setMenuBarVisibility(false);
+  } else {
+    // Menu bar is hidden but can be shown with Alt key
+    mainWindow.autoHideMenuBar = true;
+    mainWindow.setMenuBarVisibility(false);
+  }
 }
 
 /**
@@ -80,6 +93,20 @@ function getCustomProtocolUrl(args: string[]) {
   return tidalUrl + "/" + customProtocolArg.substring(PROTOCOL_PREFIX.length + 3);
 }
 
+/**
+ * Configure custom user agent if specified in settings
+ */
+function configureUserAgent() {
+  const customUserAgent = settingsStore.get<string, string>(settings.advanced.userAgent);
+  if (
+    customUserAgent &&
+    customUserAgent !== values.defaultUserAgent &&
+    customUserAgent.trim() !== ""
+  ) {
+    mainWindow.webContents.setUserAgent(customUserAgent);
+  }
+}
+
 function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
   // Create the browser window.
   mainWindow = new BrowserWindow({
@@ -90,6 +117,7 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
     icon,
     backgroundColor: options.backgroundColor,
     autoHideMenuBar: true,
+    transparent: true,
     webPreferences: {
       ...windowPreferences,
       ...{
@@ -101,6 +129,7 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
   enable(mainWindow.webContents);
   registerHttpProtocols();
   syncMenuBarWithStore();
+  configureUserAgent();
 
   // find the custom protocol argument
   const customProtocolUrl = getCustomProtocolUrl(process.argv);
@@ -183,13 +212,12 @@ app.on("ready", async () => {
 
     // Adblock
     if (settingsStore.get(settings.adBlock)) {
-      const filter = { urls: ["https://listen.tidal.com/*"] };
+      const filter = { urls: [tidalUrl + "/*"] };
       session.defaultSession.webRequest.onBeforeRequest(filter, (details, callback) => {
         if (details.url.match(/\/users\/.*\d\?country/)) callback({ cancel: true });
         else callback({ cancel: false });
       });
     }
-
     Logger.log("components ready:", components.status());
 
     createWindow();
@@ -199,8 +227,17 @@ app.on("ready", async () => {
       addTray(mainWindow, { icon });
       refreshTray(mainWindow);
     }
-    settingsStore.get(settings.api) && startApi(mainWindow);
-    settingsStore.get(settings.enableDiscord) && initRPC();
+    if (settingsStore.get(settings.api)) {
+      startApi(mainWindow);
+    }
+    if (settingsStore.get(settings.enableDiscord)) {
+      initRPC();
+    }
+
+    // Hide window on startup if startMinimized is enabled
+    if (settingsStore.get(settings.startMinimized)) {
+      mainWindow.hide();
+    }
   } else {
     app.quit();
   }
@@ -221,6 +258,7 @@ app.on("browser-window-created", (_, window) => {
 // IPC
 ipcMain.on(globalEvents.updateInfo, (_event, arg: MediaInfo) => {
   updateMediaInfo(arg);
+  ListenBrainz.handleMediaUpdate(arg);
   if (arg.status === MediaStatus.playing) {
     mainInhibitorId = acquireInhibitorIfInactive(mainInhibitorId);
   } else {
@@ -234,6 +272,10 @@ ipcMain.on(globalEvents.hideSettings, () => {
 });
 ipcMain.on(globalEvents.showSettings, () => {
   showSettingsWindow();
+});
+
+ipcMain.on(globalEvents.resetZoom, () => {
+  mainWindow.webContents.setZoomFactor(1.0);
 });
 
 ipcMain.on(globalEvents.refreshMenuBar, () => {

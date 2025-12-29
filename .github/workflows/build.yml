@@ -21,30 +21,10 @@ jobs:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
-          node-version: 22.12.0
+          node-version: 24.12.0
       - run: npm install
       - run: npm run build
       # - uses: actions/upload-artifact@master
       #   with:
       #     name: linux-builds
       #     path: dist/
-
-  # build_on_mac:
-  #   runs-on: macos-latest
-  #   steps:
-  #     - uses: actions/checkout@master
-  #     - uses: actions/setup-node@master
-  #       with:
-  #         node-version: 22.4
-  #     - run: npm install
-  #     - run: npm run build
-
-  # build_on_win:
-  #   runs-on: windows-latest
-  #   steps:
-  #     - uses: actions/checkout@master
-  #     - uses: actions/setup-node@master
-  #       with:
-  #         node-version: 22.4
-  #     - run: npm install
-  #     - run: npm run build

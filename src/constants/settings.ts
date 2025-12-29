@@ -13,6 +13,8 @@ export const settings = {
   advanced: {
     root: "advanced",
     tidalUrl: "advanced.tidalUrl",
+    userAgent: "advanced.userAgent",
+    controllerType: "advanced.controllerType",
   },
   api: "api",
   apiSettings: {
@@ -21,6 +23,7 @@ export const settings = {
     hostname: "apiSettings.hostname",
   },
   customCSS: "customCSS",
+  disableAltMenuBar: "disableAltMenuBar",
   disableBackgroundThrottle: "disableBackgroundThrottle",
   disableHardwareMediaKeys: "disableHardwareMediaKeys",
   enableCustomHotkeys: "enableCustomHotkeys",
@@ -55,9 +58,11 @@ export const settings = {
   singleInstance: "singleInstance",
   skipArtists: "skipArtists",
   skippedArtists: "skippedArtists",
+  startMinimized: "startMinimized",
   staticWindowTitle: "staticWindowTitle",
   theme: "theme",
   trayIcon: "trayIcon",
+  trayIconPath: "trayIconPath",
   updateFrequency: "updateFrequency",
   windowBounds: {
     root: "windowBounds",

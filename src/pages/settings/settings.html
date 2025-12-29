@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
@@ -93,36 +93,29 @@
                 <span class="switch__slider"></span>
               </label>
             </div>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Disable alt key menu bar activation</h4>
+                <p>Prevent the menu bar from being shown when pressing the alt key.</p>
+              </div>
+              <label class="switch">
+                <input id="disableAltMenuBar" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
           </div>
           <div class="group">
             <p class="group__title">System</p>
             <div class="group__option">
               <div class="group__description">
-                <h4>Tray icon</h4>
-                <p>Show TIDAL Hi-Fi's tray icon.</p>
-              </div>
-              <label class="switch">
-                <input id="trayIcon" type="checkbox" />
-                <span class="switch__slider"></span>
-              </label>
-            </div>
-            <div class="group__option">
-              <div class="group__description">
                 <h4>Static Window Title</h4>
-                <p>Makes the window title "TIDAL Hi-Fi" instead of changing to the currently playing song.</p>
+                <p>
+                  Makes the window title "TIDAL Hi-Fi" instead of changing to the currently
+                  playing song.
+                </p>
               </div>
               <label class="switch">
                 <input id="staticWindowTitle" type="checkbox" />
-                <span class="switch__slider"></span>
-              </label>
-            </div>
-            <div class="group__option">
-              <div class="group__description">
-                <h4>Minimize on Close</h4>
-                <p>Minimize window on close instead.</p>
-              </div>
-              <label class="switch">
-                <input id="minimizeOnClose" type="checkbox" />
                 <span class="switch__slider"></span>
               </label>
             </div>
@@ -150,6 +143,54 @@
               </label>
             </div>
           </div>
+
+          <div class="group">
+            <p class="group__title">Tray Icon</p>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Tray icon</h4>
+                <p>Show TIDAL Hi-Fi's tray icon.</p>
+              </div>
+              <label class="switch">
+                <input id="trayIcon" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Minimize to tray on Close</h4>
+                <p>Hide the main window to system tray on close instead.</p>
+              </div>
+              <label class="switch">
+                <input id="minimizeOnClose" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Start Minimized</h4>
+                <p>Hide the main window on startup.</p>
+              </div>
+              <label class="switch">
+                <input id="startMinimized" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Custom tray icon path</h4>
+                <p>
+                  Provide a custom path to an icon file for the system tray. Leave empty or set to "default" to use the
+                  bundled icon.
+                  Supported formats: PNG, JPG, JPEG, ICO, BMP, GIF (SVG is not supported).
+                </p>
+                <input id="trayIconPath" type="text" class="text-input" name="trayIconPath"
+                  placeholder="default or /path/to/icon.png" />
+                <p id="trayIconPathValidation" class="validation-message"
+                  style="color: #ff6b6b; margin-top: 5px; display: none;"></p>
+              </div>
+            </div>
+          </div>
         </section>
 
         <section id="api-section" class="tabs__section">
@@ -157,8 +198,8 @@
             <p class="group__title">API</p>
             <div class="group__description">
               <p>
-                TIDAL Hi-Fi has a built-in web API to allow users to get current media information.
-                You can optionally enable playback control as well.
+                TIDAL Hi-Fi has a built-in web API to allow users to get current media
+                information. You can optionally enable playback control as well.
               </p>
             </div>
             <div class="group__option">
@@ -180,7 +221,8 @@
             <div class="group__option">
               <div class="group__description">
                 <h4>API hostname</h4>
-                <p>By default (127.0.0.1) only local apps can interface with the API. <br />
+                <p>
+                  By default (127.0.0.1) only local apps can interface with the API. <br />
                   Change to 0.0.0.0 to allow <strong>anyone</strong> to interact with it. <br />
                   Other options are available
                 </p>
@@ -236,7 +278,6 @@
               </label>
             </div>
             <div id="discord_options">
-
               <div class="group__option" class="hidden">
                 <div class="group__description">
                   <h4>Show Idle Text</h4>
@@ -259,7 +300,9 @@
               <div class="group__option" class="hidden">
                 <div class="group__description">
                   <h4>Using Tidal Text</h4>
-                  <p>The text displayed on Discord's rich presence while "showSong" is turned off</p>
+                  <p>
+                    The text displayed on Discord's rich presence while "showSong" is turned off
+                  </p>
                   <input id="discord_using_text" type="text" class="text-input" name="discord_using_text" />
                 </div>
               </div>
@@ -276,7 +319,6 @@
               </div>
 
               <div id="discord_show_song_options" class="hidden">
-
                 <div class="group__option" class="hidden">
                   <div class="group__description">
                     <h4>Include timestamps</h4>
@@ -304,7 +346,6 @@
                   </div>
                 </div>
               </div>
-
             </div>
           </div>
           <div class="group">
@@ -323,7 +364,10 @@
               <div class="group__option">
                 <div class="group__description">
                   <h4>ListenBrainz API Url</h4>
-                  <p>There are multiple instances for ListenBrainz you can set the corresponding API url below.</p>
+                  <p>
+                    There are multiple instances for ListenBrainz you can set the corresponding
+                    API url below.
+                  </p>
                   <input id="ListenBrainzAPI" type="text" class="text-input" name="ListenBrainzAPI" />
                 </div>
               </div>
@@ -337,8 +381,10 @@
             </div>
             <div class="group__description">
               <h4>ScrobbleDelay</h4>
-              <p>The delay (in ms) to send a listen to ListenBrainz. Prevents spamming the API when you fast forward
-                immediately</p>
+              <p>
+                The delay (in ms) to send a listen to ListenBrainz. Prevents spamming the API when
+                you fast forward immediately
+              </p>
               <input id="listenbrainz_delay" type="number" class="text-input" name="listenbrainz_delay" />
             </div>
           </div>
@@ -351,10 +397,9 @@
               <div class="group__description">
                 <h4>Update frequency</h4>
                 <p>
-                  The amount of time, in milliseconds, that TIDAL Hi-Fi will refresh its playback info by scraping the
-                  website.
-                  The default of 500 seems to work in more cases but if you are fine with a bit more resource usage you
-                  can decrease it as well.
+                  The amount of time, in milliseconds, that TIDAL Hi-Fi will refresh its playback
+                  info by scraping the website. The default of 500 seems to work in more cases but
+                  if you are fine with a bit more resource usage you can decrease it as well.
                 </p>
                 <input id="updateFrequency" type="number" class="text-input" name="updateFrequency" />
               </div>
@@ -368,9 +413,36 @@
                   <strong>note! Beta might break at any time</strong>
                 </p>
                 <select class="select-input" id="channel" name="channel">
-                  <option value="https://listen.tidal.com">Stable (listen.tidal.com)</option>
-                  <option value="https://listen.stage.tidal.com">Staging (listen.stage.tidal.com)</option>
+                  <option value="https://tidal.com">Stable (tidal.com)</option>
+                  <option value="https://stage.tidal.com">Staging (stage.tidal.com)</option>
+                  Staging (listen.stage.tidal.com)
+                  </option>
                 </select>
+              </div>
+            </div>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Controller Type</h4>
+                <p>Select the type of controller to use.</p>
+                <select id="controllerType" class="select-input">
+                  <option value="mediaSessionController">Media Session Controller (default)</option>
+                  <option value="domController">DOM Controller (fallback)</option>
+                  <option value="tidalApiController">Tidal Api Controller (beta)</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Custom User Agent</h4>
+                <p>
+                  Customize the browser user agent string sent to Tidal.
+                  <br />
+                  <strong>Warning:</strong> Tidal may block your requests if you modify this value.
+                  <br />
+                  Leave as "default" or empty to use the standard Electron user agent.
+                </p>
+                <input id="userAgent" type="text" class="text-input" name="userAgent" placeholder="default" />
               </div>
             </div>
           </div>
@@ -415,7 +487,8 @@
               <div class="group__description">
                 <h4>Wayland support</h4>
                 <p>
-                  Adds a couple of Electron flags to help TIDAL Hi-Fi run smoothly on the Wayland window system.
+                  Adds a couple of Electron flags to help TIDAL Hi-Fi run smoothly on the Wayland
+                  window system.
                 </p>
               </div>
               <label class="switch">
@@ -433,7 +506,8 @@
               <div class="group__description">
                 <h4>Custom CSS</h4>
                 <p>
-                  The css that you put in here will be injected into a style tag in the head of the document.
+                  The css that you put in here will be injected into a style tag in the head of
+                  the document.
                 </p>
               </div>
             </div>
@@ -448,9 +522,7 @@
                 <p>
                   Select a theme below or "Tidal - Default" to return to the original Tidal look.
                 </p>
-                <select class="select-input" id="themesList" name="themesList">
-
-                </select>
+                <select class="select-input" id="themesList" name="themesList"></select>
               </div>
             </div>
 
@@ -458,19 +530,33 @@
               <div class="group__description">
                 <h4>Upload new themes</h4>
                 <p>
-                  Click the button and select the css files to import. They will be added to the theme list
-                  automatically.
+                  Click the button and select the css files to import. They will be added to the
+                  theme list automatically.
                 </p>
                 <div class="file-drop-area">
                   <div>
                     <span class="file-btn">Choose files</span>
                     <span id="file-message" class="file-msg">or drag and drop files here</span>
-                    <input id="theme-files" class="file-input" type="file" accept=".css" multiple>
+                    <input id="theme-files" class="file-input" type="file" accept=".css" multiple />
                   </div>
                 </div>
               </div>
             </div>
           </div>
+
+          <div class="group">
+            <p class="group__title">Zoom</p>
+            <div class="group__option">
+              <div class="group__description">
+                <h4>Reset Zoom</h4>
+                <p>
+                  Reset the zoom level to 100%. This is useful if you accidentally zoomed out and can't zoom back in.
+                </p>
+                <button id="resetZoom" class="footer__button footer__button--with-margin">Reset Zoom to 100%</button>
+              </div>
+            </div>
+          </div>
+
         </section>
 
         <section id="about-section" class="tabs__section about-section">
@@ -478,7 +564,7 @@
           <h4>TIDAL Hi-Fi</h4>
           <div class="about-section__version">
             <a target="_blank" rel="noopener"
-              href="https://github.com/Mastermindzh/tidal-hifi/releases/tag/5.20.1">5.20.1</a>
+              href="https://github.com/Mastermindzh/tidal-hifi/releases/tag/6.0.0">6.0.0</a>
           </div>
           <div class="about-section__links">
             <a target="_blank" rel="noopener" href="https://github.com/mastermindzh/tidal-hifi/"

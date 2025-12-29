@@ -1,135 +1,217 @@
-import axios from "axios";
-import Store from "electron-store";
+import axios, { AxiosError } from "axios";
 import { settings } from "../../constants/settings";
-import { MediaStatus } from "../../models/mediaStatus";
 import { settingsStore } from "../../scripts/settings";
+import { convertDurationToSeconds } from "../time/parse";
 import { Logger } from "../logger";
-import { StoreData } from "./models/storeData";
-
-const ListenBrainzStore = new Store({ name: "listenbrainz" });
-
-export const ListenBrainzConstants = {
-  oldData: "oldData",
-};
+import { tidalUrl } from "../tidal/url";
+import { MediaInfo } from "../../models/mediaInfo";
+import { MediaStatus } from "../../models/mediaStatus";
+import { constrainPollingInterval } from "../../utility/pollingConstraints";
 
 export class ListenBrainz {
+  // Internal state for tracking scrobbling
+  private static currentTrackKey = "";
+  private static currentTrackScrobbled = false;
+  private static currentTrackDuration = 0;
+  private static lastKnownPosition = 0;
+  private static currentPlayingNowDelayId: ReturnType<typeof setTimeout>;
+
   /**
-   * Create the object to store old information in the Store :)
-   * @param title
-   * @param artists
-   * @param duration
-   * @returns data passed along in an object + a "listenedAt" key with the current time
+   * Execute a "playing_now" operation with delay, cancelling any pending "playing_now" operations
    */
-  private static constructStoreData(title: string, artists: string, duration: number): StoreData {
-    return {
-      listenedAt: Math.floor(new Date().getTime() / 1000),
-      title,
-      artists,
-      duration,
+  private static executePlayingNowWithDelay(operation: () => Promise<void> | void): void {
+    // Cancel any pending "playing_now" operation
+    clearTimeout(this.currentPlayingNowDelayId);
+    const startPlayingNowDelay = constrainPollingInterval(
+      settingsStore.get(settings.ListenBrainz.delay),
+    );
+    this.currentPlayingNowDelayId = setTimeout(async () => {
+      try {
+        await operation();
+      } catch (error: unknown) {
+        const errorMessage = error instanceof Error ? error.message : String(error);
+        Logger.log("ListenBrainz playing_now error:", { error: errorMessage });
+      }
+    }, startPlayingNowDelay);
+  }
+  /**
+   * Create track metadata object for ListenBrainz API
+   * Ensures all data is properly serializable for multi-scrobbler compatibility
+   */
+  private static createTrackMetadata(
+    title: string,
+    artists: string,
+    album: string,
+    duration: number,
+  ) {
+    // Create a clean, serializable object
+    const metadata = {
+      additional_info: {
+        media_player: "Tidal Hi-Fi",
+        submission_client: "Tidal Hi-Fi",
+        music_service: tidalUrl,
+        duration: Number(duration) || 0,
+      },
+      artist_name: String(artists || ""),
+      track_name: String(title || ""),
+      release_name: String(album || ""),
     };
+
+    return metadata;
   }
 
   /**
-   * Call the ListenBrainz API and create playing now payload and scrobble old song
-   * @param title
-   * @param artists
-   * @param status
-   * @param duration
+   * Send data to ListenBrainz API
    */
-  public static async scrobble(
+  private static async sendToListenBrainz(data: any): Promise<void> {
+    const apiUrl = settingsStore.get<string, string>(settings.ListenBrainz.api);
+    const token = settingsStore.get<string, string>(settings.ListenBrainz.token);
+
+    try {
+      // Ensure data is properly serializable by creating a clean copy
+      const serializedData = JSON.parse(JSON.stringify(data));
+
+      // CodeQL [js/request-forgery] - User-configured API endpoint is intentional for ListenBrainz integration
+      await axios.post(apiUrl, serializedData, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Token ${token}`,
+        },
+      });
+    } catch (error: unknown) {
+      const isAxiosError = error && typeof error === "object" && "response" in error;
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const status = isAxiosError ? (error as any).response?.status : undefined;
+
+      Logger.log("ListenBrainz API error details:", {
+        url: apiUrl,
+        listen_type: data.listen_type,
+        error: errorMessage,
+        status,
+        data: data,
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Send a "playing_now" update to ListenBrainz
+   */
+  public static async sendPlayingNow(
     title: string,
     artists: string,
-    status: string,
-    duration: number
+    album: string,
+    duration: number,
   ): Promise<void> {
     try {
-      if (status === MediaStatus.paused) {
-        return;
-      } else {
-        // Fetches the oldData required for scrobbling and proceeds to construct a playing_now data payload for the Playing Now area
-        const oldData = ListenBrainzStore.get(ListenBrainzConstants.oldData) as StoreData;
-        const tidalUrl =
-          settingsStore.get<string, string>(settings.advanced.tidalUrl) ||
-          "https://listen.tidal.com";
-        const playing_data = {
-          listen_type: "playing_now",
-          payload: [
-            {
-              track_metadata: {
-                additional_info: {
-                  media_player: "Tidal Hi-Fi",
-                  submission_client: "Tidal Hi-Fi",
-                  music_service: "tidal.com",
-                  duration: duration,
-                },
-                artist_name: artists,
-                track_name: title,
-              },
-            },
-          ],
-        };
-
-        await axios.post(
-          `${settingsStore.get<string, string>(settings.ListenBrainz.api)}/1/submit-listens`,
-          playing_data,
+      const playing_data = {
+        listen_type: "playing_now",
+        payload: [
           {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Token ${settingsStore.get<string, string>(
-                settings.ListenBrainz.token
-              )}`,
-            },
-          }
-        );
-        if (!oldData) {
-          ListenBrainzStore.set(
-            ListenBrainzConstants.oldData,
-            this.constructStoreData(title, artists, duration)
+            track_metadata: this.createTrackMetadata(title, artists, album, duration),
+          },
+        ],
+      };
+
+      await this.sendToListenBrainz(playing_data);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      Logger.log("ListenBrainz playing_now error:", {
+        error: errorMessage,
+        track: { title, artists, album, duration },
+      });
+      throw error;
+    }
+  }
+
+  /**
+   * Send a "single" listen (completed track) to ListenBrainz
+   * @param title
+   * @param artists
+   * @param album
+   * @param duration
+   * @param listenedAt Optional timestamp, defaults to now
+   */
+  public static async scrobbleSingle(
+    title: string,
+    artists: string,
+    album: string,
+    duration: number,
+    listenedAt?: number,
+  ): Promise<void> {
+    try {
+      const timestamp = listenedAt ?? Math.floor(Date.now() / 1000);
+      const scrobble_data = {
+        listen_type: "single",
+        payload: [
+          {
+            listened_at: timestamp,
+            track_metadata: this.createTrackMetadata(title, artists, album, duration),
+          },
+        ],
+      };
+
+      await this.sendToListenBrainz(scrobble_data);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      Logger.log("ListenBrainz scrobble error:", {
+        error: errorMessage,
+        track: { title, artists, album, duration },
+      });
+    }
+  }
+
+  /**
+   * Handle media info updates for ListenBrainz integration
+   * Encapsulates all scrobbling logic and state management
+   */
+  public static handleMediaUpdate(mediaInfo: MediaInfo): void {
+    if (
+      settingsStore.get(settings.ListenBrainz.enabled) &&
+      mediaInfo.status === MediaStatus.playing
+    ) {
+      const trackKey = `${mediaInfo.title}|${mediaInfo.album}|${mediaInfo.artists}`;
+      const currentInSeconds = mediaInfo.currentInSeconds ?? 0;
+      const durationInSeconds =
+        mediaInfo.durationInSeconds ?? convertDurationToSeconds(mediaInfo.duration);
+
+      // Check if this is a new track or if the same track has restarted
+      const hasRestarted =
+        trackKey === this.currentTrackKey && currentInSeconds < this.lastKnownPosition - 30;
+
+      if (trackKey !== this.currentTrackKey || hasRestarted) {
+        this.currentTrackKey = trackKey;
+        this.currentTrackScrobbled = false;
+        this.currentTrackDuration = durationInSeconds;
+
+        // Send "playing_now" for new track, cancelling any pending old "playing_now" operations
+        this.executePlayingNowWithDelay(() => {
+          return this.sendPlayingNow(
+            mediaInfo.title,
+            mediaInfo.artists,
+            mediaInfo.album,
+            durationInSeconds,
           );
-        } else {
-          if (oldData.title !== title) {
-            // This constructs the data required to scrobble the data after the song finishes
-            const scrobble_data = {
-              listen_type: "single",
-              payload: [
-                {
-                  listened_at: oldData.listenedAt,
-                  track_metadata: {
-                    additional_info: {
-                      media_player: "Tidal Hi-Fi",
-                      submission_client: "Tidal Hi-Fi",
-                      music_service: tidalUrl,
-                      duration: oldData.duration,
-                    },
-                    artist_name: oldData.artists,
-                    track_name: oldData.title,
-                  },
-                },
-              ],
-            };
-            await axios.post(
-              `${settingsStore.get<string, string>(settings.ListenBrainz.api)}/1/submit-listens`,
-              scrobble_data,
-              {
-                headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Token ${settingsStore.get<string, string>(
-                    settings.ListenBrainz.token
-                  )}`,
-                },
-              }
-            );
-            ListenBrainzStore.set(
-              ListenBrainzConstants.oldData,
-              this.constructStoreData(title, artists, duration)
-            );
-          }
+        });
+      } else if (!this.currentTrackScrobbled) {
+        // Check if we should scrobble (half duration or 4 minutes, whichever is sooner)
+        const scrobbleThreshold = Math.min(this.currentTrackDuration / 2, 240);
+
+        if (currentInSeconds >= scrobbleThreshold) {
+          this.currentTrackScrobbled = true;
+
+          // Send "single" listen (actual scrobble) - no delay needed due to natural listening time throttling
+          this.scrobbleSingle(
+            mediaInfo.title,
+            mediaInfo.artists,
+            mediaInfo.album,
+            this.currentTrackDuration,
+          );
         }
       }
-    } catch (error) {
-      Logger.log(JSON.stringify(error));
+
+      // Update last known position for restart detection
+      this.lastKnownPosition = currentInSeconds;
     }
   }
 }
-
-export { ListenBrainzStore };

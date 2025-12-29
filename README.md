@@ -2,7 +2,7 @@
 
 ![GitHub release](https://img.shields.io/github/release/Mastermindzh/tidal-hifi.svg) [![github builds](https://github.com/mastermindzh/tidal-hifi/actions/workflows/build.yml/badge.svg)](https://github.com/Mastermindzh/tidal-hifi/actions) [![Build Status](https://ci.mastermindzh.tech/api/badges/Mastermindzh/tidal-hifi/status.svg)](https://ci.mastermindzh.tech/Mastermindzh/tidal-hifi) [![Discord logo](./docs/images/discord.png)](https://discord.gg/yhNwf4v4He)
 
-The web version of [listen.tidal.com](https://listen.tidal.com) running in electron with Hi-Fi (High & Max) support thanks to widevine.
+The web version of [TIDAL](https://tidal.com) running in electron with Hi-Fi (High & Max) support thanks to widevine.
 
 ![TIDAL Hi-Fi preview](./docs/images/preview.png)
 
@@ -43,6 +43,7 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
 - Custom hotkeys ([source](https://defkey.com/tidal-desktop-shortcuts))
 - Better icons thanks to [Papirus-icon-theme](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/)
 - [Settings feature](./docs/images/settings.png) to disable certain functionality. (`ctrl+=` or `ctrl+0`)
+- Multiple [controller types](./docs/tidal-controllers.md) for different interaction methods with Tidal
 - API for status, playback and settings (see the [/docs](http://localhost:47836/docs/) route)
 - Disabled audio & visual ads, unlocked lyrics, suggested track, track info, and unlimited skips thanks to uBlockOrigin custom filters ([source](https://github.com/uBlockOrigin/uAssets/issues/17495))
 - AlbumArt in integrations ([best-effort](https://github.com/Mastermindzh/tidal-hifi/pull/88#pullrequestreview-840814847))
@@ -145,6 +146,12 @@ You can find these in the settings menu (`ctrl + =` by default) under the "integ
 
 ![integrations menu, showing a list of integrations](./docs/images/integrations.png)
 
+### Custom Scrobbling with Multi-Scrobbler
+
+For advanced scrobbling setups, you can use [multi-scrobbler](https://github.com/FoxxMD/multi-scrobbler) to proxy scrobbles to multiple services simultaneously. This allows you to scrobble to ListenBrainz, Last.fm, Maloja, and other services from a single configuration.
+
+📖 **[Read the complete setup guide →](./docs/custom-scrobbler.md)**
+
 Integrations with other projects that are not included natively:
 
 - [i3 blocks config](https://github.com/Mastermindzh/dotfiles/commit/9714b2fa1d670108ce811d5511fd3b7a43180647) - My dotfiles where I use this app to fetch currently playing music (direct commit)
@@ -158,6 +165,39 @@ Most Windows users run into DRM issues when trying to use TIDAL Hi-Fi.
 Nothing I can do about that I'm afraid... Tidal is working on removing/changing DRM so when they finish with that we can give it another shot.
 
 Until then you'll have to use the official app unfortunately.
+
+### Discord RPC not working with Flatpak and native Discord
+
+If you're running TIDAL Hi-Fi as a Flatpak and Discord as a native application (not Flatpak), Discord RPC integration may not work due to sandboxing.
+
+**Fix**: Use Flatseal to grant TIDAL Hi-Fi access to the Discord socket:
+
+1. Open Flatseal
+2. Navigate to TIDAL Hi-Fi → Filesystem → Other files
+3. Add a new entry: `xdg-run/discord-ipc-0`
+
+This allows the Flatpak to communicate with the native Discord installation through the IPC socket.
+
+### Discord RPC not working between Flatpaks (TIDAL Hi-Fi + Discord/Vesktop)
+
+If both TIDAL Hi-Fi and Discord/Vesktop are running as Flatpaks, they cannot communicate directly due to sandboxing.
+
+**Fix**: Create symlinks and grant filesystem permissions:
+
+1. **Create symlinks for Vesktop**:
+
+   ```bash
+   ln -sf $XDG_RUNTIME_DIR/{.flatpak/dev.vencord.Vesktop/xdg-run,}/discord-ipc-0
+   ln -sf $XDG_RUNTIME_DIR/{.flatpak/dev.vencord.Vesktop/xdg-run,app/com.discordapp.Discord}/discord-ipc-0
+   ```
+
+2. **Grant filesystem permission**:
+
+   ```bash
+   flatpak override --user --filesystem=xdg-run/.flatpak/dev.vencord.Vesktop:create com.mastermindzh.tidal-hifi
+   ```
+
+This creates the necessary communication bridges between the sandboxed applications.
 
 ## Special thanks to
 
