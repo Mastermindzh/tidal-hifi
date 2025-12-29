@@ -10,6 +10,7 @@
     "outDir": "ts-dist",
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    "skipLibCheck": true,
     "baseUrl": ".",
     "paths": {
       "*": ["node_modules/*"]
