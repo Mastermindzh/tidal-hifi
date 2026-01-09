@@ -226,11 +226,17 @@ export class MediaSessionController implements TidalController<MediaSessionContr
   }
 
   play(): void {
-    this.fallbackDomController.play();
+    // Only play if currently paused
+    if (this.getCurrentlyPlayingStatus() === MediaStatus.paused) {
+      this.fallbackDomController.playPause();
+    }
   }
 
   pause(): void {
-    this.fallbackDomController.pause();
+    // Only pause if currently playing
+    if (this.getCurrentlyPlayingStatus() === MediaStatus.playing) {
+      this.fallbackDomController.playPause();
+    }
   }
 
   stop(): void {

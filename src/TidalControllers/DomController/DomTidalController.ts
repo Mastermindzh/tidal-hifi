@@ -277,10 +277,16 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   }
 
   play(): void {
-    this.playPause();
+    // Only play if currently paused
+    if (this.getCurrentlyPlayingStatus() === MediaStatus.paused) {
+      this.playPause();
+    }
   }
   pause(): void {
-    this.playPause();
+    // Only pause if currently playing
+    if (this.getCurrentlyPlayingStatus() === MediaStatus.playing) {
+      this.playPause();
+    }
   }
   stop(): void {
     this.playPause();
