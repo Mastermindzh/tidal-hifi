@@ -277,8 +277,8 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   }
 
   play(): void {
-    // Only play if currently paused
-    if (this.getCurrentlyPlayingStatus() === MediaStatus.paused) {
+    // Only play if not already playing
+    if (this.getCurrentlyPlayingStatus() !== MediaStatus.playing) {
       this.playPause();
     }
   }
