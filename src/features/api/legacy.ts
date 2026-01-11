@@ -70,7 +70,7 @@ export const addLegacyApi = (expressApp: Router, mainWindow: BrowserWindow) => {
      *               $ref: '#/components/schemas/OkResponse'
      */
     expressApp.post("/favorite/toggle", (req, res) =>
-      handleGlobalEvent(res, globalEvents.toggleFavorite)
+      handleGlobalEvent(res, globalEvents.toggleFavorite),
     );
 
     /**
@@ -140,11 +140,7 @@ export const addLegacyApi = (expressApp: Router, mainWindow: BrowserWindow) => {
      *               $ref: '#/components/schemas/OkResponse'
      */
     expressApp.get("/playpause", (req, res) => {
-      if (mediaInfo.status === MediaStatus.playing) {
-        handleGlobalEvent(res, globalEvents.pause);
-      } else {
-        handleGlobalEvent(res, globalEvents.play);
-      }
+      handleGlobalEvent(res, globalEvents.playPause);
     });
   }
 

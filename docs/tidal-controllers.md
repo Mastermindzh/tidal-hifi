@@ -4,21 +4,22 @@ Tidal Hi-Fi uses different **controller types** to interact with the Tidal web p
 
 <!-- toc -->
 
-- [What are Tidal Controllers?](#what-are-tidal-controllers)
-- [Available Controllers](#available-controllers)
-  - [Choosing the Right Controller... Quick overview](#choosing-the-right-controller-quick-overview)
-  - [1. Media Session Controller (Default)](#1-media-session-controller-default)
-  - [2. DOM Controller](#2-dom-controller)
-  - [3. Tidal API Controller (Beta)](#3-tidal-api-controller-beta)
-- [Troubleshooting](#troubleshooting)
-  - [Controller Not Working?](#controller-not-working)
-  - [Performance Issues?](#performance-issues)
-  - [Missing Features?](#missing-features)
-- [For Developers](#for-developers)
-  - [How Controllers Work Together](#how-controllers-work-together)
-  - [Creating a Custom Controller](#creating-a-custom-controller)
-  - [Adding a New Controller](#adding-a-new-controller)
-- [Future Development](#future-development)
+- [Tidal Controllers](#tidal-controllers)
+  - [What are Tidal Controllers?](#what-are-tidal-controllers)
+  - [Available Controllers](#available-controllers)
+    - [Choosing the Right Controller... Quick overview](#choosing-the-right-controller-quick-overview)
+    - [1. Media Session Controller (Default)](#1-media-session-controller-default)
+    - [2. DOM Controller](#2-dom-controller)
+    - [3. Tidal API Controller (Beta)](#3-tidal-api-controller-beta)
+  - [Troubleshooting](#troubleshooting)
+    - [Controller Not Working?](#controller-not-working)
+    - [Performance Issues?](#performance-issues)
+    - [Missing Features?](#missing-features)
+  - [For Developers](#for-developers)
+    - [How Controllers Work Together](#how-controllers-work-together)
+    - [Creating a Custom Controller](#creating-a-custom-controller)
+    - [Adding a New Controller](#adding-a-new-controller)
+  - [Future Development](#future-development)
 
 <!-- tocstop -->
 
