@@ -155,9 +155,13 @@ function addIPCEventListeners() {
     ipcRenderer.on("globalEvent", (_event, args) => {
       switch (args) {
         case globalEvents.playPause:
-        case globalEvents.play:
-        case globalEvents.pause:
           tidalController.playPause();
+          break;
+        case globalEvents.play:
+          tidalController.play();
+          break;
+        case globalEvents.pause:
+          tidalController.pause();
           break;
         case globalEvents.next:
           tidalController.next();
