@@ -153,12 +153,6 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
      *             schema:
      *               $ref: '#/components/schemas/OkResponse'
      */
-    expressApp.post(createRoute("/playpause"), (req, res) => {
-      if (mediaInfo.status === MediaStatus.playing) {
-        windowEvent(res, globalEvents.pause);
-      } else {
-        windowEvent(res, globalEvents.play);
-      }
-    });
+    createPlayerAction("/playpause", globalEvents.playPause);
   }
 };

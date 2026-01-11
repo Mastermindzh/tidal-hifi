@@ -279,13 +279,13 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   play(): void {
     // Only play if not already playing
     if (this.getCurrentlyPlayingStatus() !== MediaStatus.playing) {
-      this.play();
+      this.elements.click("play");
     }
   }
   pause(): void {
     // Only pause if currently playing
     if (this.getCurrentlyPlayingStatus() === MediaStatus.playing) {
-      this.pause();
+      this.elements.click("pause");
     }
   }
   stop(): void {
