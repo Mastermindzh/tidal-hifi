@@ -216,12 +216,12 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   }
 
   playPause = (): void => {
-    const play = this.elements.get("play");
+    const playing = this.getCurrentlyPlayingStatus();
 
-    if (play) {
-      this.elements.click("play");
-    } else {
+    if (playing === MediaStatus.playing) {
       this.elements.click("pause");
+    } else {
+      this.elements.click("play");
     }
   };
 
@@ -279,17 +279,17 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   play(): void {
     // Only play if not already playing
     if (this.getCurrentlyPlayingStatus() !== MediaStatus.playing) {
-      this.playPause();
+      this.play();
     }
   }
   pause(): void {
     // Only pause if currently playing
     if (this.getCurrentlyPlayingStatus() === MediaStatus.playing) {
-      this.playPause();
+      this.pause();
     }
   }
   stop(): void {
-    this.playPause();
+    this.pause();
   }
 
   getCurrentPosition() {
