@@ -2,8 +2,6 @@ import { BrowserWindow } from "electron";
 import { Response, Router } from "express";
 import { globalEvents } from "../../constants/globalEvents";
 import { settings } from "../../constants/settings";
-import { MediaStatus } from "../../models/mediaStatus";
-import { mediaInfo } from "../../scripts/mediaInfo";
 import { settingsStore } from "../../scripts/settings";
 import { getCurrentImage } from "./features/current";
 
