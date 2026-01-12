@@ -7,7 +7,7 @@ import { SUPPORTED_TRAY_ICON_EXTENSIONS } from "../../constants/trayIcon";
 import { Logger } from "../../features/logger";
 import { addCustomCss } from "../../features/theming/theming";
 import { settingsStore } from "./../../scripts/settings";
-import { getOptions, getOptionsHeader, getThemeListFromDirectory } from "./theming";
+import { cssFilter, getOptions, getOptionsHeader, getThemeListFromDirectory } from "./theming";
 
 // All switches on the settings screen that show additional options based on their state
 const switchesWithSettings = {
@@ -100,7 +100,17 @@ function handleFileUploads() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   document.getElementById("theme-files").addEventListener("change", async function (e: any) {
-    for (const file of Array.from(e.target.files) as File[]) {
+    if (!e.target.files || e.target.files.length === 0) {
+      fileMessage.classList.add("hidden");
+      return;
+    }
+    const newThemes = (Array.from(e.target.files) as File[]).filter(f => cssFilter(f.name));
+    if (newThemes.length === 0) {
+      fileMessage.innerText = "No valid .css files found in the selected files.";
+      fileMessage.classList.remove("hidden");
+      return;
+    }
+    for (const file of newThemes as File[]) {
       const destination = `${app.getPath("userData")}/themes/${file.name}`;
 
       const arrayBuffer = await file.arrayBuffer();
@@ -109,6 +119,7 @@ function handleFileUploads() {
       Logger.log("written file!", { destination });
     }
     fileMessage.innerText = `${e.target.files.length} files successfully uploaded`;
+    fileMessage.classList.remove("hidden");
     getThemeFiles();
   });
 }

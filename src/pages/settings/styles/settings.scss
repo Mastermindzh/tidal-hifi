@@ -1,0 +1,162 @@
+@use "mixins";
+@use "./components";
+
+// --- Variables ---
+:root {
+  --tidal-blue: #0ff;
+  --white: #e4e4e7;
+  --grey: #787887;
+  --grey-darker: #404248;
+  --grey-darkest: #303036;
+  --black-lightest: #18181b;
+  --black-lighter: #0e0e10;
+  --black: #000000;
+}
+
+// --- Fonts ---
+@font-face {
+  font-family: "Noto Sans";
+  font-weight: 300;
+  src: url("../fonts/NotoSans-Light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Noto Sans";
+  font-weight: normal;
+  src: url("../fonts/NotoSans-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Noto Sans";
+  font-weight: 600;
+  src: url("../fonts/NotoSans-SemiBold.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: "Noto Sans";
+  font-weight: bold;
+  src: url("../fonts/NotoSans-Bold.ttf") format("truetype");
+}
+
+// --- Settings window ---
+.settings-window {
+  margin: 0;
+  color: var(--white);
+  background: var(--black);
+  font-family: "Noto Sans", helvetica, sans-serif;
+
+  &__drag-area {
+    @include mixins.drag;
+
+    position: absolute;
+    width: 100%;
+    height: 50px;
+    z-index: 0;
+    user-select: none;
+  }
+
+  &__close-button {
+    @include mixins.drag(false);
+
+    cursor: pointer;
+    position: absolute;
+    top: 7px;
+    right: 10px;
+    padding: 10px;
+    border-radius: 100%;
+    z-index: 1;
+
+    svg {
+      display: block;
+      width: 15px;
+      opacity: .7;
+    }
+
+    &:hover {
+      background: var(--black-lightest);
+
+      svg {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+// --- About section ---
+.about-section {
+  &__icon {
+    display: inline-block;
+    width: 64px;
+  }
+
+  &__version {
+    color: var(--tidal-blue);
+  }
+
+  &__buttons {
+    display: flex;
+    margin-top: 20px;
+    gap: 1rem;
+    justify-content: center;
+
+    @media (max-width: 400px) {
+      flex-direction: column;
+      align-items: center;
+      width: calc(100% - 36px);
+      margin: 20px auto auto;
+    }
+  }
+}
+
+// --- Footer ---
+.footer {
+  text-align: center;
+
+  &__note {
+    max-width: 350px;
+    margin: 30px auto 40px;
+    color: var(--grey);
+    font-size: 12px;
+  }
+}
+
+// --- Utility classes ---
+html {
+  height: 100%;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.external-link {
+  cursor: pointer;
+  text-decoration: underline;
+
+  &:hover {
+    color: var(--white);
+  }
+}
+
+.file-msg {
+  opacity: .7;
+  color: var(--tidal-blue) !important;
+}
+
+.file-input {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 100%;
+  cursor: pointer;
+  opacity: 0;
+
+  &:focus {
+    outline: none;
+
+    & ~ button {
+      box-shadow: 0 0 0 3px var(--white);
+    }
+  }
+}
