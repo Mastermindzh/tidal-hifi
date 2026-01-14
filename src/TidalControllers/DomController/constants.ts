@@ -1,4 +1,4 @@
-const UI_SELECTORS = {
+export const UI_SELECTORS = {
   player: '*[id="video-one"]',
   next: '*[data-test="next"]',
   previous: 'button[data-test="previous"]',
@@ -24,20 +24,4 @@ const UI_SELECTORS = {
   tracklist_row: '[data-test="tracklist-row"]',
   volume: '*[data-test="volume"]',
   favorite: '*[data-test="footer-favorite-button"]',
-}
-
-// for some dumb reason `listen.tidal.com` has disabled console.log
-// we can simply return an array with values though...
-// run this on a playlist or mix page and observe the result
-// NOTE: play & pause can't live together so one or the other will throw an error
-(() => {
-  let results = [];
-
-  Object.entries(UI_SELECTORS).forEach(([key, value]) => {
-    const returnValue = document.querySelector(`${value}`);
-    if (!returnValue) {
-      results.push(`element ${key} not found`);
-    }
-  });
-  return results;
-})();
+};

@@ -2,8 +2,6 @@ import { BrowserWindow } from "electron";
 import { Router } from "express";
 import { globalEvents } from "../../../constants/globalEvents";
 import { settings } from "../../../constants/settings";
-import { MediaStatus } from "../../../models/mediaStatus";
-import { mediaInfo } from "../../../scripts/mediaInfo";
 import { settingsStore } from "../../../scripts/settings";
 import { handleWindowEvent } from "../helpers/handleWindowEvent";
 
@@ -21,9 +19,16 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
    *     OkResponse:
    *       type: string
    *       example: "OK"
+   *     PlayerSettings:
+   *       type: object
+   *       properties:
+   *         position:
+   *           type: integer
+   *         volume:
+   *           type: integer
    */
   const createPlayerAction = (route: string, action: string) => {
-    expressApp.post(createRoute(route), (req, res) => windowEvent(res, action));
+    expressApp.post(createRoute(route), (req, res) => windowEvent(res, action, req.body));
   };
 
   if (settingsStore.get(settings.playBackControl)) {
@@ -154,5 +159,20 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
      *               $ref: '#/components/schemas/OkResponse'
      */
     createPlayerAction("/playpause", globalEvents.playPause);
+
+    /**
+     * @swagger
+     * /player/set:
+     *   post:
+     *     summary: Set properties of the player
+     *     tags: [player]
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/PlayerSettings'
+     */
+    createPlayerAction("/set", globalEvents.set);
   }
 };

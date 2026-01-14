@@ -1,5 +1,5 @@
 export enum RepeatState {
-  off = "off",
-  all = "all",
-  single = "single",
+  off = "None",
+  all = "Playlist",
+  single = "Track",
 }

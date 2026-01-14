@@ -1,14 +1,10 @@
 /**
- * Convert a HH:MM:SS string (or variants such as MM:SS or SS) to plain seconds
- * @param duration in HH:MM:SS format
- * @returns number of seconds in duration
+ * Convert seconds to clock format (MM:SS)
+ * @param seconds number of seconds
+ * @returns string in M:SS format
  */
-export const convertDurationToSeconds = (duration: string) => {
-  return duration
-    .split(":")
-    .reverse()
-    .map((val) => Number(val))
-    .reduce((previous, current, index) => {
-      return index === 0 ? current : previous + current * Math.pow(60, index);
-    }, 0);
+export const convertSecondsToClockFormat = (seconds: number) => {
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = Math.floor(seconds % 60);
+  return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
 };

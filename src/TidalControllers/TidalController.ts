@@ -35,11 +35,12 @@ export interface TidalController<TBootstrapOptions = object> {
   getCurrentlyPlayingStatus(): MediaStatus;
   getCurrentShuffleState(): boolean;
   getCurrentRepeatState(): RepeatState;
-  getCurrentPosition(): string;
-  getCurrentPositionInSeconds(): number;
   getTrackId(): string;
-  getCurrentTime(): string;
-  getDuration(): string;
+  getCurrentTime(): number;
+  setCurrentTime(value: number): void;
+  getDuration(): number;
+  getVolume(): number;
+  setVolume(volume: number): void;
   getAlbumName(): string;
   getTitle(): string;
   getArtists(): string[];

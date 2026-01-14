@@ -22,7 +22,15 @@ export class TidalApiController implements TidalController {
     throw new Error("Method not implemented.");
   }
 
-  getDuration(): string {
+  getDuration(): number {
+    globalThis.alert("Method not implemented");
+    throw new Error("Method not implemented.");
+  }
+  getVolume(): number {
+    globalThis.alert("Method not implemented");
+    throw new Error("Method not implemented.");
+  }
+  setVolume(volume: number) {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
@@ -58,15 +66,11 @@ export class TidalApiController implements TidalController {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
-  getCurrentTime(): string {
+  getCurrentTime(): number {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
-  getCurrentPosition(): string {
-    globalThis.alert("Method not implemented");
-    throw new Error("Method not implemented.");
-  }
-  getCurrentPositionInSeconds(): number {
+  setCurrentTime(value: number) {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
