@@ -6,11 +6,21 @@ import { settings } from "../../constants/settings";
 import { SUPPORTED_TRAY_ICON_EXTENSIONS } from "../../constants/trayIcon";
 import { Logger } from "../../features/logger";
 import { addCustomCss } from "../../features/theming/theming";
-import { settingsStore } from "./../../scripts/settings";
+import { settingsStore } from "../../scripts/settings";
 import { cssFilter, getOptions, getOptionsHeader, getThemeListFromDirectory } from "./theming";
 
 // All switches on the settings screen that show additional options based on their state
 const switchesWithSettings = {
+  tray: {
+    switch: "trayIcon",
+    classToHide: "tray__options",
+    settingsKey: settings.trayIcon,
+  },
+  api: {
+    switch: "apiCheckbox",
+    classToHide: "api__options",
+    settingsKey: settings.api,
+  },
   listenBrainz: {
     switch: "enableListenBrainz",
     classToHide: "listenbrainz__options",
@@ -389,7 +399,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   refreshSettings();
   addInputListener(adBlock, settings.adBlock);
-  addInputListener(api, settings.api);
+  addInputListener(api, settings.api, switchesWithSettings.api);
   addSelectListener(channel, settings.advanced.tidalUrl);
   addTextAreaListener(customCSS, settings.customCSS);
   addInputListener(disableAltMenuBar, settings.disableAltMenuBar);
@@ -412,7 +422,7 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(staticWindowTitle, settings.staticWindowTitle);
   addInputListener(singleInstance, settings.singleInstance);
   addSelectListener(theme, settings.theme);
-  addInputListener(trayIcon, settings.trayIcon);
+  addInputListener(trayIcon, settings.trayIcon, switchesWithSettings.tray);
   addTrayIconPathListener(trayIconPath, settings.trayIconPath);
   addInputListener(updateFrequency, settings.updateFrequency);
   addInputListener(

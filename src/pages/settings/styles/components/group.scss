@@ -98,4 +98,9 @@
       font-size: 14px;
     }
   }
+
+  &__warning {
+    color: var(--tidal-red);
+    filter: brightness(1.5) saturate(.8);
+  }
 }
