@@ -30,7 +30,7 @@ export class DomTidalController implements TidalController<DomControllerOptions>
 
     if (figure) {
       const mediaElement = figure.querySelector(UI_SELECTORS.image);
-      if (mediaElement instanceof HTMLVideoElement) {
+      if (mediaElement instanceof HTMLImageElement) {
         return mediaElement.src.replace("80x80", "640x640");
       }
     }
