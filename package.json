@@ -73,7 +73,7 @@
     "nodemon": "^3.1.11",
     "prettier": "^3.7.4",
     "stylelint": "^16.26.1",
-    "stylelint-config-standard": "^39.0.1",
+    "stylelint-config-standard": "^40.0.0",
     "stylelint-config-standard-scss": "^16.0.0",
     "stylelint-prettier": "^5.0.3",
     "swagger-jsdoc": "^6.2.8",
