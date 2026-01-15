@@ -1,6 +1,6 @@
-import { MediaInfo } from "../models/mediaInfo";
-import { MediaStatus } from "../models/mediaStatus";
-import { RepeatState } from "../models/repeatState";
+import type { MediaInfo } from "../models/mediaInfo";
+import type { MediaStatus } from "../models/mediaStatus";
+import type { RepeatState } from "../models/repeatState";
 
 export interface TidalController<TBootstrapOptions = object> {
   /**

@@ -1,11 +1,11 @@
+import { getTrackURL } from "../../features/tidal/url";
 import { convertDurationToSeconds } from "../../features/time/parse";
-import { MediaInfo } from "../../models/mediaInfo";
+import type { MediaInfo } from "../../models/mediaInfo";
 import { MediaStatus } from "../../models/mediaStatus";
 import { RepeatState } from "../../models/repeatState";
-import { TidalController } from "../TidalController";
-import { DomControllerOptions } from "./DomControllerOptions";
-import { getTrackURL } from "../../features/tidal/url";
 import { constrainPollingInterval } from "../../utility/pollingConstraints";
+import type { TidalController } from "../TidalController";
+import type { DomControllerOptions } from "./DomControllerOptions";
 
 export class DomTidalController implements TidalController<DomControllerOptions> {
   private updateSubscriber: (state: Partial<MediaInfo>) => void;
@@ -57,7 +57,7 @@ export class DomTidalController implements TidalController<DomControllerOptions>
       const figure = this.get("media");
 
       if (figure) {
-        const mediaElement = figure.querySelector(this["image"]);
+        const mediaElement = figure.querySelector(this.image);
         if (mediaElement) {
           return mediaElement.src.replace("80x80", "640x640");
         }
@@ -86,7 +86,7 @@ export class DomTidalController implements TidalController<DomControllerOptions>
      * @param {Array} artistsArray
      * @returns {String} artists
      */
-    getArtistsString: function (artistsArray: string[]) {
+    getArtistsString: (artistsArray: string[]) => {
       if (artistsArray.length > 0) return artistsArray.join(", ");
       return "unknown artist(s)";
     },
@@ -179,9 +179,9 @@ export class DomTidalController implements TidalController<DomControllerOptions>
       const shuffleState = this.getCurrentShuffleState();
       const repeatState = this.getCurrentRepeatState();
 
-      const playStateChanged = currentStatus != this.currentlyPlaying;
-      const shuffleStateChanged = shuffleState != this.currentShuffleState;
-      const repeatStateChanged = repeatState != this.currentRepeatState;
+      const playStateChanged = currentStatus !== this.currentlyPlaying;
+      const shuffleStateChanged = shuffleState !== this.currentShuffleState;
+      const repeatStateChanged = repeatState !== this.currentRepeatState;
 
       if (playStateChanged) this.currentlyPlaying = currentStatus;
       if (shuffleStateChanged) this.currentShuffleState = shuffleState;

@@ -9,6 +9,6 @@ export const convertDurationToSeconds = (duration: string) => {
     .reverse()
     .map((val) => Number(val))
     .reduce((previous, current, index) => {
-      return index === 0 ? current : previous + current * Math.pow(60, index);
+      return index === 0 ? current : previous + current * 60 ** index;
     }, 0);
 };

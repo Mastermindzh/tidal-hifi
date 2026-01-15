@@ -1,13 +1,13 @@
-import { MediaInfo } from "../../models/mediaInfo";
-import { MediaStatus } from "../../models/mediaStatus";
-import { RepeatState } from "../../models/repeatState";
-import { TidalController } from "../TidalController";
 import { Logger } from "../../features/logger";
-import { DomTidalController } from "../DomController/DomTidalController";
-import { DomControllerOptions } from "../DomController/DomControllerOptions";
 import { getTrackURL } from "../../features/tidal/url";
 import { convertDurationToSeconds } from "../../features/time/parse";
+import type { MediaInfo } from "../../models/mediaInfo";
+import { MediaStatus } from "../../models/mediaStatus";
+import type { RepeatState } from "../../models/repeatState";
 import { constrainPollingInterval } from "../../utility/pollingConstraints";
+import type { DomControllerOptions } from "../DomController/DomControllerOptions";
+import { DomTidalController } from "../DomController/DomTidalController";
+import type { TidalController } from "../TidalController";
 
 export interface MediaSessionControllerOptions {
   refreshInterval?: number;
@@ -58,7 +58,6 @@ export class MediaSessionController implements TidalController<MediaSessionContr
       try {
         // Read the existing MediaSession metadata set by Tidal
         const mediaMetadata = navigator.mediaSession?.metadata;
-        const playbackState = navigator.mediaSession?.playbackState || "none";
 
         if (mediaMetadata) {
           const current = this.getCurrentTime();
@@ -190,13 +189,13 @@ export class MediaSessionController implements TidalController<MediaSessionContr
         ];
         actions.forEach((action) => {
           try {
-            this.mediaSession!.setActionHandler(action, null);
+            this.mediaSession?.setActionHandler(action, null);
           } catch {
             // Ignore individual action cleanup errors
           }
         });
         this.mediaSession.metadata = null;
-      } catch (error) {
+      } catch (_error) {
         // Ignore cleanup errors
       }
     }

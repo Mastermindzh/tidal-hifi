@@ -1,6 +1,7 @@
+import path from "node:path";
 import { enable, initialize } from "@electron/remote/main";
-import { BrowserWindow, app, components, ipcMain, session } from "electron";
-import path from "path";
+import { app, BrowserWindow, components, ipcMain, session } from "electron";
+
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
 import values from "./constants/values";
@@ -14,7 +15,7 @@ import { ListenBrainz } from "./features/listenbrainz/listenbrainz";
 import { Logger } from "./features/logger";
 import { SharingService } from "./features/sharingService/sharingService";
 import { tidalUrl } from "./features/tidal/url";
-import { MediaInfo } from "./models/mediaInfo";
+import type { MediaInfo } from "./models/mediaInfo";
 import { MediaStatus } from "./models/mediaStatus";
 import { initRPC, rpc, unRPC } from "./scripts/discord";
 import { updateMediaInfo } from "./scripts/mediaInfo";
@@ -27,6 +28,7 @@ import {
   showSettingsWindow,
 } from "./scripts/settings";
 import { addTray, refreshTray } from "./scripts/tray";
+
 let mainInhibitorId = -1;
 
 let mainWindow: BrowserWindow;
@@ -90,7 +92,7 @@ function getCustomProtocolUrl(args: string[]) {
     return null;
   }
 
-  return tidalUrl + "/" + customProtocolArg.substring(PROTOCOL_PREFIX.length + 3);
+  return `${tidalUrl}/${customProtocolArg.substring(PROTOCOL_PREFIX.length + 3)}`;
 }
 
 /**
@@ -147,7 +149,7 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
     mainWindow.webContents.setBackgroundThrottling(false);
   }
 
-  mainWindow.on("close", function (event: CloseEvent) {
+  mainWindow.on("close", (event: CloseEvent) => {
     if (settingsStore.get(settings.minimizeOnClose)) {
       event.preventDefault();
       mainWindow.hide();
@@ -157,7 +159,7 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
   });
 
   // Emitted when the window is closed.
-  mainWindow.on("closed", function () {
+  mainWindow.on("closed", () => {
     releaseInhibitorIfActive(mainInhibitorId);
     closeSettingsWindow();
     app.quit();
@@ -213,7 +215,7 @@ app.on("ready", async () => {
 
     // Adblock
     if (settingsStore.get(settings.adBlock)) {
-      const filter = { urls: [tidalUrl + "/*"] };
+      const filter = { urls: [`${tidalUrl}/*`] };
       session.defaultSession.webRequest.onBeforeRequest(filter, (details, callback) => {
         if (details.url.match(/\/users\/.*\d\?country/)) callback({ cancel: true });
         else callback({ cancel: false });
@@ -244,7 +246,7 @@ app.on("ready", async () => {
   }
 });
 
-app.on("activate", function () {
+app.on("activate", () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) {
@@ -297,7 +299,7 @@ ipcMain.on(globalEvents.error, (event) => {
   console.log(event);
 });
 
-ipcMain.handle(globalEvents.getUniversalLink, async (event, url) => {
+ipcMain.handle(globalEvents.getUniversalLink, async (_event, url) => {
   return SharingService.getUniversalLink(url);
 });
 

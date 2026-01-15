@@ -27,7 +27,8 @@
     "builder": "electron-builder --publish=never",
     "sass": "sass ./src/pages/settings/settings.scss ./src/pages/settings/settings.css && sass --no-source-map src/themes:themes",
     "style-lint": "npx stylelint **/*.scss",
-    "style-lint-fix": "npx stylelint --fix **/*.scss"
+    "style-lint-fix": "npx stylelint --fix **/*.scss",
+    "biome": "biome check"
   },
   "keywords": [
     "electron",
@@ -55,6 +56,7 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.3.11",
     "@mastermindzh/prettier-config": "^1.1.0",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",

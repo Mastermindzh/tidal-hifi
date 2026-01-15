@@ -1,5 +1,5 @@
-import { BrowserWindow } from "electron";
-import { Response } from "express";
+import type { BrowserWindow } from "electron";
+import type { Response } from "express";
 
 /**
  * Shorthand to handle a fire and forget global event
