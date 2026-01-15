@@ -20,6 +20,7 @@ import { DomTidalController } from "./TidalControllers/DomController/DomTidalCon
 import { MediaSessionController, } from "./TidalControllers/MediaSessionController/MediaSessionController";
 import { TidalController } from "./TidalControllers/TidalController";
 import { RepeatState } from "./models/repeatState";
+import { convertMicrosecondsToSeconds, convertSecondsToMicroseconds } from "./features/time/parse";
 
 const albumArtPath = `${app.getPath("userData")}/current.jpg`;
 const staticTitle = "TIDAL Hi-Fi";
@@ -219,6 +220,34 @@ async function sendNotification(mediaInfo: MediaInfo) {
     currentNotification.show();
   }
 }
+
+async function setLoopStatus(newRepeatState: RepeatState) {
+  const order = Object.values(RepeatState);
+  const currentValue = tidalController.getCurrentRepeatState()
+
+  // Based on the newValue and currentValue delta, we press the repeat button repeatedly so the user's preference is set.
+  const newIndex = order.indexOf(newRepeatState);
+  const currentIndex = order.indexOf(currentValue);
+  let calculatedDelta = newIndex - currentIndex;
+  if (calculatedDelta < 0) {
+    calculatedDelta += order.length;
+  }
+
+  for (let i = 0; i < calculatedDelta; i++) {
+    tidalController.repeat();
+    // Small delay to ensure the button click is registered in the UI
+    await new Promise(resolve => setTimeout(resolve, 500));
+  }
+}
+
+function setShuffleStatus(newShuffleState: boolean) {
+  if (!newShuffleState && tidalController.getCurrentShuffleState()) {
+    tidalController.toggleShuffle()
+  } else if (newShuffleState && !tidalController.getCurrentShuffleState()) {
+    tidalController.toggleShuffle();
+  }
+}
+
 function addMPRIS() {
   if (process.platform === "linux" && settingsStore.get(settings.mpris)) {
     try {
@@ -252,7 +281,6 @@ function addMPRIS() {
       ]
       events.forEach((eventName) => {
         player.on(eventName, async (eventData) => {
-          Logger.log(`Handling event: ${eventName} with data: ${eventData}`);
           switch (eventName) {
             case "playpause":
               tidalController.playPause();
@@ -273,45 +301,24 @@ function addMPRIS() {
               tidalController.play();
               break;
             case "loopStatus":
-              const order = Object.values(RepeatState);
-              const newValue = (eventData as unknown as RepeatState);
-              const currentValue = tidalController.getCurrentRepeatState()
-
-              // Based on the newValue and currentValue delta, we press the repeat button repeatedly so the user's preference is set.
-              const newIndex = order.indexOf(newValue);
-              const currentIndex = order.indexOf(currentValue);
-              let calculatedDelta = newIndex - currentIndex;
-              if (calculatedDelta < 0) {
-                calculatedDelta += order.length;
-              }
-
-              for (let i = 0; i < calculatedDelta; i++) {
-                tidalController.repeat();
-                // Small delay to ensure the button click is registered in the UI
-                await new Promise(resolve => setTimeout(resolve, 500));
-              }
+              setLoopStatus(eventData as unknown as RepeatState);
               break;
             case "shuffle":
-              const shuffleValue = (eventData as unknown as boolean);
-              if (!shuffleValue && tidalController.getCurrentShuffleState()) {
-                tidalController.toggleShuffle()
-              } else if (shuffleValue && !tidalController.getCurrentShuffleState()) {
-                tidalController.toggleShuffle();
-              }
+              Logger.log(`Received shuffle, ${eventData}`);
+              setShuffleStatus(eventData as unknown as boolean);
               break;
             case "volume":
               tidalController.setVolume(eventData as unknown as number);
               break;
             case "position":
-              Logger.log(`Position event received: ${JSON.stringify(eventData)}`);
-              tidalController.setCurrentTime((eventData as {trackId: string, position: number}).position / 1_000_000);
+              tidalController.setCurrentTime(convertMicrosecondsToSeconds((eventData as {trackId: string, position: number}).position));
               break;
           }
         });
       });
       // Override get position function
       player.getPosition = function () {
-        return tidalController.getCurrentTime() * 1_000_000;
+        return convertSecondsToMicroseconds(tidalController.getCurrentTime());
       };
       player.on("quit", function () {
         app.quit();
@@ -335,7 +342,7 @@ function updateMpris(mediaInfo: MediaInfo) {
         "xesam:album": mediaInfo.album,
         "xesam:url": mediaInfo.url,
         "mpris:artUrl": highResImageUrl,
-        "mpris:length": mediaInfo.durationInSeconds * 1_000_000,
+        "mpris:length": convertSecondsToMicroseconds(mediaInfo.durationInSeconds),
         "mpris:trackid": "/org/mpris/MediaPlayer2/track/" + tidalController.getTrackId(),
       },
       ...ObjectToDotNotation(mediaInfo, "custom:"),

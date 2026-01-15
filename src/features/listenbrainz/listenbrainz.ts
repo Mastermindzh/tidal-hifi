@@ -168,8 +168,8 @@ export class ListenBrainz {
       mediaInfo.status === MediaStatus.playing
     ) {
       const trackKey = `${mediaInfo.title}|${mediaInfo.album}|${mediaInfo.artists}`;
-      const currentInSeconds = mediaInfo.currentInSeconds || 0;
-      const durationInSeconds = mediaInfo.durationInSeconds || 0;
+      const currentInSeconds = mediaInfo.currentInSeconds ?? 0;
+      const durationInSeconds = mediaInfo.durationInSeconds ?? 0;
 
       // Check if this is a new track or if the same track has restarted
       const hasRestarted =
