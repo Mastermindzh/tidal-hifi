@@ -221,7 +221,7 @@ async function sendNotification(mediaInfo: MediaInfo) {
   }
 }
 
-async function setLoopStatus(newRepeatState: RepeatState) {
+async function setLoopState(newRepeatState: RepeatState) {
   const order = Object.values(RepeatState);
   const currentValue = tidalController.getCurrentRepeatState()
 
@@ -240,7 +240,7 @@ async function setLoopStatus(newRepeatState: RepeatState) {
   }
 }
 
-function setShuffleStatus(newShuffleState: boolean) {
+function setShuffleState(newShuffleState: boolean) {
   if (!newShuffleState && tidalController.getCurrentShuffleState()) {
     tidalController.toggleShuffle()
   } else if (newShuffleState && !tidalController.getCurrentShuffleState()) {
@@ -301,11 +301,12 @@ function addMPRIS() {
               tidalController.play();
               break;
             case "loopStatus":
-              setLoopStatus(eventData as unknown as RepeatState);
+              setLoopState(eventData as unknown as RepeatState);
               break;
             case "shuffle":
-              Logger.log(`Received shuffle, ${eventData}`);
-              setShuffleStatus(eventData as unknown as boolean);
+              // The eventData parameter of the callback function is typed as an object in mpris-service.d.ts,
+              // but in case of shuffle it's sent as a boolean here by the MPRIS.
+              setShuffleState(eventData as unknown as boolean);
               break;
             case "volume":
               tidalController.setVolume(eventData as unknown as number);
