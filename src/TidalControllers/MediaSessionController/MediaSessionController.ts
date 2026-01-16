@@ -1,31 +1,24 @@
 import { MediaInfo } from "../../models/mediaInfo";
 import { MediaStatus } from "../../models/mediaStatus";
-import { RepeatState } from "../../models/repeatState";
-import { TidalController } from "../TidalController";
 import { Logger } from "../../features/logger";
 import { DomTidalController } from "../DomController/DomTidalController";
-import { DomControllerOptions } from "../DomController/DomControllerOptions";
 import { getTrackURL } from "../../features/tidal/url";
 import { convertDurationToSeconds } from "../../features/time/parse";
 import { constrainPollingInterval } from "../../utility/pollingConstraints";
 
 export interface MediaSessionControllerOptions {
   refreshInterval?: number;
-  fallbackDomControllerOptions?: DomControllerOptions;
 }
 
-export class MediaSessionController implements TidalController<MediaSessionControllerOptions> {
-  private updateSubscriber: (state: Partial<MediaInfo>) => void;
+export class MediaSessionController extends DomTidalController {
   private mediaSession: MediaSession | null = null;
   private refreshInterval: number = 500;
   private intervalId?: NodeJS.Timeout;
   private lastMediaInfo: Partial<MediaInfo> = {};
   private supportsMediaSession: boolean = false;
-  private fallbackDomController: DomTidalController;
 
   constructor() {
-    // Initialize fallback DOM controller (without bootstrapping)
-    this.fallbackDomController = new DomTidalController();
+    super();
 
     // Check MediaSession API availability
     this.supportsMediaSession = "mediaSession" in navigator;
@@ -98,7 +91,7 @@ export class MediaSessionController implements TidalController<MediaSessionContr
           Logger.log("No MediaSession metadata available yet");
         }
       } catch (error) {
-        Logger.log("Error in MediaSessionController polling:", error);
+        Logger.log("Error in MediaSessionController polling:", error.message);
       }
     }, this.refreshInterval);
   }
@@ -113,12 +106,6 @@ export class MediaSessionController implements TidalController<MediaSessionContr
   bootstrap(options: MediaSessionControllerOptions): void {
     if (options?.refreshInterval) {
       this.refreshInterval = constrainPollingInterval(options.refreshInterval);
-    }
-
-    // Configure fallback DOM controller if options provided (but don't bootstrap it)
-    if (options?.fallbackDomControllerOptions) {
-      // We don't call bootstrap() to avoid starting its interval polling
-      Logger.log("MediaSessionController: DomTidalController fallback configured");
     }
 
     this.startPolling();
@@ -212,92 +199,7 @@ export class MediaSessionController implements TidalController<MediaSessionContr
       return MediaStatus.paused;
     } else {
       // "none" or undefined - fallback to DOM controller
-      return this.fallbackDomController.getCurrentlyPlayingStatus();
+      return super.getCurrentlyPlayingStatus();
     }
-  }
-
-  // =============================================================================
-  // Non-MediaSession methods - not implemented for MediaSession controller
-  // These methods would require DOM manipulation or other approaches
-  // =============================================================================
-
-  playPause(): void {
-    this.fallbackDomController.playPause();
-  }
-
-  play(): void {
-    this.fallbackDomController.play();
-  }
-
-  pause(): void {
-    this.fallbackDomController.pause();
-  }
-
-  stop(): void {
-    this.fallbackDomController.stop();
-  }
-
-  next(): void {
-    this.fallbackDomController.next();
-  }
-
-  previous(): void {
-    this.fallbackDomController.previous();
-  }
-
-  repeat(): void {
-    this.fallbackDomController.repeat();
-  }
-
-  toggleShuffle(): void {
-    this.fallbackDomController.toggleShuffle();
-  }
-
-  toggleFavorite(): void {
-    this.fallbackDomController.toggleFavorite();
-  }
-
-  back(): void {
-    this.fallbackDomController.back();
-  }
-
-  forward(): void {
-    this.fallbackDomController.forward();
-  }
-
-  getCurrentShuffleState(): boolean {
-    return this.fallbackDomController.getCurrentShuffleState();
-  }
-
-  getCurrentRepeatState(): RepeatState {
-    return this.fallbackDomController.getCurrentRepeatState();
-  }
-
-  getCurrentPosition(): string {
-    return this.fallbackDomController.getCurrentPosition();
-  }
-
-  getCurrentPositionInSeconds(): number {
-    return this.fallbackDomController.getCurrentPositionInSeconds();
-  }
-
-  getTrackId(): string {
-    return this.fallbackDomController.getTrackId();
-  }
-
-  getCurrentTime(): string {
-    return this.fallbackDomController.getCurrentTime();
-  }
-
-  getDuration(): string {
-    return this.fallbackDomController.getDuration();
-  }
-
-  getPlayingFrom(): string {
-    return this.fallbackDomController.getPlayingFrom();
-  }
-
-  isFavorite(): boolean {
-    return this.fallbackDomController.isFavorite();
   }
 }

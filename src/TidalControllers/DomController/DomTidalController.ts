@@ -8,7 +8,7 @@ import { getTrackURL } from "../../features/tidal/url";
 import { constrainPollingInterval } from "../../utility/pollingConstraints";
 
 export class DomTidalController implements TidalController<DomControllerOptions> {
-  private updateSubscriber: (state: Partial<MediaInfo>) => void;
+  protected updateSubscriber: (state: Partial<MediaInfo>) => void;
   private currentlyPlaying = MediaStatus.paused;
   private currentRepeatState: RepeatState = RepeatState.off;
   private currentShuffleState = false;
