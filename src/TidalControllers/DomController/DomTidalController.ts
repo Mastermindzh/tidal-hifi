@@ -1,7 +1,7 @@
 import { convertSecondsToClockFormat } from "../../features/time/parse";
 import { MediaInfo } from "../../models/mediaInfo";
 import { MediaStatus } from "../../models/mediaStatus";
-import { RepeatState } from "../../models/repeatState";
+import { RepeatState, RepeatStateType } from "../../models/repeatState";
 import { TidalController } from "../TidalController";
 import { DomControllerOptions } from "./DomControllerOptions";
 import { getTrackURL } from "../../features/tidal/url";
@@ -12,7 +12,7 @@ import { clickElement, getElement, getElementAttribute, getElementText } from ".
 export class DomTidalController implements TidalController<DomControllerOptions> {
   private updateSubscriber: (state: Partial<MediaInfo>) => void;
   private currentlyPlaying = MediaStatus.paused;
-  private currentRepeatState: RepeatState = RepeatState.off;
+  private currentRepeatState: RepeatStateType = RepeatState.off;
   private currentShuffleState = false;
 
   /**

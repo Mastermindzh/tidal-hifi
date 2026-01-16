@@ -1,12 +1,12 @@
 import { MediaInfo } from "../../models/mediaInfo";
 import { MediaStatus } from "../../models/mediaStatus";
-import { RepeatState } from "../../models/repeatState";
+import { RepeatStateType } from "../../models/repeatState";
 import { TidalController } from "../TidalController";
 import { Logger } from "../../features/logger";
 import { DomTidalController } from "../DomController/DomTidalController";
 import { DomControllerOptions } from "../DomController/DomControllerOptions";
 import { getTrackURL } from "../../features/tidal/url";
-import { convertSecondsToClockFormat} from "../../features/time/parse";
+import { convertSecondsToClockFormat } from "../../features/time/parse";
 import { constrainPollingInterval } from "../../utility/pollingConstraints";
 
 export interface MediaSessionControllerOptions {
@@ -268,7 +268,7 @@ export class MediaSessionController implements TidalController<MediaSessionContr
     return this.fallbackDomController.getCurrentShuffleState();
   }
 
-  getCurrentRepeatState(): RepeatState {
+  getCurrentRepeatState(): RepeatStateType {
     return this.fallbackDomController.getCurrentRepeatState();
   }
 

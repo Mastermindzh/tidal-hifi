@@ -1,6 +1,6 @@
 import { MediaInfo } from "../models/mediaInfo";
 import { MediaStatus } from "../models/mediaStatus";
-import { RepeatState } from "../models/repeatState";
+import { RepeatStateType } from "../models/repeatState";
 
 export interface TidalController<TBootstrapOptions = object> {
   /**
@@ -34,7 +34,7 @@ export interface TidalController<TBootstrapOptions = object> {
    */
   getCurrentlyPlayingStatus(): MediaStatus;
   getCurrentShuffleState(): boolean;
-  getCurrentRepeatState(): RepeatState;
+  getCurrentRepeatState(): RepeatStateType;
   getTrackId(): string;
   getCurrentTime(): number;
   setCurrentTime(value: number): void;

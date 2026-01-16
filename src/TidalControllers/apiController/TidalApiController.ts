@@ -1,7 +1,7 @@
 import { Logger } from "../../features/logger";
 import { MediaInfo } from "../../models/mediaInfo";
 import { MediaStatus } from "../../models/mediaStatus";
-import { RepeatState } from "../../models/repeatState";
+import { RepeatStateType } from "../../models/repeatState";
 import { DomTidalController } from "../DomController/DomTidalController";
 import { TidalController } from "../TidalController";
 
@@ -94,7 +94,7 @@ export class TidalApiController implements TidalController {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
-  getCurrentRepeatState(): RepeatState {
+  getCurrentRepeatState(): RepeatStateType {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
