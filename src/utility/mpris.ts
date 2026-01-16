@@ -10,6 +10,8 @@ export const MPRIS_LOOP = {
 // Types
 export type MprisLoopType = keyof typeof MPRIS_LOOP;
 
+export type MprisPositionType = { trackId: string; position: number };
+
 // TypeGuards
 export function isMPRISLoop(value: unknown): value is MprisLoopType {
   return typeof value === "string" && value in MPRIS_LOOP;
@@ -21,6 +23,17 @@ export function isMPRISShuffle(value: unknown): value is boolean {
 
 export function isMPRISVolume(value: unknown): value is number {
   return typeof value === "number";
+}
+
+export function isMPRISPosition(value: unknown): value is MprisPositionType {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "trackId" in value &&
+    typeof value.trackId === "string" &&
+    "position" in value &&
+    typeof value.position === "number"
+  );
 }
 
 // Converters

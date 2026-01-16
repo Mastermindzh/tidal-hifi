@@ -25,6 +25,7 @@ import {
   convertMprisLoopToRepeatState,
   convertRepeatStateToMprisLoop,
   isMPRISLoop,
+  isMPRISPosition,
   isMPRISShuffle,
   isMPRISVolume,
   MprisLoopType,
@@ -326,11 +327,9 @@ function addMPRIS() {
               }
               break;
             case "position":
-              tidalController.setCurrentTime(
-                convertMicrosecondsToSeconds(
-                  (eventData as { trackId: string; position: number }).position,
-                ),
-              );
+              if (isMPRISPosition(eventData)) {
+                tidalController.setCurrentTime(convertMicrosecondsToSeconds(eventData.position));
+              }
               break;
           }
         });
