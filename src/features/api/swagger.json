@@ -267,18 +267,66 @@
         }
       }
     },
-    "/player/set": {
-      "post": {
-        "summary": "Set properties of the player",
+    "/player/volume": {
+      "put": {
+        "summary": "Set volume of the player",
         "tags": [
           "player"
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/PlayerSettings"
+        "parameters": [
+          {
+            "in": "query",
+            "name": "volume",
+            "description": "Volume level to set",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "multipleOf": 0.01,
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/player/seek": {
+      "put": {
+        "summary": "Set position of the player",
+        "tags": [
+          "player"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "position_s",
+            "description": "Position in seconds to set",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
               }
             }
           }
@@ -620,17 +668,6 @@
       "OkResponse": {
         "type": "string",
         "example": "OK"
-      },
-      "PlayerSettings": {
-        "type": "object",
-        "properties": {
-          "position": {
-            "type": "integer"
-          },
-          "volume": {
-            "type": "integer"
-          }
-        }
       },
       "StringArray": {
         "type": "array",

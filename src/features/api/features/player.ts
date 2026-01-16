@@ -5,6 +5,12 @@ import { settings } from "../../../constants/settings";
 import { settingsStore } from "../../../scripts/settings";
 import { handleWindowEvent } from "../helpers/handleWindowEvent";
 
+interface ParsedQs {
+  [key: string]: undefined | string | ParsedQs | (string | ParsedQs)[];
+}
+
+type payloadParserType = (body: { [key: string]: string }, params: ParsedQs) => object;
+
 export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow) => {
   const windowEvent = handleWindowEvent(mainWindow);
   const createRoute = (route: string) => `/player${route}`;
@@ -19,16 +25,15 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
    *     OkResponse:
    *       type: string
    *       example: "OK"
-   *     PlayerSettings:
-   *       type: object
-   *       properties:
-   *         position:
-   *           type: integer
-   *         volume:
-   *           type: integer
    */
   const createPlayerAction = (route: string, action: string) => {
-    expressApp.post(createRoute(route), (req, res) => windowEvent(res, action, req.body));
+    expressApp.post(createRoute(route), (req, res) => windowEvent(res, action));
+  };
+
+  const createPlayerPutAction = (route: string, action: string, parser: payloadParserType) => {
+    expressApp.put(createRoute(route), (req, res) =>
+      windowEvent(res, action, parser ? parser(req.body, req.query) : undefined),
+    );
   };
 
   if (settingsStore.get(settings.playBackControl)) {
@@ -162,17 +167,56 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
 
     /**
      * @swagger
-     * /player/set:
-     *   post:
-     *     summary: Set properties of the player
+     * /player/volume:
+     *   put:
+     *     summary: Set volume of the player
      *     tags: [player]
-     *     requestBody:
-     *       required: true
-     *       content:
-     *         application/json:
-     *           schema:
-     *             $ref: '#/components/schemas/PlayerSettings'
+     *     parameters:
+     *       - in: query
+     *         name: volume
+     *         description: Volume level to set
+     *         required: true
+     *         schema:
+     *           type: number
+     *           multipleOf: 0.01
+     *           minimum: 0
+     *           maximum: 1
+     *     responses:
+     *       200:
+     *         description: Ok
+     *         content:
+     *           text/plain:
+     *             schema:
+     *               $ref: '#/components/schemas/OkResponse'
      */
-    createPlayerAction("/set", globalEvents.set);
+    createPlayerPutAction("/volume", globalEvents.volume, (_body, params) => ({
+      volume: typeof params.volume === "string" ? parseFloat(params.volume) : null,
+    }));
+
+    /**
+     * @swagger
+     * /player/seek:
+     *  put:
+     *     summary: Set position of the player
+     *     tags: [player]
+     *     parameters:
+     *       - in: query
+     *         name: position_s
+     *         description: Position in seconds to set
+     *         required: true
+     *         schema:
+     *           type: number
+     *           minimum: 0
+     *     responses:
+     *       200:
+     *         description: Ok
+     *         content:
+     *           text/plain:
+     *             schema:
+     *               $ref: '#/components/schemas/OkResponse'
+     */
+    createPlayerPutAction("/seek", globalEvents.seek, (_body, params) => ({
+      currentTime: typeof params.position_s === "string" ? parseInt(params.position_s) : null,
+    }));
   }
 };

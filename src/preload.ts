@@ -182,12 +182,14 @@ function addIPCEventListeners() {
         case globalEvents.toggleRepeat:
           tidalController.repeat();
           break;
-        case globalEvents.set:
-          if ("volume" in payload) {
+        case globalEvents.volume:
+          if (payload.volume) {
             tidalController.setVolume(payload.volume);
           }
-          if ("position" in payload) {
-            tidalController.setCurrentTime(payload.position);
+          break;
+        case globalEvents.seek:
+          if (payload.currentTime) {
+            tidalController.setCurrentTime(payload.currentTime);
           }
           break;
         default:
