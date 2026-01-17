@@ -3,7 +3,7 @@
     "typeRoots": ["src/types", "node_modules/@types"],
     "module": "commonjs",
     "target": "ES6",
-    "lib": ["ES2020", "DOM"],
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "noImplicitAny": true,
     "sourceMap": true,
     "allowJs": true,
