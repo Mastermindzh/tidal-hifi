@@ -2,7 +2,7 @@ import fs from "node:fs";
 
 import { Logger } from "../../features/logger";
 
-const cssFilter = (file: string) => file.endsWith(".css");
+export const cssFilter = (file: string) => file.endsWith(".css");
 const sort = (a: string, b: string) => a.toLowerCase().localeCompare(b.toLowerCase());
 
 /**

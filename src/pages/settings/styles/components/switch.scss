@@ -1,0 +1,45 @@
+@use "../mixins";
+
+.switch {
+  $this: &;
+
+  @include mixins.outline(true);
+
+  position: relative;
+  min-width: 42px;
+  height: 26px;
+  border-radius: 40px;
+  overflow: hidden;
+
+  input {
+    outline: none;
+
+    &:checked + #{$this}__slider {
+      background-color: var(--white);
+
+      &::before {
+        left: 20px;
+      }
+    }
+  }
+
+  &__slider {
+    cursor: pointer;
+    position: absolute;
+    inset: 0;
+    transition: .15s;
+    background-color: var(--grey-darkest);
+
+    &::before {
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      width: 18px;
+      height: 18px;
+      transition: .15s;
+      border-radius: 50%;
+      background-color: var(--black);
+      content: "";
+    }
+  }
+}

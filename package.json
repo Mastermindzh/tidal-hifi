@@ -5,7 +5,7 @@
   "main": "ts-dist/main.js",
   "scripts": {
     "start": "electron --inspect=0.0.0.0:5858 --remote-debugging-port=8315 --remote-allow-origins=* .",
-    "watchStart": "nodemon dist -x \"npm run start\"",
+    "watchStart": "nodemon --watch src --ext ts,html,scss --exec \"npm run compile && npm run start\"",
     "compile": "tsc && npm run sass-and-copy",
     "deps": "npm run watch",
     "watch": "tsc-watch --onSuccess \"npm run compile-all\"",
@@ -25,7 +25,7 @@
     "prebuilder": "npm run compile",
     "prettier": "prettier . --write",
     "builder": "electron-builder --publish=never",
-    "sass": "sass ./src/pages/settings/settings.scss ./src/pages/settings/settings.css && sass --no-source-map src/themes:themes",
+    "sass": "sass src/pages/settings/styles/settings.scss ./src/pages/settings/styles/settings.css && sass --no-source-map src/themes:themes",
     "style-lint": "npx stylelint **/*.scss",
     "style-lint-fix": "npx stylelint --fix **/*.scss",
     "biome": "biome check"
