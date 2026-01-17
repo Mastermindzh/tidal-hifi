@@ -15,7 +15,8 @@
       "!themes/*.css",
       "!src/pages/settings/styles/settings.css",
       "!package-lock.json",
-      "!scripts/verifyElements.js"
+      "!scripts/verifyElements.js",
+      "!src/features/api/swagger.json"
     ]
   },
   "formatter": {
