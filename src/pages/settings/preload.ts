@@ -112,12 +112,12 @@ function handleFileUploads() {
   fileMessage.innerText = "or drag and drop files here";
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  document.getElementById("theme-files").addEventListener("change", async function (e: any) {
+  document.getElementById("theme-files").addEventListener("change", async (e: any) => {
     if (!e.target.files || e.target.files.length === 0) {
       fileMessage.classList.add("hidden");
       return;
     }
-    const newThemes = (Array.from(e.target.files) as File[]).filter(f => cssFilter(f.name));
+    const newThemes = (Array.from(e.target.files) as File[]).filter((f) => cssFilter(f.name));
     if (newThemes.length === 0) {
       fileMessage.innerText = "No valid .css files found in the selected files.";
       fileMessage.classList.remove("hidden");
