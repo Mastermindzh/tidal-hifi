@@ -1,0 +1,45 @@
+@mixin drag($enabled: true) {
+  @if $enabled {
+    -webkit-app-region: drag;
+  } @else {
+    -webkit-app-region: no-drag;
+  }
+}
+
+@mixin outline($from-child: false) {
+  border: 3px solid var(--black-lighter);
+
+  @if $from-child {
+    &:has(:focus-visible) {
+      box-shadow: 0 0 0 3px var(--white);
+    }
+  } @else {
+    &:focus-visible {
+      box-shadow: 0 0 0 3px var(--white);
+    }
+  }
+}
+
+@mixin common-input {
+  @include outline;
+
+  text-decoration: none;
+  background-color: var(--black-lightest);
+  border: none;
+  border-radius: 7px;
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 18px;
+  outline: none;
+  padding: 7px 10px;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: .15s;
+  box-sizing: border-box;
+
+  @media (max-width: 600px) {
+    max-width: unset !important;
+    width: 100%;
+  }
+}

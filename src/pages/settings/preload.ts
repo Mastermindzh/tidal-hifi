@@ -6,11 +6,21 @@ import { settings } from "../../constants/settings";
 import { SUPPORTED_TRAY_ICON_EXTENSIONS } from "../../constants/trayIcon";
 import { Logger } from "../../features/logger";
 import { addCustomCss } from "../../features/theming/theming";
-import { settingsStore } from "./../../scripts/settings";
-import { getOptions, getOptionsHeader, getThemeListFromDirectory } from "./theming";
+import { settingsStore } from "../../scripts/settings";
+import { cssFilter, getOptions, getOptionsHeader, getThemeListFromDirectory } from "./theming";
 
 // All switches on the settings screen that show additional options based on their state
 const switchesWithSettings = {
+  tray: {
+    switch: "trayIcon",
+    classToHide: "tray__options",
+    settingsKey: settings.trayIcon,
+  },
+  api: {
+    switch: "apiCheckbox",
+    classToHide: "api__options",
+    settingsKey: settings.api,
+  },
   listenBrainz: {
     switch: "enableListenBrainz",
     classToHide: "listenbrainz__options",
@@ -100,7 +110,17 @@ function handleFileUploads() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   document.getElementById("theme-files").addEventListener("change", async function (e: any) {
-    for (const file of Array.from(e.target.files) as File[]) {
+    if (!e.target.files || e.target.files.length === 0) {
+      fileMessage.classList.add("hidden");
+      return;
+    }
+    const newThemes = (Array.from(e.target.files) as File[]).filter(f => cssFilter(f.name));
+    if (newThemes.length === 0) {
+      fileMessage.innerText = "No valid .css files found in the selected files.";
+      fileMessage.classList.remove("hidden");
+      return;
+    }
+    for (const file of newThemes as File[]) {
       const destination = `${app.getPath("userData")}/themes/${file.name}`;
 
       const arrayBuffer = await file.arrayBuffer();
@@ -109,6 +129,7 @@ function handleFileUploads() {
       Logger.log("written file!", { destination });
     }
     fileMessage.innerText = `${e.target.files.length} files successfully uploaded`;
+    fileMessage.classList.remove("hidden");
     getThemeFiles();
   });
 }
@@ -378,7 +399,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   refreshSettings();
   addInputListener(adBlock, settings.adBlock);
-  addInputListener(api, settings.api);
+  addInputListener(api, settings.api, switchesWithSettings.api);
   addSelectListener(channel, settings.advanced.tidalUrl);
   addTextAreaListener(customCSS, settings.customCSS);
   addInputListener(disableAltMenuBar, settings.disableAltMenuBar);
@@ -401,7 +422,7 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(staticWindowTitle, settings.staticWindowTitle);
   addInputListener(singleInstance, settings.singleInstance);
   addSelectListener(theme, settings.theme);
-  addInputListener(trayIcon, settings.trayIcon);
+  addInputListener(trayIcon, settings.trayIcon, switchesWithSettings.tray);
   addTrayIconPathListener(trayIconPath, settings.trayIconPath);
   addInputListener(updateFrequency, settings.updateFrequency);
   addInputListener(
