@@ -72,9 +72,9 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
         icon: this.getSongIcon(),
         image: this.getSongImage(),
         player: {
-          repeat: this.getCurrentRepeatState(),
-          shuffle: this.getCurrentShuffleState(),
           status: this.getCurrentlyPlayingStatus(),
+          shuffle: this.getCurrentShuffleState(),
+          repeat: this.getCurrentRepeatState(),
         },
         playingFrom: this.getPlayingFrom(),
         status: this.getCurrentlyPlayingStatus(),
