@@ -46,16 +46,29 @@
     gap: 6px;
     cursor: pointer;
     outline: none;
+    transition: background-color 0.2s ease-in-out;
+
+    &::after {
+      content: "✕";
+      max-width: 0;
+      overflow: hidden;
+      transition:
+        max-width 0.2s ease-in-out,
+        opacity 0.2s ease-in-out;
+      opacity: 0;
+    }
 
     &:focus-within {
       box-shadow: 0 0 0 3px var(--white);
     }
 
-    &:hover, &:focus-within {
+    &:hover,
+    &:focus-within {
       background: var(--grey-darker);
 
       &::after {
-        content: "✕";
+        max-width: 2ch;
+        opacity: 1;
       }
     }
   }
