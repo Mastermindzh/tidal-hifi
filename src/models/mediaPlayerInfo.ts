@@ -1,5 +1,5 @@
-import { RepeatState } from "./repeatState";
-import { MediaStatus } from "./mediaStatus";
+import type { MediaStatus } from "./mediaStatus";
+import type { RepeatState } from "./repeatState";
 
 export interface MediaPlayerInfo {
   status: MediaStatus;

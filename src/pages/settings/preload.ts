@@ -1,6 +1,7 @@
+import fs from "node:fs";
 import { app } from "@electron/remote";
 import { ipcRenderer, shell } from "electron";
-import fs from "fs";
+
 import { globalEvents } from "../../constants/globalEvents";
 import { settings } from "../../constants/settings";
 import { SUPPORTED_TRAY_ICON_EXTENSIONS } from "../../constants/trayIcon";
@@ -97,7 +98,9 @@ function getThemeFiles() {
 
   // empty old options
   const oldOptions = document.querySelectorAll("#themesList option");
-  oldOptions.forEach((o) => o.remove());
+  oldOptions.forEach((o) => {
+    o.remove();
+  });
 
   allThemes.forEach((option) => {
     selectElement.add(option, null);
@@ -109,12 +112,12 @@ function handleFileUploads() {
   fileMessage.innerText = "or drag and drop files here";
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  document.getElementById("theme-files").addEventListener("change", async function (e: any) {
+  document.getElementById("theme-files").addEventListener("change", async (e: any) => {
     if (!e.target.files || e.target.files.length === 0) {
       fileMessage.classList.add("hidden");
       return;
     }
-    const newThemes = (Array.from(e.target.files) as File[]).filter(f => cssFilter(f.name));
+    const newThemes = (Array.from(e.target.files) as File[]).filter((f) => cssFilter(f.name));
     if (newThemes.length === 0) {
       fileMessage.innerText = "No valid .css files found in the selected files.";
       fileMessage.classList.remove("hidden");
@@ -288,11 +291,11 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("resetZoom")?.addEventListener("click", () => {
     ipcRenderer.send(globalEvents.resetZoom);
   });
-  document.querySelectorAll(".external-link").forEach((elem) =>
-    elem.addEventListener("click", function (event) {
+  document.querySelectorAll(".external-link").forEach((elem) => {
+    elem.addEventListener("click", (event) => {
       openExternal((event.target as HTMLElement).getAttribute("data-url"));
-    }),
-  );
+    });
+  });
 
   function addInputListener(
     source: HTMLInputElement,

@@ -1,4 +1,7 @@
-import { Request, Router } from "express";
+import type { BrowserWindow } from "electron";
+import type { Request, Router } from "express";
+
+import { globalEvents } from "../../../../constants/globalEvents";
 import { settings } from "../../../../constants/settings";
 import { mediaInfo } from "../../../../scripts/mediaInfo";
 import {
@@ -6,8 +9,6 @@ import {
   removeSkippedArtists,
   settingsStore,
 } from "../../../../scripts/settings";
-import { BrowserWindow } from "electron";
-import { globalEvents } from "../../../../constants/globalEvents";
 
 /**
  * @swagger
@@ -40,7 +41,7 @@ export const addSettingsAPI = (expressApp: Router, mainWindow: BrowserWindow) =>
    *             schema:
    *              $ref: '#/components/schemas/StringArray'
    */
-  expressApp.get("/settings/skipped-artists", (req, res) => {
+  expressApp.get("/settings/skipped-artists", (_req, res) => {
     res.json(settingsStore.get<string, string[]>(settings.skippedArtists));
   });
 
@@ -86,7 +87,7 @@ export const addSettingsAPI = (expressApp: Router, mainWindow: BrowserWindow) =>
     (req: Request<object, object, string[]>, res) => {
       removeSkippedArtists(req.body);
       res.sendStatus(200);
-    }
+    },
   );
 
   /**
@@ -99,7 +100,7 @@ export const addSettingsAPI = (expressApp: Router, mainWindow: BrowserWindow) =>
    *       200:
    *        description: Ok
    */
-  expressApp.post("/settings/skipped-artists/current", (req, res) => {
+  expressApp.post("/settings/skipped-artists/current", (_req, res) => {
     addSkippedArtists([mediaInfo.artists]);
     mainWindow.webContents.send("globalEvent", globalEvents.next);
     res.sendStatus(200);
@@ -114,7 +115,7 @@ export const addSettingsAPI = (expressApp: Router, mainWindow: BrowserWindow) =>
    *       200:
    *        description: Ok
    */
-  expressApp.delete("/settings/skipped-artists/current", (req, res) => {
+  expressApp.delete("/settings/skipped-artists/current", (_req, res) => {
     removeSkippedArtists([mediaInfo.artists]);
     res.sendStatus(200);
   });

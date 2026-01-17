@@ -1,9 +1,8 @@
-import { BrowserWindow } from "electron";
-import { Router } from "express";
+import type { BrowserWindow } from "electron";
+import type { Router } from "express";
+
 import { globalEvents } from "../../../constants/globalEvents";
 import { settings } from "../../../constants/settings";
-import { MediaStatus } from "../../../models/mediaStatus";
-import { mediaInfo } from "../../../scripts/mediaInfo";
 import { settingsStore } from "../../../scripts/settings";
 import { handleWindowEvent } from "../helpers/handleWindowEvent";
 
@@ -23,7 +22,7 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
    *       example: "OK"
    */
   const createPlayerAction = (route: string, action: string) => {
-    expressApp.post(createRoute(route), (req, res) => windowEvent(res, action));
+    expressApp.post(createRoute(route), (_req, res) => windowEvent(res, action));
   };
 
   if (settingsStore.get(settings.playBackControl)) {

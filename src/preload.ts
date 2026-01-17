@@ -1,6 +1,7 @@
 import { app, dialog, Notification } from "@electron/remote";
 import { clipboard, ipcRenderer } from "electron";
 import Player from "mpris-service";
+
 import { tidalControllers } from "./constants/controller";
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
@@ -9,21 +10,21 @@ import { Logger } from "./features/logger";
 import { addCustomCss } from "./features/theming/theming";
 import { getTrackURL, getUniversalLink } from "./features/tidal/url";
 import { convertDurationToSeconds } from "./features/time/parse";
-import { getEmptyMediaInfo, MediaInfo } from "./models/mediaInfo";
+import { getEmptyMediaInfo, type MediaInfo } from "./models/mediaInfo";
 import { MediaStatus } from "./models/mediaStatus";
 import { addHotkey } from "./scripts/hotkeys";
 import { ObjectToDotNotation } from "./scripts/objectUtilities";
 import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
 import { TidalApiController } from "./TidalControllers/apiController/TidalApiController";
-import { DomControllerOptions } from "./TidalControllers/DomController/DomControllerOptions";
-import { getDomUpdateFrequency } from "./TidalControllers/DomController/domUpdateFrequency";
+import type { DomControllerOptions } from "./TidalControllers/DomController/DomControllerOptions";
 import { DomTidalController } from "./TidalControllers/DomController/DomTidalController";
+import { getDomUpdateFrequency } from "./TidalControllers/DomController/domUpdateFrequency";
 import {
   MediaSessionController,
-  MediaSessionControllerOptions,
+  type MediaSessionControllerOptions,
 } from "./TidalControllers/MediaSessionController/MediaSessionController";
-import { TidalController } from "./TidalControllers/TidalController";
+import type { TidalController } from "./TidalControllers/TidalController";
 
 const albumArtPath = `${app.getPath("userData")}/current.jpg`;
 const staticTitle = "TIDAL Hi-Fi";
@@ -83,16 +84,16 @@ function addHotKeys() {
       tidalController.toggleFavorite();
     });
 
-    addHotkey("control+u", function () {
+    addHotkey("control+u", () => {
       // reloading window without cache should show the update bar if applicable
       window.location.reload();
     });
 
-    addHotkey("control+r", function () {
+    addHotkey("control+r", () => {
       tidalController.repeat();
     });
-    addHotkey("delete", function () {});
-    addHotkey("control+w", async function () {
+    addHotkey("delete", () => {});
+    addHotkey("control+w", async () => {
       const url = getUniversalLink(getTrackURL(tidalController.getTrackId()));
       clipboard.writeText(url);
       new Notification({
@@ -103,10 +104,10 @@ function addHotKeys() {
   }
 
   // always add the hotkey for the settings window
-  addHotkey("control+=", function () {
+  addHotkey("control+=", () => {
     ipcRenderer.send(globalEvents.showSettings);
   });
-  addHotkey("control+0", function () {
+  addHotkey("control+0", () => {
     ipcRenderer.send(globalEvents.showSettings);
   });
 }
@@ -247,8 +248,8 @@ function addMPRIS() {
         shuffle: "shuffle",
         seek: "seek",
       } as { [key: string]: string };
-      Object.keys(events).forEach(function (eventName) {
-        player.on(eventName, function () {
+      Object.keys(events).forEach((eventName) => {
+        player.on(eventName, () => {
           const eventValue = events[eventName];
           switch (events[eventValue]) {
             case events.playpause:
@@ -279,10 +280,8 @@ function addMPRIS() {
         });
       });
       // Override get position function
-      player.getPosition = function () {
-        return tidalController.getCurrentPositionInSeconds();
-      };
-      player.on("quit", function () {
+      player.getPosition = () => tidalController.getCurrentPositionInSeconds();
+      player.on("quit", () => {
         app.quit();
       });
     } catch (exception) {
@@ -305,7 +304,7 @@ function updateMpris(mediaInfo: MediaInfo) {
         "xesam:url": mediaInfo.url,
         "mpris:artUrl": highResImageUrl,
         "mpris:length": convertDurationToSeconds(mediaInfo.duration) * 1000 * 1000,
-        "mpris:trackid": "/org/mpris/MediaPlayer2/track/" + tidalController.getTrackId(),
+        "mpris:trackid": `/org/mpris/MediaPlayer2/track/${tidalController.getTrackId()}`,
       },
       ...ObjectToDotNotation(mediaInfo, "custom:"),
     };

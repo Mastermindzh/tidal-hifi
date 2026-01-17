@@ -1,4 +1,4 @@
-import { getEmptyMediaInfo, MediaInfo } from "../models/mediaInfo";
+import { getEmptyMediaInfo, type MediaInfo } from "../models/mediaInfo";
 
 const defaultInfo: MediaInfo = getEmptyMediaInfo();
 

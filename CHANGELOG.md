@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Settings panel got a fresh new update thanks to [BlueManCZ](https://github.com/BlueManCZ)
   - Animations added to certain elements to improve user experience
+- Migrated from ESLint, Prettier, and Stylelint to Biome for unified code formatting and linting
 
 ### dev-changes
 

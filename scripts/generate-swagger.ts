@@ -1,5 +1,6 @@
-import fs from "fs";
+import fs from "node:fs";
 import swaggerjsdoc from "swagger-jsdoc";
+
 import packagejson from "./../package.json";
 
 const specs = swaggerjsdoc({

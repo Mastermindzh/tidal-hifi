@@ -1,4 +1,5 @@
-import fs from "fs";
+import fs from "node:fs";
+
 import { Logger } from "../../features/logger";
 
 export const cssFilter = (file: string) => file.endsWith(".css");

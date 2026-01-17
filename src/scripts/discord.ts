@@ -1,5 +1,6 @@
-import { Client, SetActivity } from "@xhayper/discord-rpc";
+import { Client, type SetActivity } from "@xhayper/discord-rpc";
 import { app, ipcMain } from "electron";
+
 import { globalEvents } from "../constants/globalEvents";
 import { settings } from "../constants/settings";
 import { Logger } from "../features/logger";
@@ -120,11 +121,13 @@ const connectWithRetry = async (retryCount = 0) => {
     await rpc.login();
     Logger.log("Connected to Discord");
     rpc.on("ready", updateActivity);
-    Object.values(globalEvents).forEach((event) => ipcMain.on(event, observer));
-  } catch (error) {
+    Object.values(globalEvents).forEach((event) => {
+      ipcMain.on(event, observer);
+    });
+  } catch (_error) {
     if (retryCount < MAX_RETRIES) {
       Logger.log(
-        `Failed to connect to Discord, retrying in ${RETRY_DELAY / 1000} seconds... (Attempt ${retryCount + 1}/${MAX_RETRIES})`
+        `Failed to connect to Discord, retrying in ${RETRY_DELAY / 1000} seconds... (Attempt ${retryCount + 1}/${MAX_RETRIES})`,
       );
       setTimeout(() => connectWithRetry(retryCount + 1), RETRY_DELAY);
     } else {
