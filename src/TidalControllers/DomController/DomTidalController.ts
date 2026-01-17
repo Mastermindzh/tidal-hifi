@@ -18,14 +18,14 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   /**
    * Get a player element
    */
-  _getPlayer() {
+  getPlayer() {
     return getElement("player") as HTMLVideoElement;
   }
 
   /**
    * Get the icon of the current media
    */
-  _getSongIcon() {
+  getMedia() {
     const figure = getElement("media");
 
     if (figure) {
@@ -94,11 +94,11 @@ export class DomTidalController implements TidalController<DomControllerOptions>
     const playing = this.getCurrentlyPlayingStatus();
 
     if (playing === MediaStatus.playing) {
-      this.pause()
+      this.pause();
     } else {
       this.play();
     }
-  };
+  }
 
   toggleFavorite() {
     clickElement("favorite");
@@ -124,7 +124,7 @@ export class DomTidalController implements TidalController<DomControllerOptions>
     clickElement("shuffle");
   }
   getCurrentlyPlayingStatus() {
-    if (this._getPlayer().paused) {
+    if (this.getPlayer().paused) {
       return MediaStatus.paused;
     } else {
       return MediaStatus.playing;
@@ -136,7 +136,7 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   }
 
   getCurrentRepeatState() {
-    switch (getElementAttribute("repeat","data-type")) {
+    switch (getElementAttribute("repeat", "data-type")) {
       case "button__repeatAll":
         return RepeatState.all;
       case "button__repeatSingle":
@@ -149,13 +149,13 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   play() {
     // Only play if not already playing
     if (this.getCurrentlyPlayingStatus() !== MediaStatus.playing) {
-      this._getPlayer().play();
+      this.getPlayer().play();
     }
   }
   pause() {
     // Only pause if currently playing
     if (this.getCurrentlyPlayingStatus() === MediaStatus.playing) {
-      this._getPlayer().pause();
+      this.getPlayer().pause();
     }
   }
   stop() {
@@ -172,20 +172,20 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   }
 
   getCurrentTime() {
-    return Math.round(this._getPlayer().currentTime);
+    return Math.round(this.getPlayer().currentTime);
   }
   setCurrentTime(time: number) {
-    this._getPlayer().currentTime = Math.max(Math.min(time, this.getDuration()), 0);
+    this.getPlayer().currentTime = Math.max(Math.min(time, this.getDuration()), 0);
   }
   getDuration() {
-    return Math.round(this._getPlayer().duration);
+    return Math.round(this.getPlayer().duration);
   }
   getVolume() {
-    return this._getPlayer().volume;
+    return this.getPlayer().volume;
   }
   setVolume(volume: number) {
     // This doesn't update the value of the native range input displayed in the UI.
-    this._getPlayer().volume = Math.max(Math.min(volume, 1), 0);
+    this.getPlayer().volume = Math.max(Math.min(volume, 1), 0);
   }
 
   getAlbumName() {
@@ -232,8 +232,7 @@ export class DomTidalController implements TidalController<DomControllerOptions>
 
     if (footer) {
       const artists = footer.querySelectorAll(UI_SELECTORS.artists);
-      if (artists)
-        return Array.from(artists).map((artist) => artist.textContent);
+      if (artists) return Array.from(artists).map((artist) => artist.textContent);
     }
     return [];
   }
@@ -251,9 +250,9 @@ export class DomTidalController implements TidalController<DomControllerOptions>
     return getElementAttribute("favorite", "aria-checked") === "true";
   }
   getSongIcon() {
-    return this._getSongIcon();
+    return this.getMedia();
   }
   getSongImage() {
-    return this._getSongIcon();
+    return this.getMedia();
   }
 }
