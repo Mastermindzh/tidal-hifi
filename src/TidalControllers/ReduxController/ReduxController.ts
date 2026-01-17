@@ -7,6 +7,7 @@ import { MediaStatus } from "../../models/mediaStatus";
 import { Logger } from "../../features/logger";
 import { getCoverURL } from "../../features/tidal/url";
 import { ReduxStoreType } from "./ReduxStoreType";
+import { ReduxStoreActions as Actions } from "./ReduxStoreActions";
 
 function scanAllElementsForStore() {
   const elements = globalThis.document.body.querySelectorAll("*");
@@ -43,9 +44,9 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
     return this.reduxStore;
   }
 
-  private dispatchAction(action: { type: string; payload?: any }): void {
+  private dispatchAction(action: string, payload?: any): void {
     if (this.isStoreAvailable()) {
-      this.reduxStore.dispatch(action);
+      this.reduxStore.dispatch({ type: action, payload: payload });
     }
   }
 
@@ -190,11 +191,11 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
   }
 
   play(): void {
-    this.dispatchAction({ type: "playbackControls/PLAY" });
+    this.dispatchAction(Actions.play);
   }
 
   pause(): void {
-    this.dispatchAction({ type: "playbackControls/PAUSE" });
+    this.dispatchAction(Actions.pause);
   }
 
   stop(): void {
@@ -202,9 +203,9 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
   }
 
   toggleFavorite(): void {
-    this.dispatchAction({
-      type: "content/TOGGLE_FAVORITE_ITEMS",
-      payload: { from: "heart", items: [{ itemId: this.getTrackId(), itemType: "track" }] },
+    this.dispatchAction(Actions.toggleFavorite, {
+      from: "heart",
+      items: [{ itemId: this.getTrackId(), itemType: "track" }],
     });
   }
 
@@ -219,18 +220,18 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
   }
 
   repeat(): void {
-    this.dispatchAction({ type: "playQueue/TOGGLE_REPEAT_MODE" });
+    this.dispatchAction(Actions.toggleRepeat);
   }
 
   next(): void {
-    this.dispatchAction({ type: "playbackControls/SKIP_NEXT" });
+    this.dispatchAction(Actions.next);
   }
 
   previous(): void {
-    this.dispatchAction({ type: "playbackControls/SKIP_PREVIOUS" });
+    this.dispatchAction(Actions.previous);
   }
 
   toggleShuffle(): void {
-    this.dispatchAction({ type: "playQueue/TOGGLE_SHUFFLE" });
+    this.dispatchAction(Actions.toggleShuffle);
   }
 }
