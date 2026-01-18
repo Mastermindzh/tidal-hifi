@@ -76,7 +76,7 @@ export function validateKeyBinding(key: string): { valid: boolean; error?: strin
   }
 
   // Basic validation for common key patterns
-  const validModifiers = ["ctrl", "control", "alt", "shift", "meta", "cmd", "command"];
+  const validModifiers = new Set(["ctrl", "control", "alt", "shift", "meta", "cmd", "command"]);
   const parts = key
     .toLowerCase()
     .split("+")
@@ -91,8 +91,8 @@ export function validateKeyBinding(key: string): { valid: boolean; error?: strin
   const keyPart = parts[parts.length - 1];
 
   for (const modifier of modifierParts) {
-    if (!validModifiers.includes(modifier)) {
-      return { valid: false, error: `Invalid modifier: ${modifier}` };
+    if (!validModifiers.has(modifier)) {
+      return { valid: false, error: "Invalid modifier" };
     }
   }
 

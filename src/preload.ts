@@ -94,10 +94,10 @@ function addHotKeys() {
       }).show();
     });
     addHotkey(hotkeyConfig.goBack, () => {
-      window.history.back();
+      globalThis.history.back();
     });
     addHotkey(hotkeyConfig.goForward, () => {
-      window.history.forward();
+      globalThis.history.forward();
     });
 
     // Delete key override (disabled for search)
