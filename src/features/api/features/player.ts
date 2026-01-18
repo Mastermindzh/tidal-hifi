@@ -170,7 +170,7 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
      * @swagger
      * /player/volume:
      *   put:
-     *     summary: Set volume of the player
+     *     summary: Set volume of the player to a certain LEVEL where LEVEL is a value between 0.0 (0%) and 1.0 (100%).
      *     tags: [player]
      *     parameters:
      *       - in: query
@@ -196,22 +196,42 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
 
     /**
      * @swagger
-     * /player/seek:
+     * /player/seek/absolute:
      *  put:
-     *     summary: Set position of the player
+     *     summary: Set absolute position of the player
      *     tags: [player]
      *     parameters:
      *       - in: query
-     *         name: absolute_position_s
+     *         name: seconds
      *         description: Absolute position in seconds to set
-     *         required: false
+     *         required: true
      *         schema:
      *           type: number
      *           minimum: 0
+     *     responses:
+     *       200:
+     *         description: Ok
+     *         content:
+     *           text/plain:
+     *             schema:
+     *               $ref: '#/components/schemas/OkResponse'
+     */
+    createPlayerPutAction("/seek/absolute", globalEvents.seek, (_body, params) => ({
+      seconds: typeof params.seconds === "string" ? parseFloat(params.seconds) : 0,
+      type: "absolute" as const,
+    }));
+
+    /**
+     * @swagger
+     * /player/seek/relative:
+     *  put:
+     *     summary: Seek relative to current position
+     *     tags: [player]
+     *     parameters:
      *       - in: query
-     *         name: relative_position_s
+     *         name: seconds
      *         description: Relative position in seconds to seek (positive or negative)
-     *         required: false
+     *         required: true
      *         schema:
      *           type: number
      *     responses:
@@ -222,15 +242,9 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
      *             schema:
      *               $ref: '#/components/schemas/OkResponse'
      */
-    createPlayerPutAction("/seek", globalEvents.seek, (_body, params) => ({
-      absoluteTime:
-        typeof params.absolute_position_s === "string"
-          ? parseInt(params.absolute_position_s)
-          : null,
-      relativeTime:
-        typeof params.relative_position_s === "string"
-          ? parseInt(params.relative_position_s)
-          : null,
+    createPlayerPutAction("/seek/relative", globalEvents.seek, (_body, params) => ({
+      seconds: typeof params.seconds === "string" ? parseFloat(params.seconds) : 0,
+      type: "relative" as const,
     }));
   }
 };

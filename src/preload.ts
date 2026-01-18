@@ -13,6 +13,7 @@ import { convertMicrosecondsToSeconds, convertSecondsToMicroseconds } from "./fe
 import { getEmptyMediaInfo, type MediaInfo } from "./models/mediaInfo";
 import { MediaStatus } from "./models/mediaStatus";
 import { RepeatState } from "./models/repeatState";
+import { isSeekEvent } from "./models/seekEvent";
 import { addHotkey } from "./scripts/hotkeys";
 import { ObjectToDotNotation } from "./scripts/objectUtilities";
 import { settingsStore } from "./scripts/settings";
@@ -25,11 +26,7 @@ import type { TidalController } from "./TidalControllers/TidalController";
 import {
   convertMprisLoopToRepeatState,
   convertRepeatStateToMprisLoop,
-  isMPRISLoop,
-  isMPRISPosition,
-  isMPRISSeek,
-  isMPRISShuffle,
-  isMPRISVolume,
+  MPRIS_LOOP,
   type MprisLoopType,
 } from "./utility/mpris";
 
@@ -190,11 +187,14 @@ function addIPCEventListeners() {
           }
           break;
         case globalEvents.seek:
-          if (payload.absoluteTime) {
-            tidalController.setCurrentTime(payload.absoluteTime);
-          } else if (payload.relativeTime) {
-            const newTime = tidalController.getCurrentTime() + payload.relativeTime;
-            tidalController.setCurrentTime(newTime);
+          if (isSeekEvent(payload)) {
+            if (payload.type === "absolute") {
+              tidalController.setCurrentTime(payload.seconds);
+            } else if (payload.type === "relative") {
+              const currentTime = tidalController.getCurrentTime();
+              const newTime = currentTime + payload.seconds;
+              tidalController.setCurrentTime(newTime);
+            }
           }
           break;
         default:
@@ -319,30 +319,36 @@ function addMPRIS() {
               tidalController.play();
               break;
             case "loopStatus":
-              if (isMPRISLoop(eventData)) {
-                setLoopState(eventData);
+              if (typeof eventData === "string" && eventData in MPRIS_LOOP) {
+                setLoopState(eventData as MprisLoopType);
               }
               break;
             case "shuffle":
-              if (isMPRISShuffle(eventData)) {
+              if (typeof eventData === "boolean") {
                 setShuffleState(eventData);
               }
               break;
             case "volume":
-              if (isMPRISVolume(eventData)) {
+              if (typeof eventData === "number") {
                 tidalController.setVolume(eventData);
               }
               break;
             case "seek":
-              if (isMPRISSeek(eventData)) {
-                const newTime =
-                  tidalController.getCurrentTime() + convertMicrosecondsToSeconds(eventData);
+              if (typeof eventData === "number") {
+                const relativeSeconds = convertMicrosecondsToSeconds(eventData);
+                const newTime = tidalController.getCurrentTime() + relativeSeconds;
                 tidalController.setCurrentTime(newTime);
               }
               break;
             case "position":
-              if (isMPRISPosition(eventData)) {
-                tidalController.setCurrentTime(convertMicrosecondsToSeconds(eventData.position));
+              if (
+                typeof eventData === "object" &&
+                eventData !== null &&
+                "position" in eventData &&
+                typeof eventData.position === "number"
+              ) {
+                const absoluteSeconds = convertMicrosecondsToSeconds(eventData.position);
+                tidalController.setCurrentTime(absoluteSeconds);
               }
               break;
           }
