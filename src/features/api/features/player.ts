@@ -1,5 +1,6 @@
-import { BrowserWindow } from "electron";
-import { Router } from "express";
+import type { BrowserWindow } from "electron";
+import type { Router } from "express";
+
 import { globalEvents } from "../../../constants/globalEvents";
 import { settings } from "../../../constants/settings";
 import { settingsStore } from "../../../scripts/settings";
@@ -27,7 +28,7 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
    *       example: "OK"
    */
   const createPlayerAction = (route: string, action: string) => {
-    expressApp.post(createRoute(route), (req, res) => windowEvent(res, action));
+    expressApp.post(createRoute(route), (_req, res) => windowEvent(res, action));
   };
 
   const createPlayerPutAction = (route: string, action: string, parser: payloadParserType) => {

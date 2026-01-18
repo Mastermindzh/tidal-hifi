@@ -1,0 +1,75 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.3.11/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignoreUnknown": false,
+    "includes": [
+      "**",
+      "!!**/ts-dist",
+      "!!**/build",
+      "!!**/node_modules",
+      "!themes/*.css",
+      "!src/pages/settings/styles/settings.css",
+      "!package-lock.json",
+      "!scripts/verifyElements.js",
+      "!src/features/api/swagger.json"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "correctness": {
+        "noUnusedImports": {
+          "level": "error",
+          "fix": "safe",
+          "options": {}
+        },
+        "useParseIntRadix": "off"
+      },
+      "suspicious": {
+        "noExplicitAny": "off"
+      },
+      "style": {
+        "useConsistentCurlyBraces": {
+          "level": "error",
+          "fix": "safe",
+          "options": {}
+        }
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double"
+    }
+  },
+  "assist": {
+    "actions": {
+      "source": {
+        "organizeImports": {
+          "level": "on",
+          "options": {
+            "groups": [
+              ":URL",
+              ":BLANK_LINE:",
+              ["**", "!./**", "!../**"],
+              ":BLANK_LINE:",
+              ["./**", "../**"]
+            ]
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,12 +1,12 @@
-import { convertSecondsToClockFormat } from "../../features/time/parse";
-import { MediaInfo } from "../../models/mediaInfo";
-import { MediaStatus } from "../../models/mediaStatus";
-import { RepeatState, RepeatStateType } from "../../models/repeatState";
-import { TidalController } from "../TidalController";
-import { DomControllerOptions } from "./DomControllerOptions";
 import { getTrackURL } from "../../features/tidal/url";
+import { convertSecondsToClockFormat } from "../../features/time/parse";
+import type { MediaInfo } from "../../models/mediaInfo";
+import { MediaStatus } from "../../models/mediaStatus";
+import { RepeatState, type RepeatStateType } from "../../models/repeatState";
 import { constrainPollingInterval } from "../../utility/pollingConstraints";
+import type { TidalController } from "../TidalController";
 import { UI_SELECTORS } from "./constants";
+import type { DomControllerOptions } from "./DomControllerOptions";
 import { clickElement, getElement, getElementAttribute, getElementText } from "./domHelpers";
 
 export class DomTidalController implements TidalController<DomControllerOptions> {
@@ -54,9 +54,9 @@ export class DomTidalController implements TidalController<DomControllerOptions>
       const shuffleState = this.getCurrentShuffleState();
       const repeatState = this.getCurrentRepeatState();
 
-      const playStateChanged = currentStatus != this.currentlyPlaying;
-      const shuffleStateChanged = shuffleState != this.currentShuffleState;
-      const repeatStateChanged = repeatState != this.currentRepeatState;
+      const playStateChanged = currentStatus !== this.currentlyPlaying;
+      const shuffleStateChanged = shuffleState !== this.currentShuffleState;
+      const repeatStateChanged = repeatState !== this.currentRepeatState;
 
       if (playStateChanged) this.currentlyPlaying = currentStatus;
       if (shuffleStateChanged) this.currentShuffleState = shuffleState;
@@ -94,11 +94,11 @@ export class DomTidalController implements TidalController<DomControllerOptions>
     const playing = this.getCurrentlyPlayingStatus();
 
     if (playing === MediaStatus.playing) {
-      this.pause()
+      this.pause();
     } else {
       this.play();
     }
-  };
+  }
 
   toggleFavorite() {
     clickElement("favorite");
@@ -136,7 +136,7 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   }
 
   getCurrentRepeatState() {
-    switch (getElementAttribute("repeat","data-type")) {
+    switch (getElementAttribute("repeat", "data-type")) {
       case "button__repeatAll":
         return RepeatState.all;
       case "button__repeatSingle":
@@ -232,8 +232,7 @@ export class DomTidalController implements TidalController<DomControllerOptions>
 
     if (footer) {
       const artists = footer.querySelectorAll(UI_SELECTORS.artists);
-      if (artists)
-        return Array.from(artists).map((artist) => artist.textContent);
+      if (artists) return Array.from(artists).map((artist) => artist.textContent);
     }
     return [];
   }

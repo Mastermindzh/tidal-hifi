@@ -1,4 +1,4 @@
-import { RepeatState, RepeatStateType } from "../models/repeatState";
+import { RepeatState, type RepeatStateType } from "../models/repeatState";
 
 // State map
 export const MPRIS_LOOP = {

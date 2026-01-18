@@ -1,9 +1,10 @@
-import { BrowserWindow, Tray } from "electron";
-import { existsSync } from "fs";
+import { existsSync } from "node:fs";
+import { type BrowserWindow, Tray } from "electron";
+
 import { settings } from "../constants/settings";
 import { SUPPORTED_TRAY_ICON_EXTENSIONS } from "../constants/trayIcon";
-import { settingsStore } from "./settings";
 import { getMenu } from "./menu";
+import { settingsStore } from "./settings";
 
 let tray: Tray;
 
@@ -25,30 +26,30 @@ function hasSupportedExtension(filePath: string): boolean {
  */
 function getTrayIconPath(defaultIcon: string): string {
   const customPath = settingsStore.get<string, string>(settings.trayIconPath);
-  
+
   // Trim once and reuse
   const trimmedPath = customPath?.trim() || "";
-  
+
   // If no custom path or set to "default", use the default icon
   if (trimmedPath === "" || trimmedPath.toLowerCase() === "default") {
     return defaultIcon;
   }
-  
+
   // Check if the path has a supported extension
   if (!hasSupportedExtension(trimmedPath)) {
     return defaultIcon;
   }
-  
+
   // Check if the custom path exists
   if (existsSync(trimmedPath)) {
     return trimmedPath;
   }
-  
+
   // If path doesn't exist, fallback to default
   return defaultIcon;
 }
 
-export const addTray = function (mainWindow: BrowserWindow, options = { icon: "" }) {
+export const addTray = (mainWindow: BrowserWindow, options = { icon: "" }) => {
   const iconPath = getTrayIconPath(options.icon);
   tray = new Tray(iconPath);
   tray.setIgnoreDoubleClickEvents(true);
@@ -58,7 +59,7 @@ export const addTray = function (mainWindow: BrowserWindow, options = { icon: ""
 
   tray.setContextMenu(menu);
 
-  tray.on("click", function () {
+  tray.on("click", () => {
     if (mainWindow.isVisible()) {
       if (!mainWindow.isFocused()) {
         mainWindow.focus();
@@ -71,7 +72,7 @@ export const addTray = function (mainWindow: BrowserWindow, options = { icon: ""
   });
 };
 
-export const refreshTray = function (mainWindow: BrowserWindow) {
+export const refreshTray = (mainWindow: BrowserWindow) => {
   if (!tray) {
     addTray(mainWindow);
   }
