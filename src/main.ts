@@ -38,7 +38,7 @@ const windowPreferences = {
   sandbox: false,
   plugins: true,
   devTools: true, // Ensure devTools is enabled for debugging
-  contextIsolation: false, // Disable context isolation for debugging
+  contextIsolation: true, // Disable context isolation for debugging
 };
 
 setDefaultFlags(app);

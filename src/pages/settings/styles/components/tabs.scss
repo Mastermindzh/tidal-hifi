@@ -1,10 +1,12 @@
 @use "../mixins";
 
+// Number of tabs in the settings interface
+$tab-count: 8;
+
 .tabs {
   &__trigger {
     appearance: none;
     position: absolute;
-
 
     & + label {
       @include mixins.drag(false);
@@ -58,7 +60,7 @@
     display: flex;
     flex-direction: column;
 
-    @for $i from 1 to 7 {
+    @for $i from 1 to ($tab-count + 1) {
       .settings > input:nth-child(#{$i * 2 - 1}):checked ~ & > .tabs__section:nth-child(#{$i}) {
         display: block;
       }

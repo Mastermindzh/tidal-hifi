@@ -8,6 +8,7 @@
     "watchStart": "nodemon --watch src --ext ts,html,scss --exec \"npm run compile && npm run start\"",
     "compile": "tsc && npm run sass-and-copy",
     "deps": "npm run watch",
+    "dev": "npm run watch",
     "watch": "tsc-watch --onSuccess \"npm run compile-all\"",
     "copy-files": "copyfiles -u 1 --exclude './src/**/*.ts' --exclude './src/**/*.scss' \"./src/**/*\" ts-dist",
     "copy-themes-dev": "copyfiles -u 1 \"./themes/*\" node_modules/electron/dist/resources",

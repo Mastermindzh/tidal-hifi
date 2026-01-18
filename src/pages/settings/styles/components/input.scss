@@ -3,10 +3,11 @@
 .text-input {
   @include mixins.common-input;
 
-  cursor: unset;
+  cursor: text;
+  margin: 2px; // Add small margin for better focus ring visibility
 
   &--small {
-    max-width: 110px
+    max-width: 110px;
   }
 
   &::-webkit-outer-spin-button,

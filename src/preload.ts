@@ -5,6 +5,7 @@ import Player from "mpris-service";
 import { tidalControllers } from "./constants/controller";
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
+import { getCurrentHotkeyConfig } from "./features/hotkeys";
 import { downloadImage } from "./features/icon/downloadImage";
 import { Logger } from "./features/logger";
 import { addCustomCss } from "./features/theming/theming";
@@ -72,42 +73,51 @@ switch (settingsStore.get(settings.advanced.controllerType)) {
 
 /**
  * Add hotkeys for when tidal is focused
+ * Uses configurable hotkeys from settings store
  * Reflects the desktop hotkeys found on:
  * https://defkey.com/tidal-desktop-shortcuts
  */
 function addHotKeys() {
+  const hotkeyConfig = getCurrentHotkeyConfig();
+
   if (settingsStore.get(settings.enableCustomHotkeys)) {
-    addHotkey("Control+l", () => {
-      handleLogout();
-    });
-    addHotkey("Control+a", () => {
+    addHotkey(hotkeyConfig.toggleFavorite, () => {
       tidalController.toggleFavorite();
     });
-
-    addHotkey("control+u", () => {
+    addHotkey(hotkeyConfig.logout, () => {
+      handleLogout();
+    });
+    addHotkey(hotkeyConfig.hardReload, () => {
       // reloading window without cache should show the update bar if applicable
       window.location.reload();
     });
-
-    addHotkey("control+r", () => {
+    addHotkey(hotkeyConfig.toggleRepeat, () => {
       tidalController.repeat();
     });
-    addHotkey("delete", () => {});
-    addHotkey("control+w", async () => {
+    addHotkey(hotkeyConfig.shareTrackLink, async () => {
       const url = getUniversalLink(getTrackURL(tidalController.getTrackId()));
       clipboard.writeText(url);
       new Notification({
-        title: `Universal link generated: `,
+        title: "Universal link generated: ",
         body: `URL copied to clipboard: ${url}`,
       }).show();
     });
+    addHotkey(hotkeyConfig.goBack, () => {
+      window.history.back();
+    });
+    addHotkey(hotkeyConfig.goForward, () => {
+      window.history.forward();
+    });
+
+    // Delete key override (disabled for search)
+    addHotkey(hotkeyConfig.deleteDisabled, () => {});
   }
 
-  // always add the hotkey for the settings window
-  addHotkey("control+=", () => {
+  // Always-enabled hotkeys (settings shortcuts)
+  addHotkey(hotkeyConfig.openSettings1, () => {
     ipcRenderer.send(globalEvents.showSettings);
   });
-  addHotkey("control+0", () => {
+  addHotkey(hotkeyConfig.openSettings2, () => {
     ipcRenderer.send(globalEvents.showSettings);
   });
 }

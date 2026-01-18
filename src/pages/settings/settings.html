@@ -40,10 +40,13 @@
       <input type="radio" name="tab" class="tabs__trigger" id="theming" />
       <label for="theming">Theming</label>
 
+      <input type="radio" name="tab" class="tabs__trigger" id="hotkeys" />
+      <label for="hotkeys">Hotkeys</label>
+
       <input type="radio" name="tab" class="tabs__trigger" id="about" />
       <label for="about">About</label>
 
-      <hr class="tabs__separator"/>
+      <hr class="tabs__separator" />
 
       <div class="tabs__content">
         <section id="general-section" class="tabs__section">
@@ -77,7 +80,8 @@
                   <button class="button" onclick="skipArtist()">Skip artist</button>
                 </div>
               </div>
-              <textarea id="skippedArtists" class="hidden" cols="40" rows="5" spellcheck="false" style="width: 100%"></textarea>
+              <textarea id="skippedArtists" class="hidden" cols="40" rows="5" spellcheck="false"
+                style="width: 100%"></textarea>
             </div>
             <div class="group__option">
               <div class="group__content">
@@ -135,19 +139,6 @@
             </div>
             <div class="group__option">
               <div class="group__content">
-                <h4>Hotkeys</h4>
-                <p>
-                  Enable extra hotkeys to achieve feature parity with the
-                  <a class="external-link" data-url="https://defkey.com/tidal-desktop-shortcuts">desktop apps</a>.
-                </p>
-              </div>
-              <label class="switch">
-                <input id="enableCustomHotkeys" type="checkbox" />
-                <span class="switch__slider"></span>
-              </label>
-            </div>
-            <div class="group__option">
-              <div class="group__content">
                 <h4>Single instance</h4>
                 <p>Prevent opening multiple TIDAL Hi-Fi's instances.</p>
               </div>
@@ -195,14 +186,15 @@
                 <div class="group__content">
                   <h4>Custom tray icon path</h4>
                   <p>
-                    Provide a custom path to an icon file for the system tray. Leave empty or set to "default" to use the
+                    Provide a custom path to an icon file for the system tray. Leave empty or set to "default" to use
+                    the
                     bundled icon.
                     Supported formats: PNG, JPG, JPEG, ICO, BMP, GIF (SVG is not supported).
                   </p>
                   <input id="trayIconPath" type="text" class="text-input" name="trayIconPath"
-                         placeholder="default or /path/to/icon.png" />
+                    placeholder="default or /path/to/icon.png" />
                   <p id="trayIconPathValidation" class="validation-message"
-                     style="color: #ff6b6b; margin-top: 5px; display: none;"></p>
+                    style="color: #ff6b6b; margin-top: 5px; display: none;"></p>
                 </div>
               </div>
             </div>
@@ -234,7 +226,7 @@
                   <label for="port">API port</label>
                   <p>The port on which the API will be hosted.</p>
                 </div>
-                <input id="port" type="number" class="text-input text-input--small" name="port"/>
+                <input id="port" type="number" class="text-input text-input--small" name="port" />
               </div>
               <div class="group__option">
                 <div class="group__content">
@@ -245,7 +237,7 @@
                     Other options are available
                   </p>
                 </div>
-                <input id="hostname" type="text" class="text-input text-input--small" name="hostname"/>
+                <input id="hostname" type="text" class="text-input text-input--small" name="hostname" />
               </div>
               <div class="group__option">
                 <div class="group__content">
@@ -253,7 +245,7 @@
                   <p>Enable playback control from the web API.</p>
                 </div>
                 <label class="switch">
-                  <input id="playBackControl" type="checkbox"/>
+                  <input id="playBackControl" type="checkbox" />
                   <span class="switch__slider"></span>
                 </label>
               </div>
@@ -405,7 +397,8 @@
                     you fast forward immediately
                   </p>
                 </div>
-                <input id="listenbrainz_delay" type="number" class="text-input text-input--small" name="listenbrainz_delay" />
+                <input id="listenbrainz_delay" type="number" class="text-input text-input--small"
+                  name="listenbrainz_delay" />
               </div>
             </div>
           </div>
@@ -457,7 +450,8 @@
               <div class="group__content">
                 <h4>Custom User Agent</h4>
                 <p>
-                  Customize the browser user agent string sent to Tidal. Leave as "default" or empty to use the standard Electron user agent.
+                  Customize the browser user agent string sent to Tidal. Leave as "default" or empty to use the standard
+                  Electron user agent.
                 </p>
                 <p>
                   <span class="group__warning">Warning:</span> Tidal may block your requests if you modify this value.
@@ -574,6 +568,37 @@
 
         </section>
 
+        <section id="hotkeys-section" class="tabs__section">
+          <div class="group">
+            <p class="group__title">Keyboard Shortcuts</p>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Enable Custom Hotkeys</h4>
+                <p>
+                  Enable the custom hotkeys to control Tidal-hifi through your keyboard.
+                </p>
+              </div>
+              <label class="switch">
+                <input id="enableCustomHotkeys" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+
+            <!-- hotkey options -->
+            <div id="hotkeys__options" class="group__options-group hidden">
+              <div class="hotkeys-header">
+                <div class="hotkeys-search">
+                  <input class="text-input" id="hotkey-search" placeholder="Search hotkeys..." type="text" />
+                </div>
+              </div>
+
+              <div class="hotkeys-list" id="hotkeys-list">
+                <!-- Hotkeys will be dynamically populated by preload.ts -->
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section id="about-section" class="tabs__section about-section">
           <div class="group">
             <p class="group__title">About</p>
@@ -584,16 +609,16 @@
                 <p>The web version of TIDAL running in electron with Hi-Fi support thanks to widevine.</p>
               </div>
               <a class="button about-section__version" target="_blank" rel="noopener"
-                 href="https://github.com/Mastermindzh/tidal-hifi/releases/tag/6.0.1">6.0.1</a>
+                href="https://github.com/Mastermindzh/tidal-hifi/releases/tag/6.0.1">6.0.1</a>
               <a class="button" target="_blank" rel="noopener"
-                 href="https://github.com/mastermindzh/tidal-hifi/">GitHub</a>
+                href="https://github.com/mastermindzh/tidal-hifi/">GitHub</a>
             </div>
           </div>
           <div class="about-section__buttons">
             <a class="button" target="_blank" rel="noopener"
-               href="https://github.com/Mastermindzh/tidal-hifi/issues">Report an issue</a>
+              href="https://github.com/Mastermindzh/tidal-hifi/issues">Report an issue</a>
             <a class="button" target="_blank" rel="noopener"
-               href="https://github.com/Mastermindzh/tidal-hifi/graphs/contributors">Show contributors</a>
+              href="https://github.com/Mastermindzh/tidal-hifi/graphs/contributors">Show contributors</a>
           </div>
         </section>
 
@@ -606,4 +631,5 @@
     </main>
   </div>
 </body>
+
 </html>
