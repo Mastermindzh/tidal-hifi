@@ -30,6 +30,8 @@ export function getHotkeyAction(actionId: string): HotkeyAction | undefined {
 /**
  * Default hotkey actions available in Tidal Hi-Fi
  * Based on the hotkeys from https://defkey.com/tidal-desktop-shortcuts
+ *
+ * @sonar-ignore-next-line typescript:S1192 - Configuration data with expected repetitive structure
  */
 export const DEFAULT_HOTKEY_ACTIONS: HotkeyAction[] = [
   {
