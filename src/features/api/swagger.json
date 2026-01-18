@@ -267,6 +267,103 @@
         }
       }
     },
+    "/player/volume": {
+      "put": {
+        "summary": "Set volume of the player to a certain LEVEL where LEVEL is a value between 0.0 (0%) and 1.0 (100%).",
+        "tags": [
+          "player"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "volume",
+            "description": "Volume level to set",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "multipleOf": 0.01,
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/player/seek/absolute": {
+      "put": {
+        "summary": "Set absolute position of the player",
+        "tags": [
+          "player"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "seconds",
+            "description": "Absolute position in seconds to set",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/player/seek/relative": {
+      "put": {
+        "summary": "Seek relative to current position",
+        "tags": [
+          "player"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "seconds",
+            "description": "Relative position in seconds to seek (positive or negative)",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/settings/skipped-artists": {
       "get": {
         "summary": "get a list of artists that TIDAL Hi-Fi will skip if skipping is enabled",

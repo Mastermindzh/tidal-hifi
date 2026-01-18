@@ -1,6 +1,5 @@
 import { app, dialog, Notification } from "@electron/remote";
 import { clipboard, ipcRenderer } from "electron";
-import Player from "mpris-service";
 
 import { tidalControllers } from "./constants/controller";
 import { globalEvents } from "./constants/globalEvents";
@@ -10,28 +9,22 @@ import { downloadImage } from "./features/icon/downloadImage";
 import { Logger } from "./features/logger";
 import { addCustomCss } from "./features/theming/theming";
 import { getTrackURL, getUniversalLink } from "./features/tidal/url";
-import { convertDurationToSeconds } from "./features/time/parse";
 import { getEmptyMediaInfo, type MediaInfo } from "./models/mediaInfo";
-import { MediaStatus } from "./models/mediaStatus";
+import { RepeatState, type RepeatStateType } from "./models/repeatState";
+import { isSeekEvent } from "./models/seekEvent";
 import { addHotkey } from "./scripts/hotkeys";
-import { ObjectToDotNotation } from "./scripts/objectUtilities";
 import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
 import { TidalApiController } from "./TidalControllers/apiController/TidalApiController";
-import type { DomControllerOptions } from "./TidalControllers/DomController/DomControllerOptions";
 import { DomTidalController } from "./TidalControllers/DomController/DomTidalController";
 import { getDomUpdateFrequency } from "./TidalControllers/DomController/domUpdateFrequency";
-import {
-  MediaSessionController,
-  type MediaSessionControllerOptions,
-} from "./TidalControllers/MediaSessionController/MediaSessionController";
+import { MediaSessionController } from "./TidalControllers/MediaSessionController/MediaSessionController";
 import type { TidalController } from "./TidalControllers/TidalController";
 
 const albumArtPath = `${app.getPath("userData")}/current.jpg`;
 const staticTitle = "TIDAL Hi-Fi";
 
 let currentSong = "";
-let player: Player;
 
 let currentNotification: Electron.Notification;
 
@@ -48,24 +41,22 @@ switch (settingsStore.get(settings.advanced.controllerType)) {
 
   case tidalControllers.mediaSessionController: {
     tidalController = new MediaSessionController();
-    const mediaSessionControllerOptions: MediaSessionControllerOptions = {
+    controllerOptions = {
       refreshInterval: getDomUpdateFrequency(
         settingsStore.get<string, number>(settings.updateFrequency),
       ),
     };
-    controllerOptions = mediaSessionControllerOptions;
     Logger.log("MediaSessionController initialized");
     break;
   }
 
   default: {
     tidalController = new DomTidalController();
-    const domControllerOptions: DomControllerOptions = {
+    controllerOptions = {
       refreshInterval: getDomUpdateFrequency(
         settingsStore.get<string, number>(settings.updateFrequency),
       ),
     };
-    controllerOptions = domControllerOptions;
     Logger.log("domController initialized");
     break;
   }
@@ -163,8 +154,8 @@ function addFullScreenListeners() {
  */
 function addIPCEventListeners() {
   window.addEventListener("DOMContentLoaded", () => {
-    ipcRenderer.on("globalEvent", (_event, args) => {
-      switch (args) {
+    ipcRenderer.on("globalEvent", (_event, action, payload) => {
+      switch (action) {
         case globalEvents.playPause:
           tidalController.playPause();
           break;
@@ -189,6 +180,27 @@ function addIPCEventListeners() {
         case globalEvents.toggleRepeat:
           tidalController.repeat();
           break;
+        case globalEvents.volume:
+          if (typeof payload.volume === "number" && Number.isFinite(payload.volume)) {
+            tidalController.setVolume(payload.volume);
+          }
+          break;
+        case globalEvents.seek:
+          if (isSeekEvent(payload)) {
+            if (payload.type === "absolute") {
+              tidalController.setCurrentTime(payload.seconds);
+            } else if (payload.type === "relative") {
+              const currentTime = tidalController.getCurrentTime();
+              const newTime = currentTime + payload.seconds;
+              tidalController.setCurrentTime(newTime);
+            }
+          }
+          break;
+        case globalEvents.setLoopState:
+          if (payload?.targetState) {
+            setLoopState(payload.targetState);
+          }
+          break;
         default:
           break;
       }
@@ -198,13 +210,12 @@ function addIPCEventListeners() {
 
 /**
  * Update Tidal-hifi's media info
- *
  * @param {*} mediaInfo
+ * @param notify Whether to notify
  */
 function updateMediaInfo(mediaInfo: MediaInfo, notify: boolean) {
   if (mediaInfo) {
     ipcRenderer.send(globalEvents.updateInfo, mediaInfo);
-    updateMpris(mediaInfo);
     if (notify) {
       sendNotification(mediaInfo);
     }
@@ -214,7 +225,6 @@ function updateMediaInfo(mediaInfo: MediaInfo, notify: boolean) {
 /**
  * send a desktop notification if enabled in settings
  * @param mediaInfo
- * @param notify Whether to notify
  */
 async function sendNotification(mediaInfo: MediaInfo) {
   if (settingsStore.get(settings.notifications)) {
@@ -229,96 +239,26 @@ async function sendNotification(mediaInfo: MediaInfo) {
     currentNotification.show();
   }
 }
-function addMPRIS() {
-  if (process.platform === "linux" && settingsStore.get(settings.mpris)) {
-    try {
-      player = Player({
-        name: "tidal-hifi",
-        identity: "tidal-hifi",
-        supportedUriSchemes: ["file"],
-        supportedMimeTypes: [
-          "audio/mpeg",
-          "audio/flac",
-          "audio/x-flac",
-          "application/ogg",
-          "audio/wav",
-        ],
-        supportedInterfaces: ["player"],
-        desktopEntry: "tidal-hifi",
-      });
-      // Events
-      const events = {
-        next: "next",
-        previous: "previous",
-        pause: "pause",
-        playpause: "playpause",
-        stop: "stop",
-        play: "play",
-        loopStatus: "repeat",
-        shuffle: "shuffle",
-        seek: "seek",
-      } as { [key: string]: string };
-      Object.keys(events).forEach((eventName) => {
-        player.on(eventName, () => {
-          const eventValue = events[eventName];
-          switch (events[eventValue]) {
-            case events.playpause:
-              tidalController.playPause();
-              break;
-            case events.next:
-              tidalController.next();
-              break;
-            case events.previous:
-              tidalController.previous();
-              break;
-            case events.pause:
-              tidalController.pause();
-              break;
-            case events.stop:
-              tidalController.stop();
-              break;
-            case events.play:
-              tidalController.play();
-              break;
-            case events.loopStatus:
-              tidalController.repeat();
-              break;
-            case events.shuffle:
-              tidalController.toggleShuffle();
-              break;
-          }
-        });
-      });
-      // Override get position function
-      player.getPosition = () => tidalController.getCurrentPositionInSeconds();
-      player.on("quit", () => {
-        app.quit();
-      });
-    } catch (exception) {
-      Logger.log("MPRIS player api not working", exception);
-    }
+
+async function setLoopState(targetRepeatState: RepeatStateType) {
+  const order = [RepeatState.off, RepeatState.all, RepeatState.single];
+  const currentValue = tidalController.getCurrentRepeatState();
+
+  // Based on the targetState and currentValue delta, we press the repeat button repeatedly so the user's preference is set.
+  const newIndex = order.indexOf(targetRepeatState);
+  const currentIndex = order.indexOf(currentValue);
+
+  if (newIndex === -1 || currentIndex === -1) return;
+
+  let calculatedDelta = newIndex - currentIndex;
+  if (calculatedDelta < 0) {
+    calculatedDelta += order.length;
   }
-}
 
-function updateMpris(mediaInfo: MediaInfo) {
-  if (player) {
-    // Use high-resolution image URL for better quality in media players
-    const highResImageUrl = tidalController.getSongImage() || mediaInfo.image;
-
-    player.metadata = {
-      ...player.metadata,
-      ...{
-        "xesam:title": mediaInfo.title,
-        "xesam:artist": [mediaInfo.artists],
-        "xesam:album": mediaInfo.album,
-        "xesam:url": mediaInfo.url,
-        "mpris:artUrl": highResImageUrl,
-        "mpris:length": convertDurationToSeconds(mediaInfo.duration) * 1000 * 1000,
-        "mpris:trackid": `/org/mpris/MediaPlayer2/track/${tidalController.getTrackId()}`,
-      },
-      ...ObjectToDotNotation(mediaInfo, "custom:"),
-    };
-    player.playbackStatus = mediaInfo.status === MediaStatus.paused ? "Paused" : "Playing";
+  for (let i = 0; i < calculatedDelta; i++) {
+    tidalController.repeat();
+    // Small delay to ensure the button click is registered in the UI
+    await new Promise((resolve) => setTimeout(resolve, 500));
   }
 }
 
@@ -352,8 +292,7 @@ tidalController.onMediaInfoUpdate(async (newState) => {
     }
 
     if (imageUrlToDownload) {
-      const downloadedImagePath = await downloadImage(imageUrlToDownload, albumArtPath);
-      currentMediaInfo.localAlbumArt = downloadedImagePath;
+      currentMediaInfo.localAlbumArt = await downloadImage(imageUrlToDownload, albumArtPath);
     } else {
       currentMediaInfo.localAlbumArt = "";
     }
@@ -381,7 +320,7 @@ tidalController.onMediaInfoUpdate(async (newState) => {
     }
   }
 });
-addMPRIS();
+
 addCustomCss(app);
 addHotKeys();
 addIPCEventListeners();
