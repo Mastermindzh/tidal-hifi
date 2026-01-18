@@ -27,6 +27,7 @@ import {
   convertRepeatStateToMprisLoop,
   isMPRISLoop,
   isMPRISPosition,
+  isMPRISSeek,
   isMPRISShuffle,
   isMPRISVolume,
   type MprisLoopType,
@@ -189,8 +190,11 @@ function addIPCEventListeners() {
           }
           break;
         case globalEvents.seek:
-          if (payload.currentTime) {
-            tidalController.setCurrentTime(payload.currentTime);
+          if (payload.absoluteTime) {
+            tidalController.setCurrentTime(payload.absoluteTime);
+          } else if (payload.relativeTime) {
+            const newTime = tidalController.getCurrentTime() + payload.relativeTime;
+            tidalController.setCurrentTime(newTime);
           }
           break;
         default:
@@ -287,8 +291,8 @@ function addMPRIS() {
         "play",
         "loopStatus",
         "shuffle",
-        "seek",
         "volume",
+        "seek",
         "position",
       ];
       events.forEach((eventName) => {
@@ -327,6 +331,13 @@ function addMPRIS() {
             case "volume":
               if (isMPRISVolume(eventData)) {
                 tidalController.setVolume(eventData);
+              }
+              break;
+            case "seek":
+              if (isMPRISSeek(eventData)) {
+                const newTime =
+                  tidalController.getCurrentTime() + convertMicrosecondsToSeconds(eventData);
+                tidalController.setCurrentTime(newTime);
               }
               break;
             case "position":

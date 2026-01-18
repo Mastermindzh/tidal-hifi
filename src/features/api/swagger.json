@@ -310,12 +310,21 @@
         "parameters": [
           {
             "in": "query",
-            "name": "position_s",
-            "description": "Position in seconds to set",
-            "required": true,
+            "name": "absolute_position_s",
+            "description": "Absolute position in seconds to set",
+            "required": false,
             "schema": {
               "type": "number",
               "minimum": 0
+            }
+          },
+          {
+            "in": "query",
+            "name": "relative_position_s",
+            "description": "Relative position in seconds to seek (positive or negative)",
+            "required": false,
+            "schema": {
+              "type": "number"
             }
           }
         ],

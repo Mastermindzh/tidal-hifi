@@ -202,12 +202,18 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
      *     tags: [player]
      *     parameters:
      *       - in: query
-     *         name: position_s
-     *         description: Position in seconds to set
-     *         required: true
+     *         name: absolute_position_s
+     *         description: Absolute position in seconds to set
+     *         required: false
      *         schema:
      *           type: number
      *           minimum: 0
+     *       - in: query
+     *         name: relative_position_s
+     *         description: Relative position in seconds to seek (positive or negative)
+     *         required: false
+     *         schema:
+     *           type: number
      *     responses:
      *       200:
      *         description: Ok
@@ -217,7 +223,14 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
      *               $ref: '#/components/schemas/OkResponse'
      */
     createPlayerPutAction("/seek", globalEvents.seek, (_body, params) => ({
-      currentTime: typeof params.position_s === "string" ? parseInt(params.position_s) : null,
+      absoluteTime:
+        typeof params.absolute_position_s === "string"
+          ? parseInt(params.absolute_position_s)
+          : null,
+      relativeTime:
+        typeof params.relative_position_s === "string"
+          ? parseInt(params.relative_position_s)
+          : null,
     }));
   }
 };

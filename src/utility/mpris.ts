@@ -25,6 +25,10 @@ export function isMPRISVolume(value: unknown): value is number {
   return typeof value === "number";
 }
 
+export function isMPRISSeek(value: unknown): value is number {
+  return typeof value === "number";
+}
+
 export function isMPRISPosition(value: unknown): value is MprisPositionType {
   return (
     typeof value === "object" &&
