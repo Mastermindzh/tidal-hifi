@@ -1,5 +1,5 @@
-// This is a one-liner ment to be pasted in the DevTools console to check all DOM selectors.
-// For some dumb reason `listen.tidal.com` has disabled console.log,
+// This is a one-liner meant to be pasted in the DevTools console to check all DOM selectors.
+// For some dumb reason `tidal.com` has disabled console.log,
 // but we can simply return an array with values though...
 // Run this on a playlist or mix page and observe the result.
 // NOTE: play & pause can't live together, so one or the other will throw an error.
