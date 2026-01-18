@@ -12,9 +12,9 @@ export interface MediaInfo {
   url: string;
   playingFrom: string;
   current: string;
-  currentInSeconds?: number;
+  currentInSeconds: number;
   duration: string;
-  durationInSeconds?: number;
+  durationInSeconds: number;
   image: string;
   localAlbumArt?: string; // Local path to downloaded album art
   favorite: boolean;
@@ -31,9 +31,9 @@ export const getEmptyMediaInfo = () => {
     status: MediaStatus.playing,
     url: "",
     current: "00:00",
-    currentInSeconds: 100,
+    currentInSeconds: 0,
     duration: "00:00",
-    durationInSeconds: 100,
+    durationInSeconds: 0,
     image: "",
     icon: "",
     localAlbumArt: "",

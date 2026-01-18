@@ -16,4 +16,6 @@ export const globalEvents = {
   toggleShuffle: "toggleShuffle",
   toggleRepeat: "toggleRepeat",
   resetZoom: "resetZoom",
+  volume: "volume",
+  seek: "seek",
 };

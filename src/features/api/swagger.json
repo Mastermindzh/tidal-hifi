@@ -267,6 +267,81 @@
         }
       }
     },
+    "/player/volume": {
+      "put": {
+        "summary": "Set volume of the player",
+        "tags": [
+          "player"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "volume",
+            "description": "Volume level to set",
+            "required": true,
+            "schema": {
+              "type": "number",
+              "multipleOf": 0.01,
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/player/seek": {
+      "put": {
+        "summary": "Set position of the player",
+        "tags": [
+          "player"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "absolute_position_s",
+            "description": "Absolute position in seconds to set",
+            "required": false,
+            "schema": {
+              "type": "number",
+              "minimum": 0
+            }
+          },
+          {
+            "in": "query",
+            "name": "relative_position_s",
+            "description": "Relative position in seconds to seek (positive or negative)",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/settings/skipped-artists": {
       "get": {
         "summary": "get a list of artists that TIDAL Hi-Fi will skip if skipping is enabled",

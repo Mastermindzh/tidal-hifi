@@ -7,7 +7,6 @@ import { settingsStore } from "../../scripts/settings";
 import { constrainPollingInterval } from "../../utility/pollingConstraints";
 import { Logger } from "../logger";
 import { tidalUrl } from "../tidal/url";
-import { convertDurationToSeconds } from "../time/parse";
 
 // biome-ignore lint/complexity/noStaticOnlyClass: off
 export class ListenBrainz {
@@ -47,7 +46,7 @@ export class ListenBrainz {
     duration: number,
   ) {
     // Create a clean, serializable object
-    const metadata = {
+    return {
       additional_info: {
         media_player: "Tidal Hi-Fi",
         submission_client: "Tidal Hi-Fi",
@@ -58,8 +57,6 @@ export class ListenBrainz {
       track_name: String(title || ""),
       release_name: String(album || ""),
     };
-
-    return metadata;
   }
 
   /**
@@ -174,8 +171,7 @@ export class ListenBrainz {
     ) {
       const trackKey = `${mediaInfo.title}|${mediaInfo.album}|${mediaInfo.artists}`;
       const currentInSeconds = mediaInfo.currentInSeconds ?? 0;
-      const durationInSeconds =
-        mediaInfo.durationInSeconds ?? convertDurationToSeconds(mediaInfo.duration);
+      const durationInSeconds = mediaInfo.durationInSeconds ?? 0;
 
       // Check if this is a new track or if the same track has restarted
       const hasRestarted =
