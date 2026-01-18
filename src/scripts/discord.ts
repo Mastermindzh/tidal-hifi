@@ -4,7 +4,6 @@ import { app, ipcMain } from "electron";
 import { globalEvents } from "../constants/globalEvents";
 import { settings } from "../constants/settings";
 import { Logger } from "../features/logger";
-import { convertDurationToSeconds } from "../features/time/parse";
 import { MediaStatus } from "../models/mediaStatus";
 import { mediaInfo } from "./mediaInfo";
 import { settingsStore } from "./settings";
@@ -103,8 +102,8 @@ const getActivity = (): SetActivity => {
 
   function includeTimeStamps(includeTimestamps: boolean) {
     if (includeTimestamps) {
-      const currentSeconds = convertDurationToSeconds(mediaInfo.current);
-      const durationSeconds = convertDurationToSeconds(mediaInfo.duration);
+      const currentSeconds = mediaInfo.currentInSeconds;
+      const durationSeconds = mediaInfo.durationInSeconds;
       const now = Math.trunc((Date.now() + 500) / 1000);
       presence.startTimestamp = now - currentSeconds;
       presence.endTimestamp = presence.startTimestamp + durationSeconds;

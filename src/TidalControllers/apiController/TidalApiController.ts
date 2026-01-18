@@ -1,7 +1,7 @@
 import { Logger } from "../../features/logger";
 import type { MediaInfo } from "../../models/mediaInfo";
 import type { MediaStatus } from "../../models/mediaStatus";
-import type { RepeatState } from "../../models/repeatState";
+import type { RepeatStateType } from "../../models/repeatState";
 import { DomTidalController } from "../DomController/DomTidalController";
 import type { TidalController } from "../TidalController";
 
@@ -22,7 +22,15 @@ export class TidalApiController implements TidalController {
     throw new Error("Method not implemented.");
   }
 
-  getDuration(): string {
+  getDuration(): number {
+    globalThis.alert("Method not implemented");
+    throw new Error("Method not implemented.");
+  }
+  getVolume(): number {
+    globalThis.alert("Method not implemented");
+    throw new Error("Method not implemented.");
+  }
+  setVolume(_volume: number) {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
@@ -58,15 +66,11 @@ export class TidalApiController implements TidalController {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
-  getCurrentTime(): string {
+  getCurrentTime(): number {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
-  getCurrentPosition(): string {
-    globalThis.alert("Method not implemented");
-    throw new Error("Method not implemented.");
-  }
-  getCurrentPositionInSeconds(): number {
+  setCurrentTime(_value: number) {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
@@ -90,7 +94,7 @@ export class TidalApiController implements TidalController {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
-  getCurrentRepeatState(): RepeatState {
+  getCurrentRepeatState(): RepeatStateType {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }

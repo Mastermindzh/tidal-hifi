@@ -1,8 +1,8 @@
 import type { MediaStatus } from "./mediaStatus";
-import type { RepeatState } from "./repeatState";
+import type { RepeatStateType } from "./repeatState";
 
 export interface MediaPlayerInfo {
   status: MediaStatus;
   shuffle: boolean;
-  repeat: RepeatState;
+  repeat: RepeatStateType;
 }
