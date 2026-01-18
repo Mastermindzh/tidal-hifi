@@ -1,9 +1,9 @@
 import { Logger } from "../../features/logger";
-import { MediaInfo } from "../../models/mediaInfo";
-import { MediaStatus } from "../../models/mediaStatus";
-import { RepeatStateType } from "../../models/repeatState";
+import type { MediaInfo } from "../../models/mediaInfo";
+import type { MediaStatus } from "../../models/mediaStatus";
+import type { RepeatStateType } from "../../models/repeatState";
 import { DomTidalController } from "../DomController/DomTidalController";
-import { TidalController } from "../TidalController";
+import type { TidalController } from "../TidalController";
 
 export class TidalApiController implements TidalController {
   public domMediaController: TidalController;
@@ -13,7 +13,7 @@ export class TidalApiController implements TidalController {
     Logger.log("[TidalApiController] - Initialized domController as a backup controller");
   }
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  onMediaInfoUpdate(callback: (state: Partial<MediaInfo>) => void): void {
+  onMediaInfoUpdate(_callback: (state: Partial<MediaInfo>) => void): void {
     globalThis.alert("method not implemented");
     throw new Error("Method not implemented.");
   }
@@ -30,7 +30,7 @@ export class TidalApiController implements TidalController {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
-  setVolume(volume: number) {
+  setVolume(_volume: number) {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
@@ -70,7 +70,7 @@ export class TidalApiController implements TidalController {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
-  setCurrentTime(value: number) {
+  setCurrentTime(_value: number) {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }

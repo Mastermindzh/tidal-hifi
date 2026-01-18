@@ -1,12 +1,14 @@
 import axios from "axios";
+
 import { settings } from "../../constants/settings";
+import type { MediaInfo } from "../../models/mediaInfo";
+import { MediaStatus } from "../../models/mediaStatus";
 import { settingsStore } from "../../scripts/settings";
+import { constrainPollingInterval } from "../../utility/pollingConstraints";
 import { Logger } from "../logger";
 import { tidalUrl } from "../tidal/url";
-import { MediaInfo } from "../../models/mediaInfo";
-import { MediaStatus } from "../../models/mediaStatus";
-import { constrainPollingInterval } from "../../utility/pollingConstraints";
 
+// biome-ignore lint/complexity/noStaticOnlyClass: off
 export class ListenBrainz {
   // Internal state for tracking scrobbling
   private static currentTrackKey = "";
@@ -20,11 +22,11 @@ export class ListenBrainz {
    */
   private static executePlayingNowWithDelay(operation: () => Promise<void> | void): void {
     // Cancel any pending "playing_now" operation
-    clearTimeout(this.currentPlayingNowDelayId);
+    clearTimeout(ListenBrainz.currentPlayingNowDelayId);
     const startPlayingNowDelay = constrainPollingInterval(
       settingsStore.get(settings.ListenBrainz.delay),
     );
-    this.currentPlayingNowDelayId = setTimeout(async () => {
+    ListenBrainz.currentPlayingNowDelayId = setTimeout(async () => {
       try {
         await operation();
       } catch (error: unknown) {
@@ -105,12 +107,12 @@ export class ListenBrainz {
         listen_type: "playing_now",
         payload: [
           {
-            track_metadata: this.createTrackMetadata(title, artists, album, duration),
+            track_metadata: ListenBrainz.createTrackMetadata(title, artists, album, duration),
           },
         ],
       };
 
-      await this.sendToListenBrainz(playing_data);
+      await ListenBrainz.sendToListenBrainz(playing_data);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       Logger.log("ListenBrainz playing_now error:", {
@@ -143,12 +145,12 @@ export class ListenBrainz {
         payload: [
           {
             listened_at: timestamp,
-            track_metadata: this.createTrackMetadata(title, artists, album, duration),
+            track_metadata: ListenBrainz.createTrackMetadata(title, artists, album, duration),
           },
         ],
       };
 
-      await this.sendToListenBrainz(scrobble_data);
+      await ListenBrainz.sendToListenBrainz(scrobble_data);
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : String(error);
       Logger.log("ListenBrainz scrobble error:", {
@@ -173,41 +175,42 @@ export class ListenBrainz {
 
       // Check if this is a new track or if the same track has restarted
       const hasRestarted =
-        trackKey === this.currentTrackKey && currentInSeconds < this.lastKnownPosition - 30;
+        trackKey === ListenBrainz.currentTrackKey &&
+        currentInSeconds < ListenBrainz.lastKnownPosition - 30;
 
-      if (trackKey !== this.currentTrackKey || hasRestarted) {
-        this.currentTrackKey = trackKey;
-        this.currentTrackScrobbled = false;
-        this.currentTrackDuration = durationInSeconds;
+      if (trackKey !== ListenBrainz.currentTrackKey || hasRestarted) {
+        ListenBrainz.currentTrackKey = trackKey;
+        ListenBrainz.currentTrackScrobbled = false;
+        ListenBrainz.currentTrackDuration = durationInSeconds;
 
         // Send "playing_now" for new track, cancelling any pending old "playing_now" operations
-        this.executePlayingNowWithDelay(() => {
-          return this.sendPlayingNow(
+        ListenBrainz.executePlayingNowWithDelay(() => {
+          return ListenBrainz.sendPlayingNow(
             mediaInfo.title,
             mediaInfo.artists,
             mediaInfo.album,
             durationInSeconds,
           );
         });
-      } else if (!this.currentTrackScrobbled) {
+      } else if (!ListenBrainz.currentTrackScrobbled) {
         // Check if we should scrobble (half duration or 4 minutes, whichever is sooner)
-        const scrobbleThreshold = Math.min(this.currentTrackDuration / 2, 240);
+        const scrobbleThreshold = Math.min(ListenBrainz.currentTrackDuration / 2, 240);
 
         if (currentInSeconds >= scrobbleThreshold) {
-          this.currentTrackScrobbled = true;
+          ListenBrainz.currentTrackScrobbled = true;
 
           // Send "single" listen (actual scrobble) - no delay needed due to natural listening time throttling
-          this.scrobbleSingle(
+          ListenBrainz.scrobbleSingle(
             mediaInfo.title,
             mediaInfo.artists,
             mediaInfo.album,
-            this.currentTrackDuration,
+            ListenBrainz.currentTrackDuration,
           );
         }
       }
 
       // Update last known position for restart detection
-      this.lastKnownPosition = currentInSeconds;
+      ListenBrainz.lastKnownPosition = currentInSeconds;
     }
   }
 }

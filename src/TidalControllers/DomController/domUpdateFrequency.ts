@@ -5,7 +5,7 @@
  * @returns A valid update frequency in milliseconds
  */
 export function getDomUpdateFrequency(updateFrequency: number, defaultValue: number = 500): number {
-  if (!isNaN(updateFrequency) && updateFrequency > 0) {
+  if (!Number.isNaN(updateFrequency) && updateFrequency > 0) {
     return updateFrequency;
   } else {
     return defaultValue;

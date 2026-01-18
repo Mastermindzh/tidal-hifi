@@ -1,5 +1,6 @@
-import { BrowserWindow } from "electron";
-import { Response, Router } from "express";
+import type { BrowserWindow } from "electron";
+import type { Response, Router } from "express";
+
 import { globalEvents } from "../../constants/globalEvents";
 import { settings } from "../../constants/settings";
 import { settingsStore } from "../../scripts/settings";
@@ -67,7 +68,7 @@ export const addLegacyApi = (expressApp: Router, mainWindow: BrowserWindow) => {
      *             schema:
      *               $ref: '#/components/schemas/OkResponse'
      */
-    expressApp.post("/favorite/toggle", (req, res) =>
+    expressApp.post("/favorite/toggle", (_req, res) =>
       handleGlobalEvent(res, globalEvents.toggleFavorite),
     );
 
@@ -86,7 +87,7 @@ export const addLegacyApi = (expressApp: Router, mainWindow: BrowserWindow) => {
      *             schema:
      *               $ref: '#/components/schemas/OkResponse'
      */
-    expressApp.get("/pause", (req, res) => handleGlobalEvent(res, globalEvents.pause));
+    expressApp.get("/pause", (_req, res) => handleGlobalEvent(res, globalEvents.pause));
 
     /**
      * @swagger
@@ -103,7 +104,7 @@ export const addLegacyApi = (expressApp: Router, mainWindow: BrowserWindow) => {
      *             schema:
      *               $ref: '#/components/schemas/OkResponse'
      */
-    expressApp.get("/next", (req, res) => handleGlobalEvent(res, globalEvents.next));
+    expressApp.get("/next", (_req, res) => handleGlobalEvent(res, globalEvents.next));
 
     /**
      * @swagger
@@ -120,7 +121,7 @@ export const addLegacyApi = (expressApp: Router, mainWindow: BrowserWindow) => {
      *             schema:
      *               $ref: '#/components/schemas/OkResponse'
      */
-    expressApp.get("/previous", (req, res) => handleGlobalEvent(res, globalEvents.previous));
+    expressApp.get("/previous", (_req, res) => handleGlobalEvent(res, globalEvents.previous));
 
     /**
      * @swagger
@@ -137,7 +138,7 @@ export const addLegacyApi = (expressApp: Router, mainWindow: BrowserWindow) => {
      *             schema:
      *               $ref: '#/components/schemas/OkResponse'
      */
-    expressApp.get("/playpause", (req, res) => {
+    expressApp.get("/playpause", (_req, res) => {
       handleGlobalEvent(res, globalEvents.playPause);
     });
   }

@@ -1,4 +1,5 @@
-import fs from "fs";
+import fs from "node:fs";
+
 import { settings } from "../../constants/settings";
 import { settingsStore } from "../../scripts/settings";
 import { Logger } from "../logger";

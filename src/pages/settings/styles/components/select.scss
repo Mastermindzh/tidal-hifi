@@ -1,0 +1,15 @@
+@use "../mixins";
+
+.select-input {
+  @include mixins.common-input;
+
+  border-right: 10px solid transparent;
+
+  option {
+    background-color: var(--grey-darkest);
+
+    &:disabled {
+      font-size: 13px;
+    }
+  }
+}

@@ -1,16 +1,27 @@
+import fs from "node:fs";
 import { app } from "@electron/remote";
 import { ipcRenderer, shell } from "electron";
-import fs from "fs";
+
 import { globalEvents } from "../../constants/globalEvents";
 import { settings } from "../../constants/settings";
 import { SUPPORTED_TRAY_ICON_EXTENSIONS } from "../../constants/trayIcon";
 import { Logger } from "../../features/logger";
 import { addCustomCss } from "../../features/theming/theming";
-import { settingsStore } from "./../../scripts/settings";
-import { getOptions, getOptionsHeader, getThemeListFromDirectory } from "./theming";
+import { settingsStore } from "../../scripts/settings";
+import { cssFilter, getOptions, getOptionsHeader, getThemeListFromDirectory } from "./theming";
 
 // All switches on the settings screen that show additional options based on their state
 const switchesWithSettings = {
+  tray: {
+    switch: "trayIcon",
+    classToHide: "tray__options",
+    settingsKey: settings.trayIcon,
+  },
+  api: {
+    switch: "apiCheckbox",
+    classToHide: "api__options",
+    settingsKey: settings.api,
+  },
   listenBrainz: {
     switch: "enableListenBrainz",
     classToHide: "listenbrainz__options",
@@ -87,7 +98,9 @@ function getThemeFiles() {
 
   // empty old options
   const oldOptions = document.querySelectorAll("#themesList option");
-  oldOptions.forEach((o) => o.remove());
+  oldOptions.forEach((o) => {
+    o.remove();
+  });
 
   allThemes.forEach((option) => {
     selectElement.add(option, null);
@@ -99,8 +112,18 @@ function handleFileUploads() {
   fileMessage.innerText = "or drag and drop files here";
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  document.getElementById("theme-files").addEventListener("change", async function (e: any) {
-    for (const file of Array.from(e.target.files) as File[]) {
+  document.getElementById("theme-files").addEventListener("change", async (e: any) => {
+    if (!e.target.files || e.target.files.length === 0) {
+      fileMessage.classList.add("hidden");
+      return;
+    }
+    const newThemes = (Array.from(e.target.files) as File[]).filter((f) => cssFilter(f.name));
+    if (newThemes.length === 0) {
+      fileMessage.innerText = "No valid .css files found in the selected files.";
+      fileMessage.classList.remove("hidden");
+      return;
+    }
+    for (const file of newThemes as File[]) {
       const destination = `${app.getPath("userData")}/themes/${file.name}`;
 
       const arrayBuffer = await file.arrayBuffer();
@@ -109,6 +132,7 @@ function handleFileUploads() {
       Logger.log("written file!", { destination });
     }
     fileMessage.innerText = `${e.target.files.length} files successfully uploaded`;
+    fileMessage.classList.remove("hidden");
     getThemeFiles();
   });
 }
@@ -267,11 +291,11 @@ window.addEventListener("DOMContentLoaded", () => {
   document.getElementById("resetZoom")?.addEventListener("click", () => {
     ipcRenderer.send(globalEvents.resetZoom);
   });
-  document.querySelectorAll(".external-link").forEach((elem) =>
-    elem.addEventListener("click", function (event) {
+  document.querySelectorAll(".external-link").forEach((elem) => {
+    elem.addEventListener("click", (event) => {
       openExternal((event.target as HTMLElement).getAttribute("data-url"));
-    }),
-  );
+    });
+  });
 
   function addInputListener(
     source: HTMLInputElement,
@@ -378,7 +402,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   refreshSettings();
   addInputListener(adBlock, settings.adBlock);
-  addInputListener(api, settings.api);
+  addInputListener(api, settings.api, switchesWithSettings.api);
   addSelectListener(channel, settings.advanced.tidalUrl);
   addTextAreaListener(customCSS, settings.customCSS);
   addInputListener(disableAltMenuBar, settings.disableAltMenuBar);
@@ -401,7 +425,7 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(staticWindowTitle, settings.staticWindowTitle);
   addInputListener(singleInstance, settings.singleInstance);
   addSelectListener(theme, settings.theme);
-  addInputListener(trayIcon, settings.trayIcon);
+  addInputListener(trayIcon, settings.trayIcon, switchesWithSettings.tray);
   addTrayIconPathListener(trayIconPath, settings.trayIconPath);
   addInputListener(updateFrequency, settings.updateFrequency);
   addInputListener(

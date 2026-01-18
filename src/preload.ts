@@ -1,6 +1,7 @@
 import { app, dialog, Notification } from "@electron/remote";
 import { clipboard, ipcRenderer } from "electron";
 import Player from "mpris-service";
+
 import { tidalControllers } from "./constants/controller";
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
@@ -8,27 +9,28 @@ import { downloadImage } from "./features/icon/downloadImage";
 import { Logger } from "./features/logger";
 import { addCustomCss } from "./features/theming/theming";
 import { getTrackURL, getUniversalLink } from "./features/tidal/url";
-import { getEmptyMediaInfo, MediaInfo } from "./models/mediaInfo";
+import { convertMicrosecondsToSeconds, convertSecondsToMicroseconds } from "./features/time/parse";
+import { getEmptyMediaInfo, type MediaInfo } from "./models/mediaInfo";
 import { MediaStatus } from "./models/mediaStatus";
+import { RepeatState } from "./models/repeatState";
 import { addHotkey } from "./scripts/hotkeys";
 import { ObjectToDotNotation } from "./scripts/objectUtilities";
 import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
 import { TidalApiController } from "./TidalControllers/apiController/TidalApiController";
-import { getDomUpdateFrequency } from "./TidalControllers/DomController/domUpdateFrequency";
 import { DomTidalController } from "./TidalControllers/DomController/DomTidalController";
+import { getDomUpdateFrequency } from "./TidalControllers/DomController/domUpdateFrequency";
 import { MediaSessionController } from "./TidalControllers/MediaSessionController/MediaSessionController";
-import { TidalController } from "./TidalControllers/TidalController";
-import { RepeatState } from "./models/repeatState";
-import { convertMicrosecondsToSeconds, convertSecondsToMicroseconds } from "./features/time/parse";
+import type { TidalController } from "./TidalControllers/TidalController";
 import {
   convertMprisLoopToRepeatState,
   convertRepeatStateToMprisLoop,
   isMPRISLoop,
   isMPRISPosition,
+  isMPRISSeek,
   isMPRISShuffle,
   isMPRISVolume,
-  MprisLoopType,
+  type MprisLoopType,
 } from "./utility/mpris";
 
 const albumArtPath = `${app.getPath("userData")}/current.jpg`;
@@ -87,16 +89,16 @@ function addHotKeys() {
       tidalController.toggleFavorite();
     });
 
-    addHotkey("control+u", function () {
+    addHotkey("control+u", () => {
       // reloading window without cache should show the update bar if applicable
       window.location.reload();
     });
 
-    addHotkey("control+r", function () {
+    addHotkey("control+r", () => {
       tidalController.repeat();
     });
-    addHotkey("delete", function () {});
-    addHotkey("control+w", async function () {
+    addHotkey("delete", () => {});
+    addHotkey("control+w", async () => {
       const url = getUniversalLink(getTrackURL(tidalController.getTrackId()));
       clipboard.writeText(url);
       new Notification({
@@ -107,10 +109,10 @@ function addHotKeys() {
   }
 
   // always add the hotkey for the settings window
-  addHotkey("control+=", function () {
+  addHotkey("control+=", () => {
     ipcRenderer.send(globalEvents.showSettings);
   });
-  addHotkey("control+0", function () {
+  addHotkey("control+0", () => {
     ipcRenderer.send(globalEvents.showSettings);
   });
 }
@@ -188,8 +190,11 @@ function addIPCEventListeners() {
           }
           break;
         case globalEvents.seek:
-          if (payload.currentTime) {
-            tidalController.setCurrentTime(payload.currentTime);
+          if (payload.absoluteTime) {
+            tidalController.setCurrentTime(payload.absoluteTime);
+          } else if (payload.relativeTime) {
+            const newTime = tidalController.getCurrentTime() + payload.relativeTime;
+            tidalController.setCurrentTime(newTime);
           }
           break;
         default:
@@ -286,8 +291,8 @@ function addMPRIS() {
         "play",
         "loopStatus",
         "shuffle",
-        "seek",
         "volume",
+        "seek",
         "position",
       ];
       events.forEach((eventName) => {
@@ -328,6 +333,13 @@ function addMPRIS() {
                 tidalController.setVolume(eventData);
               }
               break;
+            case "seek":
+              if (isMPRISSeek(eventData)) {
+                const newTime =
+                  tidalController.getCurrentTime() + convertMicrosecondsToSeconds(eventData);
+                tidalController.setCurrentTime(newTime);
+              }
+              break;
             case "position":
               if (isMPRISPosition(eventData)) {
                 tidalController.setCurrentTime(convertMicrosecondsToSeconds(eventData.position));
@@ -337,10 +349,10 @@ function addMPRIS() {
         });
       });
       // Override get position function
-      player.getPosition = function () {
+      player.getPosition = () => {
         return convertSecondsToMicroseconds(tidalController.getCurrentTime());
       };
-      player.on("quit", function () {
+      player.on("quit", () => {
         app.quit();
       });
     } catch (exception) {
@@ -363,7 +375,7 @@ function updateMpris(mediaInfo: MediaInfo) {
         "xesam:url": mediaInfo.url,
         "mpris:artUrl": highResImageUrl,
         "mpris:length": convertSecondsToMicroseconds(mediaInfo.durationInSeconds),
-        "mpris:trackid": "/org/mpris/MediaPlayer2/track/" + tidalController.getTrackId(),
+        "mpris:trackid": `/org/mpris/MediaPlayer2/track/${tidalController.getTrackId()}`,
       },
       ...ObjectToDotNotation(mediaInfo, "custom:"),
     };

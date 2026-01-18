@@ -1,4 +1,4 @@
-import { MediaPlayerInfo } from "./mediaPlayerInfo";
+import type { MediaPlayerInfo } from "./mediaPlayerInfo";
 import { MediaStatus } from "./mediaStatus";
 import { RepeatState } from "./repeatState";
 

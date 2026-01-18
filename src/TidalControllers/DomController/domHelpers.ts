@@ -22,7 +22,10 @@ export function getElementText(key: keyof typeof UI_SELECTORS): string {
  * @param key of the object selector
  * @param attribute name of the attribute
  */
-export function getElementAttribute(key: keyof typeof UI_SELECTORS, attribute: string): string | null {
+export function getElementAttribute(
+  key: keyof typeof UI_SELECTORS,
+  attribute: string,
+): string | null {
   const element = getElement(key);
   return element ? element.getAttribute(attribute) : null;
 }
@@ -40,5 +43,5 @@ export function clickElement(key: keyof typeof UI_SELECTORS): void {
  * @param key of the object selector
  */
 export function focusElement(key: keyof typeof UI_SELECTORS): void {
-  return getElement(key).focus();
+  getElement(key).focus();
 }

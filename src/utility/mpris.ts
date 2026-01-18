@@ -1,4 +1,4 @@
-import { RepeatState, RepeatStateType } from "../models/repeatState";
+import { RepeatState, type RepeatStateType } from "../models/repeatState";
 
 // State map
 export const MPRIS_LOOP = {
@@ -22,6 +22,10 @@ export function isMPRISShuffle(value: unknown): value is boolean {
 }
 
 export function isMPRISVolume(value: unknown): value is number {
+  return typeof value === "number";
+}
+
+export function isMPRISSeek(value: unknown): value is number {
   return typeof value === "number";
 }
 
