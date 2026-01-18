@@ -19,7 +19,8 @@ export class DomTidalController implements TidalController<DomControllerOptions>
    * Get a player element
    */
   getPlayer() {
-    return getElement("player") as HTMLVideoElement;
+    const player = getElement("player") as HTMLVideoElement;
+    return player || null;
   }
 
   /**
@@ -64,6 +65,8 @@ export class DomTidalController implements TidalController<DomControllerOptions>
 
       const album = this.getAlbumName();
       const duration = this.getDuration();
+      const volume = this.getVolume();
+
       const updatedInfo = {
         title,
         artists: artistsString,
@@ -79,6 +82,8 @@ export class DomTidalController implements TidalController<DomControllerOptions>
         image: this.getSongIcon(),
         icon: this.getSongIcon(),
         favorite: this.isFavorite(),
+        trackId: this.getTrackId(),
+        volume: volume,
         player: {
           status: currentStatus,
           shuffle: shuffleState,
@@ -124,11 +129,9 @@ export class DomTidalController implements TidalController<DomControllerOptions>
     clickElement("shuffle");
   }
   getCurrentlyPlayingStatus() {
-    if (this.getPlayer().paused) {
-      return MediaStatus.paused;
-    } else {
-      return MediaStatus.playing;
-    }
+    const player = this.getPlayer();
+    if (!player) return MediaStatus.paused;
+    return player.paused ? MediaStatus.paused : MediaStatus.playing;
   }
 
   getCurrentShuffleState() {
@@ -147,15 +150,19 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   }
 
   play() {
+    const player = this.getPlayer();
+    if (!player) return;
     // Only play if not already playing
     if (this.getCurrentlyPlayingStatus() !== MediaStatus.playing) {
-      this.getPlayer().play();
+      player.play();
     }
   }
   pause() {
+    const player = this.getPlayer();
+    if (!player) return;
     // Only pause if currently playing
     if (this.getCurrentlyPlayingStatus() === MediaStatus.playing) {
-      this.getPlayer().pause();
+      player.pause();
     }
   }
   stop() {
@@ -172,20 +179,33 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   }
 
   getCurrentTime() {
-    return Math.round(this.getPlayer().currentTime);
+    const player = this.getPlayer();
+    if (!player) return 0;
+    const time = Math.round(player.currentTime);
+    return Number.isFinite(time) ? time : 0;
   }
   setCurrentTime(time: number) {
-    this.getPlayer().currentTime = Math.max(Math.min(time, this.getDuration()), 0);
+    const player = this.getPlayer();
+    if (!player || !Number.isFinite(time)) return;
+    player.currentTime = Math.max(Math.min(time, this.getDuration()), 0);
   }
   getDuration() {
-    return Math.round(this.getPlayer().duration);
+    const player = this.getPlayer();
+    if (!player) return 0;
+    const duration = Math.round(player.duration);
+    return Number.isFinite(duration) ? duration : 0;
   }
   getVolume() {
-    return this.getPlayer().volume;
+    const player = this.getPlayer();
+    if (!player) return 1.0;
+    const volume = player.volume;
+    return Number.isFinite(volume) ? volume : 1.0;
   }
   setVolume(volume: number) {
+    const player = this.getPlayer();
+    if (!player || !Number.isFinite(volume)) return;
     // This doesn't update the value of the native range input displayed in the UI.
-    this.getPlayer().volume = Math.max(Math.min(volume, 1), 0);
+    player.volume = Math.max(Math.min(volume, 1), 0);
   }
 
   getAlbumName() {

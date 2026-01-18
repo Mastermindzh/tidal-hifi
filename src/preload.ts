@@ -1,6 +1,5 @@
 import { app, dialog, Notification } from "@electron/remote";
 import { clipboard, ipcRenderer } from "electron";
-import Player from "mpris-service";
 
 import { tidalControllers } from "./constants/controller";
 import { globalEvents } from "./constants/globalEvents";
@@ -9,13 +8,10 @@ import { downloadImage } from "./features/icon/downloadImage";
 import { Logger } from "./features/logger";
 import { addCustomCss } from "./features/theming/theming";
 import { getTrackURL, getUniversalLink } from "./features/tidal/url";
-import { convertMicrosecondsToSeconds, convertSecondsToMicroseconds } from "./features/time/parse";
 import { getEmptyMediaInfo, type MediaInfo } from "./models/mediaInfo";
-import { MediaStatus } from "./models/mediaStatus";
-import { RepeatState } from "./models/repeatState";
+import { RepeatState, type RepeatStateType } from "./models/repeatState";
 import { isSeekEvent } from "./models/seekEvent";
 import { addHotkey } from "./scripts/hotkeys";
-import { ObjectToDotNotation } from "./scripts/objectUtilities";
 import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
 import { TidalApiController } from "./TidalControllers/apiController/TidalApiController";
@@ -23,18 +19,11 @@ import { DomTidalController } from "./TidalControllers/DomController/DomTidalCon
 import { getDomUpdateFrequency } from "./TidalControllers/DomController/domUpdateFrequency";
 import { MediaSessionController } from "./TidalControllers/MediaSessionController/MediaSessionController";
 import type { TidalController } from "./TidalControllers/TidalController";
-import {
-  convertMprisLoopToRepeatState,
-  convertRepeatStateToMprisLoop,
-  MPRIS_LOOP,
-  type MprisLoopType,
-} from "./utility/mpris";
 
 const albumArtPath = `${app.getPath("userData")}/current.jpg`;
 const staticTitle = "TIDAL Hi-Fi";
 
 let currentSong = "";
-let player: Player;
 
 let currentNotification: Electron.Notification;
 
@@ -182,7 +171,7 @@ function addIPCEventListeners() {
           tidalController.repeat();
           break;
         case globalEvents.volume:
-          if (payload.volume) {
+          if (typeof payload.volume === "number" && Number.isFinite(payload.volume)) {
             tidalController.setVolume(payload.volume);
           }
           break;
@@ -195,6 +184,11 @@ function addIPCEventListeners() {
               const newTime = currentTime + payload.seconds;
               tidalController.setCurrentTime(newTime);
             }
+          }
+          break;
+        case globalEvents.setLoopState:
+          if (payload?.targetState) {
+            setLoopState(payload.targetState);
           }
           break;
         default:
@@ -212,7 +206,6 @@ function addIPCEventListeners() {
 function updateMediaInfo(mediaInfo: MediaInfo, notify: boolean) {
   if (mediaInfo) {
     ipcRenderer.send(globalEvents.updateInfo, mediaInfo);
-    updateMpris(mediaInfo);
     if (notify) {
       sendNotification(mediaInfo);
     }
@@ -237,13 +230,16 @@ async function sendNotification(mediaInfo: MediaInfo) {
   }
 }
 
-async function setLoopState(newRepeatState: MprisLoopType) {
+async function setLoopState(targetRepeatState: RepeatStateType) {
   const order = [RepeatState.off, RepeatState.all, RepeatState.single];
   const currentValue = tidalController.getCurrentRepeatState();
 
-  // Based on the newValue and currentValue delta, we press the repeat button repeatedly so the user's preference is set.
-  const newIndex = order.indexOf(convertMprisLoopToRepeatState(newRepeatState));
+  // Based on the targetState and currentValue delta, we press the repeat button repeatedly so the user's preference is set.
+  const newIndex = order.indexOf(targetRepeatState);
   const currentIndex = order.indexOf(currentValue);
+
+  if (newIndex === -1 || currentIndex === -1) return;
+
   let calculatedDelta = newIndex - currentIndex;
   if (calculatedDelta < 0) {
     calculatedDelta += order.length;
@@ -253,142 +249,6 @@ async function setLoopState(newRepeatState: MprisLoopType) {
     tidalController.repeat();
     // Small delay to ensure the button click is registered in the UI
     await new Promise((resolve) => setTimeout(resolve, 500));
-  }
-}
-
-function setShuffleState(newShuffleState: boolean) {
-  if (!newShuffleState && tidalController.getCurrentShuffleState()) {
-    tidalController.toggleShuffle();
-  } else if (newShuffleState && !tidalController.getCurrentShuffleState()) {
-    tidalController.toggleShuffle();
-  }
-}
-
-function addMPRIS() {
-  if (process.platform === "linux" && settingsStore.get(settings.mpris)) {
-    try {
-      player = Player({
-        name: "tidal-hifi",
-        identity: "tidal-hifi",
-        supportedUriSchemes: ["file"],
-        supportedMimeTypes: [
-          "audio/mpeg",
-          "audio/flac",
-          "audio/x-flac",
-          "application/ogg",
-          "audio/wav",
-        ],
-        supportedInterfaces: ["player"],
-        desktopEntry: "tidal-hifi",
-      });
-      // Events
-      const events = [
-        "next",
-        "previous",
-        "pause",
-        "playpause",
-        "stop",
-        "play",
-        "loopStatus",
-        "shuffle",
-        "volume",
-        "seek",
-        "position",
-      ];
-      events.forEach((eventName) => {
-        player.on(eventName, async (eventData) => {
-          // The eventData parameter is typed as an object in mpris-service.d.ts,
-          // but MPRIS is sending different types depending on the event.
-          switch (eventName) {
-            case "playpause":
-              tidalController.playPause();
-              break;
-            case "next":
-              tidalController.next();
-              break;
-            case "previous":
-              tidalController.previous();
-              break;
-            case "pause":
-              tidalController.pause();
-              break;
-            case "stop":
-              tidalController.stop();
-              break;
-            case "play":
-              tidalController.play();
-              break;
-            case "loopStatus":
-              if (typeof eventData === "string" && eventData in MPRIS_LOOP) {
-                setLoopState(eventData as MprisLoopType);
-              }
-              break;
-            case "shuffle":
-              if (typeof eventData === "boolean") {
-                setShuffleState(eventData);
-              }
-              break;
-            case "volume":
-              if (typeof eventData === "number") {
-                tidalController.setVolume(eventData);
-              }
-              break;
-            case "seek":
-              if (typeof eventData === "number") {
-                const relativeSeconds = convertMicrosecondsToSeconds(eventData);
-                const newTime = tidalController.getCurrentTime() + relativeSeconds;
-                tidalController.setCurrentTime(newTime);
-              }
-              break;
-            case "position":
-              if (
-                typeof eventData === "object" &&
-                eventData !== null &&
-                "position" in eventData &&
-                typeof eventData.position === "number"
-              ) {
-                const absoluteSeconds = convertMicrosecondsToSeconds(eventData.position);
-                tidalController.setCurrentTime(absoluteSeconds);
-              }
-              break;
-          }
-        });
-      });
-      // Override get position function
-      player.getPosition = () => {
-        return convertSecondsToMicroseconds(tidalController.getCurrentTime());
-      };
-      player.on("quit", () => {
-        app.quit();
-      });
-    } catch (exception) {
-      Logger.log("MPRIS player api not working", exception);
-    }
-  }
-}
-
-function updateMpris(mediaInfo: MediaInfo) {
-  if (player) {
-    // Use high-resolution image URL for better quality in media players
-    const highResImageUrl = tidalController.getSongImage() || mediaInfo.image;
-
-    player.metadata = {
-      ...player.metadata,
-      ...{
-        "xesam:title": mediaInfo.title,
-        "xesam:artist": [mediaInfo.artists],
-        "xesam:album": mediaInfo.album,
-        "xesam:url": mediaInfo.url,
-        "mpris:artUrl": highResImageUrl,
-        "mpris:length": convertSecondsToMicroseconds(mediaInfo.durationInSeconds),
-        "mpris:trackid": `/org/mpris/MediaPlayer2/track/${tidalController.getTrackId()}`,
-      },
-      ...ObjectToDotNotation(mediaInfo, "custom:"),
-    };
-    player.playbackStatus = mediaInfo.status === MediaStatus.paused ? "Paused" : "Playing";
-    player.volume = tidalController.getVolume();
-    player.shuffle = tidalController.getCurrentShuffleState();
-    player.loopStatus = convertRepeatStateToMprisLoop(tidalController.getCurrentRepeatState());
   }
 }
 
@@ -450,7 +310,7 @@ tidalController.onMediaInfoUpdate(async (newState) => {
     }
   }
 });
-addMPRIS();
+
 addCustomCss(app);
 addHotKeys();
 addIPCEventListeners();

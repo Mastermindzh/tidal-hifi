@@ -18,6 +18,8 @@ export interface MediaInfo {
   image: string;
   localAlbumArt?: string; // Local path to downloaded album art
   favorite: boolean;
+  trackId?: string;
+  volume?: number;
   player?: MediaPlayerInfo;
 }
 
@@ -38,6 +40,8 @@ export const getEmptyMediaInfo = () => {
     icon: "",
     localAlbumArt: "",
     favorite: true,
+    trackId: "",
+    volume: 1.0,
 
     player: {
       status: MediaStatus.playing,

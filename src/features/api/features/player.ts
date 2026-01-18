@@ -1,16 +1,32 @@
 import type { BrowserWindow } from "electron";
-import type { Router } from "express";
+import type { Request, Router } from "express";
 
 import { globalEvents } from "../../../constants/globalEvents";
 import { settings } from "../../../constants/settings";
 import { settingsStore } from "../../../scripts/settings";
 import { handleWindowEvent } from "../helpers/handleWindowEvent";
 
-interface ParsedQs {
-  [key: string]: undefined | string | ParsedQs | (string | ParsedQs)[];
-}
+const parseNumberParam = (value: unknown, defaultValue: number = 0): number => {
+  if (typeof value !== "string" || value.trim() === "") {
+    return defaultValue;
+  }
+  const parsed = parseFloat(value);
+  return Number.isNaN(parsed) ? defaultValue : parsed;
+};
 
-type payloadParserType = (body: { [key: string]: string }, params: ParsedQs) => object;
+const parseVolumeParam = (req: Request) => ({
+  volume: parseNumberParam(req.query.volume),
+});
+
+const parseAbsoluteSeekParam = (req: Request) => ({
+  seconds: parseNumberParam(req.query.seconds),
+  type: "absolute" as const,
+});
+
+const parseRelativeSeekParam = (req: Request) => ({
+  seconds: parseNumberParam(req.query.seconds),
+  type: "relative" as const,
+});
 
 export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow) => {
   const windowEvent = handleWindowEvent(mainWindow);
@@ -31,9 +47,13 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
     expressApp.post(createRoute(route), (_req, res) => windowEvent(res, action));
   };
 
-  const createPlayerPutAction = (route: string, action: string, parser: payloadParserType) => {
+  const createPlayerPutAction = (
+    route: string,
+    action: string,
+    payloadFactory?: (req: Request) => object,
+  ) => {
     expressApp.put(createRoute(route), (req, res) =>
-      windowEvent(res, action, parser ? parser(req.body, req.query) : undefined),
+      windowEvent(res, action, payloadFactory ? payloadFactory(req) : undefined),
     );
   };
 
@@ -190,9 +210,7 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
      *             schema:
      *               $ref: '#/components/schemas/OkResponse'
      */
-    createPlayerPutAction("/volume", globalEvents.volume, (_body, params) => ({
-      volume: typeof params.volume === "string" ? parseFloat(params.volume) : null,
-    }));
+    createPlayerPutAction("/volume", globalEvents.volume, parseVolumeParam);
 
     /**
      * @swagger
@@ -216,10 +234,7 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
      *             schema:
      *               $ref: '#/components/schemas/OkResponse'
      */
-    createPlayerPutAction("/seek/absolute", globalEvents.seek, (_body, params) => ({
-      seconds: typeof params.seconds === "string" ? parseFloat(params.seconds) : 0,
-      type: "absolute" as const,
-    }));
+    createPlayerPutAction("/seek/absolute", globalEvents.seek, parseAbsoluteSeekParam);
 
     /**
      * @swagger
@@ -242,9 +257,6 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
      *             schema:
      *               $ref: '#/components/schemas/OkResponse'
      */
-    createPlayerPutAction("/seek/relative", globalEvents.seek, (_body, params) => ({
-      seconds: typeof params.seconds === "string" ? parseFloat(params.seconds) : 0,
-      type: "relative" as const,
-    }));
+    createPlayerPutAction("/seek/relative", globalEvents.seek, parseRelativeSeekParam);
   }
 };

@@ -62,6 +62,7 @@ export class MediaSessionController implements TidalController<MediaSessionContr
         if (mediaMetadata) {
           const current = this.getCurrentTime();
           const duration = this.getDuration();
+
           // Convert MediaMetadata to our MediaInfo format using internal getters
           const currentMediaInfo: Partial<MediaInfo> = {
             title: this.getTitle(),
@@ -78,6 +79,8 @@ export class MediaSessionController implements TidalController<MediaSessionContr
             image: this.getSongImage(),
             icon: this.getSongIcon(),
             favorite: this.isFavorite(),
+            trackId: this.getTrackId(),
+            volume: this.getVolume(),
             player: {
               status: this.getCurrentlyPlayingStatus(),
               shuffle: this.getCurrentShuffleState(),

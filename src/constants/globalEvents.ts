@@ -18,4 +18,6 @@ export const globalEvents = {
   resetZoom: "resetZoom",
   volume: "volume",
   seek: "seek",
+  setLoopState: "setLoopState",
+  quit: "quit",
 };
