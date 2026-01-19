@@ -166,14 +166,10 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   }
 
   play() {
-    const player = this.getPlayer();
-    if (!player) return;
-    player.play();
+    clickElement("play");
   }
   pause() {
-    const player = this.getPlayer();
-    if (!player) return;
-    player.pause();
+    clickElement("pause");
   }
   stop() {
     this.pause();
