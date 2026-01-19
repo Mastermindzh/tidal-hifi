@@ -60,7 +60,7 @@ export class MediaSessionController implements TidalController<MediaSessionContr
         const mediaMetadata = navigator.mediaSession?.metadata;
 
         if (mediaMetadata) {
-          const current = this.getCurrentTime();
+          const current = this.getPosition();
           const duration = this.getDuration();
 
           // Convert MediaMetadata to our MediaInfo format using internal getters
@@ -70,7 +70,7 @@ export class MediaSessionController implements TidalController<MediaSessionContr
             artistsArray: this.getArtists(),
             album: this.getAlbumName(),
             playingFrom: this.getPlayingFrom(),
-            status: this.getCurrentlyPlayingStatus(),
+            status: this.getMediaStatus(),
             url: getTrackURL(this.getTrackId()),
             current: convertSecondsToClockFormat(current),
             currentInSeconds: current,
@@ -82,9 +82,9 @@ export class MediaSessionController implements TidalController<MediaSessionContr
             trackId: this.getTrackId(),
             volume: this.getVolume(),
             player: {
-              status: this.getCurrentlyPlayingStatus(),
-              shuffle: this.getCurrentShuffleState(),
-              repeat: this.getCurrentRepeatState(),
+              status: this.getMediaStatus(),
+              shuffle: this.getShuffleState(),
+              repeat: this.getRepeatState(),
             },
           };
 
@@ -206,7 +206,7 @@ export class MediaSessionController implements TidalController<MediaSessionContr
     Logger.log("MediaSessionController destroyed");
   }
 
-  getCurrentlyPlayingStatus(): MediaStatus {
+  getMediaStatus(): MediaStatus {
     const playbackState = navigator.mediaSession?.playbackState;
     if (playbackState === "playing") {
       return MediaStatus.playing;
@@ -214,7 +214,7 @@ export class MediaSessionController implements TidalController<MediaSessionContr
       return MediaStatus.paused;
     } else {
       // "none" or undefined - fallback to DOM controller
-      return this.fallbackDomController.getCurrentlyPlayingStatus();
+      return this.fallbackDomController.getMediaStatus();
     }
   }
 
@@ -222,10 +222,6 @@ export class MediaSessionController implements TidalController<MediaSessionContr
   // Non-MediaSession methods - not implemented for MediaSession controller
   // These methods would require DOM manipulation or other approaches
   // =============================================================================
-
-  playPause(): void {
-    this.fallbackDomController.playPause();
-  }
 
   play(): void {
     this.fallbackDomController.play();
@@ -247,12 +243,20 @@ export class MediaSessionController implements TidalController<MediaSessionContr
     this.fallbackDomController.previous();
   }
 
-  repeat(): void {
-    this.fallbackDomController.repeat();
+  toggleRepeat(): void {
+    this.fallbackDomController.toggleRepeat();
   }
 
-  toggleShuffle(): void {
+  setRepeat(repeat: RepeatStateType) {
+    this.fallbackDomController.setRepeat(repeat);
+  }
+
+  toggleShuffle() {
     this.fallbackDomController.toggleShuffle();
+  }
+
+  setShuffle(shuffle: boolean): void {
+    this.fallbackDomController.setShuffle(shuffle);
   }
 
   toggleFavorite(): void {
@@ -267,24 +271,24 @@ export class MediaSessionController implements TidalController<MediaSessionContr
     this.fallbackDomController.forward();
   }
 
-  getCurrentShuffleState(): boolean {
-    return this.fallbackDomController.getCurrentShuffleState();
+  getShuffleState(): boolean {
+    return this.fallbackDomController.getShuffleState();
   }
 
-  getCurrentRepeatState(): RepeatStateType {
-    return this.fallbackDomController.getCurrentRepeatState();
+  getRepeatState(): RepeatStateType {
+    return this.fallbackDomController.getRepeatState();
   }
 
   getTrackId(): string {
     return this.fallbackDomController.getTrackId();
   }
 
-  getCurrentTime(): number {
-    return this.fallbackDomController.getCurrentTime();
+  getPosition(): number {
+    return this.fallbackDomController.getPosition();
   }
 
-  setCurrentTime(time: number): void {
-    this.fallbackDomController.setCurrentTime(time);
+  setPosition(seconds: number): void {
+    this.fallbackDomController.setPosition(seconds);
   }
 
   getDuration(): number {

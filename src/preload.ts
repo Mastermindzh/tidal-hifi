@@ -9,7 +9,7 @@ import { Logger } from "./features/logger";
 import { addCustomCss } from "./features/theming/theming";
 import { getTrackURL, getUniversalLink } from "./features/tidal/url";
 import { getEmptyMediaInfo, type MediaInfo } from "./models/mediaInfo";
-import { RepeatState, type RepeatStateType } from "./models/repeatState";
+import { MediaStatus } from "./models/mediaStatus";
 import { isSeekEvent } from "./models/seekEvent";
 import { addHotkey } from "./scripts/hotkeys";
 import { settingsStore } from "./scripts/settings";
@@ -81,7 +81,7 @@ function addHotKeys() {
     });
 
     addHotkey("control+r", () => {
-      tidalController.repeat();
+      tidalController.toggleRepeat();
     });
     addHotkey("delete", () => {});
     addHotkey("control+w", async () => {
@@ -147,13 +147,24 @@ function addIPCEventListeners() {
     ipcRenderer.on("globalEvent", (_event, action, payload) => {
       switch (action) {
         case globalEvents.playPause:
-          tidalController.playPause();
+          // Toggle play/pause
+          if (tidalController.getMediaStatus() === MediaStatus.playing) {
+            tidalController.pause();
+          } else {
+            tidalController.play();
+          }
           break;
         case globalEvents.play:
-          tidalController.play();
+          // Only play if not already playing
+          if (tidalController.getMediaStatus() !== MediaStatus.playing) {
+            tidalController.play();
+          }
           break;
         case globalEvents.pause:
-          tidalController.pause();
+          // Only pause if currently playing
+          if (this.getCurrentlyPlayingStatus() === MediaStatus.playing) {
+            tidalController.pause();
+          }
           break;
         case globalEvents.next:
           tidalController.next();
@@ -167,8 +178,21 @@ function addIPCEventListeners() {
         case globalEvents.toggleShuffle:
           tidalController.toggleShuffle();
           break;
+        case globalEvents.setShuffle:
+          if (
+            typeof payload.shuffle === "boolean" &&
+            tidalController.getShuffleState() !== payload.shuffle
+          ) {
+            tidalController.setShuffle(payload.shuffle);
+          }
+          break;
         case globalEvents.toggleRepeat:
-          tidalController.repeat();
+          tidalController.toggleRepeat();
+          break;
+        case globalEvents.setRepeat:
+          if (payload?.targetState) {
+            tidalController.setRepeat(payload.targetState);
+          }
           break;
         case globalEvents.volume:
           if (typeof payload.volume === "number" && Number.isFinite(payload.volume)) {
@@ -178,17 +202,12 @@ function addIPCEventListeners() {
         case globalEvents.seek:
           if (isSeekEvent(payload)) {
             if (payload.type === "absolute") {
-              tidalController.setCurrentTime(payload.seconds);
+              tidalController.setPosition(payload.seconds);
             } else if (payload.type === "relative") {
-              const currentTime = tidalController.getCurrentTime();
+              const currentTime = tidalController.getPosition();
               const newTime = currentTime + payload.seconds;
-              tidalController.setCurrentTime(newTime);
+              tidalController.setPosition(newTime);
             }
-          }
-          break;
-        case globalEvents.setLoopState:
-          if (payload?.targetState) {
-            setLoopState(payload.targetState);
           }
           break;
         default:
@@ -227,28 +246,6 @@ async function sendNotification(mediaInfo: MediaInfo) {
       icon: mediaInfo.localAlbumArt || mediaInfo.image || mediaInfo.icon,
     });
     currentNotification.show();
-  }
-}
-
-async function setLoopState(targetRepeatState: RepeatStateType) {
-  const order = [RepeatState.off, RepeatState.all, RepeatState.single];
-  const currentValue = tidalController.getCurrentRepeatState();
-
-  // Based on the targetState and currentValue delta, we press the repeat button repeatedly so the user's preference is set.
-  const newIndex = order.indexOf(targetRepeatState);
-  const currentIndex = order.indexOf(currentValue);
-
-  if (newIndex === -1 || currentIndex === -1) return;
-
-  let calculatedDelta = newIndex - currentIndex;
-  if (calculatedDelta < 0) {
-    calculatedDelta += order.length;
-  }
-
-  for (let i = 0; i < calculatedDelta; i++) {
-    tidalController.repeat();
-    // Small delay to ensure the button click is registered in the UI
-    await new Promise((resolve) => setTimeout(resolve, 500));
   }
 }
 

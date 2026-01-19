@@ -11,9 +11,6 @@ import { clickElement, getElement, getElementAttribute, getElementText } from ".
 
 export class DomTidalController implements TidalController<DomControllerOptions> {
   private updateSubscriber: (state: Partial<MediaInfo>) => void;
-  private currentlyPlaying = MediaStatus.paused;
-  private currentRepeatState: RepeatStateType = RepeatState.off;
-  private currentShuffleState = false;
 
   /**
    * Get a player element
@@ -50,18 +47,10 @@ export class DomTidalController implements TidalController<DomControllerOptions>
       const artistsArray = this.getArtists();
       const artistsString = this.getArtistsString();
 
-      const current = this.getCurrentTime();
-      const currentStatus = this.getCurrentlyPlayingStatus();
-      const shuffleState = this.getCurrentShuffleState();
-      const repeatState = this.getCurrentRepeatState();
-
-      const playStateChanged = currentStatus !== this.currentlyPlaying;
-      const shuffleStateChanged = shuffleState !== this.currentShuffleState;
-      const repeatStateChanged = repeatState !== this.currentRepeatState;
-
-      if (playStateChanged) this.currentlyPlaying = currentStatus;
-      if (shuffleStateChanged) this.currentShuffleState = shuffleState;
-      if (repeatStateChanged) this.currentRepeatState = repeatState;
+      const current = this.getPosition();
+      const currentStatus = this.getMediaStatus();
+      const shuffleState = this.getShuffleState();
+      const repeatState = this.getRepeatState();
 
       const album = this.getAlbumName();
       const duration = this.getDuration();
@@ -96,7 +85,7 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   }
 
   playPause() {
-    const playing = this.getCurrentlyPlayingStatus();
+    const playing = this.getMediaStatus();
 
     if (playing === MediaStatus.playing) {
       this.pause();
@@ -115,30 +104,57 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   forward() {
     clickElement("forward");
   }
-  repeat() {
-    clickElement("repeat");
-  }
-
   next() {
     clickElement("next");
   }
   previous() {
     clickElement("previous");
   }
+  toggleRepeat() {
+    clickElement("repeat");
+  }
+  setRepeat(repeat: RepeatStateType) {
+    const order = [RepeatState.off, RepeatState.all, RepeatState.single];
+    const currentValue = this.getRepeatState();
+
+    // Based on the targetState and currentValue delta, we press the repeat button repeatedly so the user's preference is set.
+    const newIndex = order.indexOf(repeat);
+    const currentIndex = order.indexOf(currentValue);
+
+    if (newIndex === -1 || currentIndex === -1) return;
+
+    let calculatedDelta = newIndex - currentIndex;
+    if (calculatedDelta < 0) {
+      calculatedDelta += order.length;
+    }
+
+    (async () => {
+      for (let i = 0; i < calculatedDelta; i++) {
+        clickElement("repeat");
+        // Small delay to allow the UI to update
+        await new Promise((resolve) => setTimeout(resolve, 200));
+      }
+    })();
+  }
   toggleShuffle() {
     clickElement("shuffle");
   }
-  getCurrentlyPlayingStatus() {
+  setShuffle(shuffle: boolean) {
+    if (this.getShuffleState() !== shuffle) {
+      clickElement("shuffle");
+    }
+  }
+  getMediaStatus() {
     const player = this.getPlayer();
     if (!player) return MediaStatus.paused;
     return player.paused ? MediaStatus.paused : MediaStatus.playing;
   }
 
-  getCurrentShuffleState() {
+  getShuffleState() {
     return getElementAttribute("shuffle", "aria-checked") === "true";
   }
 
-  getCurrentRepeatState() {
+  getRepeatState() {
     switch (getElementAttribute("repeat", "data-type")) {
       case "button__repeatAll":
         return RepeatState.all;
@@ -152,18 +168,12 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   play() {
     const player = this.getPlayer();
     if (!player) return;
-    // Only play if not already playing
-    if (this.getCurrentlyPlayingStatus() !== MediaStatus.playing) {
-      player.play();
-    }
+    player.play();
   }
   pause() {
     const player = this.getPlayer();
     if (!player) return;
-    // Only pause if currently playing
-    if (this.getCurrentlyPlayingStatus() === MediaStatus.playing) {
-      player.pause();
-    }
+    player.pause();
   }
   stop() {
     this.pause();
@@ -178,16 +188,16 @@ export class DomTidalController implements TidalController<DomControllerOptions>
     return window.location.toString();
   }
 
-  getCurrentTime() {
+  getPosition() {
     const player = this.getPlayer();
     if (!player) return 0;
-    const time = Math.round(player.currentTime);
-    return Number.isFinite(time) ? time : 0;
+    const seconds = Math.round(player.currentTime);
+    return Number.isFinite(seconds) ? seconds : 0;
   }
-  setCurrentTime(time: number) {
+  setPosition(seconds: number) {
     const player = this.getPlayer();
-    if (!player || !Number.isFinite(time)) return;
-    player.currentTime = Math.max(Math.min(time, this.getDuration()), 0);
+    if (!player || !Number.isFinite(seconds)) return;
+    player.currentTime = Math.max(Math.min(seconds, this.getDuration()), 0);
   }
   getDuration() {
     const player = this.getPlayer();
@@ -221,11 +231,12 @@ export class DomTidalController implements TidalController<DomControllerOptions>
         globalThis.location.href.includes("/playlist/") ||
         globalThis.location.href.includes("/mix/")
       ) {
-        if (this.currentlyPlaying === MediaStatus.playing) {
+        const currentlyPlaying = this.getMediaStatus();
+        if (currentlyPlaying === MediaStatus.playing) {
           // find the currently playing element from the list (which might be in an album icon), traverse back up to the mediaItem (row) and select the album cell.
           // document.querySelector("[class^='isPlayingIcon'], [data-test-is-playing='true']").closest('[data-type="mediaItem"]').querySelector('[class^="album"]').textContent
           const row = window.document
-            .querySelector(this.currentlyPlaying)
+            .querySelector(currentlyPlaying)
             .closest(UI_SELECTORS.mediaItem);
           if (row) {
             return row.querySelector(UI_SELECTORS.album_name_cell).textContent;

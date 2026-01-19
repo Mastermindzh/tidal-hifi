@@ -178,7 +178,7 @@ export class MprisService {
   private handleLoopStatus(eventData: unknown): void {
     if (typeof eventData === "string" && eventData in MPRIS_LOOP) {
       // Send the target loop state to renderer for smart state management
-      this.sendToRenderer(globalEvents.setLoopState, {
+      this.sendToRenderer(globalEvents.setRepeat, {
         targetState: convertMprisLoopToRepeatState(eventData as MprisLoopType),
       });
     }
@@ -186,7 +186,7 @@ export class MprisService {
 
   private handleShuffle(eventData: unknown): void {
     if (typeof eventData === "boolean") {
-      this.sendToRenderer(globalEvents.toggleShuffle);
+      this.sendToRenderer(globalEvents.setShuffle, { shuffle: eventData });
     }
   }
 

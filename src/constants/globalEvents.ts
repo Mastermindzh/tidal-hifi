@@ -14,10 +14,11 @@ export const globalEvents = {
   log: "log",
   toggleFavorite: "toggleFavorite",
   toggleShuffle: "toggleShuffle",
+  setShuffle: "setShuffle",
   toggleRepeat: "toggleRepeat",
+  setRepeat: "setRepeat",
   resetZoom: "resetZoom",
   volume: "volume",
   seek: "seek",
-  setLoopState: "setLoopState",
   quit: "quit",
 };

@@ -122,28 +122,7 @@ For example:
 
 ### Creating a Custom Controller
 
-All controllers implement the `TidalController` interface:
-
-```typescript
-interface TidalController<TBootstrapOptions = object> {
-  // Playback control
-  playPause(): void;
-  play(): void;
-  pause(): void;
-  stop(): void;
-  next(): void;
-  previous(): void;
-
-  // Information extraction
-  getCurrentlyPlayingStatus(): MediaStatus;
-  getTitle(): string;
-  getArtists(): string[];
-
-  // Setup and updates
-  bootstrap(options: TBootstrapOptions): void;
-  onMediaInfoUpdate(callback: (state: Partial<MediaInfo>) => void): void;
-}
-```
+All controllers implement the [`TidalController`](../src/TidalControllers/TidalController.ts) interface.
 
 ### Adding a New Controller
 

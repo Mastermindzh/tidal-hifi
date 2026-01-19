@@ -66,11 +66,11 @@ export class TidalApiController implements TidalController {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
-  getCurrentTime(): number {
+  getPosition(): number {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
-  setCurrentTime(_value: number) {
+  setPosition(_value: number) {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
@@ -90,15 +90,15 @@ export class TidalApiController implements TidalController {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
-  getCurrentShuffleState(): boolean {
+  getShuffleState(): boolean {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
-  getCurrentRepeatState(): RepeatStateType {
+  getRepeatState(): RepeatStateType {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
-  getCurrentlyPlayingStatus(): MediaStatus {
+  getMediaStatus(): MediaStatus {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
@@ -110,7 +110,11 @@ export class TidalApiController implements TidalController {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
-  repeat(): void {
+  toggleRepeat(): void {
+    globalThis.alert("Method not implemented");
+    throw new Error("Method not implemented.");
+  }
+  setRepeat(_repeat: RepeatStateType) {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
@@ -122,7 +126,11 @@ export class TidalApiController implements TidalController {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
-  toggleShuffle(): void {
+  toggleShuffle() {
+    globalThis.alert("Method not implemented");
+    throw new Error("Method not implemented.");
+  }
+  setShuffle(_shuffle: boolean): void {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
