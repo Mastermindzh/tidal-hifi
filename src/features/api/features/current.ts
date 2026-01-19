@@ -1,7 +1,7 @@
-import { Request, Response, Router } from "express";
-import fs from "fs";
+import fs from "node:fs";
+import type { Request, Response, Router } from "express";
+
 import { mediaInfo } from "../../../scripts/mediaInfo";
-import { Logger } from "../../logger";
 
 export const addCurrentInfo = (expressApp: Router) => {
   /**
@@ -116,7 +116,7 @@ export const addCurrentInfo = (expressApp: Router) => {
   expressApp.get("/current/image", getCurrentImage);
 };
 
-export const getCurrentImage = (req: Request, res: Response) => {
+export const getCurrentImage = (_req: Request, res: Response) => {
   // Use downloaded album art if available, fallback to image URL
   const imagePath = mediaInfo.localAlbumArt || mediaInfo.image || mediaInfo.icon;
 
@@ -126,11 +126,11 @@ export const getCurrentImage = (req: Request, res: Response) => {
     return;
   }
   const stream = fs.createReadStream(imagePath);
-  stream.on("open", function () {
+  stream.on("open", () => {
     res.set("Content-Type", "image/png");
     stream.pipe(res);
   });
-  stream.on("error", function () {
+  stream.on("error", () => {
     res.set("Content-Type", "text/plain");
     res.status(404).end("Not found");
   });

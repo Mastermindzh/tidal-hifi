@@ -1,0 +1,81 @@
+@use "../mixins";
+
+.tabs {
+  &__trigger {
+    appearance: none;
+    position: absolute;
+
+
+    & + label {
+      @include mixins.drag(false);
+
+      display: inline-block;
+      position: relative;
+      color: var(--grey);
+      margin-left: 15px;
+      padding-bottom: 14px;
+      padding-top: 14px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+      z-index: 1;
+      user-select: none;
+      transition: 0.15s;
+      border-bottom: 1px solid transparent;
+
+      &:hover {
+        color: var(--white);
+      }
+
+      &:active {
+        border-bottom: 1px solid var(--white);
+      }
+    }
+
+    &:checked + label {
+      color: var(--white);
+    }
+
+    &:focus-within + label {
+      border-bottom: 1px solid var(--white);
+    }
+  }
+
+  &__separator {
+    border: 1px solid var(--grey-darkest);
+    border-bottom: none;
+    width: calc(100% - 30px);
+    margin-top: -1px;
+    position: absolute;
+    margin-left: 15px;
+  }
+
+  &__content {
+    height: calc(100vh - 48px);
+    padding-left: 15px;
+    padding-right: 15px;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+
+    @for $i from 1 to 7 {
+      .settings > input:nth-child(#{$i * 2 - 1}):checked ~ & > .tabs__section:nth-child(#{$i}) {
+        display: block;
+      }
+    }
+
+    &::-webkit-scrollbar {
+      width: 6px;
+
+      &-thumb {
+        border-radius: 10px;
+        background-color: var(--grey-darker);
+      }
+    }
+  }
+
+  &__section {
+    flex-grow: 1;
+    display: none;
+  }
+}

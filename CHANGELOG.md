@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [next]
+
+### changed
+
+- Added support for setting volume to API & mpris
+- Added support for seeking (both absolute and relative) to API & mpris
+- Settings panel got a fresh new update thanks to [BlueManCZ](https://github.com/BlueManCZ)
+  - Animations added to certain elements to improve user experience
+- Migrated from ESLint, Prettier, and Stylelint to Biome for unified code formatting and linting
+- Centralized application exit handling with unified `gracefulExit()` function
+
+### dev-changes
+
+- Removed pull-requests release build when targetting master
+- Consolidated MPRIS service architecture by merging handler logic into main service
+  - This makes the renderer much lighter again
+- Reorganized MPRIS utilities from `utility/mpris.ts` to `features/mpris/mprisUtils.ts` for better code organization
+
 ## [6.0.1]
 
 ### Fixed

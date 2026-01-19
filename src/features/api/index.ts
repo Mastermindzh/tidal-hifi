@@ -1,9 +1,10 @@
 import cors from "cors";
-import { BrowserWindow, dialog } from "electron";
+import { type BrowserWindow, dialog } from "electron";
 import express from "express";
 import swaggerUi from "swagger-ui-express";
+
+import { settings } from "../../constants/settings";
 import { settingsStore } from "../../scripts/settings";
-import { settings } from "./../../constants/settings";
 import { addCurrentInfo } from "./features/current";
 import { addHealthEndpoint } from "./features/health";
 import { addPlaybackControl } from "./features/player";
@@ -22,10 +23,10 @@ export const startApi = (mainWindow: BrowserWindow) => {
   expressApp.use(cors());
   expressApp.use(express.json());
   expressApp.use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
-  expressApp.get("/", (req, res) => {
+  expressApp.get("/", (_req, res) => {
     res.redirect("/docs");
   });
-  expressApp.get("/swagger.json", (req, res) => {
+  expressApp.get("/swagger.json", (_req, res) => {
     res.json(swaggerSpec);
   });
 
@@ -37,7 +38,7 @@ export const startApi = (mainWindow: BrowserWindow) => {
   addSettingsAPI(expressApp, mainWindow);
 
   const expressInstance = expressApp.listen(port, hostname);
-  expressInstance.on("error", function (e: { code: string }) {
+  expressInstance.on("error", (e: { code: string }) => {
     let message = e.code;
     if (e.code === "EADDRINUSE") {
       message = `Port ${port} in use.`;

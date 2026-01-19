@@ -1,4 +1,5 @@
-import { App } from "electron";
+import type { App } from "electron";
+
 import { flags } from "../../constants/flags";
 import { settings } from "../../constants/settings";
 import { settingsStore } from "../../scripts/settings";
