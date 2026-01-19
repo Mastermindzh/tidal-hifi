@@ -1,13 +1,15 @@
-import { TidalController } from "../TidalController";
-import { ReduxControllerOptions } from "./ReduxControllerOptions";
-import { MediaInfo } from "../../models/mediaInfo";
-import { constrainPollingInterval } from "../../utility/pollingConstraints";
-import { RepeatState } from "../../models/repeatState";
-import { MediaStatus } from "../../models/mediaStatus";
 import { Logger } from "../../features/logger";
 import { getCoverURL } from "../../features/tidal/url";
-import { ReduxStoreType } from "./ReduxStoreType";
+import { convertSecondsToClockFormat } from "../../features/time/parse";
+import type { MediaInfo } from "../../models/mediaInfo";
+import { MediaStatus } from "../../models/mediaStatus";
+import { RepeatState } from "../../models/repeatState";
+import { constrainPollingInterval } from "../../utility/pollingConstraints";
+import { getElement } from "../DomController/domHelpers";
+import type { TidalController } from "../TidalController";
+import type { ReduxControllerOptions } from "./ReduxControllerOptions";
 import { ReduxStoreActions as Actions } from "./ReduxStoreActions";
+import type { ReduxStoreType } from "./ReduxStoreType";
 
 function scanAllElementsForStore() {
   const elements = globalThis.document.body.querySelectorAll("*");
@@ -29,28 +31,40 @@ function scanAllElementsForStore() {
 
 export class ReduxController implements TidalController<ReduxControllerOptions> {
   private updateSubscriber: (state: Partial<MediaInfo>) => void;
-  private reduxStore: any = null;
+  private reduxStore: {
+    dispatch: (action: { type: string; payload?: object | number }) => void;
+    getState: () => ReduxStoreType;
+  } = null;
+
+  /**
+   * Get a player element
+   */
+  getPlayer() {
+    const player = getElement("player") as HTMLVideoElement;
+    return player || null;
+  }
 
   isStoreAvailable(): boolean {
     if (this.reduxStore) {
-      return this.reduxStore;
+      return true;
     }
 
     Logger.log("Looking for Redux store in DOM...");
     this.reduxStore = scanAllElementsForStore();
     if (this.reduxStore) {
       Logger.log(`Found the Redux store!`);
+      return true;
     }
-    return this.reduxStore;
+    return false;
   }
 
-  private dispatchAction(action: string, payload?: any): void {
+  private dispatchAction(action: string, payload?: object | number): void {
     if (this.isStoreAvailable()) {
       this.reduxStore.dispatch({ type: action, payload: payload });
     }
   }
 
-  private useSelector(selector: (state: ReduxStoreType) => any): any {
+  private useSelector<T>(selector: (state: ReduxStoreType) => T): T {
     if (this.isStoreAvailable()) {
       return selector(this.reduxStore.getState());
     }
@@ -60,15 +74,19 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
   bootstrap(options: ReduxControllerOptions) {
     const constrainedInterval = constrainPollingInterval(options.refreshInterval);
     setInterval(async () => {
+      const current = this.getCurrentTime();
+      const duration = this.getDuration();
+
       const updatedInfo: MediaInfo = {
+        trackId: this.getTrackId(),
         title: this.getTitle(),
         album: this.getAlbumName(),
         artists: this.getArtistsString(),
         artistsArray: this.getArtists(),
-        current: "", // TODO: After merging https://github.com/Mastermindzh/tidal-hifi/pull/809
-        currentInSeconds: 0, // TODO
-        duration: "", // TODO
-        durationInSeconds: 0, // TODO
+        current: convertSecondsToClockFormat(current),
+        currentInSeconds: current,
+        duration: convertSecondsToClockFormat(duration),
+        durationInSeconds: duration,
         favorite: this.isFavorite(),
         icon: this.getSongIcon(),
         image: this.getSongImage(),
@@ -85,30 +103,30 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
     }, constrainedInterval);
   }
 
-  onMediaInfoUpdate(callback: (state: Partial<MediaInfo>) => void): void {
+  onMediaInfoUpdate(callback: (state: Partial<MediaInfo>) => void) {
     this.updateSubscriber = callback;
   }
 
-  getTrackUrl(): string {
+  getTrackUrl() {
     return this.useSelector(
       (state) => state.entities.tracks.entities[this.getTrackId()].attributes.externalLinks[0].href,
     );
   }
 
-  getAlbumName(): string {
+  getAlbumName() {
     return this.useSelector(
       (state) => state.content.mediaItems[this.getTrackId()].item.album.title,
     );
   }
 
-  getArtists(): string[] {
+  getArtists() {
     const artists = this.useSelector(
       (state) => state.content.mediaItems[this.getTrackId()].item.artists,
     );
-    return artists.map((artist: any) => artist.name);
+    return artists.map((artist) => artist.name);
   }
 
-  getArtistsString(): string {
+  getArtistsString() {
     const artists = this.getArtists();
     if (artists.length > 0) {
       return artists.join(", ");
@@ -116,29 +134,47 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
     return "unknown artist(s)";
   }
 
-  getCurrentPosition(): string {
-    // TODO: After merging https://github.com/Mastermindzh/tidal-hifi/pull/809
-    return "";
-  }
-
-  getCurrentPositionInSeconds(): number {
-    // TODO: After merging https://github.com/Mastermindzh/tidal-hifi/pull/809
-    return 0;
-  }
-
-  getCurrentRepeatState(): RepeatState {
+  getCurrentRepeatState() {
+    const repeatMode = this.useSelector((state) => state.playQueue.repeatMode);
+    if (repeatMode === 1) {
+      return RepeatState.all;
+    }
+    if (repeatMode === 2) {
+      return RepeatState.single;
+    }
     return RepeatState.off;
   }
 
-  getCurrentShuffleState(): boolean {
+  getCurrentShuffleState() {
     return this.useSelector((state) => state.playQueue.shuffleModeEnabled);
   }
 
-  getCurrentTime(): string {
-    return "";
+  getCurrentTime() {
+    // Redux does not store current time, so we get it from the player element
+    const player = this.getPlayer();
+    if (!player) return 0;
+    const time = Math.round(player.currentTime);
+    return Number.isFinite(time) ? time : 0;
   }
 
-  getCurrentlyPlayingStatus(): MediaStatus {
+  setCurrentTime(value: number) {
+    this.dispatchAction(Actions.seek, value);
+  }
+
+  getVolume() {
+    return this.useSelector((state) => state.playbackControls.volume) / 100;
+  }
+
+  setVolume(value: number) {
+    this.dispatchAction(Actions.setVolume, { volume: value * 100 });
+  }
+
+  getDuration() {
+    console.log(this.useSelector((state) => state.playbackControls.playbackContext.actualDuration));
+    return this.useSelector((state) => state.playbackControls.playbackContext.actualDuration);
+  }
+
+  getCurrentlyPlayingStatus() {
     const status = this.useSelector((state) => state.playbackControls.playbackState);
     if (status === "PLAYING") {
       return MediaStatus.playing;
@@ -146,43 +182,38 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
     return MediaStatus.paused;
   }
 
-  getDuration(): string {
-    // TODO: After merging https://github.com/Mastermindzh/tidal-hifi/pull/809
-    return "";
-  }
-
-  getPlayingFrom(): string {
+  getPlayingFrom() {
     return this.useSelector((state) => state.playQueue.sourceName);
   }
 
-  getSongIcon(): string {
+  getSongIcon() {
     return getCoverURL(
       this.useSelector((state) => state.content.mediaItems[this.getTrackId()].item.album.cover),
       80,
     );
   }
 
-  getSongImage(): string {
+  getSongImage() {
     return getCoverURL(
       this.useSelector((state) => state.content.mediaItems[this.getTrackId()].item.album.cover),
     );
   }
 
-  getTitle(): string {
+  getTitle() {
     return this.useSelector((state) => state.content.mediaItems[this.getTrackId()].item.title);
   }
 
-  getTrackId(): string {
+  getTrackId() {
     return this.useSelector((state) => state.playbackControls.mediaProduct.productId);
   }
 
-  isFavorite(): boolean {
+  isFavorite() {
     return this.useSelector((state) =>
       state.favorites.tracks.includes(parseInt(this.getTrackId())),
     );
   }
 
-  playPause(): void {
+  playPause() {
     if (this.getCurrentlyPlayingStatus() === MediaStatus.playing) {
       this.pause();
     } else {
@@ -190,48 +221,48 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
     }
   }
 
-  play(): void {
+  play() {
     this.dispatchAction(Actions.play);
   }
 
-  pause(): void {
+  pause() {
     this.dispatchAction(Actions.pause);
   }
 
-  stop(): void {
+  stop() {
     this.pause();
   }
 
-  toggleFavorite(): void {
+  toggleFavorite() {
     this.dispatchAction(Actions.toggleFavorite, {
       from: "heart",
       items: [{ itemId: this.getTrackId(), itemType: "track" }],
     });
   }
 
-  back(): void {
+  back() {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
 
-  forward(): void {
+  forward() {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
 
-  repeat(): void {
+  repeat() {
     this.dispatchAction(Actions.toggleRepeat);
   }
 
-  next(): void {
+  next() {
     this.dispatchAction(Actions.next);
   }
 
-  previous(): void {
+  previous() {
     this.dispatchAction(Actions.previous);
   }
 
-  toggleShuffle(): void {
+  toggleShuffle() {
     this.dispatchAction(Actions.toggleShuffle);
   }
 }

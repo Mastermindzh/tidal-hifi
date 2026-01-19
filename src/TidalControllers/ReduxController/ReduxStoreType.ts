@@ -24,12 +24,17 @@ export type ReduxStoreType = {
   playQueue: {
     sourceName: string;
     shuffleModeEnabled: boolean;
+    repeatMode: 0 | 1 | 2;
   };
   playbackControls: {
-    playbackState: string;
     mediaProduct: {
       productId: string;
     };
+    playbackContext: {
+      actualDuration: number;
+    };
+    playbackState: string;
+    volume: number;
   };
   favorites: {
     tracks: number[];
