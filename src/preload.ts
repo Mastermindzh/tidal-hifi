@@ -18,8 +18,8 @@ import { TidalApiController } from "./TidalControllers/apiController/TidalApiCon
 import { DomTidalController } from "./TidalControllers/DomController/DomTidalController";
 import { getDomUpdateFrequency } from "./TidalControllers/DomController/domUpdateFrequency";
 import { MediaSessionController } from "./TidalControllers/MediaSessionController/MediaSessionController";
-import type { TidalController } from "./TidalControllers/TidalController";
 import { ReduxController } from "./TidalControllers/ReduxController/ReduxController";
+import type { TidalController } from "./TidalControllers/TidalController";
 
 const albumArtPath = `${app.getPath("userData")}/current.jpg`;
 const staticTitle = "TIDAL Hi-Fi";
