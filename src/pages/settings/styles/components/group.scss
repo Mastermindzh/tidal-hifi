@@ -7,6 +7,10 @@
   gap: 1rem;
   max-width: 700px;
 
+  &--no-margin {
+    margin: 0;
+  }
+
   &__title {
     margin: 0 0 16px 16px;
     font-size: 16px;
@@ -104,31 +108,5 @@
   &__warning {
     color: var(--tidal-red);
     filter: brightness(1.5) saturate(0.8);
-  }
-}
-
-// Smooth expand/collapse animations for optional settings sections
-#tray__options,
-#api__options,
-#listenbrainz__options,
-#discord_options,
-#discord_show_song_options {
-  display: grid;
-  grid-template-rows: 1fr;
-  transition:
-    grid-template-rows 0.4s ease-out,
-    opacity 0.4s ease-out;
-  opacity: 1;
-
-  > * {
-    overflow: hidden;
-    min-height: 0;
-  }
-
-  // Override the global .hidden class with higher specificity
-  &.hidden {
-    display: grid !important; // Override global display: none
-    grid-template-rows: 0fr;
-    opacity: 0;
   }
 }

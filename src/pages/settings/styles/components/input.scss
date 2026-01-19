@@ -4,7 +4,6 @@
   @include mixins.common-input;
 
   cursor: text;
-  margin: 2px; // Add small margin for better focus ring visibility
 
   &--small {
     max-width: 110px;
