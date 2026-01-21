@@ -4,7 +4,6 @@ import Player from "mpris-service";
 import { globalEvents } from "../../constants/globalEvents";
 import type { MediaInfo } from "../../models/mediaInfo";
 import { MediaStatus } from "../../models/mediaStatus";
-import type { RepeatStateType } from "../../models/repeatState";
 import { ObjectToDotNotation } from "../../scripts/objectUtilities";
 import { Logger } from "../logger";
 import { convertMicrosecondsToSeconds, convertSecondsToMicroseconds } from "../time/parse";
@@ -218,34 +217,6 @@ export class MprisService {
         seconds: absoluteSeconds,
         type: "absolute",
       });
-    }
-  }
-
-  updateVolume(volume: number): void {
-    if (!this.player) return;
-
-    // Ensure volume is within valid range
-    const validVolume = Math.max(0, Math.min(1, volume));
-    this.player.volume = validVolume;
-  }
-
-  updateShuffle(shuffle: boolean): void {
-    if (!this.player) return;
-
-    this.player.shuffle = shuffle;
-  }
-
-  updateLoopStatus(repeatState: string): void {
-    if (!this.player) return;
-
-    // Use utility function to convert repeat state to MPRIS loop status
-    const mprisLoopStatus = convertRepeatStateToMprisLoop(repeatState as RepeatStateType);
-    this.player.loopStatus = mprisLoopStatus || "None";
-  }
-
-  updatePosition(positionInSeconds: number): void {
-    if (Number.isFinite(positionInSeconds)) {
-      this.currentPosition = positionInSeconds;
     }
   }
 

@@ -13,6 +13,8 @@ import {
 
 let hotkeySearch: HTMLInputElement;
 let hotkeysList: HTMLElement;
+let isEventListenersInitialized = false;
+let currentlyEditing: HTMLElement | null = null;
 
 /**
  * Convert a key combination string to HTML display format
@@ -49,21 +51,41 @@ function formatKeyForDisplay(key: string): string {
 }
 
 /**
+ * Escape HTML entities to prevent XSS attacks
+ */
+function escapeHtml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/**
  * Generate HTML for a hotkey item
  */
 function createHotkeyItemHTML(action: HotkeyAction, currentKey: string): string {
   const isDisabled = action.id === "deleteDisabled";
   const keyDisplay = formatKeyForDisplay(currentKey);
 
+  // Sanitize all user-controlled content
+  const safeName = escapeHtml(action.name);
+  const safeDescription = escapeHtml(action.description);
+  const safeActionId = escapeHtml(action.id);
+  const safeSearchTerms = escapeHtml(
+    `${action.name.toLowerCase()} ${action.description.toLowerCase()} ${currentKey.toLowerCase()}`,
+  );
+
   return `
-    <div class="group__option hotkey-item" data-action-id="${action.id}" data-search-terms="${action.name.toLowerCase()} ${action.description.toLowerCase()} ${currentKey.toLowerCase()}">
+    <div class="group__option hotkey-item" data-action-id="${safeActionId}" data-search-terms="${safeSearchTerms}">
       <div class="group__content">
-        <h4>${action.name}</h4>
-        <p>${action.description}</p>
+        <h4>${safeName}</h4>
+        <p>${safeDescription}</p>
       </div>
-      ${!isDisabled ? `<button class="button hotkey-reset-btn" data-action-id="${action.id}" title="Reset to default" aria-label="Reset ${action.name} to default">↶</button>` : ""}
+      ${!isDisabled ? `<button class="button hotkey-reset-btn" data-action-id="${safeActionId}" title="Reset to default" aria-label="Reset ${safeName} to default">↶</button>` : ""}
       <div class="hotkey-controls">
-        <button class="button ${isDisabled ? " button--disabled" : ""} hotkey-binding${isDisabled ? " disabled" : " editable"}" data-action-id="${action.id}" data-current-key="${currentKey}" title="${isDisabled ? "This hotkey can't be changed" : "Click to change hotkey"}" aria-label="Hotkey for ${action.name}">
+        <button class="button ${isDisabled ? " button--disabled" : ""} hotkey-binding${isDisabled ? " disabled" : " editable"}" data-action-id="${safeActionId}" data-current-key="${escapeHtml(currentKey)}" title="${isDisabled ? "This hotkey can't be changed" : "Click to change hotkey"}" aria-label="Hotkey for ${safeName}">
           ${keyDisplay}
         </button>
       </div>
@@ -97,53 +119,65 @@ function populateHotkeysList(): void {
 
   hotkeysList.innerHTML = hotkeyItems.join("");
 
-  // Add event listeners for hotkey editing
-  initializeHotkeyEditing();
+  // Only initialize event listeners once
+  if (!isEventListenersInitialized) {
+    initializeHotkeyEditing();
+    isEventListenersInitialized = true;
+  }
 }
 
 /**
  * Handle hotkey editing - listening for key presses on editable hotkey bindings
+ * Uses event delegation to avoid adding multiple listeners
  */
 function initializeHotkeyEditing(): void {
   if (!hotkeysList) return;
 
-  // Add click listeners for hotkey section
+  // Use event delegation on the hotkeys options container - this only gets called once
   const hotkeyOptions = document.getElementById("hotkeys__options");
   if (hotkeyOptions) {
-    hotkeyOptions.addEventListener("click", (e) => {
-      const target = e.target as HTMLElement;
+    hotkeyOptions.addEventListener("click", handleHotkeyClick);
+    hotkeyOptions.addEventListener("keydown", handleHotkeyKeydown);
+  }
+}
 
-      // Handle individual reset button clicks
-      if (target.closest(".hotkey-reset-btn")) {
-        const resetBtn = target.closest(".hotkey-reset-btn") as HTMLElement;
-        const actionId = resetBtn.dataset.actionId;
-        if (actionId) {
-          resetHotkeyToDefault(actionId);
-          refreshHotkeysWithSearch();
-          ipcRenderer.send(globalEvents.storeChanged);
-        }
-        return;
-      }
+/**
+ * Handle click events on hotkey elements
+ */
+function handleHotkeyClick(e: Event): void {
+  const target = e.target as HTMLElement;
 
-      // Handle hotkey binding clicks (check if target or parent is a hotkey binding)
-      const hotkeyBinding = target.closest(".hotkey-binding.editable") as HTMLElement;
-      if (hotkeyBinding) {
-        startEditingHotkey(hotkeyBinding);
-      }
-    });
+  // Handle individual reset button clicks
+  if (target.closest(".hotkey-reset-btn")) {
+    const resetBtn = target.closest(".hotkey-reset-btn") as HTMLElement;
+    const actionId = resetBtn.dataset.actionId;
+    if (actionId) {
+      resetHotkeyToDefault(actionId);
+      refreshHotkeysWithSearch();
+      ipcRenderer.send(globalEvents.storeChanged);
+    }
+    return;
   }
 
-  // Add keyboard listeners for hotkey bindings
-  hotkeysList.addEventListener("keydown", (e) => {
-    const target = e.target as HTMLElement;
-    const hotkeyBinding = target.closest(".hotkey-binding.editable") as HTMLElement;
-    if (hotkeyBinding) {
-      if (e.key === "Enter" || e.key === " ") {
-        e.preventDefault();
-        startEditingHotkey(hotkeyBinding);
-      }
+  // Handle hotkey binding clicks (check if target or parent is a hotkey binding)
+  const hotkeyBinding = target.closest(".hotkey-binding.editable") as HTMLElement;
+  if (hotkeyBinding) {
+    startEditingHotkey(hotkeyBinding);
+  }
+}
+
+/**
+ * Handle keydown events on hotkey elements
+ */
+function handleHotkeyKeydown(e: KeyboardEvent): void {
+  const target = e.target as HTMLElement;
+  const hotkeyBinding = target.closest(".hotkey-binding.editable") as HTMLElement;
+  if (hotkeyBinding) {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      startEditingHotkey(hotkeyBinding);
     }
-  });
+  }
 }
 
 /**
@@ -152,6 +186,13 @@ function initializeHotkeyEditing(): void {
 function startEditingHotkey(bindingElement: HTMLElement): void {
   const actionId = bindingElement.dataset.actionId;
   if (!actionId) return;
+
+  // Prevent multiple simultaneous editing sessions
+  if (currentlyEditing) {
+    return;
+  }
+
+  currentlyEditing = bindingElement;
 
   // Mark as editing and show clear instruction
   bindingElement.classList.add("editing");
@@ -187,6 +228,10 @@ function startEditingHotkey(bindingElement: HTMLElement): void {
   const finishEditing = (success: boolean, newKey?: string) => {
     if (!isCapturing) return;
     isCapturing = false;
+
+    currentlyEditing = null;
+    clearTimeout(timeoutId);
+    keyCapture.removeEventListener("keydown", handleKeyDown);
 
     // Clean up the capture element
     if (document.body.contains(keyCapture)) {
@@ -266,7 +311,7 @@ function startEditingHotkey(bindingElement: HTMLElement): void {
   keyCapture.addEventListener("keydown", handleKeyDown);
 
   // Auto-cancel editing after 15 seconds as fallback
-  setTimeout(() => {
+  const timeoutId = setTimeout(() => {
     if (isCapturing) {
       finishEditing(false);
     }
@@ -297,18 +342,21 @@ function filterHotkeys(query: string): void {
   });
 }
 
+let isSearchListenerInitialized = false;
+
 /**
  * Initialize hotkey search functionality
  */
 function initializeHotkeySearch(): void {
-  if (!hotkeySearch) return;
+  if (!hotkeySearch || isSearchListenerInitialized) return;
 
   hotkeySearch.addEventListener("input", (e) => {
     const target = e.target as HTMLInputElement;
     filterHotkeys(target.value);
   });
-}
 
+  isSearchListenerInitialized = true;
+}
 /**
  * Initialize the hotkeys interface
  * @param hotkeySearchElement The search input element
