@@ -49,21 +49,41 @@ function formatKeyForDisplay(key: string): string {
 }
 
 /**
+ * Escape HTML entities to prevent XSS attacks
+ */
+function escapeHtml(unsafe: string): string {
+  return unsafe
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+/**
  * Generate HTML for a hotkey item
  */
 function createHotkeyItemHTML(action: HotkeyAction, currentKey: string): string {
   const isDisabled = action.id === "deleteDisabled";
   const keyDisplay = formatKeyForDisplay(currentKey);
 
+  // Sanitize all user-controlled content
+  const safeName = escapeHtml(action.name);
+  const safeDescription = escapeHtml(action.description);
+  const safeActionId = escapeHtml(action.id);
+  const safeSearchTerms = escapeHtml(
+    `${action.name.toLowerCase()} ${action.description.toLowerCase()} ${currentKey.toLowerCase()}`,
+  );
+
   return `
-    <div class="hotkey-item" data-action-id="${action.id}" data-search-terms="${action.name.toLowerCase()} ${action.description.toLowerCase()} ${currentKey.toLowerCase()}">
+    <div class="hotkey-item" data-action-id="${safeActionId}" data-search-terms="${safeSearchTerms}">
       <div class="hotkey-description">
-        <h4>${action.name}</h4>
-        <p>${action.description}</p>
+        <h4>${safeName}</h4>
+        <p>${safeDescription}</p>
       </div>
       <div class="hotkey-controls">
-        ${!isDisabled ? `<span class="hotkey-reset-btn" data-action-id="${action.id}" title="Reset to default" aria-label="Reset ${action.name} to default">↶</span>` : ""}
-        <div class="hotkey-binding${isDisabled ? " disabled" : " editable"}" data-action-id="${action.id}" data-current-key="${currentKey}" tabindex="0">
+        ${!isDisabled ? `<span class="hotkey-reset-btn" data-action-id="${safeActionId}" title="Reset to default" aria-label="Reset ${safeName} to default">↶</span>` : ""}
+        <div class="hotkey-binding${isDisabled ? " disabled" : " editable"}" data-action-id="${safeActionId}" data-current-key="${escapeHtml(currentKey)}" tabindex="0">
           ${keyDisplay}
         </div>
       </div>

@@ -25,7 +25,7 @@
 
   &__option {
     @include mixins.option-card;
-    
+
     position: relative;
     display: flex;
     gap: 1rem;
@@ -57,7 +57,7 @@
 
   &__options-group {
     @include mixins.option-card;
-    
+
     padding: 0 16px;
 
     #{$this}__option {
@@ -88,13 +88,13 @@
     h4,
     label {
       @include mixins.content-heading;
-      
+
       display: block;
     }
 
     p {
       @include mixins.content-description;
-      
+
       margin: -5px 0 0;
     }
   }

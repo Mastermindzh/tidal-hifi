@@ -27,7 +27,7 @@
 .hotkey-item {
   @include mixins.option-card;
   @include mixins.hover-lift;
-  
+
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -39,14 +39,14 @@
 
   h4 {
     @include mixins.content-heading;
-    
+
     margin: 0 0 4px 0;
     line-height: 1.3;
   }
 
   p {
     @include mixins.content-description;
-    
+
     font-size: 13px;
     line-height: 1.4;
   }
