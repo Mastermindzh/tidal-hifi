@@ -115,6 +115,7 @@
 #discord_show_song_options {
   display: grid;
   grid-template-rows: 1fr;
+  grid-auto-rows: auto;
   transition:
     grid-template-rows 0.4s ease-out,
     opacity 0.4s ease-out;
@@ -129,6 +130,7 @@
   &.hidden {
     display: grid !important; // Override global display: none
     grid-template-rows: 0fr;
+    grid-auto-rows: 0;
     opacity: 0;
   }
 }
