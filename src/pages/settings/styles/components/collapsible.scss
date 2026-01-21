@@ -1,16 +1,17 @@
 .collapsible {
   transition: .2s;
+  display: grid;
+  grid-template-rows: 1fr;
   opacity: 1;
 
-  // If for any reason the collapsible's height is set to wrong value,
-  // this will ensure that the content is still accessible but no scrollbar is shown.
-  overflow: auto;
-  &::-webkit-scrollbar {
-    width: 0;
+  > * {
+    overflow: hidden;
+    min-height: 0;
   }
 
   &.hidden {
-    display: block !important;
+    display: grid !important;
+    grid-template-rows: 0fr !important;
     opacity: 0;
   }
 }

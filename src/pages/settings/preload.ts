@@ -146,31 +146,6 @@ function handleFileUploads() {
 }
 
 /**
- * Set the state of a collapsible element
- * @param id
- * @param expanded
- */
-function setCollapsibleState(id: string, expanded: boolean) {
-  const element = document.getElementById(id);
-
-  if (expanded) {
-    const childHeight = element.children[0].clientHeight;
-    element.style.maxHeight = childHeight ? `${childHeight + 2}px` : "100vh";
-
-    // If this collapsible is a child of another collapsible, ensure the parent recalculates its height
-    const parentCollapsible = element.parentElement.closest(".collapsible");
-    if (parentCollapsible && childHeight) {
-      // Wait for animation to finish before expanding parent to avoid visual glitches
-      setTimeout(() => {
-        setCollapsibleState(parentCollapsible.id, true);
-      }, 200);
-    }
-  } else {
-    element.style.maxHeight = "0";
-  }
-}
-
-/**
  * hide or unhide an element
  * @param checked
  * @param toggleOptions
@@ -182,10 +157,6 @@ function setElementHidden(
   const element = document.getElementById(toggleOptions.classToHide);
 
   checked ? element.classList.remove("hidden") : element.classList.add("hidden");
-
-  if (element.classList.contains("collapsible")) {
-    setCollapsibleState(toggleOptions.classToHide, checked);
-  }
 }
 
 /**
