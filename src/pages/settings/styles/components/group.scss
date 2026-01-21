@@ -1,3 +1,5 @@
+@use "../mixins";
+
 .group {
   $this: &;
 
@@ -22,14 +24,12 @@
   }
 
   &__option {
+    @include mixins.option-card;
+    
     position: relative;
     display: flex;
     gap: 1rem;
     align-items: center;
-    background: var(--black-lighter);
-    padding: 16px;
-    border: 1px solid var(--black-lightest);
-    border-radius: 16px;
 
     &--withContent {
       flex-direction: column;
@@ -56,10 +56,9 @@
   }
 
   &__options-group {
-    background: var(--black-lighter);
+    @include mixins.option-card;
+    
     padding: 0 16px;
-    border: 1px solid var(--black-lightest);
-    border-radius: 16px;
 
     #{$this}__option {
       padding: 16px 0;
@@ -88,16 +87,15 @@
 
     h4,
     label {
+      @include mixins.content-heading;
+      
       display: block;
-      margin: 0;
-      font-size: 14px;
-      font-weight: 600;
     }
 
     p {
+      @include mixins.content-description;
+      
       margin: -5px 0 0;
-      color: var(--grey);
-      font-size: 14px;
     }
   }
 
@@ -107,15 +105,10 @@
   }
 }
 
-// Smooth expand/collapse animations for optional settings sections
-#tray__options,
-#api__options,
-#listenbrainz__options,
-#discord_options,
-#discord_show_song_options {
+// Shared collapsible animation class
+.collapsible-section {
   display: grid;
   grid-template-rows: 1fr;
-  grid-auto-rows: auto;
   transition:
     grid-template-rows 0.4s ease-out,
     opacity 0.4s ease-out;
@@ -130,7 +123,6 @@
   &.hidden {
     display: grid !important; // Override global display: none
     grid-template-rows: 0fr;
-    grid-auto-rows: 0;
     opacity: 0;
   }
 }

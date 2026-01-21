@@ -161,40 +161,42 @@
                 <span class="switch__slider"></span>
               </label>
             </div>
-            <div id="tray__options" class="group__options-group hidden">
-              <div class="group__option">
-                <div class="group__content">
-                  <h4>Minimize to tray on Close</h4>
-                  <p>Hide the main window to the system tray on close instead.</p>
+            <div id="tray__options" class="group__options-group hidden collapsible-section">
+              <div>
+                <div class="group__option">
+                  <div class="group__content">
+                    <h4>Minimize to tray on Close</h4>
+                    <p>Hide the main window to the system tray on close instead.</p>
+                  </div>
+                  <label class="switch">
+                    <input id="minimizeOnClose" type="checkbox" />
+                    <span class="switch__slider"></span>
+                  </label>
                 </div>
-                <label class="switch">
-                  <input id="minimizeOnClose" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
-              </div>
-              <div class="group__option">
-                <div class="group__content">
-                  <h4>Start Minimized</h4>
-                  <p>Hide the main window on startup.</p>
+                <div class="group__option">
+                  <div class="group__content">
+                    <h4>Start Minimized</h4>
+                    <p>Hide the main window on startup.</p>
+                  </div>
+                  <label class="switch">
+                    <input id="startMinimized" type="checkbox" />
+                    <span class="switch__slider"></span>
+                  </label>
                 </div>
-                <label class="switch">
-                  <input id="startMinimized" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
-              </div>
-              <div class="group__option">
-                <div class="group__content">
-                  <h4>Custom tray icon path</h4>
-                  <p>
-                    Provide a custom path to an icon file for the system tray. Leave empty or set to "default" to use
-                    the
-                    bundled icon.
-                    Supported formats: PNG, JPG, JPEG, ICO, BMP, GIF (SVG is not supported).
-                  </p>
-                  <input id="trayIconPath" type="text" class="text-input" name="trayIconPath"
-                    placeholder="default or /path/to/icon.png" />
-                  <p id="trayIconPathValidation" class="validation-message"
-                    style="color: #ff6b6b; margin-top: 5px; display: none;"></p>
+                <div class="group__option">
+                  <div class="group__content">
+                    <h4>Custom tray icon path</h4>
+                    <p>
+                      Provide a custom path to an icon file for the system tray. Leave empty or set to "default" to use
+                      the
+                      bundled icon.
+                      Supported formats: PNG, JPG, JPEG, ICO, BMP, GIF (SVG is not supported).
+                    </p>
+                    <input id="trayIconPath" type="text" class="text-input" name="trayIconPath"
+                      placeholder="default or /path/to/icon.png" />
+                    <p id="trayIconPathValidation" class="validation-message"
+                      style="color: #ff6b6b; margin-top: 5px; display: none;"></p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -220,34 +222,36 @@
                 <span class="switch__slider"></span>
               </label>
             </div>
-            <div id="api__options" class="group__options-group hidden">
-              <div class="group__option">
-                <div class="group__content">
-                  <label for="port">API port</label>
-                  <p>The port on which the API will be hosted.</p>
+            <div id="api__options" class="group__options-group hidden collapsible-section">
+              <div>
+                <div class="group__option">
+                  <div class="group__content">
+                    <label for="port">API port</label>
+                    <p>The port on which the API will be hosted.</p>
+                  </div>
+                  <input id="port" type="number" class="text-input text-input--small" name="port" />
                 </div>
-                <input id="port" type="number" class="text-input text-input--small" name="port" />
-              </div>
-              <div class="group__option">
-                <div class="group__content">
-                  <h4>API hostname</h4>
-                  <p>
-                    By default (127.0.0.1) only local apps can interface with the API. <br />
-                    Change to 0.0.0.0 to allow <strong>anyone</strong> to interact with it. <br />
-                    Other options are available
-                  </p>
+                <div class="group__option">
+                  <div class="group__content">
+                    <h4>API hostname</h4>
+                    <p>
+                      By default (127.0.0.1) only local apps can interface with the API. <br />
+                      Change to 0.0.0.0 to allow <strong>anyone</strong> to interact with it. <br />
+                      Other options are available
+                    </p>
+                  </div>
+                  <input id="hostname" type="text" class="text-input text-input--small" name="hostname" />
                 </div>
-                <input id="hostname" type="text" class="text-input text-input--small" name="hostname" />
-              </div>
-              <div class="group__option">
-                <div class="group__content">
-                  <h4>Playback control</h4>
-                  <p>Enable playback control from the web API.</p>
+                <div class="group__option">
+                  <div class="group__content">
+                    <h4>Playback control</h4>
+                    <p>Enable playback control from the web API.</p>
+                  </div>
+                  <label class="switch">
+                    <input id="playBackControl" type="checkbox" />
+                    <span class="switch__slider"></span>
+                  </label>
                 </div>
-                <label class="switch">
-                  <input id="playBackControl" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
               </div>
             </div>
           </div>
@@ -288,72 +292,74 @@
                 <span class="switch__slider"></span>
               </label>
             </div>
-            <div id="discord_options" class="group__options-group">
-              <div class="group__option" class="hidden">
-                <div class="group__content">
-                  <h4>Show Idle Text</h4>
-                  <p>Should the idle text be shown when idle?</p>
-                </div>
-                <label class="switch">
-                  <input id="discord_show_idle" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
-              </div>
-
-              <div class="group__option" class="hidden">
-                <div class="group__content">
-                  <h4>Idle Text</h4>
-                  <p>The text displayed on Discord's rich presence while idling in the app.</p>
-                  <input id="discord_idle_text" type="text" class="text-input" name="discord_idle_text" />
-                </div>
-              </div>
-
-              <div class="group__option" class="hidden">
-                <div class="group__content">
-                  <h4>Using Tidal Text</h4>
-                  <p>
-                    The text displayed on Discord's rich presence while "showSong" is turned off
-                  </p>
-                  <input id="discord_using_text" type="text" class="text-input" name="discord_using_text" />
-                </div>
-              </div>
-
-              <div class="group__option" class="hidden">
-                <div class="group__content">
-                  <h4>Show media</h4>
-                  <p>Show the current media in the Discord client</p>
-                </div>
-                <label class="switch">
-                  <input id="discord_show_song" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
-              </div>
-
-              <div id="discord_show_song_options" class="hidden">
-                <div class="group__option" class="hidden">
+            <div id="discord_options" class="group__options-group hidden collapsible-section">
+              <div>
+                <div class="group__option">
                   <div class="group__content">
-                    <h4>Include timestamps</h4>
-                    <p>Show current/end playtime in the Discord client</p>
+                    <h4>Show Idle Text</h4>
+                    <p>Should the idle text be shown when idle?</p>
                   </div>
                   <label class="switch">
-                    <input id="discord_include_timestamps" type="checkbox" />
+                    <input id="discord_show_idle" type="checkbox" />
                     <span class="switch__slider"></span>
                   </label>
                 </div>
 
-                <div class="group__option" class="hidden">
+                <div class="group__option">
                   <div class="group__content">
-                    <h4>Details prefix</h4>
-                    <p>Prefix for the "details" field of Discord's rich presence.</p>
-                    <input id="discord_details_prefix" type="text" class="text-input" name="discord_details_prefix" />
+                    <h4>Idle Text</h4>
+                    <p>The text displayed on Discord's rich presence while idling in the app.</p>
+                    <input id="discord_idle_text" type="text" class="text-input" name="discord_idle_text" />
                   </div>
                 </div>
 
                 <div class="group__option">
                   <div class="group__content">
-                    <h4>Button text</h4>
-                    <p>Text to display on the button below the media information.</p>
-                    <input id="discord_button_text" type="text" class="text-input" name="discord_button_text" />
+                    <h4>Using Tidal Text</h4>
+                    <p>
+                      The text displayed on Discord's rich presence while "showSong" is turned off
+                    </p>
+                    <input id="discord_using_text" type="text" class="text-input" name="discord_using_text" />
+                  </div>
+                </div>
+
+                <div class="group__option">
+                  <div class="group__content">
+                    <h4>Show media</h4>
+                    <p>Show the current media in the Discord client</p>
+                  </div>
+                  <label class="switch">
+                    <input id="discord_show_song" type="checkbox" />
+                    <span class="switch__slider"></span>
+                  </label>
+                </div>
+
+                <div id="discord_show_song_options" class="hidden collapsible-section">
+                  <div class="group__option">
+                    <div class="group__content">
+                      <h4>Include timestamps</h4>
+                      <p>Show current/end playtime in the Discord client</p>
+                    </div>
+                    <label class="switch">
+                      <input id="discord_include_timestamps" type="checkbox" />
+                      <span class="switch__slider"></span>
+                    </label>
+                  </div>
+
+                  <div class="group__option">
+                    <div class="group__content">
+                      <h4>Details prefix</h4>
+                      <p>Prefix for the "details" field of Discord's rich presence.</p>
+                      <input id="discord_details_prefix" type="text" class="text-input" name="discord_details_prefix" />
+                    </div>
+                  </div>
+
+                  <div class="group__option">
+                    <div class="group__content">
+                      <h4>Button text</h4>
+                      <p>Text to display on the button below the media information.</p>
+                      <input id="discord_button_text" type="text" class="text-input" name="discord_button_text" />
+                    </div>
                   </div>
                 </div>
               </div>
@@ -371,34 +377,36 @@
                 <span class="switch__slider"></span>
               </label>
             </div>
-            <div id="listenbrainz__options" class="group__options-group hidden">
-              <div class="group__option">
-                <div class="group__content">
-                  <h4>ListenBrainz API Url</h4>
-                  <p>
-                    There are multiple instances for ListenBrainz you can set the corresponding
-                    API url below.
-                  </p>
-                  <input id="ListenBrainzAPI" type="text" class="text-input" name="ListenBrainzAPI" />
+            <div id="listenbrainz__options" class="group__options-group hidden collapsible-section">
+              <div>
+                <div class="group__option">
+                  <div class="group__content">
+                    <h4>ListenBrainz API Url</h4>
+                    <p>
+                      There are multiple instances for ListenBrainz you can set the corresponding
+                      API url below.
+                    </p>
+                    <input id="ListenBrainzAPI" type="text" class="text-input" name="ListenBrainzAPI" />
+                  </div>
                 </div>
-              </div>
-              <div class="group__option">
-                <div class="group__content">
-                  <h4>ListenBrainz User Token</h4>
-                  <p>Provide the user token you can get from the settings page.</p>
-                  <input id="ListenBrainzToken" type="text" class="text-input" name="ListenBrainzToken" />
+                <div class="group__option">
+                  <div class="group__content">
+                    <h4>ListenBrainz User Token</h4>
+                    <p>Provide the user token you can get from the settings page.</p>
+                    <input id="ListenBrainzToken" type="text" class="text-input" name="ListenBrainzToken" />
+                  </div>
                 </div>
-              </div>
-              <div class="group__option">
-                <div class="group__content">
-                  <h4>ScrobbleDelay</h4>
-                  <p>
-                    The delay (in ms) to send a listen to ListenBrainz. Prevents spamming the API when
-                    you fast forward immediately
-                  </p>
+                <div class="group__option">
+                  <div class="group__content">
+                    <h4>ScrobbleDelay</h4>
+                    <p>
+                      The delay (in ms) to send a listen to ListenBrainz. Prevents spamming the API when
+                      you fast forward immediately
+                    </p>
+                  </div>
+                  <input id="listenbrainz_delay" type="number" class="text-input text-input--small"
+                    name="listenbrainz_delay" />
                 </div>
-                <input id="listenbrainz_delay" type="number" class="text-input text-input--small"
-                  name="listenbrainz_delay" />
               </div>
             </div>
           </div>
@@ -585,7 +593,7 @@
             </div>
 
             <!-- hotkey options -->
-            <div id="hotkeys__options" class="group__options-group hidden">
+            <div id="hotkeys__options" class="group__options-group hidden collapsible-section">
               <div class="hotkeys-header">
                 <div class="hotkeys-search">
                   <input class="text-input" id="hotkey-search" placeholder="Search hotkeys..." type="text" />

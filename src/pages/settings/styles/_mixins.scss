@@ -35,11 +35,42 @@
   padding: 7px 10px;
   white-space: nowrap;
   cursor: pointer;
-  transition: .15s;
+  transition: 0.15s;
   box-sizing: border-box;
 
   @media (max-width: 600px) {
     max-width: unset !important;
     width: 100%;
   }
+}
+
+@mixin option-card {
+  background: var(--black-lighter);
+  padding: 16px;
+  border: 1px solid var(--black-lightest);
+  border-radius: 16px;
+}
+
+// Common hover state for interactive elements
+@mixin hover-lift {
+  transition:
+    border-color 0.2s ease-in-out,
+    background-color 0.2s ease-in-out;
+
+  &:hover {
+    border-color: var(--grey-darkest);
+  }
+}
+
+@mixin content-heading {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--white);
+}
+
+@mixin content-description {
+  margin: 0;
+  color: var(--grey);
+  font-size: 14px;
 }
