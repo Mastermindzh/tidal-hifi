@@ -78,16 +78,16 @@ function createHotkeyItemHTML(action: HotkeyAction, currentKey: string): string 
   );
 
   return `
-    <div class="hotkey-item" data-action-id="${safeActionId}" data-search-terms="${safeSearchTerms}">
-      <div class="hotkey-description">
+    <div class="group__option hotkey-item" data-action-id="${safeActionId}" data-search-terms="${safeSearchTerms}">
+      <div class="group__content">
         <h4>${safeName}</h4>
         <p>${safeDescription}</p>
       </div>
+      ${!isDisabled ? `<button class="button hotkey-reset-btn" data-action-id="${safeActionId}" title="Reset to default" aria-label="Reset ${safeName} to default">↶</button>` : ""}
       <div class="hotkey-controls">
-        ${!isDisabled ? `<span class="hotkey-reset-btn" data-action-id="${safeActionId}" title="Reset to default" aria-label="Reset ${safeName} to default">↶</span>` : ""}
-        <div class="hotkey-binding${isDisabled ? " disabled" : " editable"}" data-action-id="${safeActionId}" data-current-key="${escapeHtml(currentKey)}" tabindex="0">
+        <button class="button ${isDisabled ? " button--disabled" : ""} hotkey-binding${isDisabled ? " disabled" : " editable"}" data-action-id="${safeActionId}" data-current-key="${escapeHtml(currentKey)}" title="${isDisabled ? "This hotkey can't be changed" : "Click to change hotkey"}" aria-label="Hotkey for ${safeName}">
           ${keyDisplay}
-        </div>
+        </button>
       </div>
     </div>
   `;

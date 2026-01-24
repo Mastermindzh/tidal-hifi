@@ -161,8 +161,8 @@
                 <span class="switch__slider"></span>
               </label>
             </div>
-            <div id="tray__options" class="group__options-group hidden collapsible-section">
-              <div>
+            <div id="tray__options" class="collapsible">
+              <div class="group__options-group">
                 <div class="group__option">
                   <div class="group__content">
                     <h4>Minimize to tray on Close</h4>
@@ -222,8 +222,8 @@
                 <span class="switch__slider"></span>
               </label>
             </div>
-            <div id="api__options" class="group__options-group hidden collapsible-section">
-              <div>
+            <div id="api__options" class="collapsible">
+              <div class="group__options-group">
                 <div class="group__option">
                   <div class="group__content">
                     <label for="port">API port</label>
@@ -292,8 +292,8 @@
                 <span class="switch__slider"></span>
               </label>
             </div>
-            <div id="discord_options" class="group__options-group hidden collapsible-section">
-              <div>
+            <div id="discord_options" class="collapsible">
+              <div class="group__options-group">
                 <div class="group__option">
                   <div class="group__content">
                     <h4>Show Idle Text</h4>
@@ -334,31 +334,34 @@
                   </label>
                 </div>
 
-                <div id="discord_show_song_options" class="hidden collapsible-section">
-                  <div class="group__option">
-                    <div class="group__content">
-                      <h4>Include timestamps</h4>
-                      <p>Show current/end playtime in the Discord client</p>
+                <div id="discord_show_song_options" class="collapsible">
+                  <div>
+                    <div class="group__option">
+                      <div class="group__content">
+                        <h4>Include timestamps</h4>
+                        <p>Show current/end playtime in the Discord client</p>
+                      </div>
+                      <label class="switch">
+                        <input id="discord_include_timestamps" type="checkbox" />
+                        <span class="switch__slider"></span>
+                      </label>
                     </div>
-                    <label class="switch">
-                      <input id="discord_include_timestamps" type="checkbox" />
-                      <span class="switch__slider"></span>
-                    </label>
-                  </div>
 
-                  <div class="group__option">
-                    <div class="group__content">
-                      <h4>Details prefix</h4>
-                      <p>Prefix for the "details" field of Discord's rich presence.</p>
-                      <input id="discord_details_prefix" type="text" class="text-input" name="discord_details_prefix" />
+                    <div class="group__option">
+                      <div class="group__content">
+                        <h4>Details prefix</h4>
+                        <p>Prefix for the "details" field of Discord's rich presence.</p>
+                        <input id="discord_details_prefix" type="text" class="text-input"
+                          name="discord_details_prefix" />
+                      </div>
                     </div>
-                  </div>
 
-                  <div class="group__option">
-                    <div class="group__content">
-                      <h4>Button text</h4>
-                      <p>Text to display on the button below the media information.</p>
-                      <input id="discord_button_text" type="text" class="text-input" name="discord_button_text" />
+                    <div class="group__option">
+                      <div class="group__content">
+                        <h4>Button text</h4>
+                        <p>Text to display on the button below the media information.</p>
+                        <input id="discord_button_text" type="text" class="text-input" name="discord_button_text" />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -377,8 +380,8 @@
                 <span class="switch__slider"></span>
               </label>
             </div>
-            <div id="listenbrainz__options" class="group__options-group hidden collapsible-section">
-              <div>
+            <div class="collapsible" id="listenbrainz__options">
+              <div class="group__options-group">
                 <div class="group__option">
                   <div class="group__content">
                     <h4>ListenBrainz API Url</h4>
@@ -593,15 +596,22 @@
             </div>
 
             <!-- hotkey options -->
-            <div id="hotkeys__options" class="group__options-group hidden collapsible-section">
-              <div class="hotkeys-header">
-                <div class="hotkeys-search">
-                  <input class="text-input" id="hotkey-search" placeholder="Search hotkeys..." type="text" />
+            <div id="hotkeys__options" class="collapsible">
+              <div class="group__options-group">
+                <div class="group__option">
+                  <div class="group__content">
+                    <h4>Search hotkeys</h4>
+                    <p>
+                      Find a hotkey by typing the name of the action, or a part of the hotkey, that you want to find.
+                    </p>
+                    <input id="hotkey-search" type="text" class="text-input" name="trayIconPath"
+                      placeholder="Start typing..." />
+                  </div>
                 </div>
-              </div>
 
-              <div class="hotkeys-list" id="hotkeys-list">
-                <!-- Hotkeys will be dynamically populated by preload.ts -->
+                <div id="hotkeys-list">
+                  <!-- Hotkeys will be dynamically populated by preload.ts -->
+                </div>
               </div>
             </div>
           </div>
