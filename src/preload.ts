@@ -19,6 +19,7 @@ import { TidalApiController } from "./TidalControllers/apiController/TidalApiCon
 import { DomTidalController } from "./TidalControllers/DomController/DomTidalController";
 import { getDomUpdateFrequency } from "./TidalControllers/DomController/domUpdateFrequency";
 import { MediaSessionController } from "./TidalControllers/MediaSessionController/MediaSessionController";
+import { ReduxController } from "./TidalControllers/ReduxController/ReduxController";
 import type { TidalController } from "./TidalControllers/TidalController";
 
 const albumArtPath = `${app.getPath("userData")}/current.jpg`;
@@ -47,6 +48,17 @@ switch (settingsStore.get(settings.advanced.controllerType)) {
       ),
     };
     Logger.log("MediaSessionController initialized");
+    break;
+  }
+
+  case tidalControllers.reduxController: {
+    tidalController = new ReduxController();
+    controllerOptions = {
+      refreshInterval: getDomUpdateFrequency(
+        settingsStore.get<string, number>(settings.updateFrequency),
+      ),
+    };
+    Logger.log("ReduxController initialized");
     break;
   }
 
