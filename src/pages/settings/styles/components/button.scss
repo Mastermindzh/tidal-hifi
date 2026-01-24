@@ -7,6 +7,20 @@
   text-align: center;
   background: var(--grey-darkest);
 
+  &--disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+
+    &:hover {
+      background: var(--grey-darkest) !important;
+    }
+
+    &:active {
+      background: var(--grey-darkest) !important;
+      color: var(--white) !important;
+    }
+  }
+
   &:hover {
     background: var(--grey-darker);
   }

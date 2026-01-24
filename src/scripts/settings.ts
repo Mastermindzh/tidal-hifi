@@ -4,6 +4,7 @@ import Store from "electron-store";
 
 import { settings } from "../constants/settings";
 import values from "../constants/values";
+import { getDefaultHotkeyConfig } from "../features/hotkeys";
 import { Logger } from "../features/logger";
 
 let settingsWindow: BrowserWindow;
@@ -66,6 +67,7 @@ export const settingsStore = new Store({
       enableWaylandSupport: true,
       gpuRasterization: true,
     },
+    hotkeys: getDefaultHotkeyConfig(),
     menuBar: true,
     minimizeOnClose: false,
     mpris: false,

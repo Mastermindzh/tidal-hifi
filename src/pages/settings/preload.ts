@@ -8,6 +8,7 @@ import { SUPPORTED_TRAY_ICON_EXTENSIONS } from "../../constants/trayIcon";
 import { Logger } from "../../features/logger";
 import { addCustomCss } from "../../features/theming/theming";
 import { settingsStore } from "../../scripts/settings";
+import { initializeHotkeys } from "./hotkeys";
 import { cssFilter, getOptions, getOptionsHeader, getThemeListFromDirectory } from "./theming";
 
 // All switches on the settings screen that show additional options based on their state
@@ -37,6 +38,11 @@ const switchesWithSettings = {
     classToHide: "discord_show_song_options",
     settingsKey: settings.discord.showSong,
   },
+  hotkeys: {
+    switch: "enableCustomHotkeys",
+    classToHide: "hotkeys__options",
+    settingsKey: settings.enableCustomHotkeys,
+  },
 };
 
 let adBlock: HTMLInputElement,
@@ -49,6 +55,8 @@ let adBlock: HTMLInputElement,
   enableCustomHotkeys: HTMLInputElement,
   enableDiscord: HTMLInputElement,
   gpuRasterization: HTMLInputElement,
+  hotkeySearch: HTMLInputElement,
+  hotkeysList: HTMLElement,
   hostname: HTMLInputElement,
   menuBar: HTMLInputElement,
   minimizeOnClose: HTMLInputElement,
@@ -253,6 +261,9 @@ function refreshSettings() {
     userAgent.value = settingsStore.get(settings.advanced.userAgent);
     controllerType.value = settingsStore.get(settings.advanced.controllerType);
 
+    // initialize hotkeys
+    initializeHotkeys(hotkeySearch, hotkeysList);
+
     // set state of all switches with additional settings
     Object.values(switchesWithSettings).forEach((settingSwitch) => {
       setElementHidden(settingsStore.get(settingSwitch.settingsKey), settingSwitch);
@@ -370,6 +381,8 @@ window.addEventListener("DOMContentLoaded", () => {
   enableDiscord = get("enableDiscord");
   enableWaylandSupport = get("enableWaylandSupport");
   gpuRasterization = get("gpuRasterization");
+  hotkeySearch = get("hotkey-search");
+  hotkeysList = get("hotkeys-list");
   hostname = get("hostname");
   menuBar = get("menuBar");
   minimizeOnClose = get("minimizeOnClose");
@@ -408,7 +421,7 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(disableAltMenuBar, settings.disableAltMenuBar);
   addInputListener(disableBackgroundThrottle, settings.disableBackgroundThrottle);
   addInputListener(disableHardwareMediaKeys, settings.flags.disableHardwareMediaKeys);
-  addInputListener(enableCustomHotkeys, settings.enableCustomHotkeys);
+  addInputListener(enableCustomHotkeys, settings.enableCustomHotkeys, switchesWithSettings.hotkeys);
   addInputListener(enableDiscord, settings.enableDiscord, switchesWithSettings.discord);
   addInputListener(enableWaylandSupport, settings.flags.enableWaylandSupport);
   addInputListener(gpuRasterization, settings.flags.gpuRasterization);

@@ -1,0 +1,74 @@
+.hotkey-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+
+  @media (max-width: 600px) {
+    width: 100%;
+  }
+}
+
+.hotkey-binding {
+  &.editing {
+    background: var(--black-lighter);
+    transition: padding-left 0s;
+    padding: 0;
+
+    .editing-content {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .editing-prompt {
+      color: var(--white);
+      font-weight: 500;
+      font-size: 12px;
+    }
+
+    .editing-help {
+      color: var(--white);
+      font-size: 10px;
+      opacity: .7;
+    }
+  }
+
+  kbd {
+    background: var(--white);
+    color: var(--black);
+    padding: 2px 8px;
+    margin: 0 4px 1px;
+    border-radius: 3px;
+    font-size: 11px;
+    font-family:
+      ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas,
+      monospace;
+    min-width: 18px;
+    display: inline-flex;
+    justify-content: center;
+  }
+}
+
+.hotkey-reset-btn {
+  opacity: 0;
+  transform: translateX(-10px);
+
+  @media (max-width: 600px) {
+    position: absolute;
+    right: 0;
+    top: 20px;
+    width: unset;
+  }
+
+  .hotkey-item:hover & {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  .hotkey-item:focus-within & {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

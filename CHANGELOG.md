@@ -6,6 +6,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [next]
 
+### Added
+
+- Complete custom hotkey management system
+  - Interactive settings interface for customizing all hotkeys
+  - Search and filter functionality to quickly find specific hotkeys
+  - Individual reset buttons to restore default values per hotkey
+  - Visual feedback for key combination editing
+  - Conflict detection to prevent duplicate key assignments
+  - Clean, minimal UI design with keyboard accessibility
+
 ### changed
 
 - Added support for setting volume to API & mpris
@@ -17,7 +27,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### dev-changes
 
-- Removed pull-requests release build when targetting master
+- Removed pull-requests release build when targeting master
 - Consolidated MPRIS service architecture by merging handler logic into main service
   - This makes the renderer much lighter again
 - Reorganized MPRIS utilities from `utility/mpris.ts` to `features/mpris/mprisUtils.ts` for better code organization
