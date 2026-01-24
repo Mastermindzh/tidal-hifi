@@ -1,0 +1,53 @@
+name: Feature Request
+description: Suggest a new feature or enhancement for Tidal Hi-Fi
+title: "[Feature]: "
+labels: ["enhancement"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature for Tidal Hi-Fi!
+
+        Before submitting, please search existing issues and discussions to see if your feature has already been requested.
+
+  - type: checkboxes
+    id: existing-check
+    attributes:
+      label: Pre-submission Checklist
+      options:
+        - label: I have searched existing issues and discussions
+          required: true
+
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature Description & Use Case
+      description: |
+        Provide a clear and detailed description of the feature you'd like to see.
+
+        Please include:
+        - What the feature should do
+        - What problem it solves
+        - How you would use this feature
+      placeholder: A clear and concise description of what you want and why...
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Have you considered any alternative solutions or workarounds?
+      placeholder: Describe any alternative solutions or workarounds you've considered...
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: Add any other context, screenshots, or examples about the feature request
+      placeholder: Any additional information, mockups, or examples...
+    validations:
+      required: false

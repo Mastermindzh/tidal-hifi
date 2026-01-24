@@ -1,0 +1,100 @@
+name: Bug Report
+description: Report a bug or issue with Tidal Hi-Fi
+title: "[Bug]: "
+labels: ["bug"]
+assignees: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+
+        **Important**: Tidal Hi-Fi is designed for Linux systems only.
+
+        Before submitting, please:
+        - Search existing issues to avoid duplicates
+        - Check our [known issues documentation](../docs/known-issues.md) to see if your issue is already documented
+
+  - type: dropdown
+    id: installation-method
+    attributes:
+      label: Installation Method
+      description: How did you install Tidal Hi-Fi?
+      options:
+        - Releases (AppImage/deb/rpm/tar.gz)
+        - Snap
+        - Arch Linux (AUR)
+        - Flatpak
+        - Nix
+        - Built from source
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Linux Distribution
+      description: What Linux distribution and version are you using?
+      placeholder: e.g., Ubuntu 22.04, Arch Linux, Fedora 38
+    validations:
+      required: true
+
+  - type: input
+    id: app-version
+    attributes:
+      label: Tidal Hi-Fi Version
+      description: What version of Tidal Hi-Fi are you using?
+      placeholder: e.g., 5.0.0
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-behavior
+    attributes:
+      label: Current Behavior
+      description: What actually happens? Describe the bug you're experiencing.
+      placeholder: A clear and concise description of what the bug is...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected Behavior
+      description: What should happen instead?
+      placeholder: A clear and concise description of what you expected to happen...
+    validations:
+      required: false
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to Reproduce
+      description: Please provide clear, numbered steps to reproduce the issue
+      placeholder: |
+        1. Open Tidal Hi-Fi
+        2. Click on '...'
+        3. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots-logs
+    attributes:
+      label: Screenshots and Logs
+      description: If applicable, add screenshots or paste any relevant logs here
+      placeholder: Paste logs or drag screenshots here...
+    validations:
+      required: false
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional Context
+      description: |
+        Add any other context about the problem here.
+
+        **Important**: DO NOT share your config.json file as it may contain sensitive integration keys.
+      placeholder: Any additional information that might be helpful...
+    validations:
+      required: false

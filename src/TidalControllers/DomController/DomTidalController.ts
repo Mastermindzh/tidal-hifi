@@ -129,9 +129,14 @@ export class DomTidalController implements TidalController<DomControllerOptions>
     clickElement("shuffle");
   }
   getCurrentlyPlayingStatus() {
-    const player = this.getPlayer();
-    if (!player) return MediaStatus.paused;
-    return player.paused ? MediaStatus.paused : MediaStatus.playing;
+    const pause = getElement("pause");
+
+    // if pause button is visible tidal is playing
+    if (pause) {
+      return MediaStatus.playing;
+    } else {
+      return MediaStatus.paused;
+    }
   }
 
   getCurrentShuffleState() {
@@ -150,19 +155,13 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   }
 
   play() {
-    const player = this.getPlayer();
-    if (!player) return;
-    // Only play if not already playing
     if (this.getCurrentlyPlayingStatus() !== MediaStatus.playing) {
-      player.play();
+      clickElement("play");
     }
   }
   pause() {
-    const player = this.getPlayer();
-    if (!player) return;
-    // Only pause if currently playing
     if (this.getCurrentlyPlayingStatus() === MediaStatus.playing) {
-      player.pause();
+      clickElement("pause");
     }
   }
   stop() {

@@ -25,8 +25,8 @@ The web version of [TIDAL](https://tidal.com) running in electron with Hi-Fi (Hi
     - [Nix](#nix)
     - [Using source](#using-source)
   - [Integrations](#integrations)
+    - [Custom Scrobbling with Multi-Scrobbler](#custom-scrobbling-with-multi-scrobbler)
   - [Known bugs](#known-bugs)
-    - [DRM not working on Windows (error S6007)](#drm-not-working-on-windows-error-s6007)
   - [Special thanks to](#special-thanks-to)
   - [Donations](#donations)
   - [Images](#images)
@@ -159,45 +159,7 @@ Integrations with other projects that are not included natively:
 
 ## Known bugs
 
-### DRM not working on Windows (error S6007)
-
-Most Windows users run into DRM issues when trying to use TIDAL Hi-Fi.
-Nothing I can do about that I'm afraid... Tidal is working on removing/changing DRM so when they finish with that we can give it another shot.
-
-Until then you'll have to use the official app unfortunately.
-
-### Discord RPC not working with Flatpak and native Discord
-
-If you're running TIDAL Hi-Fi as a Flatpak and Discord as a native application (not Flatpak), Discord RPC integration may not work due to sandboxing.
-
-**Fix**: Use Flatseal to grant TIDAL Hi-Fi access to the Discord socket:
-
-1. Open Flatseal
-2. Navigate to TIDAL Hi-Fi → Filesystem → Other files
-3. Add a new entry: `xdg-run/discord-ipc-0`
-
-This allows the Flatpak to communicate with the native Discord installation through the IPC socket.
-
-### Discord RPC not working between Flatpaks (TIDAL Hi-Fi + Discord/Vesktop)
-
-If both TIDAL Hi-Fi and Discord/Vesktop are running as Flatpaks, they cannot communicate directly due to sandboxing.
-
-**Fix**: Create symlinks and grant filesystem permissions:
-
-1. **Create symlinks for Vesktop**:
-
-   ```bash
-   ln -sf $XDG_RUNTIME_DIR/{.flatpak/dev.vencord.Vesktop/xdg-run,}/discord-ipc-0
-   ln -sf $XDG_RUNTIME_DIR/{.flatpak/dev.vencord.Vesktop/xdg-run,app/com.discordapp.Discord}/discord-ipc-0
-   ```
-
-2. **Grant filesystem permission**:
-
-   ```bash
-   flatpak override --user --filesystem=xdg-run/.flatpak/dev.vencord.Vesktop:create com.mastermindzh.tidal-hifi
-   ```
-
-This creates the necessary communication bridges between the sandboxed applications.
+Please check the [Knows issues file](./docs/known-issues.md).
 
 ## Special thanks to
 

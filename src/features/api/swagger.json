@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "TIDAL Hi-Fi API",
-    "version": "6.0.1",
+    "version": "6.1.0",
     "description": "",
     "license": {
       "name": "MIT",
@@ -93,7 +93,7 @@
                     },
                     "version": {
                       "type": "string",
-                      "example": "6.0.1"
+                      "example": "6.1.0"
                     },
                     "service": {
                       "type": "string",

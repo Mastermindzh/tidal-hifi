@@ -33,7 +33,7 @@ export const addHealthEndpoint = (app: Express): void => {
    *                   example: 12345.67
    *                 version:
    *                   type: string
-   *                   example: "6.0.1"
+   *                   example: "6.1.0"
    *                 service:
    *                   type: string
    *                   example: "tidal-hifi-api"

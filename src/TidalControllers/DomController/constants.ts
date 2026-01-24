@@ -1,5 +1,7 @@
 export const UI_SELECTORS = {
   player: '*[id="video-one"]',
+  play: '*[data-test="play"]',
+  pause: '*[data-test="pause"]',
   next: '*[data-test="next"]',
   previous: 'button[data-test="previous"]',
   title: '*[data-test^="footer-track-title"]',
