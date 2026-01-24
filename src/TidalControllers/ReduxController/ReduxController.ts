@@ -170,7 +170,6 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
   }
 
   getDuration() {
-    console.log(this.useSelector((state) => state.playbackControls.playbackContext.actualDuration));
     return this.useSelector((state) => state.playbackControls.playbackContext.actualDuration);
   }
 
