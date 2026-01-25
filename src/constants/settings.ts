@@ -50,6 +50,9 @@ export const settings = {
     gpuRasterization: "flags.gpuRasterization",
     enableWaylandSupport: "flags.enableWaylandSupport",
   },
+  hotkeys: {
+    root: "hotkeys",
+  },
   menuBar: "menuBar",
   minimizeOnClose: "minimizeOnClose",
   mpris: "mpris",

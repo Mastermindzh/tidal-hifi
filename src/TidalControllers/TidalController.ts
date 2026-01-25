@@ -1,6 +1,6 @@
-import { MediaInfo } from "../models/mediaInfo";
-import { MediaStatus } from "../models/mediaStatus";
-import { RepeatState } from "../models/repeatState";
+import type { MediaInfo } from "../models/mediaInfo";
+import type { MediaStatus } from "../models/mediaStatus";
+import type { RepeatStateType } from "../models/repeatState";
 
 export interface TidalController<TBootstrapOptions = object> {
   /**
@@ -11,8 +11,6 @@ export interface TidalController<TBootstrapOptions = object> {
   pause(): void;
   stop(): void;
   toggleFavorite(): void;
-  back(): void;
-  forward(): void;
   repeat(): void;
   next(): void;
   previous(): void;
@@ -34,12 +32,13 @@ export interface TidalController<TBootstrapOptions = object> {
    */
   getCurrentlyPlayingStatus(): MediaStatus;
   getCurrentShuffleState(): boolean;
-  getCurrentRepeatState(): RepeatState;
-  getCurrentPosition(): string;
-  getCurrentPositionInSeconds(): number;
+  getCurrentRepeatState(): RepeatStateType;
   getTrackId(): string;
-  getCurrentTime(): string;
-  getDuration(): string;
+  getCurrentTime(): number;
+  setCurrentTime(value: number): void;
+  getDuration(): number;
+  getVolume(): number;
+  setVolume(volume: number): void;
   getAlbumName(): string;
   getTitle(): string;
   getArtists(): string[];

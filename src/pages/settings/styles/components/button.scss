@@ -1,0 +1,32 @@
+@use "../mixins";
+
+.button {
+  @include mixins.common-input;
+
+  font-weight: 600;
+  text-align: center;
+  background: var(--grey-darkest);
+
+  &--disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+
+    &:hover {
+      background: var(--grey-darkest) !important;
+    }
+
+    &:active {
+      background: var(--grey-darkest) !important;
+      color: var(--white) !important;
+    }
+  }
+
+  &:hover {
+    background: var(--grey-darker);
+  }
+
+  &:active {
+    background: var(--white);
+    color: var(--black);
+  }
+}

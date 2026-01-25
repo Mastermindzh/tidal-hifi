@@ -1,4 +1,5 @@
-import { PowerSaveBlocker, powerSaveBlocker } from "electron";
+import { type PowerSaveBlocker, powerSaveBlocker } from "electron";
+
 import { Logger } from "../logger";
 
 /**
@@ -37,7 +38,7 @@ export const releaseInhibitor = (id: number, blocker?: PowerSaveBlocker) => {
     const currentBlocker = blocker ?? powerSaveBlocker;
     currentBlocker.stop(id);
     Logger.log(`Released inhibitor with id: ${id}`);
-  } catch (error) {
+  } catch (_error) {
     Logger.log("Releasing inhibitor failed");
   }
 };

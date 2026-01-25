@@ -1,4 +1,4 @@
-import { Express, Request, Response } from "express";
+import type { Express, Request, Response } from "express";
 
 /**
  * Add health check endpoint to the express app
@@ -33,12 +33,12 @@ export const addHealthEndpoint = (app: Express): void => {
    *                   example: 12345.67
    *                 version:
    *                   type: string
-   *                   example: "6.0.1"
+   *                   example: "6.1.0"
    *                 service:
    *                   type: string
    *                   example: "tidal-hifi-api"
    */
-  app.get("/health", (req: Request, res: Response) => {
+  app.get("/health", (_req: Request, res: Response) => {
     const healthData = {
       status: "healthy",
       timestamp: new Date().toISOString(),

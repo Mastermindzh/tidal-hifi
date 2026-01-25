@@ -1,9 +1,10 @@
+import path from "node:path";
+import { BrowserWindow, shell } from "electron";
 import Store from "electron-store";
 
-import { BrowserWindow, shell } from "electron";
-import path from "path";
 import { settings } from "../constants/settings";
 import values from "../constants/values";
+import { getDefaultHotkeyConfig } from "../features/hotkeys";
 import { Logger } from "../features/logger";
 
 let settingsWindow: BrowserWindow;
@@ -66,6 +67,7 @@ export const settingsStore = new Store({
       enableWaylandSupport: true,
       gpuRasterization: true,
     },
+    hotkeys: getDefaultHotkeyConfig(),
     menuBar: true,
     minimizeOnClose: false,
     mpris: false,
@@ -152,7 +154,7 @@ const settingsModule = {
   settingsWindow,
 };
 
-export const createSettingsWindow = function () {
+export const createSettingsWindow = () => {
   settingsWindow = new BrowserWindow({
     width: 650,
     height: 700,
@@ -184,7 +186,7 @@ export const createSettingsWindow = function () {
   settingsModule.settingsWindow = settingsWindow;
 };
 
-export const showSettingsWindow = function (tab = "general") {
+export const showSettingsWindow = (tab = "general") => {
   if (!settingsWindow) {
     console.log("Settings window is not initialized. Attempting to create it.");
     createSettingsWindow();
@@ -195,11 +197,11 @@ export const showSettingsWindow = function (tab = "general") {
   settingsWindow.webContents.send("refreshData");
   settingsWindow.show();
 };
-export const hideSettingsWindow = function () {
+export const hideSettingsWindow = () => {
   settingsWindow.hide();
 };
 
-export const closeSettingsWindow = function () {
+export const closeSettingsWindow = () => {
   settingsWindow = null;
 };
 

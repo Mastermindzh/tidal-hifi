@@ -1,4 +1,4 @@
-import { MediaPlayerInfo } from "./mediaPlayerInfo";
+import type { MediaPlayerInfo } from "./mediaPlayerInfo";
 import { MediaStatus } from "./mediaStatus";
 import { RepeatState } from "./repeatState";
 
@@ -12,12 +12,14 @@ export interface MediaInfo {
   url: string;
   playingFrom: string;
   current: string;
-  currentInSeconds?: number;
+  currentInSeconds: number;
   duration: string;
-  durationInSeconds?: number;
+  durationInSeconds: number;
   image: string;
   localAlbumArt?: string; // Local path to downloaded album art
   favorite: boolean;
+  trackId?: string;
+  volume?: number;
   player?: MediaPlayerInfo;
 }
 
@@ -31,13 +33,15 @@ export const getEmptyMediaInfo = () => {
     status: MediaStatus.playing,
     url: "",
     current: "00:00",
-    currentInSeconds: 100,
+    currentInSeconds: 0,
     duration: "00:00",
-    durationInSeconds: 100,
+    durationInSeconds: 0,
     image: "",
     icon: "",
     localAlbumArt: "",
     favorite: true,
+    trackId: "",
+    volume: 1.0,
 
     player: {
       status: MediaStatus.playing,

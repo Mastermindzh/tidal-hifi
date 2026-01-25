@@ -1,11 +1,32 @@
-import { BrowserWindow } from "electron";
-import { Router } from "express";
+import type { BrowserWindow } from "electron";
+import type { Request, Router } from "express";
+
 import { globalEvents } from "../../../constants/globalEvents";
 import { settings } from "../../../constants/settings";
-import { MediaStatus } from "../../../models/mediaStatus";
-import { mediaInfo } from "../../../scripts/mediaInfo";
 import { settingsStore } from "../../../scripts/settings";
 import { handleWindowEvent } from "../helpers/handleWindowEvent";
+
+const parseNumberParam = (value: unknown, defaultValue: number = 0): number => {
+  if (typeof value !== "string" || value.trim() === "") {
+    return defaultValue;
+  }
+  const parsed = parseFloat(value);
+  return Number.isNaN(parsed) ? defaultValue : parsed;
+};
+
+const parseVolumeParam = (req: Request) => ({
+  volume: parseNumberParam(req.query.volume),
+});
+
+const parseAbsoluteSeekParam = (req: Request) => ({
+  seconds: parseNumberParam(req.query.seconds),
+  type: "absolute" as const,
+});
+
+const parseRelativeSeekParam = (req: Request) => ({
+  seconds: parseNumberParam(req.query.seconds),
+  type: "relative" as const,
+});
 
 export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow) => {
   const windowEvent = handleWindowEvent(mainWindow);
@@ -23,7 +44,17 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
    *       example: "OK"
    */
   const createPlayerAction = (route: string, action: string) => {
-    expressApp.post(createRoute(route), (req, res) => windowEvent(res, action));
+    expressApp.post(createRoute(route), (_req, res) => windowEvent(res, action));
+  };
+
+  const createPlayerPutAction = (
+    route: string,
+    action: string,
+    payloadFactory?: (req: Request) => object,
+  ) => {
+    expressApp.put(createRoute(route), (req, res) =>
+      windowEvent(res, action, payloadFactory ? payloadFactory(req) : undefined),
+    );
   };
 
   if (settingsStore.get(settings.playBackControl)) {
@@ -154,5 +185,78 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
      *               $ref: '#/components/schemas/OkResponse'
      */
     createPlayerAction("/playpause", globalEvents.playPause);
+
+    /**
+     * @swagger
+     * /player/volume:
+     *   put:
+     *     summary: Set volume of the player to a certain LEVEL where LEVEL is a value between 0.0 (0%) and 1.0 (100%).
+     *     tags: [player]
+     *     parameters:
+     *       - in: query
+     *         name: volume
+     *         description: Volume level to set
+     *         required: true
+     *         schema:
+     *           type: number
+     *           multipleOf: 0.01
+     *           minimum: 0
+     *           maximum: 1
+     *     responses:
+     *       200:
+     *         description: Ok
+     *         content:
+     *           text/plain:
+     *             schema:
+     *               $ref: '#/components/schemas/OkResponse'
+     */
+    createPlayerPutAction("/volume", globalEvents.volume, parseVolumeParam);
+
+    /**
+     * @swagger
+     * /player/seek/absolute:
+     *  put:
+     *     summary: Set absolute position of the player
+     *     tags: [player]
+     *     parameters:
+     *       - in: query
+     *         name: seconds
+     *         description: Absolute position in seconds to set
+     *         required: true
+     *         schema:
+     *           type: number
+     *           minimum: 0
+     *     responses:
+     *       200:
+     *         description: Ok
+     *         content:
+     *           text/plain:
+     *             schema:
+     *               $ref: '#/components/schemas/OkResponse'
+     */
+    createPlayerPutAction("/seek/absolute", globalEvents.seek, parseAbsoluteSeekParam);
+
+    /**
+     * @swagger
+     * /player/seek/relative:
+     *  put:
+     *     summary: Seek relative to current position
+     *     tags: [player]
+     *     parameters:
+     *       - in: query
+     *         name: seconds
+     *         description: Relative position in seconds to seek (positive or negative)
+     *         required: true
+     *         schema:
+     *           type: number
+     *     responses:
+     *       200:
+     *         description: Ok
+     *         content:
+     *           text/plain:
+     *             schema:
+     *               $ref: '#/components/schemas/OkResponse'
+     */
+    createPlayerPutAction("/seek/relative", globalEvents.seek, parseRelativeSeekParam);
   }
 };

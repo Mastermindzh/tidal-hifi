@@ -1,6 +1,7 @@
+import path from "node:path";
 import { enable, initialize } from "@electron/remote/main";
-import { BrowserWindow, app, components, ipcMain, session } from "electron";
-import path from "path";
+import { app, BrowserWindow, components, ipcMain, session } from "electron";
+
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
 import values from "./constants/values";
@@ -12,9 +13,10 @@ import {
 } from "./features/idleInhibitor/idleInhibitor";
 import { ListenBrainz } from "./features/listenbrainz/listenbrainz";
 import { Logger } from "./features/logger";
+import { MprisService } from "./features/mpris/mprisService";
 import { SharingService } from "./features/sharingService/sharingService";
 import { tidalUrl } from "./features/tidal/url";
-import { MediaInfo } from "./models/mediaInfo";
+import type { MediaInfo } from "./models/mediaInfo";
 import { MediaStatus } from "./models/mediaStatus";
 import { initRPC, rpc, unRPC } from "./scripts/discord";
 import { updateMediaInfo } from "./scripts/mediaInfo";
@@ -27,7 +29,9 @@ import {
   showSettingsWindow,
 } from "./scripts/settings";
 import { addTray, refreshTray } from "./scripts/tray";
+
 let mainInhibitorId = -1;
+let mprisService: MprisService;
 
 let mainWindow: BrowserWindow;
 const icon = path.join(__dirname, "../assets/icon.png");
@@ -36,7 +40,7 @@ const windowPreferences = {
   sandbox: false,
   plugins: true,
   devTools: true, // Ensure devTools is enabled for debugging
-  contextIsolation: false, // Disable context isolation for debugging
+  contextIsolation: true, // Enable context isolation for Security
 };
 
 setDefaultFlags(app);
@@ -66,6 +70,33 @@ function syncMenuBarWithStore() {
 }
 
 /**
+ * Perform cleanup operations without quitting the app
+ */
+function performCleanup(): void {
+  try {
+    Logger.log("Performing application cleanup...");
+    closeSettingsWindow();
+    releaseInhibitorIfActive(mainInhibitorId);
+    mprisService?.destroy();
+    if (rpc) {
+      unRPC();
+    }
+    Logger.log("Application cleanup completed");
+  } catch (error) {
+    Logger.log("Error during cleanup:", error);
+  }
+}
+
+/**
+ * Gracefully shut down the application with proper cleanup
+ */
+function gracefulExit(): void {
+  performCleanup();
+  // Force quit even if cleanup fails
+  app.quit();
+}
+
+/**
  * @returns true/false based on whether the current window is the main window
  */
 function isMainInstance() {
@@ -90,7 +121,7 @@ function getCustomProtocolUrl(args: string[]) {
     return null;
   }
 
-  return tidalUrl + "/" + customProtocolArg.substring(PROTOCOL_PREFIX.length + 3);
+  return `${tidalUrl}/${customProtocolArg.substring(PROTOCOL_PREFIX.length + 3)}`;
 }
 
 /**
@@ -147,7 +178,7 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
     mainWindow.webContents.setBackgroundThrottling(false);
   }
 
-  mainWindow.on("close", function (event: CloseEvent) {
+  mainWindow.on("close", (event: CloseEvent) => {
     if (settingsStore.get(settings.minimizeOnClose)) {
       event.preventDefault();
       mainWindow.hide();
@@ -157,10 +188,8 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
   });
 
   // Emitted when the window is closed.
-  mainWindow.on("closed", function () {
-    releaseInhibitorIfActive(mainInhibitorId);
-    closeSettingsWindow();
-    app.quit();
+  mainWindow.on("closed", () => {
+    gracefulExit();
   });
   mainWindow.on("resize", () => {
     const { width, height } = mainWindow.getBounds();
@@ -213,7 +242,7 @@ app.on("ready", async () => {
 
     // Adblock
     if (settingsStore.get(settings.adBlock)) {
-      const filter = { urls: [tidalUrl + "/*"] };
+      const filter = { urls: [`${tidalUrl}/*`] };
       session.defaultSession.webRequest.onBeforeRequest(filter, (details, callback) => {
         if (details.url.match(/\/users\/.*\d\?country/)) callback({ cancel: true });
         else callback({ cancel: false });
@@ -234,22 +263,41 @@ app.on("ready", async () => {
     if (settingsStore.get(settings.enableDiscord)) {
       initRPC();
     }
+    if (settingsStore.get(settings.mpris)) {
+      mprisService = new MprisService(mainWindow);
+      mprisService.initialize();
+    }
 
     // Hide window on startup if startMinimized is enabled
     if (settingsStore.get(settings.startMinimized)) {
       mainWindow.hide();
     }
   } else {
-    app.quit();
+    gracefulExit();
   }
 });
 
-app.on("activate", function () {
+app.on("activate", () => {
   // On OS X it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+app.on("window-all-closed", () => {
+  // On OS X, apps typically stay active even when all windows are closed
+  if (process.platform !== "darwin") {
+    gracefulExit();
+  } else {
+    // On macOS, just clean up services but don't quit
+    performCleanup();
+  }
+});
+
+app.on("before-quit", () => {
+  // Ensure cleanup happens even if quit is triggered externally
+  performCleanup();
 });
 
 app.on("browser-window-created", (_, window) => {
@@ -260,6 +308,7 @@ app.on("browser-window-created", (_, window) => {
 ipcMain.on(globalEvents.updateInfo, (_event, arg: MediaInfo) => {
   updateMediaInfo(arg);
   ListenBrainz.handleMediaUpdate(arg);
+  mprisService?.updateMetadata(arg);
   if (arg.status === MediaStatus.playing) {
     mainInhibitorId = acquireInhibitorIfInactive(mainInhibitorId);
   } else {
@@ -297,7 +346,11 @@ ipcMain.on(globalEvents.error, (event) => {
   console.log(event);
 });
 
-ipcMain.handle(globalEvents.getUniversalLink, async (event, url) => {
+ipcMain.on(globalEvents.quit, () => {
+  gracefulExit();
+});
+
+ipcMain.handle(globalEvents.getUniversalLink, async (_event, url) => {
   return SharingService.getUniversalLink(url);
 });
 

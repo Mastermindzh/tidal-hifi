@@ -1,0 +1,26 @@
+.collapsible {
+  transition:
+    grid-template-rows 0.4s ease-out,
+    opacity 0.4s ease-out;
+  display: grid;
+
+  grid-template-rows: 1fr;
+  opacity: 1;
+
+  > * {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  &.hidden {
+    display: grid !important;
+    grid-template-rows: 0fr !important;
+    opacity: 0;
+  }
+}
+
+#hotkeys-list {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
