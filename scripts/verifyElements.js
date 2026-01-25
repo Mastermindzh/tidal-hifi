@@ -13,8 +13,9 @@
     title: '*[data-test^="footer-track-title"]',
     artists: '*[data-test^="grid-item-detail-text-title-artist"]',
     home: '*[data-test="menu--home"]',
-    back: '[title^="Back"]',
-    forward: '[title^="Next"]',
+    back: '[aria-label^="Back"]',
+    forward: '[aria-label^="Next"]',
+    toggleNowPlaying: '[aria-label^="toggle now playing screen"]',
     search: '[class^="searchField"]',
     shuffle: '*[data-test="shuffle"]',
     repeat: '*[data-test="repeat"]',
@@ -32,6 +33,11 @@
     tracklist_row: '[data-test="tracklist-row"]',
     volume: '*[data-test="volume"]',
     favorite: '*[data-test="footer-favorite-button"]',
+    sidebarMusic: '*[data-test="sidebar-music"]',
+    sidebarExplore: '*[data-test="sidebar-expore"]',
+    sidebarFeed: '*[data-test="sidebar-feed"]',
+    sidebarUpload: '*[data-test="sidebar-uploads"]',
+
   }
 
   let results = [];

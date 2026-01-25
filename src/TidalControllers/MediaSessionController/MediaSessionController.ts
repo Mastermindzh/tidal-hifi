@@ -259,14 +259,6 @@ export class MediaSessionController implements TidalController<MediaSessionContr
     this.fallbackDomController.toggleFavorite();
   }
 
-  back(): void {
-    this.fallbackDomController.back();
-  }
-
-  forward(): void {
-    this.fallbackDomController.forward();
-  }
-
   getCurrentShuffleState(): boolean {
     return this.fallbackDomController.getCurrentShuffleState();
   }

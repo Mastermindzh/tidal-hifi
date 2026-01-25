@@ -102,14 +102,7 @@ export class TidalApiController implements TidalController {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
-  back(): void {
-    globalThis.alert("Method not implemented");
-    throw new Error("Method not implemented.");
-  }
-  forward(): void {
-    globalThis.alert("Method not implemented");
-    throw new Error("Method not implemented.");
-  }
+
   repeat(): void {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");

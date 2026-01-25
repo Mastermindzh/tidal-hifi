@@ -17,6 +17,7 @@ import { settingsStore } from "./scripts/settings";
 import { setTitle } from "./scripts/window-functions";
 import { TidalApiController } from "./TidalControllers/apiController/TidalApiController";
 import { DomTidalController } from "./TidalControllers/DomController/DomTidalController";
+import { clickElement, getElement } from "./TidalControllers/DomController/domHelpers";
 import { getDomUpdateFrequency } from "./TidalControllers/DomController/domUpdateFrequency";
 import { MediaSessionController } from "./TidalControllers/MediaSessionController/MediaSessionController";
 import { ReduxController } from "./TidalControllers/ReduxController/ReduxController";
@@ -114,6 +115,60 @@ function addHotKeys() {
 
     // Delete key override (disabled for search)
     addHotkey(hotkeyConfig.deleteDisabled, () => {});
+
+    addHotkey(hotkeyConfig.volumeUp, () => {
+      const currentVolume = tidalController.getVolume();
+      const newVolumeUp = Math.min(currentVolume + 0.1, 1.0);
+      tidalController.setVolume(newVolumeUp);
+    });
+    addHotkey(hotkeyConfig.volumeDown, () => {
+      const currentVolume = tidalController.getVolume();
+      const newVolumeDown = Math.max(currentVolume - 0.1, 0.0);
+      tidalController.setVolume(newVolumeDown);
+    });
+    addHotkey(hotkeyConfig.expandNowPlaying, () => {
+      clickElement("toggleNowPlaying");
+    });
+    addHotkey(hotkeyConfig.sidebarMusic, () => {
+      clickElement("sidebarMusic");
+    });
+    addHotkey(hotkeyConfig.sidebarExplore, () => {
+      clickElement("sidebarExplore");
+    });
+    addHotkey(hotkeyConfig.sidebarFeed, () => {
+      clickElement("sidebarFeed");
+    });
+    addHotkey(hotkeyConfig.sidebarUpload, () => {
+      clickElement("sidebarUpload");
+    });
+    addHotkey(hotkeyConfig.toggleSidebar, () => {
+      const collapseButton = getElement("collapseSidebar");
+      const isExpanded = collapseButton && !collapseButton.hasAttribute("disabled");
+
+      if (isExpanded) {
+        clickElement("collapseSidebar");
+      } else {
+        clickElement("expandSidebar");
+      }
+    });
+    addHotkey(hotkeyConfig.sidebarCollectionPlaylists, () => {
+      clickElement("sidebarCollectionPlaylists");
+    });
+    addHotkey(hotkeyConfig.sidebarCollectionAlbums, () => {
+      clickElement("sidebarCollectionAlbums");
+    });
+    addHotkey(hotkeyConfig.sidebarCollectionTracks, () => {
+      clickElement("sidebarCollectionTracks");
+    });
+    addHotkey(hotkeyConfig.sidebarCollectionVideos, () => {
+      clickElement("sidebarCollectionVideos");
+    });
+    addHotkey(hotkeyConfig.sidebarCollectionArtists, () => {
+      clickElement("sidebarCollectionArtists");
+    });
+    addHotkey(hotkeyConfig.sidebarCollectionMixes, () => {
+      clickElement("sidebarCollectionMixes");
+    });
   }
 
   // Always-enabled hotkeys (settings shortcuts)

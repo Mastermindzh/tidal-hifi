@@ -239,16 +239,6 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
     });
   }
 
-  back() {
-    globalThis.alert("Method not implemented");
-    throw new Error("Method not implemented.");
-  }
-
-  forward() {
-    globalThis.alert("Method not implemented");
-    throw new Error("Method not implemented.");
-  }
-
   repeat() {
     this.dispatchAction(Actions.toggleRepeat);
   }

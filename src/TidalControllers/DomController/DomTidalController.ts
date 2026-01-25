@@ -109,12 +109,6 @@ export class DomTidalController implements TidalController<DomControllerOptions>
     clickElement("favorite");
   }
 
-  back() {
-    clickElement("back");
-  }
-  forward() {
-    clickElement("forward");
-  }
   repeat() {
     clickElement("repeat");
   }

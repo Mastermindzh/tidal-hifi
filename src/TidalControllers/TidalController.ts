@@ -11,8 +11,6 @@ export interface TidalController<TBootstrapOptions = object> {
   pause(): void;
   stop(): void;
   toggleFavorite(): void;
-  back(): void;
-  forward(): void;
   repeat(): void;
   next(): void;
   previous(): void;
