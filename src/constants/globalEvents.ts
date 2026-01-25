@@ -15,4 +15,9 @@ export const globalEvents = {
   toggleFavorite: "toggleFavorite",
   toggleShuffle: "toggleShuffle",
   toggleRepeat: "toggleRepeat",
+  resetZoom: "resetZoom",
+  volume: "volume",
+  seek: "seek",
+  setLoopState: "setLoopState",
+  quit: "quit",
 };

@@ -4,6 +4,152 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.1.0]
+
+### Added
+
+- Complete custom hotkey management system
+  - Interactive settings interface for customizing all hotkeys
+  - Search and filter functionality to quickly find specific hotkeys
+  - Individual reset buttons to restore default values per hotkey
+  - Visual feedback for key combination editing
+  - Conflict detection to prevent duplicate key assignments
+  - Clean, minimal UI design with keyboard accessibility
+
+- New Controller, "ReduxController" - Uses internal state to fetch media info and control playback features
+
+### changed
+
+- Added support for setting volume to API & mpris
+- Added support for seeking (both absolute and relative) to API & mpris
+- Settings panel got a fresh new update thanks to [BlueManCZ](https://github.com/BlueManCZ)
+  - Animations added to certain elements to improve user experience
+- Migrated from ESLint, Prettier, and Stylelint to Biome for unified code formatting and linting
+- Centralized application exit handling with unified `gracefulExit()` function
+- Improved design language for the settings page to re-align with Tidal
+
+### dev-changes
+
+- Removed pull-requests release build when targeting master
+- Consolidated MPRIS service architecture by merging handler logic into main service
+  - This makes the renderer much lighter again
+- Reorganized MPRIS utilities from `utility/mpris.ts` to `features/mpris/mprisUtils.ts` for better code organization
+
+## [6.0.1]
+
+### Fixed
+
+- Fixed MPRIS pause command to do nothing if playback is already paused (follows MPRIS specification)
+- Fixed single-instance-mode now correctly "showing" the initial window when launching a second tidal-hifi on all DEs
+
+## [6.0.0]
+
+### Breaking Changes
+
+- **Default controller changed to MediaSession Controller**: While this change should not break existing installations (settings are preserved), we've marked this as a breaking change due to the significant shift in the default interaction method with Tidal. If you experience any issues, you can revert to the previous behavior by changing the controller type back to "DOM Controller" in Settings → Advanced → Controller Type.
+
+- **ListenBrainz API URL format change**: The ListenBrainz API setting now requires the full endpoint URL (e.g., `https://api.listenbrainz.org/1/submit-listens`) instead of just the base URL. While existing users with the default URL will be automatically migrated, users with custom ListenBrainz instances will need to update their API URL manually to include the full `/1/submit-listens` endpoint path.
+
+### Added
+
+- Added [TidalControllers](./docs/tidal-controllers.md)
+  - Changed default implementation to `mediaSessionController`
+- Implemented a min of 100ms and max of 60000ms on polling intervals
+- Switched primary URL from [https://listen.tidal.com](https://listen.tidal.com) to [https://tidal.com](https://tidal.com)
+- added `albumArt` key to the API
+  - Tidal Hi-Fi now downloads the best quality album art to use in notifications/api/etc
+- Option to reset zoom to 100% from settings -> Theming
+- Added `/health` endpoint to the API for health checks and monitoring
+- Root API endpoint (`/`) now redirects to `/docs` for immediate access to interactive documentation
+- Added "Start Minimized" option in Settings → Theming to hide the main window on startup
+- Ability to use transparent themes.
+- Added option to disable alt key menu bar activation in Settings → General → UI
+- Added option to customize the user agent
+- Enabled middle click autoscroll behaviour
+- Added [custom scrobbler setup guide](./docs/custom-scrobbler.md) for configuring multi-scrobbler as a proxy to scrobble to multiple services simultaneously
+
+### Fixed
+
+- Fixed ListenBrainz scrobbling to follow official guidelines - now sends "playing_now" when tracks start and "single" (scrobble) after half duration or 4 minutes, whichever is sooner. This properly handles looped tracks, replays, and any listening scenario ([#528](https://github.com/Mastermindzh/tidal-hifi/issues/528))
+- Added album information to ListenBrainz scrobbles for better metadata accuracy
+- Simplified ListenBrainz implementation by removing legacy cross-track dependencies and oldData storage
+
+- pressing delete no longer searches for "Delete" in the song search
+  - Now matches tidal.com -> does nothing
+
+- major revamp of listenbrainz code to support custom listenbrainz instances
+  - **breaking**: the url in settings now NEEDS to be the full url we post to, Tidal Hi-Fi won't append anything
+    - A migration is made to do this automatically if the old **default** URL is detected in settings.
+  - main (electron) code now handles listenbrainz instead of the preload (renderer) process.
+
+### removed
+
+- Removed non-functioning hotkeys
+
+### updated
+
+- Moved to Electron 39.2.4
+
+### fixes
+
+fixes [#779](https://github.com/Mastermindzh/tidal-hifi/issues/779)
+fixes [#768](https://github.com/Mastermindzh/tidal-hifi/issues/768)
+fixes [#717](https://github.com/Mastermindzh/tidal-hifi/issues/717)
+fixes [#505](https://github.com/Mastermindzh/tidal-hifi/issues/505)
+fixes [#712](https://github.com/Mastermindzh/tidal-hifi/issues/712)
+fixes [#750](https://github.com/Mastermindzh/tidal-hifi/issues/750)
+fixes [#563](https://github.com/Mastermindzh/tidal-hifi/issues/563)
+fixes [#385](https://github.com/Mastermindzh/tidal-hifi/issues/385)
+fixes [#443](https://github.com/Mastermindzh/tidal-hifi/issues/443)
+fixes [#772](https://github.com/Mastermindzh/tidal-hifi/issues/772)
+fixes [#438](https://github.com/Mastermindzh/tidal-hifi/issues/438)
+fixes [#529](https://github.com/Mastermindzh/tidal-hifi/issues/529)
+fixes [#309](https://github.com/Mastermindzh/tidal-hifi/issues/309)
+fixes [#465](https://github.com/Mastermindzh/tidal-hifi/issues/465)
+fixes [#433](https://github.com/Mastermindzh/tidal-hifi/issues/433)
+fixes [#528](https://github.com/Mastermindzh/tidal-hifi/issues/528)
+fixes [#769](https://github.com/Mastermindzh/tidal-hifi/issues/769)
+fixes [#513](https://github.com/Mastermindzh/tidal-hifi/issues/513)
+fixes [#767](https://github.com/Mastermindzh/tidal-hifi/issues/767)
+fixes [#601](https://github.com/Mastermindzh/tidal-hifi/issues/601)
+fixes [#496](https://github.com/Mastermindzh/tidal-hifi/issues/496)
+
+## [5.20.1]
+
+- Updated electron to 37.2.5
+
+## [5.20.0]
+
+- Removes the `--enable-features=UseOzonePlatform` flag, as the Ozone platform has been the default on Linux since Electron 28 and this flag is no longer necessary.
+- Adds the `--enable-wayland-ime` flag to enable Input Method Editor (IME) support in Wayland environments, improving the input experience for CJK and other users.
+- Updated various dependencies
+- Updated Electron to 37, potentially fixing [#580](https://github.com/Mastermindzh/tidal-hifi/issues/580)
+
+## [5.19.0]
+
+- Fixed the issue where media updates would cease to work after album names can't be found
+  - Will simply report an empty string when it can't find the album
+- Updated various dependencies
+
+## [5.18.2]
+
+- Reverted to sass 1.79.4 to fix `Nix` builds
+- Changed electron-builder.base.yml to now generate the correct .desktop entries again
+  - Should fix flatpak build
+
+## [5.18.1]
+
+- Fixed the login bug
+- Upgraded electron to 35.1.1
+- Added Widevine/CDM info to startup
+- delayed remote electron initializer
+
+## [5.18.0]
+
+- [Dianoga](https://github.com/Dianoga) fixed the duration selector, restoring mpris & partial API data.
+  - PR: #554
+- Added `xesam:url` property to mpris metadata fixes [#506](https://github.com/Mastermindzh/tidal-hifi/issues/506)
+
 ## [5.17.0]
 
 - Added an option to disable the dynamic title and set it to a static one, [#491](https://github.com/Mastermindzh/tidal-hifi/pull/491)

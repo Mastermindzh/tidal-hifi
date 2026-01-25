@@ -2,7 +2,7 @@
 
 ![GitHub release](https://img.shields.io/github/release/Mastermindzh/tidal-hifi.svg) [![github builds](https://github.com/mastermindzh/tidal-hifi/actions/workflows/build.yml/badge.svg)](https://github.com/Mastermindzh/tidal-hifi/actions) [![Build Status](https://ci.mastermindzh.tech/api/badges/Mastermindzh/tidal-hifi/status.svg)](https://ci.mastermindzh.tech/Mastermindzh/tidal-hifi) [![Discord logo](./docs/images/discord.png)](https://discord.gg/yhNwf4v4He)
 
-The web version of [listen.tidal.com](https://listen.tidal.com) running in electron with Hi-Fi (High & Max) support thanks to widevine.
+The web version of [TIDAL](https://tidal.com) running in electron with Hi-Fi (High & Max) support thanks to widevine.
 
 ![TIDAL Hi-Fi preview](./docs/images/preview.png)
 
@@ -25,8 +25,8 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
     - [Nix](#nix)
     - [Using source](#using-source)
   - [Integrations](#integrations)
+    - [Custom Scrobbling with Multi-Scrobbler](#custom-scrobbling-with-multi-scrobbler)
   - [Known bugs](#known-bugs)
-    - [DRM not working on Windows (error S6007)](#drm-not-working-on-windows-error-s6007)
   - [Special thanks to](#special-thanks-to)
   - [Donations](#donations)
   - [Images](#images)
@@ -43,6 +43,7 @@ The web version of [listen.tidal.com](https://listen.tidal.com) running in elect
 - Custom hotkeys ([source](https://defkey.com/tidal-desktop-shortcuts))
 - Better icons thanks to [Papirus-icon-theme](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme/)
 - [Settings feature](./docs/images/settings.png) to disable certain functionality. (`ctrl+=` or `ctrl+0`)
+- Multiple [controller types](./docs/tidal-controllers.md) for different interaction methods with Tidal
 - API for status, playback and settings (see the [/docs](http://localhost:47836/docs/) route)
 - Disabled audio & visual ads, unlocked lyrics, suggested track, track info, and unlimited skips thanks to uBlockOrigin custom filters ([source](https://github.com/uBlockOrigin/uAssets/issues/17495))
 - AlbumArt in integrations ([best-effort](https://github.com/Mastermindzh/tidal-hifi/pull/88#pullrequestreview-840814847))
@@ -145,6 +146,12 @@ You can find these in the settings menu (`ctrl + =` by default) under the "integ
 
 ![integrations menu, showing a list of integrations](./docs/images/integrations.png)
 
+### Custom Scrobbling with Multi-Scrobbler
+
+For advanced scrobbling setups, you can use [multi-scrobbler](https://github.com/FoxxMD/multi-scrobbler) to proxy scrobbles to multiple services simultaneously. This allows you to scrobble to ListenBrainz, Last.fm, Maloja, and other services from a single configuration.
+
+📖 **[Read the complete setup guide →](./docs/custom-scrobbler.md)**
+
 Integrations with other projects that are not included natively:
 
 - [i3 blocks config](https://github.com/Mastermindzh/dotfiles/commit/9714b2fa1d670108ce811d5511fd3b7a43180647) - My dotfiles where I use this app to fetch currently playing music (direct commit)
@@ -152,12 +159,7 @@ Integrations with other projects that are not included natively:
 
 ## Known bugs
 
-### DRM not working on Windows (error S6007)
-
-Most Windows users run into DRM issues when trying to use TIDAL Hi-Fi.
-Nothing I can do about that I'm afraid... Tidal is working on removing/changing DRM so when they finish with that we can give it another shot.
-
-Until then you'll have to use the official app unfortunately.
+Please check the [Knows issues file](./docs/known-issues.md).
 
 ## Special thanks to
 

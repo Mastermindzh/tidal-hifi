@@ -1,7 +1,9 @@
-import { BrowserWindow, Menu, app } from "electron";
-import { showSettingsWindow } from "./settings";
-const isMac = process.platform === "darwin";
+import { app, BrowserWindow, Menu } from "electron";
+
 import name from "./../constants/values";
+import { showSettingsWindow } from "./settings";
+
+const isMac = process.platform === "darwin";
 
 const settingsMenuEntry = {
   label: "Settings",
@@ -15,6 +17,7 @@ const tidalMagazineEntry = {
   label: "Magazine",
   click() {
     const magazineWindow = new BrowserWindow({
+      transparent: true,
       autoHideMenuBar: true,
       webPreferences: {
         sandbox: false,
@@ -36,10 +39,10 @@ const quitMenuEntry = {
   accelerator: "Control+Q",
 };
 
-export const getMenu = function (mainWindow: BrowserWindow) {
+export const getMenu = (mainWindow: BrowserWindow) => {
   const toggleWindow = {
     label: "Toggle Window",
-    click: function () {
+    click: () => {
       mainWindow.isVisible() ? mainWindow.hide() : mainWindow.show();
     },
   };
@@ -126,6 +129,6 @@ export const getMenu = function (mainWindow: BrowserWindow) {
   return Menu.buildFromTemplate(mainMenu as any);
 };
 
-export const addMenu = function (mainWindow: BrowserWindow) {
+export const addMenu = (mainWindow: BrowserWindow) => {
   Menu.setApplicationMenu(getMenu(mainWindow));
 };

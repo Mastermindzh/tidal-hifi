@@ -1,7 +1,7 @@
 appId: com.rickvanlieshout.tidal-hifi
-electronVersion: 28.1.1
+electronVersion: 39.2.4
 electronDownload:
-  version: 28.1.1+wvcus
+  version: 39.2.4+wvcus
   mirror: https://github.com/castlabs/electron-releases/releases/download/v
 snap:
   plugs:
@@ -17,24 +17,25 @@ linux:
   executableName: tidal-hifi
   executableArgs:
     [
-      "--enable-features=UseOzonePlatform",
       "--ozone-platform-hint=auto",
       "--enable-features=WaylandWindowDecorations",
+      "--enable-wayland-ime",
+      "--use-angle",
     ]
   desktop:
-    Encoding: UTF-8
-    Name: TIDAL Hi-Fi
-    GenericName: TIDAL Hi-Fi
-    Comment: The web version of listen.tidal.com running in electron with hifi support thanks to widevine.
-    Icon: tidal-hifi
-    StartupNotify: true
-    Terminal: false
-    Type: Application
-    Categories: Network;Application;AudioVideo;Audio;Video
-    StartupWMClass: tidal-hifi
-    X-PulseAudio-Properties: media.role=music
-    MimeType: x-scheme-handler/tidal;
-
+    entry:
+      Encoding: "UTF-8"
+      Name: "TIDAL Hi-Fi"
+      GenericName: "TIDAL Hi-Fi"
+      Comment: "The web version of tidal.com running in electron with hifi support thanks to widevine."
+      Icon: "tidal-hifi"
+      StartupNotify: "true"
+      Terminal: "false"
+      Type: "Application"
+      Categories: "Network;Application;Audio;Video;AudioVideo"
+      StartupWMClass: "tidal-hifi"
+      X-PulseAudio-Properties: "media.role=music"
+      MimeType: "x-scheme-handler/tidal;"
 mac:
   category: public.app-category.entertainment
 win:

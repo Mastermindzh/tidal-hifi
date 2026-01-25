@@ -1,0 +1,16 @@
+@use "../mixins";
+
+.text-input {
+  @include mixins.common-input;
+
+  cursor: text;
+
+  &--small {
+    max-width: 110px;
+  }
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+  }
+}

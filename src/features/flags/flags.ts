@@ -1,4 +1,5 @@
-import { App } from "electron";
+import type { App } from "electron";
+
 import { flags } from "../../constants/flags";
 import { settings } from "../../constants/settings";
 import { settingsStore } from "../../scripts/settings";
@@ -9,6 +10,7 @@ import { Logger } from "../logger";
  */
 export function setDefaultFlags(app: App) {
   setFlag(app, "disable-seccomp-filter-sandbox");
+  setFlag(app, "enable-blink-features", "MiddleClickAutoscroll");
 }
 
 /**

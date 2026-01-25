@@ -1,106 +1,108 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <title>Tidal Hi-Fi settings</title>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <link rel="stylesheet" href="./settings.css" />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
-    />
-  </head>
 
-  <body class="settings-window">
-    <div class="settings-window__wrapper">
-      <div class="settings-window__drag-area"></div>
-      <a id="close" class="settings-window__close-button" title="Close settings">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 348.333 348.334"
-          class="settings-window__svg-icon"
-        >
-          <path
-            fill="white"
-            d="M336.559,68.611L231.016,174.165l105.543,105.549c15.699,15.705,15.699,41.145,0,56.85
+<head>
+  <title>Tidal Hi-Fi settings</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <link rel="stylesheet" href="styles/settings.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/font-awesome.min.css">
+  <script src="settings.js" defer></script>
+</head>
+
+<body class="settings-window">
+  <div class="settings-window__wrapper">
+    <div class="settings-window__drag-area"></div>
+    <a id="close" class="settings-window__close-button" title="Close settings">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 348.333 348.334">
+        <path fill="white" d="M336.559,68.611L231.016,174.165l105.543,105.549c15.699,15.705,15.699,41.145,0,56.85
             c-7.844,7.844-18.128,11.769-28.407,11.769c-10.296,0-20.581-3.919-28.419-11.769L174.167,231.003L68.609,336.563
             c-7.843,7.844-18.128,11.769-28.416,11.769c-10.285,0-20.563-3.919-28.413-11.769c-15.699-15.698-15.699-41.139,0-56.85
             l105.54-105.549L11.774,68.611c-15.699-15.699-15.699-41.145,0-56.844c15.696-15.687,41.127-15.687,56.829,0l105.563,105.554
-            L279.721,11.767c15.705-15.687,41.139-15.687,56.832,0C352.258,27.466,352.258,52.912,336.559,68.611z"
-          />
-        </svg>
-      </a>
+            L279.721,11.767c15.705-15.687,41.139-15.687,56.832,0C352.258,27.466,352.258,52.912,336.559,68.611z" />
+      </svg>
+    </a>
 
-      <main class="settings">
-        <input type="radio" name="tab" id="general" checked />
-        <label for="general">General</label>
+    <main class="settings tabs">
+      <input type="radio" name="tab" class="tabs__trigger" id="general" tabindex="0" checked />
+      <label for="general">General</label>
 
-        <input type="radio" name="tab" id="api" />
-        <label for="api">API</label>
+      <input type="radio" name="tab" class="tabs__trigger" id="api" tabindex="0" />
+      <label for="api">API</label>
 
-        <input type="radio" name="tab" id="integrations" />
-        <label for="integrations">Integrations</label>
+      <input type="radio" name="tab" class="tabs__trigger" id="integrations" />
+      <label for="integrations">Integrations</label>
 
-        <input type="radio" name="tab" id="advanced" />
-        <label for="advanced">Advanced</label>
+      <input type="radio" name="tab" class="tabs__trigger" id="advanced" />
+      <label for="advanced">Advanced</label>
 
-        <input type="radio" name="tab" id="theming" />
-        <label for="theming">Theming</label>
+      <input type="radio" name="tab" class="tabs__trigger" id="theming" />
+      <label for="theming">Theming</label>
 
-        <input type="radio" name="tab" id="about" />
-        <label for="about">About</label>
+      <input type="radio" name="tab" class="tabs__trigger" id="hotkeys" />
+      <label for="hotkeys">Hotkeys</label>
 
-        <div class="tabs">
-          <section id="general-section" class="tabs__section">
-            <div class="group">
-              <p class="group__title">Playback</p>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Notifications</h4>
-                  <p>Show a notification when new media starts.</p>
-                </div>
-                <label class="switch">
-                  <input id="notifications" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
+      <input type="radio" name="tab" class="tabs__trigger" id="about" />
+      <label for="about">About</label>
+
+      <hr class="tabs__separator" />
+
+      <div class="tabs__content">
+        <section id="general-section" class="tabs__section">
+          <div class="group">
+            <p class="group__title">Playback</p>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Notifications</h4>
+                <p>Show a notification when new media starts.</p>
               </div>
-              <div class="group__option">
-                <div class="group__description">
+              <label class="switch">
+                <input id="notifications" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+            <div class="group__option group__option--withContent">
+              <div>
+                <div class="group__content">
                   <h4>Skip Artists automatically</h4>
-                  <p>The following list of artists (1 per line) will be skipped automatically.</p>
+                  <p>The following list of artists will be skipped automatically.</p>
                 </div>
                 <label class="switch">
                   <input id="skipArtists" type="checkbox" />
                   <span class="switch__slider"></span>
                 </label>
               </div>
-              <textarea
-                id="skippedArtists"
-                class="textarea"
-                cols="40"
-                rows="5"
-                spellcheck="false"
-              ></textarea>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Block ads</h4>
-                  <p>
-                    Disabled audio & visual ads, unlocked lyrics, suggested track, track info,
-                    unlimited skips
-                  </p>
+              <div class="tags">
+                <div id="artist-tags" class="tags__items"></div>
+                <div class="tags__input-group">
+                  <input class="text-input" name="add-artist" id="add-artist" placeholder="Enter artist name" />
+                  <button class="button" onclick="skipArtist()">Skip artist</button>
                 </div>
-                <label class="switch">
-                  <input id="adBlock" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
               </div>
+              <textarea id="skippedArtists" class="hidden" cols="40" rows="5" spellcheck="false"
+                style="width: 100%"></textarea>
             </div>
-            <div class="group">
-              <p class="group__title">UI</p>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Block ads</h4>
+                <p>
+                  Disabled audio & visual ads, unlocked lyrics, suggested track, track info,
+                  unlimited skips
+                </p>
+              </div>
+              <label class="switch">
+                <input id="adBlock" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="group">
+            <p class="group__title">UI</p>
+            <div class="group__options-group">
               <div class="group__option">
-                <div class="group__description">
-                  <h4>Fixed menubar</h4>
+                <div class="group__content">
+                  <h4>Visible menubar</h4>
                   <p>Always show TIDAL Hi-Fi's menu bar.</p>
                 </div>
                 <label class="switch">
@@ -108,157 +110,192 @@
                   <span class="switch__slider"></span>
                 </label>
               </div>
-            </div>
-            <div class="group">
-              <p class="group__title">System</p>
               <div class="group__option">
-                <div class="group__description">
-                  <h4>Tray icon</h4>
-                  <p>Show TIDAL Hi-Fi's tray icon.</p>
+                <div class="group__content">
+                  <h4>Disable alt key menu bar activation</h4>
+                  <p>Prevent the menu bar from being shown when pressing the alt key.</p>
                 </div>
                 <label class="switch">
-                  <input id="trayIcon" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
-              </div>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Static Window Title</h4>
-                  <p>
-                    Makes the window title "TIDAL Hi-Fi" instead of changing to the currently
-                    playing song.
-                  </p>
-                </div>
-                <label class="switch">
-                  <input id="staticWindowTitle" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
-              </div>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Minimize on Close</h4>
-                  <p>Minimize window on close instead.</p>
-                </div>
-                <label class="switch">
-                  <input id="minimizeOnClose" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
-              </div>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Hotkeys</h4>
-                  <p>
-                    Enable extra hotkeys to achieve feature parity with the
-                    <a class="external-link" data-url="https://defkey.com/tidal-desktop-shortcuts"
-                      >desktop apps</a
-                    >.
-                  </p>
-                </div>
-                <label class="switch">
-                  <input id="enableCustomHotkeys" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
-              </div>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Single instance</h4>
-                  <p>Prevent opening multiple TIDAL Hi-Fi's instances.</p>
-                </div>
-                <label class="switch">
-                  <input id="singleInstance" type="checkbox" />
+                  <input id="disableAltMenuBar" type="checkbox" />
                   <span class="switch__slider"></span>
                 </label>
               </div>
             </div>
-          </section>
-
-          <section id="api-section" class="tabs__section">
-            <div class="group">
-              <p class="group__title">API</p>
-              <div class="group__description">
+          </div>
+          <div class="group">
+            <p class="group__title">System</p>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Static Window Title</h4>
                 <p>
-                  TIDAL Hi-Fi has a built-in web API to allow users to get current media
-                  information. You can optionally enable playback control as well.
+                  Makes the window title "TIDAL Hi-Fi" instead of changing to the currently
+                  playing song.
                 </p>
               </div>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Web API</h4>
-                  <p>Enable the TIDAL Hi-Fi web API.</p>
-                </div>
-                <label class="switch">
-                  <input id="apiCheckbox" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
+              <label class="switch">
+                <input id="staticWindowTitle" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Single instance</h4>
+                <p>Prevent opening multiple TIDAL Hi-Fi's instances.</p>
               </div>
-              <div class="group__option">
-                <div class="group__description">
-                  <label for="port">API port</label>
-                  <input id="port" type="number" class="text-input" name="port" />
-                </div>
+              <label class="switch">
+                <input id="singleInstance" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+          </div>
+
+          <div class="group">
+            <p class="group__title">Tray Icon</p>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Tray icon</h4>
+                <p>Show TIDAL Hi-Fi's tray icon.</p>
               </div>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>API hostname</h4>
-                  <p>
-                    By default (127.0.0.1) only local apps can interface with the API. <br />
-                    Change to 0.0.0.0 to allow <strong>anyone</strong> to interact with it. <br />
-                    Other options are available
-                  </p>
-                  <input id="hostname" type="text" class="text-input" name="hostname" />
+              <label class="switch">
+                <input id="trayIcon" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+            <div id="tray__options" class="collapsible">
+              <div class="group__options-group">
+                <div class="group__option">
+                  <div class="group__content">
+                    <h4>Minimize to tray on Close</h4>
+                    <p>Hide the main window to the system tray on close instead.</p>
+                  </div>
+                  <label class="switch">
+                    <input id="minimizeOnClose" type="checkbox" />
+                    <span class="switch__slider"></span>
+                  </label>
                 </div>
-              </div>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Playback control</h4>
-                  <p>Enable playback control from the web API.</p>
+                <div class="group__option">
+                  <div class="group__content">
+                    <h4>Start Minimized</h4>
+                    <p>Hide the main window on startup.</p>
+                  </div>
+                  <label class="switch">
+                    <input id="startMinimized" type="checkbox" />
+                    <span class="switch__slider"></span>
+                  </label>
                 </div>
-                <label class="switch">
-                  <input id="playBackControl" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
+                <div class="group__option">
+                  <div class="group__content">
+                    <h4>Custom tray icon path</h4>
+                    <p>
+                      Provide a custom path to an icon file for the system tray. Leave empty or set to "default" to use
+                      the
+                      bundled icon.
+                      Supported formats: PNG, JPG, JPEG, ICO, BMP, GIF (SVG is not supported).
+                    </p>
+                    <input id="trayIconPath" type="text" class="text-input" name="trayIconPath"
+                      placeholder="default or /path/to/icon.png" />
+                    <p id="trayIconPathValidation" class="validation-message"
+                      style="color: #ff6b6b; margin-top: 5px; display: none;"></p>
+                  </div>
+                </div>
               </div>
             </div>
-          </section>
+          </div>
+        </section>
 
-          <section id="integrations-section" class="tabs__section">
-            <div class="group">
-              <p class="group__title">Integrations</p>
-              <div class="group__description">
+        <section id="api-section" class="tabs__section">
+          <div class="group">
+            <p class="group__title">API</p>
+            <div class="group__description">
+              <p>
+                TIDAL Hi-Fi has a built-in web API to allow users to get current media
+                information. You can optionally enable playback control as well.
+              </p>
+            </div>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Web API</h4>
+                <p>Enable the TIDAL Hi-Fi web API.</p>
+              </div>
+              <label class="switch">
+                <input id="apiCheckbox" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+            <div id="api__options" class="collapsible">
+              <div class="group__options-group">
+                <div class="group__option">
+                  <div class="group__content">
+                    <label for="port">API port</label>
+                    <p>The port on which the API will be hosted.</p>
+                  </div>
+                  <input id="port" type="number" class="text-input text-input--small" name="port" />
+                </div>
+                <div class="group__option">
+                  <div class="group__content">
+                    <h4>API hostname</h4>
+                    <p>
+                      By default (127.0.0.1) only local apps can interface with the API. <br />
+                      Change to 0.0.0.0 to allow <strong>anyone</strong> to interact with it. <br />
+                      Other options are available
+                    </p>
+                  </div>
+                  <input id="hostname" type="text" class="text-input text-input--small" name="hostname" />
+                </div>
+                <div class="group__option">
+                  <div class="group__content">
+                    <h4>Playback control</h4>
+                    <p>Enable playback control from the web API.</p>
+                  </div>
+                  <label class="switch">
+                    <input id="playBackControl" type="checkbox" />
+                    <span class="switch__slider"></span>
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="integrations-section" class="tabs__section">
+          <div class="group">
+            <p class="group__title">Integrations</p>
+            <div class="group__description">
+              <p>
+                TIDAL Hi-Fi is extensible through the use of integrations. You can enable or
+                disable them here.
+              </p>
+            </div>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>MPRIS</h4>
                 <p>
-                  TIDAL Hi-Fi is extensible through the use of integrations. You can enable or
-                  disable them here.
+                  Enable MPRIS interface which provides a mechanism for discovery, querying and
+                  basic playback control on Linux systems.
                 </p>
               </div>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>MPRIS</h4>
-                  <p>
-                    Enable MPRIS interface which provides a mechanism for discovery, querying and
-                    basic playback control on Linux systems.
-                  </p>
-                </div>
-                <label class="switch">
-                  <input id="mprisCheckbox" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
-              </div>
+              <label class="switch">
+                <input id="mprisCheckbox" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
             </div>
-            <div class="group">
-              <p class="group__title">Discord</p>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Discord RPC</h4>
-                  <p>Show what you're listening to on Discord.</p>
-                </div>
-                <label class="switch">
-                  <input id="enableDiscord" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
+          </div>
+          <div class="group">
+            <p class="group__title">Discord</p>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Discord RPC</h4>
+                <p>Show what you're listening to on Discord.</p>
               </div>
-              <div id="discord_options">
-                <div class="group__option" class="hidden">
-                  <div class="group__description">
+              <label class="switch">
+                <input id="enableDiscord" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+            <div id="discord_options" class="collapsible">
+              <div class="group__options-group">
+                <div class="group__option">
+                  <div class="group__content">
                     <h4>Show Idle Text</h4>
                     <p>Should the idle text be shown when idle?</p>
                   </div>
@@ -268,36 +305,26 @@
                   </label>
                 </div>
 
-                <div class="group__option" class="hidden">
-                  <div class="group__description">
+                <div class="group__option">
+                  <div class="group__content">
                     <h4>Idle Text</h4>
                     <p>The text displayed on Discord's rich presence while idling in the app.</p>
-                    <input
-                      id="discord_idle_text"
-                      type="text"
-                      class="text-input"
-                      name="discord_idle_text"
-                    />
+                    <input id="discord_idle_text" type="text" class="text-input" name="discord_idle_text" />
                   </div>
                 </div>
 
-                <div class="group__option" class="hidden">
-                  <div class="group__description">
+                <div class="group__option">
+                  <div class="group__content">
                     <h4>Using Tidal Text</h4>
                     <p>
                       The text displayed on Discord's rich presence while "showSong" is turned off
                     </p>
-                    <input
-                      id="discord_using_text"
-                      type="text"
-                      class="text-input"
-                      name="discord_using_text"
-                    />
+                    <input id="discord_using_text" type="text" class="text-input" name="discord_using_text" />
                   </div>
                 </div>
 
-                <div class="group__option" class="hidden">
-                  <div class="group__description">
+                <div class="group__option">
+                  <div class="group__content">
                     <h4>Show media</h4>
                     <p>Show the current media in the Discord client</p>
                   </div>
@@ -307,293 +334,321 @@
                   </label>
                 </div>
 
-                <div id="discord_show_song_options" class="hidden">
-                  <div class="group__option" class="hidden">
-                    <div class="group__description">
-                      <h4>Include timestamps</h4>
-                      <p>Show current/end playtime in the Discord client</p>
+                <div id="discord_show_song_options" class="collapsible">
+                  <div>
+                    <div class="group__option">
+                      <div class="group__content">
+                        <h4>Include timestamps</h4>
+                        <p>Show current/end playtime in the Discord client</p>
+                      </div>
+                      <label class="switch">
+                        <input id="discord_include_timestamps" type="checkbox" />
+                        <span class="switch__slider"></span>
+                      </label>
                     </div>
-                    <label class="switch">
-                      <input id="discord_include_timestamps" type="checkbox" />
-                      <span class="switch__slider"></span>
-                    </label>
-                  </div>
 
-                  <div class="group__option" class="hidden">
-                    <div class="group__description">
-                      <h4>Details prefix</h4>
-                      <p>Prefix for the "details" field of Discord's rich presence.</p>
-                      <input
-                        id="discord_details_prefix"
-                        type="text"
-                        class="text-input"
-                        name="discord_details_prefix"
-                      />
+                    <div class="group__option">
+                      <div class="group__content">
+                        <h4>Details prefix</h4>
+                        <p>Prefix for the "details" field of Discord's rich presence.</p>
+                        <input id="discord_details_prefix" type="text" class="text-input"
+                          name="discord_details_prefix" />
+                      </div>
                     </div>
-                  </div>
 
-                  <div class="group__option">
-                    <div class="group__description">
-                      <h4>Button text</h4>
-                      <p>Text to display on the button below the media information.</p>
-                      <input
-                        id="discord_button_text"
-                        type="text"
-                        class="text-input"
-                        name="discord_button_text"
-                      />
+                    <div class="group__option">
+                      <div class="group__content">
+                        <h4>Button text</h4>
+                        <p>Text to display on the button below the media information.</p>
+                        <input id="discord_button_text" type="text" class="text-input" name="discord_button_text" />
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-            <div class="group">
-              <p class="group__title">ListenBrainz</p>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Enable ListenBrainz</h4>
-                  <p>Scrobble your listens directly to ListenBrainz.</p>
-                </div>
-                <label class="switch">
-                  <input id="enableListenBrainz" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
+          </div>
+          <div class="group">
+            <p class="group__title">ListenBrainz</p>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Enable ListenBrainz</h4>
+                <p>Scrobble your listens directly to ListenBrainz.</p>
               </div>
-              <div id="listenbrainz__options" class="hidden">
+              <label class="switch">
+                <input id="enableListenBrainz" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+            <div class="collapsible" id="listenbrainz__options">
+              <div class="group__options-group">
                 <div class="group__option">
-                  <div class="group__description">
+                  <div class="group__content">
                     <h4>ListenBrainz API Url</h4>
                     <p>
                       There are multiple instances for ListenBrainz you can set the corresponding
                       API url below.
                     </p>
-                    <input
-                      id="ListenBrainzAPI"
-                      type="text"
-                      class="text-input"
-                      name="ListenBrainzAPI"
-                    />
+                    <input id="ListenBrainzAPI" type="text" class="text-input" name="ListenBrainzAPI" />
                   </div>
                 </div>
                 <div class="group__option">
-                  <div class="group__description">
+                  <div class="group__content">
                     <h4>ListenBrainz User Token</h4>
                     <p>Provide the user token you can get from the settings page.</p>
-                    <input
-                      id="ListenBrainzToken"
-                      type="text"
-                      class="text-input"
-                      name="ListenBrainzToken"
-                    />
+                    <input id="ListenBrainzToken" type="text" class="text-input" name="ListenBrainzToken" />
                   </div>
                 </div>
+                <div class="group__option">
+                  <div class="group__content">
+                    <h4>ScrobbleDelay</h4>
+                    <p>
+                      The delay (in ms) to send a listen to ListenBrainz. Prevents spamming the API when
+                      you fast forward immediately
+                    </p>
+                  </div>
+                  <input id="listenbrainz_delay" type="number" class="text-input text-input--small"
+                    name="listenbrainz_delay" />
+                </div>
               </div>
-              <div class="group__description">
-                <h4>ScrobbleDelay</h4>
+            </div>
+          </div>
+        </section>
+
+        <section id="advanced-section" class="tabs__section">
+          <div class="group">
+            <p class="group__title">Settings</p>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Update frequency</h4>
                 <p>
-                  The delay (in ms) to send a listen to ListenBrainz. Prevents spamming the API when
-                  you fast forward immediately
+                  The amount of time, in milliseconds, that TIDAL Hi-Fi will refresh its playback
+                  info by scraping the website. The default of 500 seems to work in more cases but
+                  if you are fine with a bit more resource usage you can decrease it as well.
                 </p>
-                <input
-                  id="listenbrainz_delay"
-                  type="number"
-                  class="text-input"
-                  name="listenbrainz_delay"
-                />
+              </div>
+              <input id="updateFrequency" type="number" class="text-input text-input--small" name="updateFrequency" />
+            </div>
+
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Tidal channel / URL</h4>
+                <p>
+                  Which URL Tidal Hi-Fi should use.
+                </p>
+                <p>
+                  <span class="group__warning">Warning:</span> Beta might break at any time.
+                </p>
+              </div>
+              <select class="select-input" id="channel" name="channel">
+                <option value="https://tidal.com">Stable (tidal.com)</option>
+                <option value="https://stage.tidal.com">Beta (stage.tidal.com)</option>
+              </select>
+            </div>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Controller Type</h4>
+                <p>Select the type of controller to use.</p>
+              </div>
+              <select id="controllerType" class="select-input">
+                <option value="mediaSessionController">Media Session Controller (default)</option>
+                <option value="domController">DOM Controller (fallback)</option>
+                <option value="tidalApiController">Tidal Api Controller (beta)</option>
+                <option value="reduxController">Redux Controller (beta)</option>
+              </select>
+            </div>
+
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Custom User Agent</h4>
+                <p>
+                  Customize the browser user agent string sent to Tidal. Leave as "default" or empty to use the standard
+                  Electron user agent.
+                </p>
+                <p>
+                  <span class="group__warning">Warning:</span> Tidal may block your requests if you modify this value.
+                </p>
+                <input id="userAgent" type="text" class="text-input" name="userAgent" placeholder="default" />
               </div>
             </div>
-          </section>
-
-          <section id="advanced-section" class="tabs__section">
-            <div class="group">
-              <p class="group__title">Settings</p>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Update frequency</h4>
-                  <p>
-                    The amount of time, in milliseconds, that TIDAL Hi-Fi will refresh its playback
-                    info by scraping the website. The default of 500 seems to work in more cases but
-                    if you are fine with a bit more resource usage you can decrease it as well.
-                  </p>
-                  <input
-                    id="updateFrequency"
-                    type="number"
-                    class="text-input"
-                    name="updateFrequency"
-                  />
-                </div>
+          </div>
+          <div class="group">
+            <p class="group__title">Flags</p>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Disable hardware built-in media keys</h4>
+                <p>
+                  Also prevents certain desktop environments from recognizing the chrome MPRIS
+                  client separately from the custom MPRIS client.
+                </p>
               </div>
+              <label class="switch">
+                <input id="disableHardwareMediaKeys" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Enable GPU rasterization</h4>
+                <p>Move a part of the rendering to the GPU for increased performance.</p>
+              </div>
+              <label class="switch">
+                <input id="gpuRasterization" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Disable Background Throttling</h4>
+                <p>
+                  Makes app more responsive while in the background, at the cost of performance.
+                </p>
+              </div>
+              <label class="switch">
+                <input id="disableBackgroundThrottle" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Wayland support</h4>
+                <p>
+                  Adds a couple of Electron flags to help TIDAL Hi-Fi run smoothly on the Wayland
+                  window system.
+                </p>
+              </div>
+              <label class="switch">
+                <input id="enableWaylandSupport" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+          </div>
+        </section>
 
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Tidal channel / URL</h4>
-                  <p>
-                    Which URL Tidal Hi-Fi should use.
-                    <strong>note! Beta might break at any time</strong>
-                  </p>
-                  <select class="select-input" id="channel" name="channel">
-                    <option value="https://listen.tidal.com">Stable (listen.tidal.com)</option>
-                    <option value="https://listen.stage.tidal.com">
-                      Staging (listen.stage.tidal.com)
-                    </option>
-                  </select>
-                </div>
+        <section id="theming-section" class="tabs__section">
+          <div class="group">
+            <p class="group__title">Theming</p>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Custom CSS</h4>
+                <p>
+                  The css that you put in here will be injected into a style tag in the head of
+                  the document.
+                </p>
+                <textarea id="customCSS" class="text-input" cols="40" rows="8" spellcheck="false"></textarea>
               </div>
             </div>
-            <div class="group">
-              <p class="group__title">Flags</p>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Disable hardware built-in media keys</h4>
-                  <p>
-                    Also prevents certain desktop environments from recognizing the chrome MPRIS
-                    client separately from the custom MPRIS client.
-                  </p>
-                </div>
-                <label class="switch">
-                  <input id="disableHardwareMediaKeys" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
+          </div>
+
+          <div class="group">
+            <p class="group__title">Theme files</p>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Current theme</h4>
+                <p>
+                  Select a theme or "Tidal - Default" to return to the original Tidal look.
+                </p>
               </div>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Enable GPU rasterization</h4>
-                  <p>Move a part of the rendering to the GPU for increased performance.</p>
-                </div>
-                <label class="switch">
-                  <input id="gpuRasterization" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
-              </div>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Disable Background Throttling</h4>
-                  <p>
-                    Makes app more responsive while in the background, at the cost of performance.
-                  </p>
-                </div>
-                <label class="switch">
-                  <input id="disableBackgroundThrottle" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
-              </div>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Wayland support</h4>
-                  <p>
-                    Adds a couple of Electron flags to help TIDAL Hi-Fi run smoothly on the Wayland
-                    window system.
-                  </p>
-                </div>
-                <label class="switch">
-                  <input id="enableWaylandSupport" type="checkbox" />
-                  <span class="switch__slider"></span>
-                </label>
-              </div>
+              <select class="select-input" id="themesList" name="themesList"></select>
             </div>
-          </section>
 
-          <section id="theming-section" class="tabs__section">
-            <div class="group">
-              <p class="group__title">Theming</p>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Custom CSS</h4>
-                  <p>
-                    The css that you put in here will be injected into a style tag in the head of
-                    the document.
-                  </p>
-                </div>
+            <div class="group__option group__option--dashed">
+              <input id="theme-files" class="file-input" type="file" accept=".css" multiple />
+              <div class="group__content">
+                <h4>Upload new themes</h4>
+                <p>
+                  Click to select or drag and drop CSS files here to add new themes to the list.
+                </p>
+                <p id="file-message" class="file-msg hidden"></p>
               </div>
+              <button class="button" tabindex="-1">Choose files</button>
             </div>
-            <textarea
-              id="customCSS"
-              class="textarea"
-              cols="40"
-              rows="8"
-              spellcheck="false"
-            ></textarea>
+          </div>
 
-            <div class="group">
-              <p class="group__title">Theme files</p>
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Current theme</h4>
-                  <p>
-                    Select a theme below or "Tidal - Default" to return to the original Tidal look.
-                  </p>
-                  <select class="select-input" id="themesList" name="themesList"></select>
-                </div>
+          <div class="group">
+            <p class="group__title">Zoom</p>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Reset Zoom to 100%</h4>
+                <p>
+                  This is useful if you accidentally zoomed out and can't zoom back in.
+                </p>
               </div>
+              <button id="resetZoom" class="button">Reset Zoom</button>
+            </div>
+          </div>
 
-              <div class="group__option">
-                <div class="group__description">
-                  <h4>Upload new themes</h4>
-                  <p>
-                    Click the button and select the css files to import. They will be added to the
-                    theme list automatically.
-                  </p>
-                  <div class="file-drop-area">
-                    <div>
-                      <span class="file-btn">Choose files</span>
-                      <span id="file-message" class="file-msg">or drag and drop files here</span>
-                      <input
-                        id="theme-files"
-                        class="file-input"
-                        type="file"
-                        accept=".css"
-                        multiple
-                      />
-                    </div>
+        </section>
+
+        <section id="hotkeys-section" class="tabs__section">
+          <div class="group">
+            <p class="group__title">Keyboard Shortcuts</p>
+            <div class="group__option">
+              <div class="group__content">
+                <h4>Enable Custom Hotkeys</h4>
+                <p>
+                  Enable the custom hotkeys to control Tidal-hifi through your keyboard.
+                </p>
+              </div>
+              <label class="switch">
+                <input id="enableCustomHotkeys" type="checkbox" />
+                <span class="switch__slider"></span>
+              </label>
+            </div>
+
+            <!-- hotkey options -->
+            <div id="hotkeys__options" class="collapsible">
+              <div class="group__options-group">
+                <div class="group__option">
+                  <div class="group__content">
+                    <h4>Search hotkeys</h4>
+                    <p>
+                      Find a hotkey by typing the name of the action, or a part of the hotkey, that you want to find.
+                    </p>
+                    <input id="hotkey-search" type="text" class="text-input" name="trayIconPath"
+                      placeholder="Start typing..." />
                   </div>
                 </div>
+
+                <div id="hotkeys-list">
+                  <!-- Hotkeys will be dynamically populated by preload.ts -->
+                </div>
               </div>
             </div>
-          </section>
+          </div>
+        </section>
 
-          <section id="about-section" class="tabs__section about-section">
-            <img alt="tidal icon" class="about-section__icon" src="./icon.png" />
-            <h4>TIDAL Hi-Fi</h4>
-            <div class="about-section__version">
-              <a
-                target="_blank"
-                rel="noopener"
-                href="https://github.com/Mastermindzh/tidal-hifi/releases/tag/5.17.0"
-                >5.17.0</a
-              >
+        <section id="about-section" class="tabs__section about-section">
+          <div class="group">
+            <p class="group__title">About</p>
+            <div class="group__option">
+              <img alt="tidal icon" class="about-section__icon" src="./icon.png" />
+              <div class="group__content">
+                <h4>TIDAL Hi-Fi</h4>
+                <p>The web version of TIDAL running in electron with Hi-Fi support thanks to widevine.</p>
+              </div>
+              <a class="button about-section__version" target="_blank" rel="noopener"
+                href="https://github.com/Mastermindzh/tidal-hifi/releases/tag/6.1.0">6.1.0</a>
+              <a class="button" target="_blank" rel="noopener"
+                href="https://github.com/mastermindzh/tidal-hifi/">GitHub</a>
             </div>
-            <div class="about-section__links">
-              <a
-                target="_blank"
-                rel="noopener"
-                href="https://github.com/mastermindzh/tidal-hifi/"
-                class="about-section__button"
-                >Github <i class="fa fa-external-link"></i
-              ></a>
-              <a
-                target="_blank"
-                rel="noopener"
-                href="https://github.com/Mastermindzh/tidal-hifi/issues"
-                class="about-section__button"
-                >Report an issue <i class="fa fa-external-link"></i
-              ></a>
-              <a
-                target="_blank"
-                rel="noopener"
-                href="https://github.com/Mastermindzh/tidal-hifi/graphs/contributors"
-                class="about-section__button"
-                >Contributors <i class="fa fa-external-link"></i
-              ></a>
-            </div>
-          </section>
+          </div>
+          <div class="about-section__buttons">
+            <a class="button" target="_blank" rel="noopener"
+              href="https://github.com/Mastermindzh/tidal-hifi/issues">Report an issue</a>
+            <a class="button" target="_blank" rel="noopener"
+              href="https://github.com/Mastermindzh/tidal-hifi/graphs/contributors">Show contributors</a>
+          </div>
+        </section>
 
-          <footer class="footer">
-            <p class="footer__note">
-              <strong>Note</strong>: some settings may require a restart of TIDAL Hi-Fi.
-            </p>
-          </footer>
-        </div>
-      </main>
-    </div>
-  </body>
+        <footer class="footer">
+          <p class="footer__note">
+            <strong>Note</strong>: some settings may require a restart of TIDAL Hi-Fi.
+          </p>
+        </footer>
+      </div>
+    </main>
+  </div>
+</body>
+
 </html>
