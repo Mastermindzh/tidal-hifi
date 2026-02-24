@@ -151,7 +151,7 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
     icon,
     backgroundColor: options.backgroundColor,
     autoHideMenuBar: true,
-    transparent: true,
+    transparent: process.platform !== "darwin",
     webPreferences: {
       ...windowPreferences,
       ...{
