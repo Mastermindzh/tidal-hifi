@@ -159,7 +159,7 @@ Integrations with other projects that are not included natively:
 
 ## Known bugs
 
-Please check the [Knows issues file](./docs/known-issues.md).
+Please check the [Known issues file](./docs/known-issues.md).
 
 ## Special thanks to
 

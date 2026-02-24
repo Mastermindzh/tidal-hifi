@@ -43,6 +43,9 @@ const windowPreferences = {
   contextIsolation: true, // Enable context isolation for Security
 };
 
+// Initialize Logger early so we can use it everywhere
+Logger.watch(ipcMain);
+
 setDefaultFlags(app);
 setManagedFlagsFromSettings(app);
 
@@ -308,7 +311,21 @@ app.on("browser-window-created", (_, window) => {
 ipcMain.on(globalEvents.updateInfo, (_event, arg: MediaInfo) => {
   updateMediaInfo(arg);
   ListenBrainz.handleMediaUpdate(arg);
-  mprisService?.updateMetadata(arg);
+
+  // Handle MPRIS updates with error recovery
+  if (mprisService) {
+    try {
+      mprisService.updateMetadata(arg);
+    } catch (error) {
+      Logger.log("Error updating MPRIS metadata from IPC:", error);
+      // Attempt to reconnect if the service is not healthy
+      if (!mprisService.isHealthy()) {
+        Logger.log("MPRIS service appears unhealthy, attempting reconnection...");
+        mprisService.forceReconnect();
+      }
+    }
+  }
+
   if (arg.status === MediaStatus.playing) {
     mainInhibitorId = acquireInhibitorIfInactive(mainInhibitorId);
   } else {
@@ -340,6 +357,21 @@ ipcMain.on(globalEvents.storeChanged, () => {
   } else if (!settingsStore.get(settings.enableDiscord) && rpc) {
     unRPC();
   }
+
+  // Handle MPRIS settings changes
+  if (settingsStore.get(settings.mpris) && !mprisService) {
+    mprisService = new MprisService(mainWindow);
+    mprisService.initialize();
+    Logger.log("MPRIS service enabled and initialized");
+  } else if (!settingsStore.get(settings.mpris) && mprisService) {
+    mprisService.destroy();
+    mprisService = null;
+    Logger.log("MPRIS service disabled and destroyed");
+  } else if (settingsStore.get(settings.mpris) && mprisService && !mprisService.isHealthy()) {
+    // If MPRIS is enabled but not healthy, try to restart it
+    Logger.log("MPRIS service is enabled but not healthy, restarting...");
+    mprisService.forceReconnect();
+  }
 });
 
 ipcMain.on(globalEvents.error, (event) => {
@@ -353,5 +385,3 @@ ipcMain.on(globalEvents.quit, () => {
 ipcMain.handle(globalEvents.getUniversalLink, async (_event, url) => {
   return SharingService.getUniversalLink(url);
 });
-
-Logger.watch(ipcMain);

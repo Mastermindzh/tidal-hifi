@@ -64,6 +64,7 @@ export const settingsStore = new Store({
     },
     flags: {
       disableHardwareMediaKeys: false,
+      disableSandbox: true,
       enableWaylandSupport: true,
       gpuRasterization: true,
     },
@@ -144,6 +145,11 @@ export const settingsStore = new Store({
           value: "https://api.listenbrainz.org/1/submit-listens",
           override: currentApi === "https://api.listenbrainz.org",
         },
+      ]);
+    },
+    "6.2.0": (migrationStore) => {
+      buildMigration("6.2.0", migrationStore, [
+        { key: settings.flags.disableSandbox, value: true },
       ]);
     },
   },
