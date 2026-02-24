@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Upgraded to widevine 40.
+- Transparency of the window is disabled on Mac to better facilitate the menu bar
+  - [pr](https://github.com/Mastermindzh/tidal-hifi/pull/839) by [Ghoelian](https://github.com/Ghoelian)
+  - Ghoelian also verified that mac builds are working again so I've re-enabled those too.
 
 ### Fixed
 
