@@ -9,6 +9,7 @@ This document lists known bugs and issues with Tidal Hi-Fi along with workaround
 - [Known Issues](#known-issues)
   - [Table of Contents](#table-of-contents)
   - [White screen on login/launch](#white-screen-on-loginlaunch)
+    - [Advanced setting](#advanced-setting)
   - [Subscribe button showing and/or account details not working](#subscribe-button-showing-andor-account-details-not-working)
   - [DRM not working on Windows (error S6007)](#drm-not-working-on-windows-error-s6007)
   - [Discord RPC not working with Flatpak and native Discord](#discord-rpc-not-working-with-flatpak-and-native-discord)
@@ -18,9 +19,9 @@ This document lists known bugs and issues with Tidal Hi-Fi along with workaround
 
 ## White screen on login/launch
 
-Some users may experience a white screen when launching Tidal Hi-Fi or during the login process. This is typically caused by security restrictions in the underlying Chromium engine.
+Some users may experience a white screen when launching Tidal Hi-Fi or during the login process. This is typically caused by security restrictions in the underlying Chromium engine. You can disable it permanently in the settings or following the steps below:
 
-**Fix**: Run Tidal Hi-Fi from the command line with the `--no-sandbox` flag:
+**Fix**: Run Tidal Hi-Fi from the command line with the `--no-sandbox` or `--disable-seccomp-filter-sandbox` flag:
 
 ```bash
 tidal-hifi --no-sandbox
@@ -31,6 +32,13 @@ For different installation methods:
 - **AppImage**: `./tidal-hifi-*.AppImage --no-sandbox`
 - **Flatpak**: `flatpak run com.mastermindzh.tidal-hifi --no-sandbox`
 - **From source**: `npm start -- --no-sandbox`
+
+### Advanced setting
+
+Under "Advanced" in the settings menu you'll find a section to toggle flags, there you can also toggle the sandbox flag.
+The default value of this flag is "true", which means the sandbox is disabled.
+
+![The flag as shown in the settings window](./images/disable-sandbox.png)
 
 ## Subscribe button showing and/or account details not working
 

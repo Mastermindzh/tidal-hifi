@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [6.2.0]
+
+### Added
+
+- Added configurable sandbox disable flag to fix login white screen issues
+  - Defaults to enabled (sandbox disabled) to prevent login issues for new users
+  - Applies the `--no-sandbox` Electron flag when enabled
+
+### Changed
+
+- Upgraded to widevine 40.
+- Transparency of the window is disabled on Mac to better facilitate the menu bar
+  - [pr](https://github.com/Mastermindzh/tidal-hifi/pull/839) by [Ghoelian](https://github.com/Ghoelian)
+  - Ghoelian also verified that mac builds are working again so I've re-enabled those too.
+
+### Fixed
+
+- Fixed white screen issue during login process caused by sandbox restrictions
+- Improved flag system logging and early Logger initialization
+
+- **TEMP** When playing videos or uploaded songs the mpris integration broke.
+  - I have temporarily implemented a workaround that allows it to *restart* after crashing on songs it does support
+  - Mpris breaks on "syscall -> write" which is now logged and can be looked into at a later date.
+
 ## [6.1.0]
 
 ### Added

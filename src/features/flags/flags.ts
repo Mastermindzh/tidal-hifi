@@ -18,15 +18,23 @@ export function setDefaultFlags(app: App) {
  * @param app
  */
 export function setManagedFlagsFromSettings(app: App) {
+  Logger.log("Processing flags from settings...");
   const flagsFromSettings = settingsStore.get(settings.flags.root);
   if (flagsFromSettings) {
     for (const [key, value] of Object.entries(flagsFromSettings)) {
+      Logger.log(`Checking flag ${key}: ${value}`);
       if (value) {
-        flags[key].forEach((flag) => {
-          setFlag(app, flag.flag, flag.value);
-        });
+        if (flags[key]) {
+          flags[key].forEach((flag) => {
+            setFlag(app, flag.flag, flag.value);
+          });
+        } else {
+          Logger.log(`No flag definition found for ${key}`);
+        }
       }
     }
+  } else {
+    Logger.log("No flags found in settings");
   }
 }
 
