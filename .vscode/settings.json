@@ -37,6 +37,7 @@
     "seekbackward",
     "seekforward",
     "seekto",
+    "SNAPCRAFT",
     "throughs",
     "trackid",
     "tracklist",

@@ -40,3 +40,25 @@ jobs:
         with:
           name: mac-builds
           path: dist/
+
+  build_and_publish_snap:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/master'
+    steps:
+      - name: update apt
+        run: sudo apt-get update
+      - name: Install libarchive-tools
+        run: sudo apt-get install -y libarchive-tools
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
+        with:
+          node-version: 24.12.0
+      - run: npm install
+      - run: npm run build-snap
+      - name: Publish to Snap Store
+        uses: canonical/action-publish@v1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        with:
+          snap: dist/tidal-hifi_*.snap
+          release: stable
