@@ -55,10 +55,13 @@ jobs:
           node-version: 24.12.0
       - run: npm install
       - run: npm run build-snap
+      - name: Find snap file
+        id: find_snap
+        run: echo "snap_file=$(find dist -name '*.snap' -type f)" >> $GITHUB_OUTPUT
       - name: Publish to Snap Store
         uses: canonical/action-publish@v1
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
         with:
-          snap: dist/tidal-hifi_*.snap
+          snap: ${{ steps.find_snap.outputs.snap_file }}
           release: stable
