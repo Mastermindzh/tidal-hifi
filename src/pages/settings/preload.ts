@@ -52,6 +52,7 @@ let adBlock: HTMLInputElement,
   disableAltMenuBar: HTMLInputElement,
   disableBackgroundThrottle: HTMLInputElement,
   disableHardwareMediaKeys: HTMLInputElement,
+  disableSandbox: HTMLInputElement,
   enableCustomHotkeys: HTMLInputElement,
   enableDiscord: HTMLInputElement,
   gpuRasterization: HTMLInputElement,
@@ -220,6 +221,7 @@ function refreshSettings() {
     disableAltMenuBar.checked = settingsStore.get(settings.disableAltMenuBar);
     disableBackgroundThrottle.checked = settingsStore.get(settings.disableBackgroundThrottle);
     disableHardwareMediaKeys.checked = settingsStore.get(settings.flags.disableHardwareMediaKeys);
+    disableSandbox.checked = settingsStore.get(settings.flags.disableSandbox);
     enableCustomHotkeys.checked = settingsStore.get(settings.enableCustomHotkeys);
     enableDiscord.checked = settingsStore.get(settings.enableDiscord);
     enableWaylandSupport.checked = settingsStore.get(settings.flags.enableWaylandSupport);
@@ -377,6 +379,7 @@ window.addEventListener("DOMContentLoaded", () => {
   disableAltMenuBar = get("disableAltMenuBar");
   disableBackgroundThrottle = get("disableBackgroundThrottle");
   disableHardwareMediaKeys = get("disableHardwareMediaKeys");
+  disableSandbox = get("disableSandbox");
   enableCustomHotkeys = get("enableCustomHotkeys");
   enableDiscord = get("enableDiscord");
   enableWaylandSupport = get("enableWaylandSupport");
@@ -421,6 +424,7 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(disableAltMenuBar, settings.disableAltMenuBar);
   addInputListener(disableBackgroundThrottle, settings.disableBackgroundThrottle);
   addInputListener(disableHardwareMediaKeys, settings.flags.disableHardwareMediaKeys);
+  addInputListener(disableSandbox, settings.flags.disableSandbox);
   addInputListener(enableCustomHotkeys, settings.enableCustomHotkeys, switchesWithSettings.hotkeys);
   addInputListener(enableDiscord, settings.enableDiscord, switchesWithSettings.discord);
   addInputListener(enableWaylandSupport, settings.flags.enableWaylandSupport);

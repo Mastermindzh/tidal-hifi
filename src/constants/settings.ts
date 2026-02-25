@@ -47,6 +47,7 @@ export const settings = {
   flags: {
     root: "flags",
     disableHardwareMediaKeys: "flags.disableHardwareMediaKeys",
+    disableSandbox: "flags.disableSandbox",
     gpuRasterization: "flags.gpuRasterization",
     enableWaylandSupport: "flags.enableWaylandSupport",
   },
