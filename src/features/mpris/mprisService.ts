@@ -18,6 +18,7 @@ export class MprisService {
   private player: Player | null = null;
   private currentPosition = 0; // Track current position in seconds
   private isReconnecting = false;
+  private static readonly TIDAL_RESOURCE_PREFIX = "https://resources.tidal.com/images/";
 
   constructor(private mainWindow: BrowserWindow) {}
 
@@ -27,6 +28,53 @@ export class MprisService {
     }
 
     this.createMprisPlayer();
+  }
+
+  /**
+   * Sanitize a trackId into a valid D-Bus object path segment.
+   * D-Bus object paths only allow [A-Za-z0-9_].
+   * Uploaded music and videos may have UUIDs, URLs, or other non-numeric IDs.
+   */
+  private sanitizeTrackIdForDbus(trackId: string | undefined): string {
+    if (!trackId) return "0";
+    const sanitized = trackId.replace(/[^A-Za-z0-9_]/g, "_");
+    return sanitized || "0";
+  }
+
+  /**
+   * Ensure a value is a finite number, returning the fallback otherwise.
+   * Prevents NaN/undefined/Infinity from reaching D-Bus serialization.
+   */
+  private safeNumber(value: unknown, fallback: number): number {
+    return typeof value === "number" && Number.isFinite(value) ? value : fallback;
+  }
+
+  /**
+   * Coerce an object's values into valid D-Bus metadata types (strings and finite numbers).
+   * Non-finite numbers, undefined, and null are dropped; everything else is stringified.
+   */
+  private filterForDbusMetadata(obj: Record<string, unknown>): Record<string, string | number> {
+    const filtered: Record<string, string | number> = {};
+    for (const [key, value] of Object.entries(obj)) {
+      if (value === null || value === undefined) continue;
+      if (typeof value === "number" && !Number.isFinite(value)) continue;
+
+      filtered[key] =
+        typeof value === "string" || (typeof value === "number" && Number.isFinite(value))
+          ? value
+          : JSON.stringify(value);
+    }
+    return filtered;
+  }
+
+  /**
+   * Check whether an error indicates a broken D-Bus stream that requires reconnection.
+   */
+  private isStreamError(error: unknown): boolean {
+    return (
+      error instanceof Error &&
+      (error.message.includes("EPIPE") || error.message.includes("broken"))
+    );
   }
 
   private createMprisPlayer(): void {
@@ -68,7 +116,7 @@ export class MprisService {
     // Handle D-Bus errors and EPIPE errors
     this.player.on("error", (error: Error) => {
       Logger.log("MPRIS error occurred:", error);
-      if (error.message.includes("EPIPE") || error.message.includes("broken pipe")) {
+      if (this.isStreamError(error)) {
         Logger.log("MPRIS stream broken, attempting to reconnect...");
         this.handleStreamError();
       }
@@ -152,7 +200,7 @@ export class MprisService {
     if (!this.player) return;
 
     this.player.on("quit", () => {
-      this.mainWindow.webContents.send("globalEvent", globalEvents.quit);
+      this.sendToRenderer(globalEvents.quit);
     });
   }
 
@@ -169,8 +217,21 @@ export class MprisService {
 
     try {
       // Update current position if available
-      if (mediaInfo.currentInSeconds > 0) {
-        this.currentPosition = mediaInfo.currentInSeconds;
+      this.currentPosition = this.safeNumber(mediaInfo.currentInSeconds, 0);
+
+      // Sanitize values before sending to D-Bus
+      const safeTrackId = this.sanitizeTrackIdForDbus(mediaInfo.trackId);
+      const safeDuration = this.safeNumber(mediaInfo.durationInSeconds, 0);
+      const safeVolume = Math.max(0, Math.min(1, this.safeNumber(mediaInfo.volume, 1.0)));
+      const customMetadata = this.filterForDbusMetadata(ObjectToDotNotation(mediaInfo, "custom:"));
+
+      // Guard against double-prefixed image URLs (Tidal bug with uploaded content)
+      let artUrl = mediaInfo.image || "";
+      if (artUrl.startsWith(MprisService.TIDAL_RESOURCE_PREFIX)) {
+        const afterPrefix = artUrl.substring(MprisService.TIDAL_RESOURCE_PREFIX.length);
+        if (afterPrefix.startsWith("http://") || afterPrefix.startsWith("https://")) {
+          artUrl = afterPrefix;
+        }
       }
 
       // Safely update metadata
@@ -181,11 +242,11 @@ export class MprisService {
           "xesam:artist": [mediaInfo.artists || ""],
           "xesam:album": mediaInfo.album || "",
           "xesam:url": mediaInfo.url || "",
-          "mpris:artUrl": mediaInfo.image || "",
-          "mpris:length": convertSecondsToMicroseconds(mediaInfo.durationInSeconds),
-          "mpris:trackid": `/org/mpris/MediaPlayer2/track/${mediaInfo.trackId}`,
+          "mpris:artUrl": artUrl,
+          "mpris:length": convertSecondsToMicroseconds(safeDuration),
+          "mpris:trackid": `/org/mpris/MediaPlayer2/track/${safeTrackId}`,
         },
-        ...ObjectToDotNotation(mediaInfo, "custom:"),
+        ...customMetadata,
       };
 
       this.player.playbackStatus = mediaInfo.status === MediaStatus.paused ? "Paused" : "Playing";
@@ -201,7 +262,7 @@ export class MprisService {
           this.player.loopStatus = mprisLoopStatus || "None";
         }
 
-        this.player.volume = Math.max(0, Math.min(1, mediaInfo.volume || 1.0));
+        this.player.volume = safeVolume;
       } else {
         // Use reasonable defaults if player state is not available
         this.player.shuffle = false;
@@ -209,17 +270,13 @@ export class MprisService {
       }
     } catch (error) {
       Logger.log("Error updating MPRIS metadata:", error);
-      // If error is related to broken stream, handle it
-      if (
-        error instanceof Error &&
-        (error.message.includes("EPIPE") || error.message.includes("broken"))
-      ) {
+      if (this.isStreamError(error)) {
         this.handleStreamError();
       }
     }
   }
 
-  private async handleMprisEvent(eventName: string, eventData: unknown): Promise<void> {
+  private handleMprisEvent(eventName: string, eventData: unknown): void {
     if (!this.player || this.isReconnecting) {
       return; // Skip events during reconnection
     }
@@ -262,11 +319,7 @@ export class MprisService {
       }
     } catch (error) {
       Logger.log(`Error handling MPRIS event ${eventName}:`, error);
-      // If error is related to broken stream, handle it
-      if (
-        error instanceof Error &&
-        (error.message.includes("EPIPE") || error.message.includes("broken"))
-      ) {
+      if (this.isStreamError(error)) {
         this.handleStreamError();
       }
     }
@@ -327,20 +380,13 @@ export class MprisService {
   }
 
   destroy(): void {
-    if (this.isReconnecting) {
-      this.isReconnecting = false;
-    }
+    this.isReconnecting = false;
 
     if (this.player) {
-      try {
-        // Try to gracefully clean up the MPRIS player
-        this.player = null;
-        this.currentPosition = 0;
-        Logger.log("MPRIS player destroyed successfully");
-      } catch (error) {
-        Logger.log("Error destroying MPRIS player", error);
-      }
+      this.player = null;
+      this.currentPosition = 0;
     }
+
     Logger.log("MPRIS service destroyed");
   }
 }

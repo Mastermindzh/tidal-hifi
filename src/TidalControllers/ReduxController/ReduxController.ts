@@ -123,7 +123,7 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
     const artists = this.useSelector(
       (state) => state.content.mediaItems[this.getTrackId()].item.artists,
     );
-    return artists.map((artist) => artist.name);
+    return artists ? artists.map((artist) => artist.name) : [];
   }
 
   getArtistsString() {
@@ -170,7 +170,10 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
   }
 
   getDuration() {
-    return this.useSelector((state) => state.playbackControls.playbackContext.actualDuration);
+    const duration = this.useSelector(
+      (state) => state.playbackControls.playbackContext.actualDuration,
+    );
+    return typeof duration === "number" && Number.isFinite(duration) ? duration : 0;
   }
 
   getCurrentlyPlayingStatus() {
@@ -203,7 +206,7 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
   }
 
   getTrackId() {
-    return this.useSelector((state) => state.playbackControls.mediaProduct.productId);
+    return this.useSelector((state) => state.playbackControls.mediaProduct.productId) || "";
   }
 
   isFavorite() {
