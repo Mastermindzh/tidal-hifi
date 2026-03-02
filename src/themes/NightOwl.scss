@@ -1,0 +1,29 @@
+// ============================================================================
+// Night Owl Theme for TIDAL Hi-Fi
+// ============================================================================
+// https://github.com/sdras/night-owl-vscode-theme
+
+@use "base" with (
+  $bg-main: #011627,
+  $bg-secondary: #0b2942,
+  $bg-surface: #1d3b53,
+  $bg-elevated: #2d4f67,
+  $bg-hover: #5f7e97,
+  $bg-selection: #1e3a4e,
+
+  $text-primary: #d6deeb,
+  $text-secondary: #c3ccdb,
+  $text-muted: #637777,
+  $text-faint: #5c6773,
+
+  $accent-primary: #c792ea,
+  $accent-green: #addb67,
+  $accent-red: #ef5350,
+  $accent-blue: #82aaff,
+  $accent-purple: #c792ea,
+  $accent-cyan: #21c7a8,
+  $accent-yellow: #ffeb95,
+
+  $border-subtle: #1d3b53,
+  $border-dim: #2d4f67
+);

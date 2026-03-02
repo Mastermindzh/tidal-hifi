@@ -1,0 +1,29 @@
+// ============================================================================
+// Solarized Dark Theme for TIDAL Hi-Fi
+// ============================================================================
+// https://ethanschoonover.com/solarized/
+
+@use "base" with (
+  $bg-main: #002b36,
+  $bg-secondary: #073642,
+  $bg-surface: #586e75,
+  $bg-elevated: #657b83,
+  $bg-hover: #839496,
+  $bg-selection: #073642,
+
+  $text-primary: #eee8d5,
+  $text-secondary: #fdf6e3,
+  $text-muted: #93a1a1,
+  $text-faint: #839496,
+
+  $accent-primary: #d33682,
+  $accent-green: #859900,
+  $accent-red: #dc322f,
+  $accent-blue: #268bd2,
+  $accent-purple: #6c71c4,
+  $accent-cyan: #2aa198,
+  $accent-yellow: #b58900,
+
+  $border-subtle: #586e75,
+  $border-dim: #657b83
+);

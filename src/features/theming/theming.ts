@@ -12,6 +12,7 @@ export function addCustomCss(app: any) {
       const userThemePath = `${app.getPath("userData")}/themes/${selectedTheme}`;
       const resourcesThemePath = `${process.resourcesPath}/themes/${selectedTheme}`;
       const themeFile = fs.existsSync(userThemePath) ? userThemePath : resourcesThemePath;
+      Logger.log(`Loading theme "${selectedTheme}" from: ${themeFile}`);
       fs.readFile(themeFile, "utf-8", (err, data) => {
         if (err) {
           Logger.alert("An error ocurred reading the theme file.", err, alert);

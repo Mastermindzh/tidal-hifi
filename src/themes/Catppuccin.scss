@@ -1,0 +1,29 @@
+// ============================================================================
+// Catppuccin Mocha Theme for TIDAL Hi-Fi
+// ============================================================================
+// https://github.com/catppuccin/catppuccin
+
+@use "base" with (
+  $bg-main: #1e1e2e,
+  $bg-secondary: #11111b,
+  $bg-surface: #313244,
+  $bg-elevated: #45475a,
+  $bg-hover: #585b70,
+  $bg-selection: #6c7086,
+
+  $text-primary: #cdd6f4,
+  $text-secondary: #bac2de,
+  $text-muted: #a6adc8,
+  $text-faint: #9399b2,
+
+  $accent-primary: #cba6f7,
+  $accent-green: #a6e3a1,
+  $accent-red: #f38ba8,
+  $accent-blue: #89b4fa,
+  $accent-purple: #cba6f7,
+  $accent-cyan: #94e2d5,
+  $accent-yellow: #f9e2af,
+
+  $border-subtle: #313244,
+  $border-dim: #45475a
+);

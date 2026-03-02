@@ -1,0 +1,812 @@
+// ============================================================================
+// TIDAL Hi-Fi Theme Base
+// ============================================================================
+// Common structural styling shared between all themes.
+// Uses modern SASS @use with parameters for theming.
+// Uses stable data-test attributes, id selectors, and [class*=""] partial
+// matches so the theme survives Tidal's CSS-module hash changes.
+// ============================================================================
+
+// Default theme variables (can be overridden via @use with (...))
+$bg-main: #1a1b26 !default;
+$bg-secondary: #16161e !default;
+$bg-surface: #24283b !default;
+$bg-elevated: #292e42 !default;
+$bg-hover: #414868 !default;
+$bg-selection: #33467c !default;
+
+$text-primary: #c0caf5 !default;
+$text-secondary: #a9b1d6 !default;
+$text-muted: #565f89 !default;
+$text-faint: #737aa2 !default;
+
+$accent-primary: #ff747e !default;
+$accent-green: #9ece6a !default;
+$accent-red: #f7768e !default;
+$accent-blue: #7aa2f7 !default;
+$accent-purple: #bb9af7 !default;
+$accent-cyan: #7dcfff !default;
+$accent-yellow: #ffc676 !default;
+
+$border-subtle: #292e42 !default;
+$border-dim: #3b4261 !default;
+
+// Theme CSS custom properties - targets any theme name for universal application
+html {
+  --sidebar-background: #{$bg-secondary};
+  --sidebar-hover-background: #{$bg-hover};
+  --sidebar-menu-top-text: #{$text-muted};
+  --sidebar-menu-playlist-text: #{$text-muted};
+  --search-background: #{$bg-secondary};
+  --main-background: #{$bg-main};
+  --main-navigation-control-background: #{$bg-secondary};
+  --main-feed-button-background: #{$bg-secondary};
+  --player-control-background: #{$bg-surface};
+  --player-control-active-button: #{$accent-primary};
+  --player-progress-bar: #{$accent-primary};
+  --indicator-hifi-background: #{$accent-green};
+  --indicator-hifi-span: #{$bg-secondary};
+  --player-control-favorite: #{$accent-red};
+  --search-dialog-background: #{$bg-surface};
+  --right-queue-background: #{$bg-surface};
+
+  // Suppress Tidal's built-in divider/separator lines
+  --market-divider-fill-color: transparent;
+  --market-header-divider-color: transparent;
+  --market-core-divider-10-color: transparent;
+  --market-core-divider-20-color: transparent;
+  --market-row-normal-state-separator-color: transparent;
+  --market-row-hover-state-separator-color: transparent;
+}
+
+// =============================================================================
+// TIDAL UI — Layout & Backgrounds
+// =============================================================================
+
+// --- Sidebar -----------------------------------------------------------------
+#sidebar {
+  background-color: $bg-secondary;
+}
+
+[class*="_sidebarWrapper_"] {
+  background-color: $bg-secondary;
+}
+
+// Sidebar header (logo area)
+#sidebar [class*="_header_"] {
+  background-color: $bg-secondary;
+}
+
+// Sidebar navigation items
+[class*="_navigationItem_"] {
+  color: $text-muted;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
+
+  &:hover {
+    background-color: $bg-hover;
+    color: $text-primary;
+  }
+
+  &[data-status="active"],
+  &[aria-current="page"] {
+    color: $text-primary;
+  }
+}
+
+// Sidebar playlist items
+[class*="_contentItem_"] {
+  color: $text-muted;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: $bg-hover;
+    color: $text-secondary;
+  }
+
+  &[data-status="active"] {
+    color: $accent-primary;
+  }
+}
+
+[class*="_collectionWrapper_"] {
+  border-color: $border-subtle;
+}
+
+[class*="_fixedNavigation_"] {
+  border-color: $border-subtle;
+}
+
+// Sidebar scrollbar
+#sidebar ::-webkit-scrollbar {
+  width: 6px;
+}
+
+#sidebar ::-webkit-scrollbar-thumb {
+  background-color: $bg-hover;
+  border-radius: 3px;
+}
+
+#sidebar ::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+// Action buttons in sidebar
+[class*="_actionButton_"] {
+  color: $text-muted;
+  &:hover {
+    color: $text-primary;
+    background-color: $bg-hover;
+  }
+}
+
+// --- Header / Top Bar --------------------------------------------------------
+#mainHeader {
+  background-color: $bg-secondary;
+}
+
+[data-test="header"] {
+  background-color: $bg-secondary;
+}
+
+// Navigation back/forward arrows
+[data-test="navigation-arrows"] button {
+  color: $text-muted;
+  background-color: $bg-secondary;
+  border-color: $border-subtle;
+
+  &:hover {
+    background-color: $bg-hover;
+    color: $text-primary;
+  }
+
+  &:disabled {
+    color: $border-dim;
+  }
+}
+
+// TIDAL logo in header
+[class*="_logo_"][href="/"] {
+  color: $text-primary;
+}
+
+// Header options button
+[class*="_buttonContainer_"] button {
+  color: $text-muted;
+  &:hover {
+    color: $text-primary;
+  }
+}
+
+// --- Search ------------------------------------------------------------------
+[class*="_searchField_"][class*="_searchField_"] {
+  background-color: $bg-secondary;
+  color: $text-primary;
+  border-color: transparent;
+  border-radius: 8px;
+
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &:focus {
+    border-color: $border-dim;
+    background-color: $bg-surface;
+  }
+}
+
+input[class*="_searchField_"] {
+  background-color: $bg-secondary;
+  color: $text-primary;
+  border-color: transparent;
+  border-radius: 8px;
+
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &:focus {
+    border-color: $border-dim;
+    background-color: $bg-surface;
+  }
+}
+
+// Search field container
+[class*="_searchFieldWithPopover_"] {
+  [class*="_container_"] {
+    background-color: $bg-secondary;
+    border-color: transparent;
+    border-radius: 8px;
+
+    &:focus-within {
+      border-color: $border-dim;
+      background-color: $bg-surface;
+    }
+  }
+}
+
+// Search filter in tracklist
+[class*="_searchFieldFilter_"] {
+  background-color: $bg-surface;
+  color: $text-primary;
+  border-color: $border-dim;
+}
+
+// --- Main Content Area -------------------------------------------------------
+#main {
+  background-color: $bg-main;
+}
+
+[class*="_mainContainer_"] {
+  background-color: $bg-main;
+}
+
+[class*="_containerRow_"] {
+  background-color: $bg-main;
+}
+
+// General main content area text
+.mainContent {
+  color: $text-primary;
+}
+
+// --- Page Headers (playlist/album/artist) ------------------------------------
+[class*="_headerContainer_"] {
+  background-color: $bg-main;
+}
+
+[class*="_dataContainer_"] {
+  background-color: $bg-main;
+}
+
+[class*="_detailContainer_"] {
+  background-color: $bg-main;
+}
+
+[class*="_actionContainer_"] button {
+  &:hover {
+    background-color: $bg-hover;
+    color: $text-primary;
+  }
+}
+
+// --- Player Controls ---------------------------------------------------------
+// Bottom player bar
+[id^="footerPlayer"] {
+  background-color: $bg-secondary;
+}
+
+[class*="_footerPlayerWrapper_"] {
+  background-color: $bg-secondary;
+}
+
+[class*="_controlWrapper_"] {
+  background-color: $bg-surface;
+}
+
+// Play/Pause/Next/Previous buttons
+[class*="_mediaControlButtons_"] button {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+  }
+
+  &[data-status="playing"],
+  &[aria-pressed="true"] {
+    color: $accent-primary;
+  }
+}
+
+// Track progress bar
+[class*="_progressBar_"] {
+  [class*="_progressBarFill_"] {
+    background-color: $accent-primary;
+  }
+}
+
+// Volume controls
+[class*="_volume_"] {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+  }
+}
+
+// --- Track Lists & Tables ----------------------------------------------------
+[class*="_trackListWrapper_"] {
+  background-color: $bg-main;
+}
+
+[class*="_tracklistHeaderContainer_"] {
+  background-color: $bg-main;
+}
+
+// Track rows
+[class*="_trackRow_"] {
+  color: $text-secondary;
+
+  &:hover {
+    background-color: $bg-hover;
+    color: $text-primary;
+  }
+
+  &[data-status="playing"] {
+    color: $accent-primary;
+    background-color: $bg-selection;
+  }
+}
+
+// Media player controls in track list
+[class*="_mediaPlayerControls_"] button {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+  }
+
+  &[data-status="playing"] {
+    color: $accent-primary;
+  }
+}
+
+// Favorite button
+[class*="_favoriteButton_"] {
+  color: $text-muted;
+
+  &:hover {
+    color: $accent-red;
+  }
+
+  &[data-favorite="true"] {
+    color: $accent-red;
+  }
+}
+
+// --- Feed & Content Cards ----------------------------------------------------
+[class*="_feedModule_"] {
+  background-color: $bg-main;
+}
+
+[class*="_cardContainer_"] {
+  background-color: $bg-main;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: $bg-surface;
+  }
+}
+
+[class*="_feedTitle_"] {
+  color: $text-primary;
+}
+
+[class*="_subtitle_"] {
+  color: $text-muted;
+}
+
+// Module & Section Headers
+[class*="_container_"][class*="_header_"] {
+  background-color: $bg-main;
+}
+
+// Sticky headers in content areas
+[class*="_stickyHeader_"] {
+  background-color: $bg-main;
+}
+
+// Section headers (sidebar playlists, feed intervals)
+[class*="_sectionHeader_"] {
+  background-color: $bg-main !important;
+}
+
+// Generic header elements in main content
+#main [class*="_header_"] {
+  background-color: transparent;
+}
+
+// Module header text
+[class*="_header_"] [class*="_marketText_"] {
+  color: $text-primary;
+}
+
+// Track list column headers (Album, Date added, Time)
+[class*="_headerColumn_"] {
+  color: $text-muted;
+}
+
+[class*="_overline_"] {
+  color: $text-muted;
+}
+
+// Feed items and cards
+[class*="_feedItem_"],
+[class*="_feedCard_"] {
+  background-color: $bg-surface;
+  border-color: $border-subtle;
+}
+
+[class*="_textContainer_"] {
+  color: $text-primary;
+}
+
+[class*="_filter_"] {
+  color: $text-muted;
+}
+
+// Buttons and interactive elements
+[class*="_button_"]:hover,
+button:hover {
+  background-color: $bg-hover;
+  color: $text-primary;
+}
+
+// Links and clickable text
+a {
+  color: $accent-cyan;
+
+  &:hover {
+    color: $accent-blue;
+  }
+}
+
+// Selection and highlight states
+::selection {
+  background-color: $bg-selection;
+  color: $text-primary;
+}
+
+// Right sidebar / Queue
+[class*="_queueWrapper_"] {
+  background-color: $bg-surface;
+}
+
+// Dialog and modal overlays
+[class*="_modal_"],
+[class*="_dialog_"] {
+  background-color: $bg-surface;
+  color: $text-primary;
+}
+
+// Context menus
+[class*="_contextMenuWrapper_"] {
+  background-color: $bg-surface;
+  border-color: $border-dim;
+}
+
+[class*="_contextMenuItem_"] {
+  color: $text-secondary;
+
+  &:hover {
+    background-color: $bg-hover;
+    color: $text-primary;
+  }
+}
+
+// --- Footer Player -----------------------------------------------------------
+#footerPlayer,
+[data-test="footer-player"] {
+  background-color: $bg-secondary;
+  border-top: 1px solid $border-subtle;
+}
+
+// Player left column (track info)
+#footerPlayer [class*="_leftColumn_"] {
+  color: $text-primary;
+
+  a {
+    color: $text-primary;
+
+    &:hover {
+      color: $accent-blue;
+    }
+  }
+}
+
+// Footer track title
+[data-test="footer-track-title"] {
+  a {
+    color: $text-primary;
+    &:hover {
+      color: $accent-blue;
+    }
+  }
+}
+
+// Footer artist text
+#footerPlayer [class*="_descriptionText_"] a {
+  color: $text-secondary;
+  &:hover {
+    color: $accent-blue;
+  }
+}
+
+// Playing from text
+[class*="_playingFrom_"] {
+  color: $text-muted;
+  a {
+    color: $accent-blue;
+  }
+}
+
+// --- Playback Controls -------------------------------------------------------
+#playbackControlBar,
+[data-test="play-controls"] {
+  button {
+    color: $text-muted;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: $text-primary;
+    }
+  }
+
+  // Active shuffle/repeat
+  button.withBackground[aria-checked="true"] {
+    background-color: $bg-surface;
+
+    path {
+      fill: $accent-primary;
+    }
+  }
+}
+
+// Play button
+[class*="_playbackButton_"] button {
+  color: $text-primary;
+}
+
+// --- Progress Bar ------------------------------------------------------------
+#progressBar,
+[data-test="progress-bar"] {
+  color: $accent-primary;
+}
+
+[class*="_progressBarWrapper_"] {
+  color: $accent-primary;
+}
+
+[class*="_indicator_"][class*="_fillingBlock_"] {
+  background-color: $accent-primary;
+}
+
+// Favorite buttons in footer/now playing
+[data-test="footer-favorite-button"][aria-checked="true"] svg,
+[data-test="now-playing-favorite-button"][aria-checked="true"] svg {
+  color: $accent-red;
+}
+
+// =============================================================================
+// Settings Window Styling (tidal-hifi custom)
+// =============================================================================
+
+// Override the settings CSS variables
+.settings-window {
+  --black: #{$bg-main};
+  --black-lighter: #{$bg-secondary};
+  --black-lightest: #{$bg-surface};
+  --grey-darkest: #{$bg-elevated};
+  --grey-darker: #{$bg-hover};
+  --grey: #{$text-muted};
+  --white: #{$text-primary};
+  --tidal-blue: #{$accent-cyan};
+  --tidal-red: #{$accent-red};
+
+  color: $text-primary;
+  background: $bg-main;
+}
+
+.settings-window__wrapper {
+  background: $bg-main;
+  box-shadow: inset 0 0 2px 0 $bg-secondary;
+}
+
+.settings-window__close-button:hover {
+  background: $bg-surface;
+}
+
+// Tab bar
+.tabs__trigger + label {
+  color: $text-muted;
+  &:hover {
+    color: $text-primary;
+  }
+}
+
+.tabs__trigger:checked + label {
+  color: $accent-primary;
+}
+
+.tabs__separator {
+  border-color: $border-dim;
+}
+
+.settings input:checked + label {
+  border-bottom: 2px solid $accent-primary;
+  color: $accent-primary;
+}
+
+.tabs__content::-webkit-scrollbar-thumb {
+  background-color: $bg-hover;
+}
+
+// Groups
+.group {
+  border-bottom: none;
+}
+
+.group__title {
+  color: $text-primary;
+}
+
+.group__option {
+  background: $bg-surface;
+  border-color: $border-subtle;
+}
+
+.group__options-group {
+  background: $bg-surface;
+  border-color: $border-subtle;
+
+  .group__option {
+    border-bottom-color: $border-dim;
+  }
+}
+
+.group__content h4 {
+  color: $text-primary;
+}
+
+.group__content p,
+.group__description p {
+  color: $text-secondary;
+}
+
+.group__description .text-input {
+  border-bottom: solid 1px $border-dim;
+  color: $text-primary;
+}
+
+.group__description .text-input:focus {
+  border-color: $accent-primary;
+  color: $text-primary;
+}
+
+// Text inputs
+.text-input {
+  background-color: $bg-elevated;
+  color: $text-primary;
+  border-color: $border-dim;
+
+  &::placeholder {
+    color: $text-muted;
+  }
+}
+
+// Tags (Skip artists)
+.tags__tag {
+  background: $accent-blue;
+  color: $bg-main;
+
+  &:hover,
+  &:focus-within {
+    background: $accent-purple;
+  }
+}
+
+.tags__tag__text {
+  color: inherit;
+}
+
+.tags__tag__remove {
+  color: inherit;
+  opacity: 0.8;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+// Buttons
+.button {
+  background: $bg-surface;
+  color: $text-primary;
+  border-color: $border-dim;
+
+  &:hover {
+    background: $bg-elevated;
+  }
+
+  &.primary {
+    background: $accent-primary;
+    color: $bg-main;
+
+    &:hover {
+      background: $accent-blue;
+    }
+  }
+}
+
+// Dropdowns
+.select-input {
+  background-color: $bg-surface;
+  color: $text-primary;
+  border-color: $border-dim;
+}
+
+.select-input option {
+  background-color: $bg-surface;
+}
+
+.select-input option:disabled {
+  color: $text-muted;
+}
+
+// Hotkey bindings
+.hotkey-binding kbd {
+  background: $accent-primary;
+  color: $bg-main;
+}
+
+.hotkey-binding.editing {
+  background: $bg-elevated;
+}
+
+// Switches (checkboxes in settings)
+.switch {
+  border-color: $border-subtle;
+}
+
+.switch input:checked + .switch__slider {
+  background-color: $accent-primary;
+}
+
+.switch input:checked + .switch__slider::before {
+  background-color: $bg-main;
+}
+
+.switch input:focus + .switch__slider {
+  box-shadow: inset 0 0 0 1px $accent-primary;
+}
+
+.switch__slider {
+  background-color: $bg-hover;
+}
+
+.switch__slider::before {
+  background-color: $text-muted;
+}
+
+// Textareas
+.textarea {
+  background: $bg-surface;
+  color: $text-secondary;
+  border-color: $border-dim;
+}
+
+// Footer elements in settings
+.footer__note {
+  color: $text-muted;
+}
+
+.footer__button {
+  color: $accent-cyan;
+}
+
+.footer__button:hover {
+  color: $accent-green;
+}
+
+// External links
+.external-link {
+  color: $accent-cyan;
+  &:hover {
+    color: $accent-green;
+  }
+}
+
+.file-msg {
+  color: $accent-cyan !important;
+}

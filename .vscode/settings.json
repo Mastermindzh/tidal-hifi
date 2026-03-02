@@ -50,5 +50,8 @@
   "sonarlint.connectedMode.project": {
     "connectionId": "public-sonarcloud",
     "projectKey": "Mastermindzh_tidal-hifi"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "sibiraj-s.vscode-scss-formatter"
   }
 }

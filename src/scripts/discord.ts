@@ -31,10 +31,14 @@ const defaultPresence = {
 
 const updateActivity = () => {
   const showIdle = settingsStore.get<string, boolean>(settings.discord.showIdle) ?? true;
-  if (mediaInfo.status === MediaStatus.paused && !showIdle) {
-    rpc.user?.clearActivity();
-  } else {
-    rpc.user?.setActivity(getActivity());
+  try {
+    if (mediaInfo.status === MediaStatus.paused && !showIdle) {
+      rpc.user?.clearActivity()?.catch(() => {});
+    } else {
+      rpc.user?.setActivity(getActivity())?.catch(() => {});
+    }
+  } catch (_error) {
+    // Silently ignore errors when Discord connection is already closed
   }
 };
 
@@ -152,13 +156,17 @@ export const initRPC = () => {
  */
 export const unRPC = () => {
   if (rpc) {
-    rpc.user?.clearActivity();
-    rpc.destroy();
-    rpc = null;
-
-    // Remove observer from all global events (not just updateInfo)
+    // Remove observer first to prevent events during cleanup from triggering activity updates
     Object.values(globalEvents).forEach((event) => {
       ipcMain.removeListener(event, observer);
     });
+
+    try {
+      rpc.user?.clearActivity()?.catch(() => {});
+    } catch (_error) {
+      // Ignore errors when Discord connection is already closed
+    }
+    rpc.destroy();
+    rpc = null;
   }
 };

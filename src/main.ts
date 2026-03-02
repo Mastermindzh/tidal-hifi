@@ -78,12 +78,12 @@ function syncMenuBarWithStore() {
 function performCleanup(): void {
   try {
     Logger.log("Performing application cleanup...");
-    closeSettingsWindow();
-    releaseInhibitorIfActive(mainInhibitorId);
-    mprisService?.destroy();
     if (rpc) {
       unRPC();
     }
+    closeSettingsWindow();
+    releaseInhibitorIfActive(mainInhibitorId);
+    mprisService?.destroy();
     Logger.log("Application cleanup completed");
   } catch (error) {
     Logger.log("Error during cleanup:", error);
