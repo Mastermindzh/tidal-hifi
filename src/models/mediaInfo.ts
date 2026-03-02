@@ -30,7 +30,7 @@ export const getEmptyMediaInfo = () => {
     artistsArray: [],
     album: "",
     playingFrom: "",
-    status: MediaStatus.playing,
+    status: MediaStatus.paused,
     url: "",
     current: "00:00",
     currentInSeconds: 0,
@@ -39,14 +39,14 @@ export const getEmptyMediaInfo = () => {
     image: "",
     icon: "",
     localAlbumArt: "",
-    favorite: true,
+    favorite: false,
     trackId: "",
     volume: 1.0,
 
     player: {
-      status: MediaStatus.playing,
-      shuffle: true,
-      repeat: RepeatState.all,
+      status: MediaStatus.paused,
+      shuffle: false,
+      repeat: RepeatState.off,
     },
   };
 

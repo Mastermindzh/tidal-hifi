@@ -124,7 +124,23 @@ function getCustomProtocolUrl(args: string[]) {
     return null;
   }
 
-  return `${tidalUrl}/${customProtocolArg.substring(PROTOCOL_PREFIX.length + 3)}`;
+  const relativePath = customProtocolArg.substring(PROTOCOL_PREFIX.length + 3);
+  const url = `${tidalUrl}/${relativePath}`;
+
+  // Validate that the constructed URL stays within the Tidal domain
+  try {
+    const parsed = new URL(url);
+    const tidalParsed = new URL(tidalUrl);
+    if (parsed.hostname !== tidalParsed.hostname) {
+      Logger.log(`Blocked custom protocol URL with unexpected host: ${parsed.hostname}`);
+      return null;
+    }
+  } catch {
+    Logger.log(`Invalid custom protocol URL: ${url}`);
+    return null;
+  }
+
+  return url;
 }
 
 /**

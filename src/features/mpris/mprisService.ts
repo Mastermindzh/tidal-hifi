@@ -383,6 +383,11 @@ export class MprisService {
     this.isReconnecting = false;
 
     if (this.player) {
+      try {
+        this.player.removeAllListeners();
+      } catch (error) {
+        Logger.log("Error cleaning up MPRIS player listeners:", error);
+      }
       this.player = null;
       this.currentPosition = 0;
     }

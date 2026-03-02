@@ -155,11 +155,6 @@ export const settingsStore = new Store({
   },
 });
 
-const settingsModule = {
-  // settings,
-  settingsWindow,
-};
-
 export const createSettingsWindow = () => {
   settingsWindow = new BrowserWindow({
     width: 650,
@@ -173,6 +168,7 @@ export const createSettingsWindow = () => {
       preload: path.join(__dirname, "../pages/settings/preload.js"),
       plugins: true,
       nodeIntegration: true,
+      contextIsolation: false, // Required for nodeIntegration in settings page
     },
   });
 
@@ -189,7 +185,6 @@ export const createSettingsWindow = () => {
     shell.openExternal(url);
     return { action: "deny" };
   });
-  settingsModule.settingsWindow = settingsWindow;
 };
 
 export const showSettingsWindow = (tab = "general") => {
@@ -204,7 +199,7 @@ export const showSettingsWindow = (tab = "general") => {
   settingsWindow.show();
 };
 export const hideSettingsWindow = () => {
-  settingsWindow.hide();
+  settingsWindow?.hide();
 };
 
 export const closeSettingsWindow = () => {

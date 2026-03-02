@@ -120,7 +120,11 @@ const connectWithRetry = async (retryCount = 0) => {
     await rpc.login();
     Logger.log("Connected to Discord");
     rpc.on("ready", updateActivity);
+
     Object.values(globalEvents).forEach((event) => {
+      // remove
+      ipcMain.removeListener(event, observer);
+      // re-add
       ipcMain.on(event, observer);
     });
   } catch (_error) {
@@ -151,6 +155,10 @@ export const unRPC = () => {
     rpc.user?.clearActivity();
     rpc.destroy();
     rpc = null;
-    ipcMain.removeListener(globalEvents.updateInfo, observer);
+
+    // Remove observer from all global events (not just updateInfo)
+    Object.values(globalEvents).forEach((event) => {
+      ipcMain.removeListener(event, observer);
+    });
   }
 };

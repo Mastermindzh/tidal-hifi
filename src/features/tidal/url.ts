@@ -22,10 +22,12 @@ export const getCoverURL = (coverId: string, size: 1280 | 80 = 1280) => {
 };
 
 /**
- * Retrieve the universal link given a regular track link
- * @param trackLink
- * @returns
+ * Append the universal link syntax (?u) to a URL.
+ * Handles URLs that already contain query parameters by using &u instead.
+ * @param trackLink url to append the universal link syntax to
+ * @returns url with `?u` or `&u` appended, or the original value if falsy
  */
 export const getUniversalLink = (trackLink: string) => {
-  return `${trackLink}?u`;
+  if (!trackLink) return trackLink;
+  return trackLink.includes("?") ? `${trackLink}&u` : `${trackLink}?u`;
 };

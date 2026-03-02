@@ -1,24 +1,32 @@
-import fs from "node:fs";
-import request from "request";
+import { createWriteStream } from "node:fs";
+import http from "node:http";
+import https from "node:https";
 
 /**
- * download and save a file
- * @param {string} fileUrl url to download
- * @param {string} targetPath path to save it at
+ * Download and save a file
+ * @param fileUrl url to download
+ * @param targetPath path to save it at
+ * @returns the targetPath on success
  */
 export const downloadFile = (fileUrl: string, targetPath: string): Promise<string> =>
   new Promise<string>((resolve, reject) => {
-    const req = request({
-      method: "GET",
-      uri: fileUrl,
-    });
+    const client = fileUrl.startsWith("https") ? https : http;
+    client
+      .get(fileUrl, (response) => {
+        if (response.statusCode !== 200) {
+          reject(new Error(`HTTP ${response.statusCode} for ${fileUrl}`));
+          return;
+        }
 
-    const out = fs.createWriteStream(targetPath);
-    req.pipe(out);
-
-    req.on("end", () => {
-      resolve(targetPath);
-    });
-
-    req.on("error", reject);
+        const out = createWriteStream(targetPath);
+        response.pipe(out);
+        out.on("finish", () => {
+          out.close(() => resolve(targetPath));
+        });
+        out.on("error", (err) => {
+          out.close();
+          reject(err);
+        });
+      })
+      .on("error", reject);
   });
