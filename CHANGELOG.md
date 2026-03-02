@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [6.2.1]
 
 - mpris can now represent unsafe values due to sanitization, no longer crashes.
+- default (included) themes should now be loaded in the selection menu
 - Improved error handling throughout the app
 - Implemented proper resource handling in all controllers (and forced a destroy method to be implemented)
 - removed deprecated "request" dependency, handling image download natively now

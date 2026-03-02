@@ -10,7 +10,7 @@ export function addCustomCss(app: any) {
     const selectedTheme = settingsStore.get<string, string>(settings.theme);
     if (selectedTheme !== "none") {
       const userThemePath = `${app.getPath("userData")}/themes/${selectedTheme}`;
-      const resourcesThemePath = `${process.resourcesPath}/${selectedTheme}`;
+      const resourcesThemePath = `${process.resourcesPath}/themes/${selectedTheme}`;
       const themeFile = fs.existsSync(userThemePath) ? userThemePath : resourcesThemePath;
       fs.readFile(themeFile, "utf-8", (err, data) => {
         if (err) {

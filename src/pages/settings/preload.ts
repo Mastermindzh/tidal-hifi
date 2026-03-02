@@ -93,7 +93,7 @@ addCustomCss(app);
 
 function getThemeFiles() {
   const selectElement = document.getElementById("themesList") as HTMLSelectElement;
-  const builtInThemes = getThemeListFromDirectory(process.resourcesPath);
+  const builtInThemes = getThemeListFromDirectory(`${process.resourcesPath}/themes`);
   const userThemes = getThemeListFromDirectory(`${app.getPath("userData")}/themes`);
 
   let allThemes = [
