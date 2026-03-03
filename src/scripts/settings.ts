@@ -71,7 +71,7 @@ export const settingsStore = new Store({
     hotkeys: getDefaultHotkeyConfig(),
     menuBar: true,
     minimizeOnClose: false,
-    mpris: false,
+    mpris: true,
     notifications: true,
     playBackControl: true,
     singleInstance: true,

@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Improved error handling throughout the app
 - Implemented proper resource handling in all controllers (and forced a destroy method to be implemented)
 - removed deprecated "request" dependency, handling image download natively now
+- MPRIS is now enabled by default
 
 ## [6.2.0]
 
