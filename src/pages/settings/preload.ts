@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import path from "node:path";
 import { app } from "@electron/remote";
 import { ipcRenderer, shell } from "electron";
 
@@ -93,13 +94,19 @@ addCustomCss(app);
 
 function getThemeFiles() {
   const selectElement = document.getElementById("themesList") as HTMLSelectElement;
-  const builtInThemes = getThemeListFromDirectory(`${process.resourcesPath}/themes`);
+  const builtInThemes = getThemeListFromDirectory(`${process.resourcesPath}/themes`).concat(
+    getThemeListFromDirectory(path.join(__dirname, "..", "..", "..", "themes")),
+  );
+  // deduplicate in case both paths resolve to the same directory
+  const uniqueBuiltIn = [...new Set(builtInThemes)].sort((a, b) =>
+    a.toLowerCase().localeCompare(b.toLowerCase()),
+  );
   const userThemes = getThemeListFromDirectory(`${app.getPath("userData")}/themes`);
 
   let allThemes = [
     getOptionsHeader("Built-in Themes"),
     new Option("Tidal - Default", "none"),
-  ].concat(getOptions(builtInThemes));
+  ].concat(getOptions(uniqueBuiltIn));
 
   if (userThemes.length >= 1) {
     allThemes = allThemes.concat([getOptionsHeader("User Themes")]).concat(getOptions(userThemes));
@@ -301,6 +308,10 @@ window.addEventListener("DOMContentLoaded", () => {
   handleFileUploads();
 
   document.getElementById("close").addEventListener("click", hide);
+  document.getElementById("restartApp")?.addEventListener("click", () => {
+    app.relaunch();
+    app.exit(0);
+  });
   document.getElementById("resetZoom")?.addEventListener("click", () => {
     ipcRenderer.send(globalEvents.resetZoom);
   });

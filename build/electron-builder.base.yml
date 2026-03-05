@@ -4,9 +4,23 @@ electronDownload:
   version: v40.1.0+wvcus
   mirror: https://github.com/castlabs/electron-releases/releases/download/v
 snap:
+  base: "core22"
   plugs:
     - default
     - screen-inhibit-control
+    # Override the template's gnome-3-28-1804 content snap (core20 era) with
+    # gnome-42-2204 (core22 era) for up-to-date Mesa drivers and GSettings schemas.
+    # The plug name must match the template key to replace it rather than duplicate it.
+    # The explicit `content` attribute tells snapd to match the gnome-42-2204 slot
+    # instead of the gnome-3-28-1804 slot that the plug name would imply.
+    - gnome-3-28-1804:
+        interface: content
+        content: gnome-42-2204
+        target: $SNAP/gnome-platform
+        default-provider: gnome-42-2204
+  layout:
+    /usr/share/icons/hicolor/256x256/apps/tidal-hifi.png:
+      symlink: $SNAP/meta/gui/icon.png
 extraResources:
   - "themes/**"
 linux:

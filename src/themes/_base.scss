@@ -57,6 +57,8 @@ html {
   --market-core-divider-20-color: transparent;
   --market-row-normal-state-separator-color: transparent;
   --market-row-hover-state-separator-color: transparent;
+  --market-row-hover-state-bg-color: transparent;
+  --market-row-normal-state-bg-color: transparent;
 }
 
 // =============================================================================
@@ -244,6 +246,10 @@ input[class*="_searchField_"] {
 
 [class*="_containerRow_"] {
   background-color: $bg-main;
+
+  &:hover {
+    background-color: $bg-main !important;
+  }
 }
 
 // General main content area text
@@ -368,6 +374,10 @@ input[class*="_searchField_"] {
 // --- Feed & Content Cards ----------------------------------------------------
 [class*="_feedModule_"] {
   background-color: $bg-main;
+
+  &:hover {
+    background-color: $bg-main !important;
+  }
 }
 
 [class*="_cardContainer_"] {
@@ -437,11 +447,8 @@ input[class*="_searchField_"] {
 }
 
 // Buttons and interactive elements
-[class*="_button_"]:hover,
-button:hover {
-  background-color: $bg-hover;
-  color: $text-primary;
-}
+// NOTE: Avoid broad "button:hover" rules — Tidal uses <button> for large
+// structural containers and overlays, causing full-area background flashes.
 
 // Links and clickable text
 a {
@@ -576,6 +583,372 @@ a {
 [data-test="footer-favorite-button"][aria-checked="true"] svg,
 [data-test="now-playing-favorite-button"][aria-checked="true"] svg {
   color: $accent-red;
+}
+
+// =============================================================================
+// Now Playing / Details Panel
+// =============================================================================
+// The expanded "Now Playing" view opened by clicking album art in the footer.
+
+// --- Now Playing Container ---------------------------------------------------
+[data-test="now-playing"],
+#nowPlaying,
+[class*="_nowPlayingContainer_"] {
+  background-color: $bg-main !important;
+  background-image: none !important;
+  color: $text-primary;
+}
+
+// Inner container
+[class*="_innerContainer_"] {
+  background-color: transparent;
+}
+
+// --- Now Playing Header ------------------------------------------------------
+#nowPlayingHeader,
+[data-test="header-container"] {
+  background-color: transparent;
+}
+
+// "Playing from" text
+[class*="_playingFrom_"] {
+  color: $text-muted;
+
+  a {
+    color: $accent-cyan;
+
+    &:hover {
+      color: $accent-blue;
+    }
+  }
+}
+
+// Close / fullscreen buttons in now playing header
+[class*="_baseButton_"][data-test="close-now-playing"],
+[class*="_baseButton_"][data-test="request-fullscreen"],
+[class*="_closeButton_"] {
+  color: $text-muted;
+  background-color: transparent;
+
+  &:hover {
+    color: $text-primary;
+    background-color: $bg-hover;
+  }
+
+  span {
+    color: $text-secondary;
+  }
+}
+
+// --- Now Playing Album Art & Track Info --------------------------------------
+[class*="_leftColumn_"][class*="_albumMediaQueries_"],
+[class*="_leftColumn_"] {
+  color: $text-primary;
+}
+
+// Album image overlay (info icon on hover)
+.overlay[class*="_albumImageOverlay_"],
+[class*="_albumImageOverlay_"] {
+  color: $text-primary;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+// Track info wrapper below album art
+[class*="_infoWrapper_"] {
+  background-color: transparent;
+}
+
+// Track title in now playing
+[data-test="now-playing-track-title"] {
+  color: $text-primary;
+}
+
+// Artist name in now playing
+[class*="_artistNameColor_"] {
+  color: $text-secondary;
+
+  &:hover {
+    color: $accent-blue;
+  }
+}
+
+// Subtitle text (artist names below track title)
+[class*="_subTitleText_"] {
+  color: $text-secondary;
+
+  a {
+    color: $text-secondary;
+
+    &:hover {
+      color: $accent-blue;
+    }
+  }
+}
+
+// Favorite & context menu buttons in now playing
+[class*="_buttonsContainer_"] {
+  [data-test="now-playing-favorite-button"],
+  [data-test="now-playing-context-menu"] {
+    color: $text-muted;
+
+    &:hover {
+      color: $text-primary;
+      background-color: $bg-hover;
+    }
+  }
+}
+
+// --- Now Playing Tabs --------------------------------------------------------
+[class*="_tabs_"][class*="_tabItems_"] {
+  background-color: transparent;
+  border-color: $border-dim;
+}
+
+// Individual tab items
+[class*="_tabItem_"] {
+  color: $text-muted;
+  background-color: transparent;
+  transition:
+    color 0.15s ease,
+    background-color 0.15s ease;
+
+  &:hover {
+    color: $text-primary;
+    background-color: $bg-hover;
+  }
+
+  // Override Tidal's Wave design-system text color on tab labels
+  span,
+  [data-wave-color] {
+    color: inherit !important;
+  }
+
+  svg {
+    color: inherit;
+  }
+}
+
+// Active tab
+[class*="_tabItem_"][class*="_activeTab_"] {
+  color: $text-primary;
+}
+
+// --- Tab Panels (shared) -----------------------------------------------------
+[class*="_tabPanelStyles_"] {
+  background-color: transparent;
+  color: $text-primary;
+}
+
+// --- Play Queue Tab ----------------------------------------------------------
+[class*="_playQueueTab_"] {
+  background-color: transparent;
+}
+
+// Play queue items container
+[class*="_playQueueItemsContainer_"],
+[data-test="nowplaying-playqueue"] {
+  background-color: transparent;
+}
+
+// Sticky headers in queue (History, Playing from, Next Up from)
+[class*="_stickyHeader_"] {
+  background-color: $bg-main;
+  color: $text-primary;
+}
+
+// Group title in queue ("Playing from:", "Next Up from:")
+[class*="_groupTitle_"] {
+  color: $text-primary;
+  background-color: transparent;
+
+  a {
+    color: $accent-cyan;
+
+    &:hover {
+      color: $accent-blue;
+    }
+  }
+}
+
+// Clear button ("Clear" next to "Next Up from")
+[class*="_clearButton_"] {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+    background-color: $bg-hover;
+  }
+}
+
+// Play queue item rows
+[data-test="playqueue-item"] {
+  color: $text-secondary;
+  background-color: transparent;
+
+  &:hover {
+    background-color: $bg-hover;
+  }
+}
+
+// History items (dimmed)
+[class*="_containerPriorityHistory_"] {
+  opacity: 0.6;
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+// Queue item title links
+[class*="_titleLink_"] {
+  color: $text-primary;
+
+  &:hover {
+    color: $accent-blue;
+  }
+}
+
+// Currently playing title (highlighted text)
+[class*="_textHigh_"] {
+  color: $accent-primary;
+}
+
+// Currently playing icon (volume icon)
+[class*="_nowPlayingIconContainer_"] {
+  color: $accent-primary;
+}
+
+[class*="_iconHigh_"] {
+  color: $accent-primary;
+}
+
+// Queue item artist text
+[class*="_artistText_"] {
+  color: $text-muted;
+
+  a {
+    color: $text-muted;
+
+    &:hover {
+      color: $accent-blue;
+    }
+  }
+}
+
+// Title/artist group
+[class*="_titleArtistGroup_"] {
+  color: $text-primary;
+}
+
+// Queue item actions (three-dots, remove button)
+[class*="_actions_"] {
+  button {
+    color: $text-muted;
+
+    &:hover {
+      color: $text-primary;
+      background-color: $bg-hover;
+    }
+  }
+}
+
+[class*="_removeButton_"] {
+  color: $text-muted;
+
+  &:hover {
+    color: $accent-red;
+    background-color: $bg-hover;
+  }
+}
+
+// "Now playing" cell indicator
+[class*="_nowPlayingCell_"] {
+  background-color: transparent;
+}
+
+// Bottom gradient in queue
+[class*="_bottomGradient_"] {
+  background: linear-gradient(transparent, $bg-main);
+}
+
+// Drop container (drag & drop zone)
+[class*="_dropContainer_"] {
+  background-color: transparent;
+}
+
+// --- Suggestions Tab ---------------------------------------------------------
+[class*="_suggestionsTab_"] {
+  background-color: transparent;
+  color: $text-primary;
+}
+
+// --- Credits Tab -------------------------------------------------------------
+[class*="_creditsTab_"] {
+  background-color: transparent;
+  color: $text-primary;
+
+  // Theme the vertical divider lines between credit columns
+  [class*="_divider_"] {
+    background-color: $border-subtle !important;
+  }
+}
+
+// --- Now Playing Toggle Button (in footer) -----------------------------------
+[data-test="mp-toggle-now-playing"],
+[class*="_toggleButton_"] {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+  }
+}
+
+// Now playing visible modifier on sidebar/main (layout adjustments)
+[class*="_nowPlayingVisible_"] {
+  // Ensure backgrounds remain consistent when now playing is visible
+  background-color: inherit;
+}
+
+// Toggle arrow icon
+[class*="_toggleArrowIcon_"] {
+  color: inherit;
+}
+
+// --- Now Playing Footer Bar --------------------------------------------------
+[class*="_nowPlayingButton_"] {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+  }
+}
+
+// --- Scrollbar in Now Playing ------------------------------------------------
+[data-test="playqueue-scroll"] {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $bg-hover;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+}
+
+// OverlayScrollbars theme (used in play queue)
+.os-theme-tidal {
+  .os-scrollbar-handle {
+    background-color: $bg-hover;
+    border-radius: 3px;
+  }
+
+  .os-scrollbar-track {
+    background-color: transparent;
+  }
 }
 
 // =============================================================================
@@ -756,7 +1129,8 @@ a {
 
 // Switches (checkboxes in settings)
 .switch {
-  border-color: $border-subtle;
+  border: none;
+  background-color: transparent;
 }
 
 .switch input:checked + .switch__slider {
@@ -768,7 +1142,13 @@ a {
 }
 
 .switch input:focus + .switch__slider {
-  box-shadow: inset 0 0 0 1px $accent-primary;
+  box-shadow: none;
+}
+
+.switch:has(:focus-visible) {
+  outline: 2px solid $accent-primary;
+  outline-offset: 2px;
+  border-radius: 40px;
 }
 
 .switch__slider {

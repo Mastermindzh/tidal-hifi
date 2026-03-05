@@ -93,6 +93,8 @@ function performCleanup(): void {
 /**
  * Gracefully shut down the application with proper cleanup
  */
+let isQuitting = false;
+
 function gracefulExit(): void {
   performCleanup();
   // Force quit even if cleanup fails
@@ -197,8 +199,12 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
     mainWindow.webContents.setBackgroundThrottling(false);
   }
 
+  app.on("before-quit", () => {
+    isQuitting = true;
+  });
+
   mainWindow.on("close", (event: CloseEvent) => {
-    if (settingsStore.get(settings.minimizeOnClose)) {
+    if (!isQuitting && settingsStore.get(settings.minimizeOnClose)) {
       event.preventDefault();
       mainWindow.hide();
       refreshTray(mainWindow);

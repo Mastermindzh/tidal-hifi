@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Implemented proper resource handling in all controllers (and forced a destroy method to be implemented)
 - removed deprecated "request" dependency, handling image download natively now
 - MPRIS is now enabled by default
+- fix: app now quits when minimized in tray mode if you exit from the tray
+- re-added the "restart tidal-hifi" button in settings that attempts to restart the app
 
 ## [6.2.0]
 
