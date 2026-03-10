@@ -152,6 +152,25 @@ export const settingsStore = new Store({
         { key: settings.flags.disableSandbox, value: true },
       ]);
     },
+    "6.3.0": (migrationStore) => {
+      console.log("running migrations for 6.3.0");
+      const currentTheme = migrationStore.get(settings.theme) as string;
+      const builtinThemes = [
+        "Blood.css",
+        "Catppuccin.css",
+        "Dracula.css",
+        "Gruvbox.css",
+        "NightOwl.css",
+        "Nord.css",
+        "Solarized Dark.css",
+        "Tokyo Night.css",
+      ];
+      // Migrate legacy unprefixed theme values to use source prefix only for known builtin themes
+      if (currentTheme && !currentTheme.includes(":") && builtinThemes.includes(currentTheme)) {
+        migrationStore.set(settings.theme, `builtin:${currentTheme}`);
+        console.log(`  - migrated theme "${currentTheme}" to "builtin:${currentTheme}"`);
+      }
+    },
   },
 });
 

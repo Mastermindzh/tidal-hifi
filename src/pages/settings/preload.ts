@@ -106,10 +106,12 @@ function getThemeFiles() {
   let allThemes = [
     getOptionsHeader("Built-in Themes"),
     new Option("Tidal - Default", "none"),
-  ].concat(getOptions(uniqueBuiltIn));
+  ].concat(getOptions(uniqueBuiltIn, "builtin"));
 
   if (userThemes.length >= 1) {
-    allThemes = allThemes.concat([getOptionsHeader("User Themes")]).concat(getOptions(userThemes));
+    allThemes = allThemes
+      .concat([getOptionsHeader("User Themes")])
+      .concat(getOptions(userThemes, "user"));
   }
 
   // empty old options
