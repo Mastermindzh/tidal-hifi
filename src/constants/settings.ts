@@ -46,6 +46,7 @@ export const settings = {
   },
   flags: {
     root: "flags",
+    audioOutputSampleRate: "flags.audioOutputSampleRate",
     disableHardwareMediaKeys: "flags.disableHardwareMediaKeys",
     disableSandbox: "flags.disableSandbox",
     gpuRasterization: "flags.gpuRasterization",

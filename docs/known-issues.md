@@ -15,6 +15,9 @@ This document lists known bugs and issues with Tidal Hi-Fi along with workaround
   - [Discord RPC not working with Flatpak and native Discord](#discord-rpc-not-working-with-flatpak-and-native-discord)
   - [Discord RPC not working between Flatpaks (TIDAL Hi-Fi + Discord/Vesktop)](#discord-rpc-not-working-between-flatpaks-tidal-hi-fi--discordvesktop)
   - [Audio quality](#audio-quality)
+    - [Enabling 192kHz output in TIDAL Hi-Fi](#enabling-192khz-output-in-tidal-hi-fi)
+    - [Configuring PipeWire (Linux)](#configuring-pipewire-linux)
+    - [Discussions and tips](#discussions-and-tips)
 
 <!-- tocstop -->
 
@@ -98,8 +101,41 @@ This creates the necessary communication bridges between the sandboxed applicati
 
 ## Audio quality
 
-Chromium always resamples
+By default Chromium resamples all audio to 48kHz, which degrades high-quality content from Tidal (HiFi / Max).
+TIDAL Hi-Fi includes a setting to force the output sample rate to 192kHz, but your system's audio stack also needs to be configured to take advantage of it.
 
-Discussions, workarounds and tips:
+### Enabling 192kHz output in TIDAL Hi-Fi
+
+1. Open settings (`Ctrl + =`)
+2. Navigate to the **Advanced** tab
+3. Enable **Audio output sample rate (192kHz)**
+4. Restart the app (flags only take effect on launch)
+
+This passes `--audio-output-sample-rate=192000` to Chromium and disables the out-of-process audio service so the flag is respected.
+
+### Configuring PipeWire (Linux)
+
+The Electron flag alone is not enough — if PipeWire (or PulseAudio) is running at 48kHz it will resample the stream back down before it reaches your DAC.
+
+Create (or edit) `~/.config/pipewire/pipewire.conf.d/sample-rate.conf`:
+
+```ini
+context.properties = {
+    default.clock.rate          = 192000
+    default.clock.allowed-rates = [ 44100 48000 88200 96000 176400 192000 ]
+}
+```
+
+Then restart PipeWire:
+
+```bash
+systemctl --user restart pipewire pipewire-pulse
+```
+
+The `allowed-rates` list lets PipeWire switch dynamically to match the source rate, so 44.1kHz content won't be needlessly upsampled either. You can verify the active rate with `pw-top`.
+
+> **Note:** Your DAC must support 192kHz. Check supported rates with `cat /proc/asound/card*/stream0`.
+
+### Discussions and tips
 
 - [#266](https://github.com/Mastermindzh/tidal-hifi/issues/266)

@@ -63,6 +63,7 @@ export const settingsStore = new Store({
       delay: 5000,
     },
     flags: {
+      audioOutputSampleRate: false,
       disableHardwareMediaKeys: false,
       disableSandbox: true,
       enableWaylandSupport: true,

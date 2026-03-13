@@ -14,19 +14,34 @@ export function setDefaultFlags(app: App) {
 }
 
 /**
- * Set Tidal's managed flags from the user settings
+ * Set Tidal's managed flags from the user settings.
+ *
+ * Feature flags (--enable-features / --disable-features) are aggregated into
+ * a single comma-separated switch each, because calling appendSwitch multiple
+ * times for the same switch overwrites the previous value.
+ *
  * @param app
  */
 export function setManagedFlagsFromSettings(app: App) {
   Logger.log("Processing flags from settings...");
   const flagsFromSettings = settingsStore.get(settings.flags.root);
+
+  const enableFeatures: string[] = [];
+  const disableFeatures: string[] = [];
+
   if (flagsFromSettings) {
     for (const [key, value] of Object.entries(flagsFromSettings)) {
       Logger.log(`Checking flag ${key}: ${value}`);
       if (value) {
         if (flags[key]) {
           flags[key].forEach((flag) => {
-            setFlag(app, flag.flag, flag.value);
+            if (flag.flag === "enable-features" && flag.value) {
+              enableFeatures.push(flag.value);
+            } else if (flag.flag === "disable-features" && flag.value) {
+              disableFeatures.push(flag.value);
+            } else {
+              setFlag(app, flag.flag, flag.value);
+            }
           });
         } else {
           Logger.log(`No flag definition found for ${key}`);
@@ -35,6 +50,13 @@ export function setManagedFlagsFromSettings(app: App) {
     }
   } else {
     Logger.log("No flags found in settings");
+  }
+
+  if (enableFeatures.length > 0) {
+    setFlag(app, "enable-features", enableFeatures.join(","));
+  }
+  if (disableFeatures.length > 0) {
+    setFlag(app, "disable-features", disableFeatures.join(","));
   }
 }
 

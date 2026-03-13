@@ -48,6 +48,7 @@ const switchesWithSettings = {
 
 let adBlock: HTMLInputElement,
   api: HTMLInputElement,
+  audioOutputSampleRate: HTMLInputElement,
   channel: HTMLSelectElement,
   customCSS: HTMLInputElement,
   disableAltMenuBar: HTMLInputElement,
@@ -225,6 +226,7 @@ function refreshSettings() {
   try {
     adBlock.checked = settingsStore.get(settings.adBlock);
     api.checked = settingsStore.get(settings.api);
+    audioOutputSampleRate.checked = settingsStore.get(settings.flags.audioOutputSampleRate);
     channel.value = settingsStore.get(settings.advanced.tidalUrl);
     customCSS.value = settingsStore.get<string, string[]>(settings.customCSS).join("\n");
     disableAltMenuBar.checked = settingsStore.get(settings.disableAltMenuBar);
@@ -387,6 +389,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   adBlock = get("adBlock");
   api = get("apiCheckbox");
+  audioOutputSampleRate = get("audioOutputSampleRate");
   channel = get<HTMLSelectElement>("channel");
   customCSS = get("customCSS");
   disableAltMenuBar = get("disableAltMenuBar");
@@ -432,6 +435,7 @@ window.addEventListener("DOMContentLoaded", () => {
   refreshSettings();
   addInputListener(adBlock, settings.adBlock);
   addInputListener(api, settings.api, switchesWithSettings.api);
+  addInputListener(audioOutputSampleRate, settings.flags.audioOutputSampleRate);
   addSelectListener(channel, settings.advanced.tidalUrl);
   addTextAreaListener(customCSS, settings.customCSS);
   addInputListener(disableAltMenuBar, settings.disableAltMenuBar);
