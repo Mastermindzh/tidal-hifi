@@ -7,7 +7,7 @@ declare class InitOptions {
   desktopEntry: string;
 }
 
-declare class Player {
+declare class Player extends NodeJS.EventEmitter {
   metadata: {
     "xesam:title": string;
     "xesam:artist": string[];
@@ -57,4 +57,5 @@ declare class Player {
   setActivePlaylist(playlistId: number): void;
 
   on(event: string | symbol, listener: (...args: object[]) => void): this;
+  removeAllListeners(event?: string | symbol): this;
 }

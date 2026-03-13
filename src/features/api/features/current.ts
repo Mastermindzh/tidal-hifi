@@ -117,10 +117,14 @@ export const addCurrentInfo = (expressApp: Router) => {
 };
 
 export const getCurrentImage = (_req: Request, res: Response) => {
-  // Use downloaded album art if available, fallback to image URL
-  const imagePath = mediaInfo.localAlbumArt || mediaInfo.image || mediaInfo.icon;
+  const imagePath = mediaInfo.localAlbumArt;
 
   if (!imagePath) {
+    const remoteUrl = mediaInfo.image || mediaInfo.icon;
+    if (remoteUrl) {
+      res.redirect(remoteUrl);
+      return;
+    }
     res.set("Content-Type", "text/plain");
     res.status(404).end("No image available");
     return;

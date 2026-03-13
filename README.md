@@ -23,6 +23,7 @@ The web version of [TIDAL](https://tidal.com) running in electron with Hi-Fi (Hi
     - [Arch Linux](#arch-linux)
     - [Flatpak](#flatpak)
     - [Nix](#nix)
+    - [Solus](#solus)
     - [Using source](#using-source)
   - [Integrations](#integrations)
     - [Custom Scrobbling with Multi-Scrobbler](#custom-scrobbling-with-multi-scrobbler)
@@ -125,6 +126,14 @@ To install with Nix run the following command:
 
 ```sh
 nix-env -iA nixpkgs.tidal-hifi
+```
+
+### Solus
+
+To install on Solus run:
+
+```sh
+sudo eopkg it tidal-hifi
 ```
 
 ### Using source

@@ -127,4 +127,8 @@ export class TidalApiController implements TidalController {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
   }
+
+  destroy(): void {
+    Logger.log("TidalApiController destroyed");
+  }
 }

@@ -7,4 +7,9 @@ export const flags: { [key: string]: { flag: string; value?: string }[] } = {
     { flag: "ozone-platform-hint", value: "auto" },
     { flag: "enable-features", value: "WaylandWindowDecorations" },
   ],
+  audioOutputSampleRate: [
+    { flag: "audio-output-sample-rate", value: "192000" },
+    { flag: "disable-features", value: "AudioServiceOutOfProcess" },
+    { flag: "disable-features", value: "AudioServiceSandbox" },
+  ],
 };

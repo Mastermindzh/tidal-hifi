@@ -34,7 +34,7 @@ const tidalMagazineEntry = {
 const quitMenuEntry = {
   label: "Quit",
   click() {
-    app.exit(0);
+    app.quit();
   },
   accelerator: "Control+Q",
 };

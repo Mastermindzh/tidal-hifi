@@ -31,10 +31,14 @@ const defaultPresence = {
 
 const updateActivity = () => {
   const showIdle = settingsStore.get<string, boolean>(settings.discord.showIdle) ?? true;
-  if (mediaInfo.status === MediaStatus.paused && !showIdle) {
-    rpc.user?.clearActivity();
-  } else {
-    rpc.user?.setActivity(getActivity());
+  try {
+    if (mediaInfo.status === MediaStatus.paused && !showIdle) {
+      rpc.user?.clearActivity()?.catch(() => {});
+    } else {
+      rpc.user?.setActivity(getActivity())?.catch(() => {});
+    }
+  } catch (_error) {
+    // Silently ignore errors when Discord connection is already closed
   }
 };
 
@@ -120,7 +124,11 @@ const connectWithRetry = async (retryCount = 0) => {
     await rpc.login();
     Logger.log("Connected to Discord");
     rpc.on("ready", updateActivity);
+
     Object.values(globalEvents).forEach((event) => {
+      // remove
+      ipcMain.removeListener(event, observer);
+      // re-add
       ipcMain.on(event, observer);
     });
   } catch (_error) {
@@ -148,9 +156,17 @@ export const initRPC = () => {
  */
 export const unRPC = () => {
   if (rpc) {
-    rpc.user?.clearActivity();
+    // Remove observer first to prevent events during cleanup from triggering activity updates
+    Object.values(globalEvents).forEach((event) => {
+      ipcMain.removeListener(event, observer);
+    });
+
+    try {
+      rpc.user?.clearActivity()?.catch(() => {});
+    } catch (_error) {
+      // Ignore errors when Discord connection is already closed
+    }
     rpc.destroy();
     rpc = null;
-    ipcMain.removeListener(globalEvents.updateInfo, observer);
   }
 };

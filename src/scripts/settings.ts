@@ -63,6 +63,7 @@ export const settingsStore = new Store({
       delay: 5000,
     },
     flags: {
+      audioOutputSampleRate: false,
       disableHardwareMediaKeys: false,
       disableSandbox: true,
       enableWaylandSupport: true,
@@ -71,7 +72,7 @@ export const settingsStore = new Store({
     hotkeys: getDefaultHotkeyConfig(),
     menuBar: true,
     minimizeOnClose: false,
-    mpris: false,
+    mpris: true,
     notifications: true,
     playBackControl: true,
     singleInstance: true,
@@ -152,13 +153,27 @@ export const settingsStore = new Store({
         { key: settings.flags.disableSandbox, value: true },
       ]);
     },
+    "6.3.0": (migrationStore) => {
+      console.log("running migrations for 6.3.0");
+      const currentTheme = migrationStore.get(settings.theme) as string;
+      const builtinThemes = [
+        "Blood.css",
+        "Catppuccin.css",
+        "Dracula.css",
+        "Gruvbox.css",
+        "NightOwl.css",
+        "Nord.css",
+        "Solarized Dark.css",
+        "Tokyo Night.css",
+      ];
+      // Migrate legacy unprefixed theme values to use source prefix only for known builtin themes
+      if (currentTheme && !currentTheme.includes(":") && builtinThemes.includes(currentTheme)) {
+        migrationStore.set(settings.theme, `builtin:${currentTheme}`);
+        console.log(`  - migrated theme "${currentTheme}" to "builtin:${currentTheme}"`);
+      }
+    },
   },
 });
-
-const settingsModule = {
-  // settings,
-  settingsWindow,
-};
 
 export const createSettingsWindow = () => {
   settingsWindow = new BrowserWindow({
@@ -173,6 +188,7 @@ export const createSettingsWindow = () => {
       preload: path.join(__dirname, "../pages/settings/preload.js"),
       plugins: true,
       nodeIntegration: true,
+      contextIsolation: false, // Required for nodeIntegration in settings page
     },
   });
 
@@ -189,7 +205,6 @@ export const createSettingsWindow = () => {
     shell.openExternal(url);
     return { action: "deny" };
   });
-  settingsModule.settingsWindow = settingsWindow;
 };
 
 export const showSettingsWindow = (tab = "general") => {
@@ -204,7 +219,7 @@ export const showSettingsWindow = (tab = "general") => {
   settingsWindow.show();
 };
 export const hideSettingsWindow = () => {
-  settingsWindow.hide();
+  settingsWindow?.hide();
 };
 
 export const closeSettingsWindow = () => {

@@ -1,3 +1,5 @@
+import { getUniversalLink } from "../tidal/url";
+
 // biome-ignore lint/complexity/noStaticOnlyClass: off
 export class SharingService {
   /**
@@ -6,6 +8,6 @@ export class SharingService {
    * @returns
    */
   public static getUniversalLink(currentUrl: string): string {
-    return `${currentUrl}?u`;
+    return getUniversalLink(currentUrl);
   }
 }
