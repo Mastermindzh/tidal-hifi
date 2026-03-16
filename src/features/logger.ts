@@ -50,7 +50,11 @@ export class Logger {
    */
   private static logToSTDOut(content: string, object = {}) {
     try {
-      console.log(content, Object.keys(object).length > 0 ? JSON.stringify(object, null, 2) : "");
+      console.log(
+        "%s %s",
+        content,
+        Object.keys(object).length > 0 ? JSON.stringify(object, null, 2) : "",
+      );
     } catch {
       // ignore since console is the only target
     }
