@@ -1,5 +1,5 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "baseBranches": ["develop"],
+  "baseBranchPatterns": ["develop"],
   "ignoreDeps": ["@types/node", "electron-store", "@xhayper/discord-rpc"]
 }
