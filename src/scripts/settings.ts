@@ -20,12 +20,20 @@ const buildMigration = (
   migrationStore: { get: (str: string) => string; set: (str: string, val: unknown) => void },
   options: Array<{ key: string; value: unknown; override?: boolean }>,
 ) => {
-  console.log(`running migrations for ${version}`);
+  log(`running migrations for ${version}`);
   options.forEach(({ key, value, override = false }) => {
     const valueToSet = override ? value : (migrationStore.get(key) ?? value);
-    console.log(`  - setting ${key} to ${valueToSet}${override ? " (override)" : ""}`);
+    log(`  - setting ${key} to ${valueToSet}${override ? " (override)" : ""}`);
     migrationStore.set(key, valueToSet);
   });
+};
+
+const log = (msg: string) => {
+  try {
+    console.log(msg);
+  } catch {
+    // ignore for now since console.log is all we support
+  }
 };
 
 export const settingsStore = new Store({
@@ -63,6 +71,7 @@ export const settingsStore = new Store({
       delay: 5000,
     },
     flags: {
+      audioOutputSampleRate: false,
       disableHardwareMediaKeys: false,
       disableSandbox: true,
       enableWaylandSupport: true,
@@ -71,7 +80,7 @@ export const settingsStore = new Store({
     hotkeys: getDefaultHotkeyConfig(),
     menuBar: true,
     minimizeOnClose: false,
-    mpris: false,
+    mpris: true,
     notifications: true,
     playBackControl: true,
     singleInstance: true,
@@ -87,21 +96,21 @@ export const settingsStore = new Store({
   },
   migrations: {
     "3.1.0": (migrationStore) => {
-      console.log("running migrations for 3.1.0");
+      log("running migrations for 3.1.0");
       migrationStore.set(
         settings.flags.disableHardwareMediaKeys,
         migrationStore.get("disableHardwareMediaKeys") ?? false,
       );
     },
     "5.7.0": (migrationStore) => {
-      console.log("running migrations for 5.7.0");
+      log("running migrations for 5.7.0");
       migrationStore.set(
         settings.ListenBrainz.delay,
         migrationStore.get(settings.ListenBrainz.delay) ?? 5000,
       );
     },
     "5.8.0": (migrationStore) => {
-      console.log("running migrations for 5.8.0");
+      log("running migrations for 5.8.0");
       migrationStore.set(
         settings.discord.includeTimestamps,
         migrationStore.get(settings.discord.includeTimestamps) ?? true,
@@ -152,13 +161,27 @@ export const settingsStore = new Store({
         { key: settings.flags.disableSandbox, value: true },
       ]);
     },
+    "6.3.0": (migrationStore) => {
+      log("running migrations for 6.3.0");
+      const currentTheme = migrationStore.get(settings.theme) as string;
+      const builtinThemes = [
+        "Blood.css",
+        "Catppuccin.css",
+        "Dracula.css",
+        "Gruvbox.css",
+        "NightOwl.css",
+        "Nord.css",
+        "Solarized Dark.css",
+        "Tokyo Night.css",
+      ];
+      // Migrate legacy unprefixed theme values to use source prefix only for known builtin themes
+      if (currentTheme && !currentTheme.includes(":") && builtinThemes.includes(currentTheme)) {
+        migrationStore.set(settings.theme, `builtin:${currentTheme}`);
+        log(`  - migrated theme "${currentTheme}" to "builtin:${currentTheme}"`);
+      }
+    },
   },
 });
-
-const settingsModule = {
-  // settings,
-  settingsWindow,
-};
 
 export const createSettingsWindow = () => {
   settingsWindow = new BrowserWindow({
@@ -173,6 +196,7 @@ export const createSettingsWindow = () => {
       preload: path.join(__dirname, "../pages/settings/preload.js"),
       plugins: true,
       nodeIntegration: true,
+      contextIsolation: false, // Required for nodeIntegration in settings page
     },
   });
 
@@ -189,12 +213,11 @@ export const createSettingsWindow = () => {
     shell.openExternal(url);
     return { action: "deny" };
   });
-  settingsModule.settingsWindow = settingsWindow;
 };
 
 export const showSettingsWindow = (tab = "general") => {
   if (!settingsWindow) {
-    console.log("Settings window is not initialized. Attempting to create it.");
+    log("Settings window is not initialized. Attempting to create it.");
     createSettingsWindow();
   }
   settingsWindow.webContents.send("goToTab", tab);
@@ -204,7 +227,7 @@ export const showSettingsWindow = (tab = "general") => {
   settingsWindow.show();
 };
 export const hideSettingsWindow = () => {
-  settingsWindow.hide();
+  settingsWindow?.hide();
 };
 
 export const closeSettingsWindow = () => {

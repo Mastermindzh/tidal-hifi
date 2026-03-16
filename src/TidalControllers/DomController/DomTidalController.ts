@@ -1,3 +1,4 @@
+import { Logger } from "../../features/logger";
 import { getTrackURL } from "../../features/tidal/url";
 import { convertSecondsToClockFormat } from "../../features/time/parse";
 import type { MediaInfo } from "../../models/mediaInfo";
@@ -14,6 +15,7 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   private currentlyPlaying = MediaStatus.paused;
   private currentRepeatState: RepeatStateType = RepeatState.off;
   private currentShuffleState = false;
+  private pollingIntervalId?: ReturnType<typeof setInterval>;
 
   /**
    * Get a player element
@@ -44,8 +46,11 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   }
 
   bootstrap(options: DomControllerOptions) {
+    if (this.pollingIntervalId) {
+      clearInterval(this.pollingIntervalId);
+    }
     const constrainedInterval = constrainPollingInterval(options.refreshInterval);
-    setInterval(async () => {
+    this.pollingIntervalId = setInterval(async () => {
       const title = this.getTitle();
       const artistsArray = this.getArtists();
       const artistsString = this.getArtistsString();
@@ -163,7 +168,8 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   }
 
   getTrackId() {
-    const linkElement = getElement("title").querySelector("a");
+    const titleElement = getElement("title");
+    const linkElement = titleElement?.querySelector("a");
     if (linkElement !== null) {
       return linkElement.href.replace(/\D/g, "");
     }
@@ -216,10 +222,8 @@ export class DomTidalController implements TidalController<DomControllerOptions>
       ) {
         if (this.currentlyPlaying === MediaStatus.playing) {
           // find the currently playing element from the list (which might be in an album icon), traverse back up to the mediaItem (row) and select the album cell.
-          // document.querySelector("[class^='isPlayingIcon'], [data-test-is-playing='true']").closest('[data-type="mediaItem"]').querySelector('[class^="album"]').textContent
-          const row = window.document
-            .querySelector(this.currentlyPlaying)
-            .closest(UI_SELECTORS.mediaItem);
+          const playingElement = window.document.querySelector(UI_SELECTORS.currentlyPlaying);
+          const row = playingElement?.closest(UI_SELECTORS.mediaItem);
           if (row) {
             return row.querySelector(UI_SELECTORS.album_name_cell).textContent;
           }
@@ -267,5 +271,13 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   }
   getSongImage() {
     return this.getMedia();
+  }
+
+  destroy(): void {
+    if (this.pollingIntervalId) {
+      clearInterval(this.pollingIntervalId);
+      this.pollingIntervalId = undefined;
+    }
+    Logger.log("DomTidalController destroyed");
   }
 }

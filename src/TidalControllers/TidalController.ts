@@ -47,4 +47,9 @@ export interface TidalController<TBootstrapOptions = object> {
   getSongIcon(): string;
   getSongImage(): string;
   isFavorite(): boolean;
+
+  /**
+   * Clean up resources (timers, listeners, etc.) when the controller is no longer needed
+   */
+  destroy(): void;
 }

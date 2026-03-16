@@ -14,6 +14,7 @@ This document lists known bugs and issues with Tidal Hi-Fi along with workaround
   - [DRM not working on Windows (error S6007)](#drm-not-working-on-windows-error-s6007)
   - [Discord RPC not working with Flatpak and native Discord](#discord-rpc-not-working-with-flatpak-and-native-discord)
   - [Discord RPC not working between Flatpaks (TIDAL Hi-Fi + Discord/Vesktop)](#discord-rpc-not-working-between-flatpaks-tidal-hi-fi--discordvesktop)
+  - [Audio quality](#audio-quality)
 
 <!-- tocstop -->
 
@@ -94,3 +95,7 @@ If both TIDAL Hi-Fi and Discord/Vesktop are running as Flatpaks, they cannot com
    ```
 
 This creates the necessary communication bridges between the sandboxed applications.
+
+## Audio quality
+
+For details on enabling 192kHz output in TIDAL Hi-Fi and configuring PipeWire on Linux, see the **[Audio Quality & PipeWire Setup guide](./audio-quality.md)**.

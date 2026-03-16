@@ -273,6 +273,9 @@ function addIPCEventListeners() {
       }
     });
   });
+  window.addEventListener("beforeunload", () => {
+    tidalController.destroy();
+  });
 }
 
 /**

@@ -19,6 +19,7 @@
   "cSpell.words": [
     "Brainz",
     "Castlabs",
+    "Dbus",
     "Fi's",
     "flac",
     "Flatpak",
@@ -49,5 +50,8 @@
   "sonarlint.connectedMode.project": {
     "connectionId": "public-sonarcloud",
     "projectKey": "Mastermindzh_tidal-hifi"
+  },
+  "[scss]": {
+    "editor.defaultFormatter": "sibiraj-s.vscode-scss-formatter"
   }
 }

@@ -51,7 +51,7 @@ export const addLegacyApi = (expressApp: Router, mainWindow: BrowserWindow) => {
      *             schema:
      *               $ref: '#/components/schemas/OkResponse'
      */
-    expressApp.get("/play", ({ res }) => handleGlobalEvent(res, globalEvents.play));
+    expressApp.get("/play", (_req, res) => handleGlobalEvent(res, globalEvents.play));
 
     /**
      * @swagger

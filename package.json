@@ -1,6 +1,6 @@
 {
   "name": "tidal-hifi",
-  "version": "6.2.0",
+  "version": "6.3.0",
   "description": "Tidal on Electron with widevine(hifi) support",
   "main": "ts-dist/main.js",
   "scripts": {
@@ -51,19 +51,17 @@
     "express": "^5.2.1",
     "hotkeys-js": "^4.0.1",
     "mpris-service": "^2.1.2",
-    "request": "^2.88.2",
     "sass": "1.97.3",
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.4.4",
+    "@biomejs/biome": "^2.4.6",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
-    "@types/node": "^25.3.0",
-    "@types/request": "^2.48.13",
+    "@types/node": "^25.4.0",
     "@types/swagger-ui-express": "^4.1.8",
     "copyfiles": "^2.4.1",
-    "electron": "github:castlabs/electron-releases#v40.1.0+wvcus",
+    "electron": "github:castlabs/electron-releases#v40.7.0+wvcus",
     "electron-builder": "~26.8.1",
     "js-yaml": "^4.1.1",
     "markdown-toc": "^1.2.0",

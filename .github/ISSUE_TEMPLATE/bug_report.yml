@@ -15,6 +15,16 @@ body:
         - Search existing issues to avoid duplicates
         - Check our [known issues documentation](../docs/known-issues.md) to see if your issue is already documented
 
+  - type: checkboxes
+    id: prior-search
+    attributes:
+      label: Pre-submission checklist
+      options:
+        - label: I have searched the [existing issues](https://github.com/Mastermindzh/tidal-hifi/issues) and my issue has not already been reported
+          required: true
+        - label: I have read the [known issues documentation](https://github.com/Mastermindzh/tidal-hifi/blob/master/docs/known-issues.md) and my issue is not listed there
+          required: true
+
   - type: dropdown
     id: installation-method
     attributes:

@@ -70,7 +70,7 @@
     svg {
       display: block;
       width: 15px;
-      opacity: .7;
+      opacity: 0.7;
     }
 
     &:hover {
@@ -115,9 +115,16 @@
 
   &__note {
     max-width: 350px;
-    margin: 30px auto 40px;
+    margin: 30px auto 20px;
     color: var(--grey);
     font-size: 12px;
+  }
+
+  &__restart-button {
+    margin: 20px auto 10px;
+    padding: 12px 48px;
+    font-size: 15px;
+    cursor: pointer;
   }
 }
 
@@ -140,7 +147,7 @@ html {
 }
 
 .file-msg {
-  opacity: .7;
+  opacity: 0.7;
   color: var(--tidal-blue) !important;
 }
 

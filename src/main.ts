@@ -78,12 +78,12 @@ function syncMenuBarWithStore() {
 function performCleanup(): void {
   try {
     Logger.log("Performing application cleanup...");
-    closeSettingsWindow();
-    releaseInhibitorIfActive(mainInhibitorId);
-    mprisService?.destroy();
     if (rpc) {
       unRPC();
     }
+    closeSettingsWindow();
+    releaseInhibitorIfActive(mainInhibitorId);
+    mprisService?.destroy();
     Logger.log("Application cleanup completed");
   } catch (error) {
     Logger.log("Error during cleanup:", error);
@@ -93,6 +93,8 @@ function performCleanup(): void {
 /**
  * Gracefully shut down the application with proper cleanup
  */
+let isQuitting = false;
+
 function gracefulExit(): void {
   performCleanup();
   // Force quit even if cleanup fails
@@ -124,7 +126,23 @@ function getCustomProtocolUrl(args: string[]) {
     return null;
   }
 
-  return `${tidalUrl}/${customProtocolArg.substring(PROTOCOL_PREFIX.length + 3)}`;
+  const relativePath = customProtocolArg.substring(PROTOCOL_PREFIX.length + 3);
+  const url = `${tidalUrl}/${relativePath}`;
+
+  // Validate that the constructed URL stays within the Tidal domain
+  try {
+    const parsed = new URL(url);
+    const tidalParsed = new URL(tidalUrl);
+    if (parsed.hostname !== tidalParsed.hostname) {
+      Logger.log(`Blocked custom protocol URL with unexpected host: ${parsed.hostname}`);
+      return null;
+    }
+  } catch {
+    Logger.log(`Invalid custom protocol URL: ${url}`);
+    return null;
+  }
+
+  return url;
 }
 
 /**
@@ -181,8 +199,14 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
     mainWindow.webContents.setBackgroundThrottling(false);
   }
 
+  if (!app.listenerCount("before-quit")) {
+    app.on("before-quit", () => {
+      isQuitting = true;
+    });
+  }
+
   mainWindow.on("close", (event: CloseEvent) => {
-    if (settingsStore.get(settings.minimizeOnClose)) {
+    if (!isQuitting && settingsStore.get(settings.minimizeOnClose)) {
       event.preventDefault();
       mainWindow.hide();
       refreshTray(mainWindow);
@@ -375,7 +399,12 @@ ipcMain.on(globalEvents.storeChanged, () => {
 });
 
 ipcMain.on(globalEvents.error, (event) => {
-  console.log(event);
+  Logger.log("Error occurred", { event: event });
+});
+
+ipcMain.on(globalEvents.restartApp, () => {
+  app.relaunch();
+  gracefulExit();
 });
 
 ipcMain.on(globalEvents.quit, () => {

@@ -35,7 +35,7 @@ export function getElementAttribute(
  * @param key of the object selector
  */
 export function clickElement(key: keyof typeof UI_SELECTORS): void {
-  getElement(key).click();
+  getElement(key)?.click();
 }
 
 /**
@@ -43,5 +43,5 @@ export function clickElement(key: keyof typeof UI_SELECTORS): void {
  * @param key of the object selector
  */
 export function focusElement(key: keyof typeof UI_SELECTORS): void {
-  getElement(key).focus();
+  getElement(key)?.focus();
 }

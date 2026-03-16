@@ -1,4 +1,5 @@
 import fs from "node:fs";
+import path from "node:path";
 import { app } from "@electron/remote";
 import { ipcRenderer, shell } from "electron";
 
@@ -47,6 +48,7 @@ const switchesWithSettings = {
 
 let adBlock: HTMLInputElement,
   api: HTMLInputElement,
+  audioOutputSampleRate: HTMLInputElement,
   channel: HTMLSelectElement,
   customCSS: HTMLInputElement,
   disableAltMenuBar: HTMLInputElement,
@@ -93,16 +95,24 @@ addCustomCss(app);
 
 function getThemeFiles() {
   const selectElement = document.getElementById("themesList") as HTMLSelectElement;
-  const builtInThemes = getThemeListFromDirectory(process.resourcesPath);
+  const builtInThemes = getThemeListFromDirectory(`${process.resourcesPath}/themes`, true).concat(
+    getThemeListFromDirectory(path.join(__dirname, "..", "..", "..", "themes"), true),
+  );
+  // deduplicate in case both paths resolve to the same directory
+  const uniqueBuiltIn = [...new Set(builtInThemes)].sort((a, b) =>
+    a.toLowerCase().localeCompare(b.toLowerCase()),
+  );
   const userThemes = getThemeListFromDirectory(`${app.getPath("userData")}/themes`);
 
   let allThemes = [
     getOptionsHeader("Built-in Themes"),
     new Option("Tidal - Default", "none"),
-  ].concat(getOptions(builtInThemes));
+  ].concat(getOptions(uniqueBuiltIn, "builtin"));
 
   if (userThemes.length >= 1) {
-    allThemes = allThemes.concat([getOptionsHeader("User Themes")]).concat(getOptions(userThemes));
+    allThemes = allThemes
+      .concat([getOptionsHeader("User Themes")])
+      .concat(getOptions(userThemes, "user"));
   }
 
   // empty old options
@@ -216,6 +226,7 @@ function refreshSettings() {
   try {
     adBlock.checked = settingsStore.get(settings.adBlock);
     api.checked = settingsStore.get(settings.api);
+    audioOutputSampleRate.checked = settingsStore.get(settings.flags.audioOutputSampleRate);
     channel.value = settingsStore.get(settings.advanced.tidalUrl);
     customCSS.value = settingsStore.get<string, string[]>(settings.customCSS).join("\n");
     disableAltMenuBar.checked = settingsStore.get(settings.disableAltMenuBar);
@@ -301,6 +312,9 @@ window.addEventListener("DOMContentLoaded", () => {
   handleFileUploads();
 
   document.getElementById("close").addEventListener("click", hide);
+  document.getElementById("restartApp")?.addEventListener("click", () => {
+    ipcRenderer.send(globalEvents.restartApp);
+  });
   document.getElementById("resetZoom")?.addEventListener("click", () => {
     ipcRenderer.send(globalEvents.resetZoom);
   });
@@ -374,6 +388,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   adBlock = get("adBlock");
   api = get("apiCheckbox");
+  audioOutputSampleRate = get("audioOutputSampleRate");
   channel = get<HTMLSelectElement>("channel");
   customCSS = get("customCSS");
   disableAltMenuBar = get("disableAltMenuBar");
@@ -419,6 +434,7 @@ window.addEventListener("DOMContentLoaded", () => {
   refreshSettings();
   addInputListener(adBlock, settings.adBlock);
   addInputListener(api, settings.api, switchesWithSettings.api);
+  addInputListener(audioOutputSampleRate, settings.flags.audioOutputSampleRate);
   addSelectListener(channel, settings.advanced.tidalUrl);
   addTextAreaListener(customCSS, settings.customCSS);
   addInputListener(disableAltMenuBar, settings.disableAltMenuBar);
