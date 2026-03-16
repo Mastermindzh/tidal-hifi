@@ -126,9 +126,7 @@ const connectWithRetry = async (retryCount = 0) => {
     rpc.on("ready", updateActivity);
 
     Object.values(globalEvents).forEach((event) => {
-      // remove
       ipcMain.removeListener(event, observer);
-      // re-add
       ipcMain.on(event, observer);
     });
   } catch (_error) {

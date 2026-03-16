@@ -65,10 +65,11 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
     }
   }
 
-  private useSelector<T>(selector: (state: ReduxStoreType) => T, fallback?: T): T {
+  private useSelector<T>(selector: (state: ReduxStoreType) => T, fallback: T): T {
     if (this.isStoreAvailable()) {
       try {
-        return selector(this.reduxStore.getState()) ?? fallback;
+        const value = selector(this.reduxStore.getState());
+        return value === undefined ? fallback : value;
       } catch {
         return fallback;
       }
@@ -98,6 +99,7 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
         favorite: this.isFavorite(),
         icon: this.getSongIcon(),
         image: this.getSongImage(),
+        volume: this.getVolume(),
         player: {
           status: this.getCurrentlyPlayingStatus(),
           shuffle: this.getCurrentShuffleState(),
@@ -147,7 +149,7 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
   }
 
   getCurrentRepeatState() {
-    const repeatMode = this.useSelector((state) => state.playQueue.repeatMode);
+    const repeatMode = this.useSelector((state) => state.playQueue.repeatMode, 0);
     if (repeatMode === 1) {
       return RepeatState.all;
     }
@@ -158,7 +160,7 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
   }
 
   getCurrentShuffleState() {
-    return this.useSelector((state) => state.playQueue.shuffleModeEnabled);
+    return this.useSelector((state) => state.playQueue.shuffleModeEnabled, false);
   }
 
   getCurrentTime() {
@@ -184,12 +186,13 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
   getDuration() {
     const duration = this.useSelector(
       (state) => state.playbackControls.playbackContext.actualDuration,
+      0,
     );
     return typeof duration === "number" && Number.isFinite(duration) ? duration : 0;
   }
 
   getCurrentlyPlayingStatus() {
-    const status = this.useSelector((state) => state.playbackControls.playbackState);
+    const status = this.useSelector((state) => state.playbackControls.playbackState, "");
     if (status === "PLAYING") {
       return MediaStatus.playing;
     }
@@ -197,7 +200,7 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
   }
 
   getPlayingFrom() {
-    return this.useSelector((state) => state.playQueue.sourceName);
+    return this.useSelector((state) => state.playQueue.sourceName, "");
   }
 
   getSongIcon() {
@@ -227,7 +230,7 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
   }
 
   getTrackId() {
-    return this.useSelector((state) => state.playbackControls.mediaProduct.productId) || "";
+    return this.useSelector((state) => state.playbackControls.mediaProduct.productId, "");
   }
 
   isFavorite() {

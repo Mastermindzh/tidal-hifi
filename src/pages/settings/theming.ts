@@ -32,12 +32,15 @@ export const getOptions = (array: string[], source?: "builtin" | "user") => {
 
 /**
  * Read .css files from a directory and return them in a sorted array.
- * @param directory to read from. Will be created if it doesn't exist
+ * @param directory to read from. Will be created if it doesn't exist (unless readOnly)
+ * @param readOnly if true, skip directory creation (for bundled/read-only paths)
  * @returns
  */
-export const getThemeListFromDirectory = (directory: string): string[] => {
+export const getThemeListFromDirectory = (directory: string, readOnly = false): string[] => {
   try {
-    makeUserThemesDirectory(directory);
+    if (!readOnly) {
+      makeUserThemesDirectory(directory);
+    }
     return fs.readdirSync(directory).filter(cssFilter).sort(sort);
   } catch (err) {
     Logger.log(`Failed to get files from ${directory}`, err);

@@ -16,6 +16,7 @@ export const globalEvents = {
   toggleShuffle: "toggleShuffle",
   toggleRepeat: "toggleRepeat",
   resetZoom: "resetZoom",
+  restartApp: "restartApp",
   volume: "volume",
   seek: "seek",
   setLoopState: "setLoopState",

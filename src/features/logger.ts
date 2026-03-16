@@ -49,6 +49,10 @@ export class Logger {
    * @param object
    */
   private static logToSTDOut(content: string, object = {}) {
-    console.log(content, Object.keys(object).length > 0 ? JSON.stringify(object, null, 2) : "");
+    try {
+      console.log(content, Object.keys(object).length > 0 ? JSON.stringify(object, null, 2) : "");
+    } catch {
+      // ignore since console is the only target
+    }
   }
 }

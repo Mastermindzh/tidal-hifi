@@ -199,9 +199,11 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
     mainWindow.webContents.setBackgroundThrottling(false);
   }
 
-  app.on("before-quit", () => {
-    isQuitting = true;
-  });
+  if (!app.listenerCount("before-quit")) {
+    app.on("before-quit", () => {
+      isQuitting = true;
+    });
+  }
 
   mainWindow.on("close", (event: CloseEvent) => {
     if (!isQuitting && settingsStore.get(settings.minimizeOnClose)) {
@@ -397,7 +399,12 @@ ipcMain.on(globalEvents.storeChanged, () => {
 });
 
 ipcMain.on(globalEvents.error, (event) => {
-  console.log(event);
+  Logger.log("Error occurred", { event: event });
+});
+
+ipcMain.on(globalEvents.restartApp, () => {
+  app.relaunch();
+  gracefulExit();
 });
 
 ipcMain.on(globalEvents.quit, () => {

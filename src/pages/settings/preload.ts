@@ -95,8 +95,8 @@ addCustomCss(app);
 
 function getThemeFiles() {
   const selectElement = document.getElementById("themesList") as HTMLSelectElement;
-  const builtInThemes = getThemeListFromDirectory(`${process.resourcesPath}/themes`).concat(
-    getThemeListFromDirectory(path.join(__dirname, "..", "..", "..", "themes")),
+  const builtInThemes = getThemeListFromDirectory(`${process.resourcesPath}/themes`, true).concat(
+    getThemeListFromDirectory(path.join(__dirname, "..", "..", "..", "themes"), true),
   );
   // deduplicate in case both paths resolve to the same directory
   const uniqueBuiltIn = [...new Set(builtInThemes)].sort((a, b) =>
@@ -313,8 +313,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   document.getElementById("close").addEventListener("click", hide);
   document.getElementById("restartApp")?.addEventListener("click", () => {
-    app.relaunch();
-    app.exit(0);
+    ipcRenderer.send(globalEvents.restartApp);
   });
   document.getElementById("resetZoom")?.addEventListener("click", () => {
     ipcRenderer.send(globalEvents.resetZoom);

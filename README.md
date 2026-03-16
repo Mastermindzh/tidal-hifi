@@ -38,7 +38,7 @@ The web version of [TIDAL](https://tidal.com) running in electron with Hi-Fi (Hi
 
 ## Features
 
-- HiFi playback (High & Max settings)
+- HiFi playback (High & Max settings) — see the [Audio Quality & PipeWire Setup guide](./docs/audio-quality.md) for 192kHz / bit-perfect output
 - Notifications
 - Custom [theming](./docs/theming.md)
 - Custom hotkeys ([source](https://defkey.com/tidal-desktop-shortcuts))

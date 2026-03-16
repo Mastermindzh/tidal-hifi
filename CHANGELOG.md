@@ -4,13 +4,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [6.2.1]
+## [6.3.0 - Mavy]
+
+This release will be codenamed Mavy in honour of my late niece.
 
 - Optimizations:
   - Improved error handling throughout the app
   - Implemented proper resource handling in all controllers (and forced a destroy method to be implemented)
   - removed deprecated "request" dependency, handling image download natively now
-  - re-added the "restart tidal-hifi" button in settings that attempts to restart the app
+  - re-added the "quit tidal-hifi" button in settings that attempts to restart the app
 
 - MPRIS:
   - MPRIS is now enabled by default
