@@ -199,11 +199,9 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
     mainWindow.webContents.setBackgroundThrottling(false);
   }
 
-  if (!app.listenerCount("before-quit")) {
-    app.on("before-quit", () => {
-      isQuitting = true;
-    });
-  }
+  app.on("before-quit", () => {
+    isQuitting = true;
+  });
 
   mainWindow.on("close", (event: CloseEvent) => {
     if (!isQuitting && settingsStore.get(settings.minimizeOnClose)) {
