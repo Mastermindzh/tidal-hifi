@@ -7,7 +7,6 @@ import { globalEvents } from "../../constants/globalEvents";
 import { settings } from "../../constants/settings";
 import { SUPPORTED_TRAY_ICON_EXTENSIONS } from "../../constants/trayIcon";
 import { Logger } from "../../features/logger";
-import { addCustomCss } from "../../features/theming/theming";
 import { settingsStore } from "../../scripts/settings";
 import { initializeHotkeys } from "./hotkeys";
 import { cssFilter, getOptions, getOptionsHeader, getThemeListFromDirectory } from "./theming";
@@ -90,8 +89,6 @@ let adBlock: HTMLInputElement,
   discord_using_text: HTMLInputElement,
   userAgent: HTMLInputElement,
   controllerType: HTMLSelectElement;
-
-addCustomCss(app);
 
 function getThemeFiles() {
   const selectElement = document.getElementById("themesList") as HTMLSelectElement;

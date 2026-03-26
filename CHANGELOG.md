@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed "Quit" from tray menu not working when "close to tray" is enabled
 - Fixed Alt key not toggling the menu bar (workaround for Electron < 34.8.1 regression with hotkeys-js)
+- App now autodetects which UI Tidal is using and change its dom detection based on it
+  - Theming is temporarily heavier (e.g. more css) but supports both versions
 
 ## [6.3.0 - Mavy]
 

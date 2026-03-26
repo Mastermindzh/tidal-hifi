@@ -27,3 +27,28 @@
   $border-subtle: #504945,
   $border-dim: #665c54
 );
+
+@use "base-new" with (
+  $bg-main: #282828,
+  $bg-secondary: #3c3836,
+  $bg-surface: #504945,
+  $bg-elevated: #665c54,
+  $bg-hover: #7c6f64,
+  $bg-selection: #504945,
+
+  $text-primary: #ebdbb2,
+  $text-secondary: #d5c4a1,
+  $text-muted: #bdae93,
+  $text-faint: #a89984,
+
+  $accent-primary: #d3869b,
+  $accent-green: #b8bb26,
+  $accent-red: #fb4934,
+  $accent-blue: #83a598,
+  $accent-purple: #d3869b,
+  $accent-cyan: #8ec07c,
+  $accent-yellow: #fabd2f,
+
+  $border-subtle: #504945,
+  $border-dim: #665c54
+);

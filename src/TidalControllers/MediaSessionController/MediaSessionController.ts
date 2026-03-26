@@ -100,7 +100,10 @@ export class MediaSessionController implements TidalController<MediaSessionContr
           Logger.log("No MediaSession metadata available yet");
         }
       } catch (error) {
-        Logger.log("Error in MediaSessionController polling:", error);
+        Logger.log(
+          "Error in MediaSessionController polling:",
+          error instanceof Error ? error.message : error,
+        );
       }
     }, this.refreshInterval);
   }

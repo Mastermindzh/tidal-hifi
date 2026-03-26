@@ -4,7 +4,7 @@
 
 The web version of [TIDAL](https://tidal.com) running in electron with Hi-Fi (High & Max) support thanks to widevine.
 
-![TIDAL Hi-Fi preview](./docs/images/preview.png)
+![TIDAL Hi-Fi preview](./docs/images/2026-redesign.png)
 
 ## Table of Contents
 

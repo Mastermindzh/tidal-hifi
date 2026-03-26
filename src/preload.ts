@@ -7,7 +7,6 @@ import { settings } from "./constants/settings";
 import { getCurrentHotkeyConfig } from "./features/hotkeys";
 import { downloadImage } from "./features/icon/downloadImage";
 import { Logger } from "./features/logger";
-import { addCustomCss } from "./features/theming/theming";
 import { getTrackURL, getUniversalLink } from "./features/tidal/url";
 import { getEmptyMediaInfo, type MediaInfo } from "./models/mediaInfo";
 import { RepeatState, type RepeatStateType } from "./models/repeatState";
@@ -298,15 +297,19 @@ function updateMediaInfo(mediaInfo: MediaInfo, notify: boolean) {
  */
 async function sendNotification(mediaInfo: MediaInfo) {
   if (settingsStore.get(settings.notifications)) {
-    if (currentNotification) {
-      currentNotification.close();
+    try {
+      if (currentNotification) {
+        currentNotification.close();
+      }
+      currentNotification = new Notification({
+        title: mediaInfo.title,
+        body: mediaInfo.artists,
+        icon: mediaInfo.localAlbumArt || mediaInfo.image || mediaInfo.icon,
+      });
+      currentNotification.show();
+    } catch (error) {
+      Logger.log("Failed to send notification:", error);
     }
-    currentNotification = new Notification({
-      title: mediaInfo.title,
-      body: mediaInfo.artists,
-      icon: mediaInfo.localAlbumArt || mediaInfo.image || mediaInfo.icon,
-    });
-    currentNotification.show();
   }
 }
 
@@ -391,7 +394,6 @@ tidalController.onMediaInfoUpdate(async (newState) => {
   }
 });
 
-addCustomCss(app);
 addHotKeys();
 addIPCEventListeners();
 addFullScreenListeners();
