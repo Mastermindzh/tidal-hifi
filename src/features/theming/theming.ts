@@ -30,7 +30,7 @@ function parseThemeId(themeId: string): { source: "builtin" | "user" | "legacy";
  *   2. Bundled resources directory (process.resourcesPath/themes/)
  *   3. Local project themes/ directory (dev fallback)
  */
-function resolveThemePath(
+export function resolveThemePath(
   app: { getPath: (name: string) => string; isPackaged: boolean },
   themeId: string,
 ): string {
@@ -62,28 +62,27 @@ function resolveThemePath(
   return candidates.find((p) => fs.existsSync(p)) ?? candidates[0];
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export function addCustomCss(app: any) {
-  window.addEventListener("DOMContentLoaded", () => {
-    const themeId = settingsStore.get<string, string>(settings.theme);
-    if (themeId !== "none") {
-      const themeFile = resolveThemePath(app, themeId);
-      Logger.log(`Loading theme "${themeId}" from: ${themeFile}`);
-      fs.readFile(themeFile, "utf-8", (err, data) => {
-        if (err) {
-          Logger.alert("An error ocurred reading the theme file.", err, alert);
-          return;
-        }
-
-        const themeStyle = document.createElement("style");
-        themeStyle.innerHTML = data;
-        document.head.appendChild(themeStyle);
-      });
+/**
+ * Inject theme and custom CSS into a BrowserWindow's webContents via Chromium-level insertCSS.
+ * Attach this to the `did-finish-load` event of any window that should be themed.
+ */
+export function injectThemeCss(
+  app: { getPath: (name: string) => string; isPackaged: boolean },
+  webContents: Electron.WebContents,
+) {
+  const themeId = settingsStore.get<string, string>(settings.theme);
+  if (themeId !== "none") {
+    const themeFile = resolveThemePath(app, themeId);
+    Logger.log(`Loading theme "${themeId}" from: ${themeFile}`);
+    try {
+      const css = fs.readFileSync(themeFile, "utf-8");
+      webContents.insertCSS(css);
+    } catch (error) {
+      Logger.log("An error occurred reading the theme file.", error);
     }
-
-    // read customCSS (it will override the theme)
-    const style = document.createElement("style");
-    style.innerHTML = settingsStore.get<string, string[]>(settings.customCSS).join("\n");
-    document.head.appendChild(style);
-  });
+  }
+  const customCSS = settingsStore.get<string, string[]>(settings.customCSS);
+  if (customCSS?.length) {
+    webContents.insertCSS(customCSS.join("\n"));
+  }
 }

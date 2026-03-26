@@ -1,11 +1,12 @@
 import path from "node:path";
-import { BrowserWindow, shell } from "electron";
+import { app, BrowserWindow, shell } from "electron";
 import Store from "electron-store";
 
 import { settings } from "../constants/settings";
 import values from "../constants/values";
 import { getDefaultHotkeyConfig } from "../features/hotkeys";
 import { Logger } from "../features/logger";
+import { injectThemeCss } from "../features/theming/theming";
 
 let settingsWindow: BrowserWindow;
 /**
@@ -208,6 +209,10 @@ export const createSettingsWindow = () => {
   });
 
   settingsWindow.loadURL(`file://${__dirname}/../pages/settings/settings.html`);
+
+  settingsWindow.webContents.on("did-finish-load", () => {
+    injectThemeCss(app, settingsWindow.webContents);
+  });
 
   settingsWindow.webContents.setWindowOpenHandler(({ url }) => {
     shell.openExternal(url);

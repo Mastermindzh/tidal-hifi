@@ -21,7 +21,13 @@ jobs:
           node-version: 24.12.0
       - run: npm install
       - run: npm run build
-      - uses: actions/upload-artifact@master
+      - name: Build unpacked and zip it
+        run: |
+          npm run build-unpacked
+          cd dist/linux-unpacked
+          zip -r ../tidal-hifi-unpacked-linux.zip .
+          cd ../..
+      - uses: actions/upload-artifact@v4
         with:
           name: linux-builds
           path: dist/
@@ -35,7 +41,7 @@ jobs:
           node-version: 24.12.0
       - run: npm install
       - run: npm run build-mac
-      - uses: actions/upload-artifact@master
+      - uses: actions/upload-artifact@v4
         with:
           name: mac-builds
           path: dist/

@@ -48,7 +48,7 @@ html {
   --indicator-hifi-span: #{$bg-secondary};
   --player-control-favorite: #{$accent-red};
   --search-dialog-background: #{$bg-surface};
-  --right-queue-background: #{$bg-surface};
+  --right-queue-background: #{$bg-secondary};
 
   // Suppress Tidal's built-in divider/separator lines
   --market-divider-fill-color: transparent;
@@ -969,6 +969,7 @@ a {
 
   color: $text-primary;
   background: $bg-main;
+  overflow: hidden;
 }
 
 .settings-window__wrapper {

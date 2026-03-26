@@ -49,6 +49,7 @@ export class DomTidalController implements TidalController<DomControllerOptions>
     if (this.pollingIntervalId) {
       clearInterval(this.pollingIntervalId);
     }
+
     const constrainedInterval = constrainPollingInterval(options.refreshInterval);
     this.pollingIntervalId = setInterval(async () => {
       const title = this.getTitle();
@@ -143,14 +144,27 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   }
 
   getCurrentRepeatState() {
-    switch (getElementAttribute("repeat", "data-type")) {
-      case "button__repeatAll":
-        return RepeatState.all;
-      case "button__repeatSingle":
-        return RepeatState.single;
-      default:
-        return RepeatState.off;
+    // Old UI uses data-type attribute, new UI uses aria-checked + icon href
+    const dataType = getElementAttribute("repeat", "data-type");
+    if (dataType) {
+      switch (dataType) {
+        case "button__repeatAll":
+          return RepeatState.all;
+        case "button__repeatSingle":
+          return RepeatState.single;
+        default:
+          return RepeatState.off;
+      }
     }
+
+    // New UI: check aria-checked and distinguish all vs single via the SVG icon
+    const isChecked = getElementAttribute("repeat", "aria-checked") === "true";
+    if (!isChecked) return RepeatState.off;
+
+    const repeatEl = getElement("repeat");
+    const useHref = repeatEl?.querySelector("use")?.getAttribute("href");
+    if (useHref === "#player__repeat-once") return RepeatState.single;
+    return RepeatState.all;
   }
 
   play() {
@@ -170,7 +184,7 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   getTrackId() {
     const titleElement = getElement("title");
     const linkElement = titleElement?.querySelector("a");
-    if (linkElement !== null) {
+    if (linkElement) {
       return linkElement.href.replace(/\D/g, "");
     }
 

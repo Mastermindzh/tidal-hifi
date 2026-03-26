@@ -1,0 +1,747 @@
+// ============================================================================
+// TIDAL Hi-Fi Theme Base — New UI (2026+)
+// ============================================================================
+// Themes consume this via:  @use "base-new" with ( ... )
+
+// --- Default theme variables (same names as _base.scss, overridable) ---------
+$bg-main: #1a1b26 !default;
+$bg-secondary: #16161e !default;
+$bg-surface: #24283b !default;
+$bg-elevated: #292e42 !default;
+$bg-hover: #414868 !default;
+$bg-selection: #33467c !default;
+
+$text-primary: #c0caf5 !default;
+$text-secondary: #a9b1d6 !default;
+$text-muted: #565f89 !default;
+$text-faint: #737aa2 !default;
+
+$accent-primary: #ff747e !default;
+$accent-green: #9ece6a !default;
+$accent-red: #f7768e !default;
+$accent-blue: #7aa2f7 !default;
+$accent-purple: #bb9af7 !default;
+$accent-cyan: #7dcfff !default;
+$accent-yellow: #ffc676 !default;
+
+$border-subtle: #292e42 !default;
+$border-dim: #3b4261 !default;
+
+// =============================================================================
+// Sidebar (new UI additions)
+// =============================================================================
+
+[class*="sidebarWrapper"] {
+  background-color: $bg-secondary;
+}
+
+#sidebar [class*="header_"] {
+  background-color: $bg-secondary;
+}
+
+[class*="logoWrapper"] {
+  background-color: $bg-secondary;
+}
+
+[class*="logoButton"],
+[data-test="sidebar-logo"] {
+  color: $text-primary;
+}
+
+[class*="versionBadge"] {
+  color: $text-muted;
+}
+
+[class*="submenu_"] {
+  background-color: $bg-surface;
+  border-color: $border-dim;
+}
+
+[class*="submenuItem"] {
+  color: $text-muted;
+
+  &:hover {
+    background-color: $bg-hover;
+    color: $text-primary;
+  }
+}
+
+[class*="collapseButton"],
+[data-test="sidebar-collapse"],
+[data-test="sidebar-expand"] {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+    background-color: $bg-hover;
+  }
+}
+
+[data-test="shortcut-list"] {
+  [class*="shortcutItem"] {
+    color: $text-secondary;
+
+    &:hover {
+      background-color: $bg-hover;
+    }
+  }
+
+  [class*="textWrapper"] {
+    color: $text-secondary;
+  }
+}
+
+[data-test="create-folder-or-playlist"] {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+    background-color: $bg-hover;
+  }
+}
+
+// =============================================================================
+// Header (new UI additions)
+// =============================================================================
+
+[class*="logo_"][class*="logoVisible"] {
+  color: $text-primary;
+}
+
+[data-test="header-profile-menu-button"],
+[class*="profileMenuButton"] {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+  }
+}
+
+[class*="profilePicture"] {
+  border-color: $border-subtle;
+}
+
+// =============================================================================
+// Search (new UI additions)
+// =============================================================================
+
+[class*="searchField"] {
+  background-color: $bg-secondary;
+  color: $text-primary;
+  border-color: transparent;
+  border-radius: 8px;
+
+  &::placeholder {
+    color: $text-muted;
+  }
+
+  &:focus,
+  &:focus-within {
+    border-color: $border-dim;
+    background-color: $bg-surface;
+  }
+}
+
+[class*="searchFieldWithPopover"] [class*="container"] {
+  background-color: $bg-secondary;
+  border-color: transparent;
+  border-radius: 8px;
+
+  &:focus-within {
+    border-color: $border-dim;
+    background-color: $bg-surface;
+  }
+}
+
+[data-test="search-popover-container"] {
+  background-color: $bg-surface;
+}
+
+// =============================================================================
+// Main Content
+// =============================================================================
+
+.mainContent {
+  color: $text-primary;
+  background-color: $bg-main;
+}
+
+[class*="pageHeader"] {
+  background-color: $bg-main;
+}
+
+[class*="feed_"][data-test="home-page-feed"],
+[class*="feed_"] {
+  background-color: $bg-main;
+}
+
+[data-test="spotlight-banner"] {
+  [class*="slide_"] {
+    background-color: $bg-surface;
+  }
+
+  [class*="leftSection"] {
+    color: $text-primary;
+  }
+
+  [class*="brandingTitle"] {
+    color: $text-primary;
+  }
+}
+
+// =============================================================================
+// Cards & Content Items
+// =============================================================================
+
+[class*="cardContainer"],
+[class*="card_"] {
+  background-color: $bg-main;
+  transition: background-color 0.15s ease;
+
+  &:hover {
+    background-color: $bg-surface;
+  }
+}
+
+[class*="textContent"] {
+  color: $text-primary;
+}
+
+[class*="subtitle"] {
+  color: $text-muted;
+}
+
+[class*="description"] {
+  color: $text-secondary;
+}
+
+[class*="headerTitleContainer"] {
+  color: $text-primary;
+}
+
+[class*="headerText"] {
+  color: $text-primary;
+}
+
+[class*="marketText"] {
+  color: inherit;
+}
+
+[data-test="view-all-link"],
+[class*="viewAllButton"] {
+  color: $accent-cyan;
+
+  &:hover {
+    color: $accent-blue;
+  }
+}
+
+// Play buttons on cards (inside overlays only — not the footer play/pause)
+[class*="overlay"] [class*="playButton"] {
+  background-color: $accent-primary;
+  color: $bg-main;
+}
+
+[class*="playButtonContainer"] [class*="playButtonInner"] {
+  background-color: $accent-primary;
+}
+
+// =============================================================================
+// Page Headers (playlist / album / artist)
+// =============================================================================
+
+[class*="headerContainer"] {
+  background-color: $bg-main;
+}
+
+[class*="detailContainer"] {
+  background-color: $bg-main;
+}
+
+// Sort / filter buttons
+[class*="sortButton"] {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+  }
+}
+
+// =============================================================================
+// Track Lists
+// =============================================================================
+
+[class*="trackListWrapper"] {
+  background-color: $bg-main;
+}
+
+[data-test="tracklist-row"],
+[class*="trackRow_"] {
+  color: $text-secondary;
+
+  &:hover {
+    background-color: $bg-hover;
+    color: $text-primary;
+  }
+
+  &[data-status="playing"],
+  &[data-test-is-playing="true"] {
+    color: $accent-primary;
+    background-color: $bg-selection;
+  }
+}
+
+[class*="album"] {
+  color: $text-secondary;
+}
+
+[class*="favoriteButton"] {
+  color: $text-muted;
+
+  &:hover {
+    color: $accent-red;
+  }
+
+  &[aria-checked="true"] {
+    color: $accent-red;
+  }
+}
+
+[data-test="explicit-badge"],
+[class*="explicitBadge"],
+[data-test="quality-badge-LOSSLESS"],
+[class*="qualityBadgeContainer"] {
+  color: $text-muted;
+}
+
+// =============================================================================
+// Footer Player (new UI)
+// =============================================================================
+
+#footerPlayer [class*="background_"] {
+  background-color: $bg-secondary !important;
+}
+
+[class*="playerContent"] {
+  background-color: $bg-secondary;
+}
+
+[data-test="track-info"],
+[class*="trackInfo"] {
+  color: $text-primary;
+}
+
+[class*="artworkContainer"],
+[data-test="player-details-toggle-now-playing"] {
+  border-color: $border-subtle;
+}
+
+[class*="trackContent"] {
+  color: $text-primary;
+}
+
+[class*="titleArtistStack"] {
+  color: $text-primary;
+}
+
+[class*="titleContainer"] a {
+  color: $text-primary;
+
+  &:hover {
+    color: $accent-blue;
+  }
+}
+
+[class*="artist_"] [class*="item_"],
+[class*="artist_"] [class*="link_"] {
+  color: $text-secondary;
+
+  &:hover {
+    color: $accent-blue;
+  }
+}
+
+[class*="playingFromText"] a {
+  color: $accent-cyan;
+
+  &:hover {
+    color: $accent-blue;
+  }
+}
+
+#footerPlayer [class*="actions_"] button {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+  }
+}
+
+[class*="blockButton"] {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+  }
+}
+
+[class*="contextMenuButton"] {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+  }
+}
+
+// =============================================================================
+// Playback Controls (new UI)
+// =============================================================================
+
+[class*="centerSection"] {
+  background-color: transparent;
+}
+
+#playbackControlBar button,
+[data-test="play-controls"] button {
+  &[aria-checked="true"] path {
+    fill: $accent-primary;
+  }
+
+  &.withBackground,
+  &[class*="activeButton"] {
+    background-color: $bg-surface;
+  }
+}
+
+[class*="shuffleButton"],
+[data-test="shuffle"] {
+  &[aria-checked="true"] {
+    color: $accent-primary;
+  }
+}
+
+[class*="repeatButton"],
+[data-test="repeat"] {
+  &[aria-checked="true"] {
+    color: $accent-primary;
+  }
+}
+
+[class*="skipButton"] {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+  }
+}
+
+// Footer play/pause button
+[class*="playbackButton"],
+[data-test="play-controls"] [class*="playButtonInner"] {
+  color: $text-primary;
+  background-color: transparent;
+}
+
+// =============================================================================
+// Progress / Scrubber Bar (new UI)
+// =============================================================================
+
+[class*="scrubberRow"] {
+  color: $text-muted;
+}
+
+[class*="scrubberBar"] {
+  background-color: $bg-hover;
+}
+
+[class*="scrubberTime"],
+[class*="scrubberTimeText"] {
+  color: $text-muted;
+}
+
+[class*="fillingBlock"][class*="indicator"] {
+  background-color: $accent-primary;
+}
+
+[class*="fillingBlock"][class*="range"] {
+  background-color: $bg-hover;
+}
+
+[class*="knob"] {
+  background-color: $accent-primary;
+}
+
+[class*="toolTip"] {
+  background-color: $bg-elevated;
+  color: $text-primary;
+}
+
+// =============================================================================
+// Right Section (volume, queue toggle, quality badge)
+// =============================================================================
+
+[class*="rightSection"] {
+  color: $text-muted;
+}
+
+[class*="utilityContainer"] {
+  color: $text-muted;
+}
+
+[class*="utilityButtons"] button {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+  }
+}
+
+[data-test="play-queue-button"] {
+  color: $text-muted;
+  background-color: transparent !important;
+
+  &:hover {
+    color: $text-primary;
+  }
+
+  &[aria-pressed="true"] {
+    color: $accent-primary;
+  }
+}
+
+[data-test="volume"] {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+  }
+}
+
+[class*="sliderContainer"] {
+  background-color: transparent;
+}
+
+// =============================================================================
+// Now Playing Panel (new UI)
+// =============================================================================
+
+[class*="newNowPlaying"] {
+  background-color: $bg-main !important;
+  background-image: none !important;
+
+  // Override black focus-ring on market buttons (Similar tracks, Credits, Lyrics)
+  --market-button-focus-ring-color: transparent;
+  --market-core-focus-ring-color: #{$accent-primary};
+}
+
+// Now-playing "Mixes & Radio" — transparent backgrounds
+[data-test="now-playing-similar-tracks"] [class*="radioSection"] {
+  [class*="card_"] {
+    background-color: transparent;
+  }
+
+  [class*="contentContainer"] {
+    color: $text-secondary;
+  }
+
+  [class*="subtitle"] {
+    color: $text-muted;
+  }
+}
+
+[data-test="now-playing-mixes-and-radio-header"],
+[data-test="now-playing-mixes-and-radio-scroll"] {
+  background-color: transparent !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+[data-test="now-playing-mixes-and-radio-scroll"] [class*="card"] {
+  background-color: transparent !important;
+}
+
+// =============================================================================
+// Play Queue Sidebar (new UI)
+// =============================================================================
+
+#playQueueSidebar {
+  background-color: $bg-secondary !important;
+  background: $bg-secondary !important;
+  border: none !important;
+  border-color: transparent !important;
+  border-width: 0 !important;
+  box-shadow: none !important;
+  outline: none !important;
+
+  // Kill background/border on every direct child as well
+  > * {
+    background-color: $bg-secondary !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+}
+
+[class*="playQueueWrapper"] {
+  background-color: $bg-secondary;
+}
+
+[data-test="playqueue-header"] {
+  background-color: $bg-secondary;
+
+  [class*="headerButton"] {
+    color: $text-muted;
+
+    &:hover {
+      color: $text-primary;
+    }
+  }
+}
+
+[data-test="playqueue-save-button"],
+[data-test="playqueue-close-button"] {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+  }
+}
+
+[data-test="playqueue-title"] {
+  color: $text-primary;
+}
+
+[class*="playQueueItemsContainer"],
+[data-test="playqueue"] {
+  background-color: transparent;
+}
+
+[class*="playQueueItems"] {
+  background-color: transparent;
+}
+
+#playQueueSidebar [class*="stickyHeader"] {
+  background-color: $bg-secondary;
+  color: $text-primary;
+}
+
+// Queue items
+[data-test="playqueue-item"] {
+  color: $text-secondary;
+  background-color: transparent;
+  border-bottom: 1px solid $border-subtle;
+
+  &:hover {
+    background-color: $bg-hover;
+  }
+
+  img {
+    border-radius: 4px;
+  }
+
+  [class*="artist"] {
+    color: $text-muted;
+  }
+
+  [class*="duration"] {
+    color: $text-muted;
+  }
+}
+
+[class*="dragHandle"] {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+  }
+}
+
+[data-test="playqueue-item"] [class*="more"],
+[data-test="playqueue-item"] [class*="menu"] {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+  }
+}
+
+#playQueueSidebar [class*="actions_"] button {
+  color: $text-muted;
+
+  &:hover {
+    color: $text-primary;
+    background-color: $bg-hover;
+  }
+}
+
+[class*="removeButton"],
+[data-test="remove-button"] {
+  color: $text-muted;
+
+  &:hover {
+    color: $accent-red;
+    background-color: $bg-hover;
+  }
+}
+
+[class*="bottomGradient"] {
+  background: linear-gradient(transparent, $bg-secondary);
+}
+
+[data-test="playqueue-scroll"] {
+  &::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $bg-hover;
+    border-radius: 3px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: transparent;
+  }
+}
+
+// =============================================================================
+// Dialog / Notification (new UI)
+// =============================================================================
+
+[class*="notificationWrapper"] {
+  background-color: $bg-surface;
+  color: $text-primary;
+}
+
+// =============================================================================
+// Buttons (new UI market buttons)
+// =============================================================================
+
+[class*="marketButton"] {
+  &[class*="primary"] {
+    background-color: $accent-primary;
+    color: $bg-main;
+
+    &:hover {
+      opacity: 0.9;
+    }
+  }
+
+  &[class*="secondary"] {
+    background-color: $bg-surface;
+    color: $text-primary;
+    border-color: $border-dim;
+
+    &:hover {
+      background-color: $bg-hover;
+    }
+  }
+
+  &[class*="tertiary"] {
+    color: $text-muted;
+
+    &:hover {
+      color: $text-primary;
+      background-color: $bg-hover;
+    }
+  }
+}

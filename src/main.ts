@@ -13,8 +13,10 @@ import {
 } from "./features/idleInhibitor/idleInhibitor";
 import { ListenBrainz } from "./features/listenbrainz/listenbrainz";
 import { Logger } from "./features/logger";
+import { addAltKeyMenuBarHandler } from "./features/menuBar/altMenuBar";
 import { MprisService } from "./features/mpris/mprisService";
 import { SharingService } from "./features/sharingService/sharingService";
+import { injectThemeCss } from "./features/theming/theming";
 import { tidalUrl } from "./features/tidal/url";
 import type { MediaInfo } from "./models/mediaInfo";
 import { MediaStatus } from "./models/mediaStatus";
@@ -182,6 +184,13 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
   registerHttpProtocols();
   syncMenuBarWithStore();
   configureUserAgent();
+  addAltKeyMenuBarHandler(mainWindow);
+
+  // Inject theme CSS via Chromium-level insertCSS on every page load.
+  // This survives SPA hydration / DOM replacement that wipes preload-injected <style> elements.
+  mainWindow.webContents.on("did-finish-load", () => {
+    injectThemeCss(app, mainWindow.webContents);
+  });
 
   // find the custom protocol argument
   const customProtocolUrl = getCustomProtocolUrl(process.argv);
@@ -199,11 +208,9 @@ function createWindow(options = { x: 0, y: 0, backgroundColor: "white" }) {
     mainWindow.webContents.setBackgroundThrottling(false);
   }
 
-  if (!app.listenerCount("before-quit")) {
-    app.on("before-quit", () => {
-      isQuitting = true;
-    });
-  }
+  app.on("before-quit", () => {
+    isQuitting = true;
+  });
 
   mainWindow.on("close", (event: CloseEvent) => {
     if (!isQuitting && settingsStore.get(settings.minimizeOnClose)) {
