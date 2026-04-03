@@ -78,6 +78,7 @@ export const settingsStore = new Store({
       enableWaylandSupport: true,
       gpuRasterization: true,
     },
+    autoHideScrollbars: false,
     hotkeys: getDefaultHotkeyConfig(),
     menuBar: true,
     minimizeOnClose: false,
@@ -183,6 +184,14 @@ export const settingsStore = new Store({
     },
   },
 });
+
+export const getAutoHideScrollbarsSetting = () => {
+  return (
+    settingsStore.get<string, boolean>(settings.autoHideScrollbars) ??
+    settingsStore.get<string, boolean>("hideScrollbars") ??
+    false
+  );
+};
 
 export const createSettingsWindow = () => {
   settingsWindow = new BrowserWindow({

@@ -7,7 +7,7 @@ import { globalEvents } from "../../constants/globalEvents";
 import { settings } from "../../constants/settings";
 import { SUPPORTED_TRAY_ICON_EXTENSIONS } from "../../constants/trayIcon";
 import { Logger } from "../../features/logger";
-import { settingsStore } from "../../scripts/settings";
+import { getAutoHideScrollbarsSetting, settingsStore } from "../../scripts/settings";
 import { initializeHotkeys } from "./hotkeys";
 import { cssFilter, getOptions, getOptionsHeader, getThemeListFromDirectory } from "./theming";
 
@@ -57,6 +57,7 @@ let adBlock: HTMLInputElement,
   enableCustomHotkeys: HTMLInputElement,
   enableDiscord: HTMLInputElement,
   gpuRasterization: HTMLInputElement,
+  autoHideScrollbars: HTMLInputElement,
   hotkeySearch: HTMLInputElement,
   hotkeysList: HTMLElement,
   hostname: HTMLInputElement,
@@ -234,6 +235,7 @@ function refreshSettings() {
     enableDiscord.checked = settingsStore.get(settings.enableDiscord);
     enableWaylandSupport.checked = settingsStore.get(settings.flags.enableWaylandSupport);
     gpuRasterization.checked = settingsStore.get(settings.flags.gpuRasterization);
+    autoHideScrollbars.checked = getAutoHideScrollbarsSetting();
     hostname.value = settingsStore.get(settings.apiSettings.hostname);
     menuBar.checked = settingsStore.get(settings.menuBar);
     minimizeOnClose.checked = settingsStore.get(settings.minimizeOnClose);
@@ -338,21 +340,21 @@ window.addEventListener("DOMContentLoaded", () => {
           setElementHidden(source.checked, toggleOptions);
         }
       }
-      ipcRenderer.send(globalEvents.storeChanged);
+      ipcRenderer.send(globalEvents.storeChanged, key);
     });
   }
 
   function addTextAreaListener(source: HTMLInputElement, key: string) {
     source.addEventListener("input", () => {
       settingsStore.set(key, source.value.split("\n"));
-      ipcRenderer.send(globalEvents.storeChanged);
+      ipcRenderer.send(globalEvents.storeChanged, key);
     });
   }
 
   function addSelectListener(source: HTMLSelectElement, key: string) {
     source.addEventListener("change", () => {
       settingsStore.set(key, source.value);
-      ipcRenderer.send(globalEvents.storeChanged);
+      ipcRenderer.send(globalEvents.storeChanged, key);
     });
   }
 
@@ -365,7 +367,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
       // Only send storeChanged if valid to avoid unnecessary reloads
       if (isValid) {
-        ipcRenderer.send(globalEvents.storeChanged);
+        ipcRenderer.send(globalEvents.storeChanged, key);
       }
     });
 
@@ -396,6 +398,7 @@ window.addEventListener("DOMContentLoaded", () => {
   enableDiscord = get("enableDiscord");
   enableWaylandSupport = get("enableWaylandSupport");
   gpuRasterization = get("gpuRasterization");
+  autoHideScrollbars = get("autoHideScrollbars");
   hotkeySearch = get("hotkey-search");
   hotkeysList = get("hotkeys-list");
   hostname = get("hostname");
@@ -442,6 +445,7 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(enableDiscord, settings.enableDiscord, switchesWithSettings.discord);
   addInputListener(enableWaylandSupport, settings.flags.enableWaylandSupport);
   addInputListener(gpuRasterization, settings.flags.gpuRasterization);
+  addInputListener(autoHideScrollbars, settings.autoHideScrollbars);
   addInputListener(hostname, settings.apiSettings.hostname);
   addInputListener(menuBar, settings.menuBar);
   addInputListener(minimizeOnClose, settings.minimizeOnClose);

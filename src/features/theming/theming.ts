@@ -2,8 +2,118 @@ import fs from "node:fs";
 import path from "node:path";
 
 import { settings } from "../../constants/settings";
-import { settingsStore } from "../../scripts/settings";
+import { getAutoHideScrollbarsSetting, settingsStore } from "../../scripts/settings";
 import { Logger } from "../logger";
+
+const AUTO_HIDE_SCROLLBARS_CSS = `
+html.tidal-hifi-auto-hide-scrollbars body:not(.settings-window),
+html.tidal-hifi-auto-hide-scrollbars body:not(.settings-window) * {
+  -ms-overflow-style: none;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+
+html.tidal-hifi-auto-hide-scrollbars body:not(.settings-window)::-webkit-scrollbar,
+html.tidal-hifi-auto-hide-scrollbars body:not(.settings-window) *::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+
+html.tidal-hifi-auto-hide-scrollbars body:not(.settings-window)::-webkit-scrollbar-track,
+html.tidal-hifi-auto-hide-scrollbars body:not(.settings-window) *::-webkit-scrollbar-track {
+  background-color: transparent !important;
+}
+
+html.tidal-hifi-auto-hide-scrollbars body:not(.settings-window)::-webkit-scrollbar-thumb,
+html.tidal-hifi-auto-hide-scrollbars body:not(.settings-window) *::-webkit-scrollbar-thumb {
+  background-color: transparent !important;
+  border-radius: 3px !important;
+}
+
+html.tidal-hifi-auto-hide-scrollbars.tidal-hifi-scrollbars-visible body:not(.settings-window),
+html.tidal-hifi-auto-hide-scrollbars.tidal-hifi-scrollbars-visible body:not(.settings-window) * {
+  scrollbar-color: rgba(255, 255, 255, 0.32) transparent;
+}
+
+html.tidal-hifi-auto-hide-scrollbars.tidal-hifi-scrollbars-visible body:not(.settings-window)::-webkit-scrollbar-thumb,
+html.tidal-hifi-auto-hide-scrollbars.tidal-hifi-scrollbars-visible body:not(.settings-window) *::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.32) !important;
+}
+
+html.tidal-hifi-auto-hide-scrollbars body:not(.settings-window) .os-scrollbar {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 160ms ease-out;
+}
+
+html.tidal-hifi-auto-hide-scrollbars.tidal-hifi-scrollbars-visible body:not(.settings-window) .os-scrollbar {
+  opacity: 1 !important;
+}
+`;
+
+const AUTO_HIDE_SCROLLBARS_SCRIPT = `(() => {
+  if (document.body?.classList.contains("settings-window")) {
+    return;
+  }
+
+  if (window.__tidalHifiAutoHideScrollbarsInitialized) {
+    return;
+  }
+
+  window.__tidalHifiAutoHideScrollbarsInitialized = true;
+
+  const root = document.documentElement;
+  if (!root) {
+    return;
+  }
+
+  const visibleClass = "tidal-hifi-scrollbars-visible";
+  const enabledClass = "tidal-hifi-auto-hide-scrollbars";
+  const hideDelayMs = 1400;
+  let hideTimer;
+
+  const hideScrollbars = () => {
+    root.classList.remove(visibleClass);
+  };
+
+  const scheduleHide = () => {
+    window.clearTimeout(hideTimer);
+    hideTimer = window.setTimeout(hideScrollbars, hideDelayMs);
+  };
+
+  const showScrollbars = () => {
+    root.classList.add(enabledClass);
+    root.classList.add(visibleClass);
+    scheduleHide();
+  };
+
+  const onKeyDown = (event) => {
+    const scrollKeys = new Set([
+      "ArrowDown",
+      "ArrowUp",
+      "ArrowLeft",
+      "ArrowRight",
+      "PageDown",
+      "PageUp",
+      "Home",
+      "End",
+      "Space",
+    ]);
+
+    if (scrollKeys.has(event.code) || scrollKeys.has(event.key)) {
+      showScrollbars();
+    }
+  };
+
+  root.classList.add(enabledClass);
+  scheduleHide();
+
+  window.addEventListener("scroll", showScrollbars, { capture: true, passive: true });
+  window.addEventListener("wheel", showScrollbars, { passive: true });
+  window.addEventListener("touchmove", showScrollbars, { passive: true });
+  window.addEventListener("keydown", onKeyDown);
+  window.addEventListener("blur", hideScrollbars);
+})();`;
 
 /**
  * Parse a theme identifier into its source and filename.
@@ -84,5 +194,12 @@ export function injectThemeCss(
   const customCSS = settingsStore.get<string, string[]>(settings.customCSS);
   if (customCSS?.length) {
     webContents.insertCSS(customCSS.join("\n"));
+  }
+
+  if (getAutoHideScrollbarsSetting()) {
+    webContents.insertCSS(AUTO_HIDE_SCROLLBARS_CSS);
+    void webContents.executeJavaScript(AUTO_HIDE_SCROLLBARS_SCRIPT).catch((error) => {
+      Logger.log("Failed to inject auto-hide scrollbar behavior.", error);
+    });
   }
 }
