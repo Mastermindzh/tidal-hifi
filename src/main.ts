@@ -380,8 +380,12 @@ ipcMain.on(globalEvents.refreshMenuBar, () => {
   syncMenuBarWithStore();
 });
 
-ipcMain.on(globalEvents.storeChanged, () => {
+ipcMain.on(globalEvents.storeChanged, (_event, changedKey?: string) => {
   syncMenuBarWithStore();
+
+  if (changedKey === settings.autoHideScrollbars) {
+    mainWindow.webContents.reload();
+  }
 
   if (settingsStore.get(settings.enableDiscord) && !rpc) {
     initRPC();

@@ -55,6 +55,7 @@ export const settings = {
   hotkeys: {
     root: "hotkeys",
   },
+  autoHideScrollbars: "autoHideScrollbars",
   menuBar: "menuBar",
   minimizeOnClose: "minimizeOnClose",
   mpris: "mpris",
