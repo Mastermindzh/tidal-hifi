@@ -63,7 +63,7 @@
     "@types/swagger-ui-express": "^4.1.8",
     "copyfiles": "^2.4.1",
     "electron": "github:castlabs/electron-releases#v41.5.0+wvcus",
-    "electron-builder": "~26.8.1",
+    "electron-builder": "~26.15.0",
     "js-yaml": "^4.1.1",
     "markdown-toc": "^1.2.0",
     "node-abi": "^4.31.0",
