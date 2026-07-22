@@ -120,14 +120,23 @@ function handleOpenExternal(_event: IpcMainEvent, url: string): void {
 }
 
 /**
+ * `settings:getAppVersion` — return the current app version from package.json
+ * via Electron's app.getVersion(). Works correctly both in dev and packaged.
+ */
+function handleGetAppVersion(): string {
+  return app.getVersion();
+}
+
+/**
  * Register the privileged operations delegated by the context-isolated
- * settings window preload: theme listing/uploads, tray-icon path checks and
- * opening external links. All `fs`/`path`/`shell` logic lives here rather than
- * in the renderer.
+ * settings window preload: theme listing/uploads, tray-icon path checks,
+ * opening external links, and app version retrieval. All `fs`/`path`/`shell`
+ * logic lives here rather than in the renderer.
  */
 export function registerSettingsBridge(): void {
   ipcMain.handle(settingsBridgeChannels.listThemes, handleListThemes);
   ipcMain.handle(settingsBridgeChannels.uploadThemes, handleUploadThemes);
   ipcMain.on(settingsBridgeChannels.trayIconExists, handleTrayIconExists);
   ipcMain.on(settingsBridgeChannels.openExternal, handleOpenExternal);
+  ipcMain.handle(settingsBridgeChannels.getAppVersion, handleGetAppVersion);
 }
