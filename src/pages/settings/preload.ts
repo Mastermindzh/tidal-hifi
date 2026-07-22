@@ -307,6 +307,24 @@ function hide() {
 }
 
 /**
+ * Fetch the app version from the main process and update the About section.
+ * The version button text and its release link are both set dynamically so
+ * they always reflect the current package.json version without any hardcoding.
+ */
+async function initAppVersion() {
+  try {
+    const version = await ipcRenderer.invoke(settingsBridgeChannels.getAppVersion) as string;
+    const versionEl = document.getElementById("app-version") as HTMLAnchorElement | null;
+    if (versionEl) {
+      versionEl.textContent = version;
+      versionEl.href = `https://github.com/Mastermindzh/tidal-hifi/releases/tag/${version}`;
+    }
+  } catch (error) {
+    Logger.log("Failed to fetch app version.", error);
+  }
+}
+
+/**
  * Bind UI components to functions after DOMContentLoaded
  */
 window.addEventListener("DOMContentLoaded", () => {
@@ -316,6 +334,7 @@ window.addEventListener("DOMContentLoaded", () => {
 
   getThemeFiles();
   handleFileUploads();
+  initAppVersion();
 
   document.getElementById("close")?.addEventListener("click", hide);
   document.getElementById("restartApp")?.addEventListener("click", () => {
