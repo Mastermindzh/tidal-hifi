@@ -30,7 +30,6 @@ if (settingsStore.get(settings.showTitlebar) !== false) {
   mountTitlebar();
 }
 
-
 let currentSong = "";
 
 let tidalController: TidalController;
