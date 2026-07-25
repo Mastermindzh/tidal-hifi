@@ -214,7 +214,7 @@ function createWindow({ x = 0, y = 0, backgroundColor = "white" } = {}) {
     // Frameless so the injected custom titlebar replaces the native chrome.
     frame: isMac ? true : !showCustomTitlebar,
     titleBarStyle: isMac && showCustomTitlebar ? "hiddenInset" : "default",
-    trafficLightPosition: isMac && showCustomTitlebar ? { x: 14, y: 13 } : undefined, 
+    trafficLightPosition: isMac && showCustomTitlebar ? { x: 14, y: 13 } : undefined,
     transparent,
     vibrancy: isMac && transparent ? "under-window" : undefined,
     visualEffectState: isMac && transparent ? "active" : undefined,
