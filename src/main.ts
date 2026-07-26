@@ -196,7 +196,7 @@ function configureUserAgent() {
 function createWindow({ x = 0, y = 0, backgroundColor = "white" } = {}) {
   // Transparency is opt-in and never enabled on macOS (it caused issues there).
   const transparent = isWindowTransparencyEnabled();
-  const showCustomTitlebar = settingsStore.get(settings.showCustomTitlebar) !== false;
+  const showCustomTitlebar = settingsStore.get(settings.showCustomTitlebar);
   const isMac = process.platform === "darwin";
 
   // Create the browser window.
@@ -234,7 +234,7 @@ function createWindow({ x = 0, y = 0, backgroundColor = "white" } = {}) {
   mainWindow.webContents.on("did-finish-load", () => {
     injectThemeCss(app, mainWindow.webContents);
     // Same lifecycle hook, same technique: paint the custom titlebar.
-    if (settingsStore.get(settings.showCustomTitlebar) !== false) {
+    if (settingsStore.get(settings.showCustomTitlebar)) {
       injectTitlebarStyles(mainWindow.webContents);
     }
   });
@@ -489,7 +489,7 @@ ipcMain.on(globalEvents.storeChanged, () => {
   injectThemeCssIfChanged(app, mainWindow.webContents);
   refreshSettingsWindowTheme();
 
-  const showCustomTitlebar = settingsStore.get(settings.showCustomTitlebar) !== false;
+  const showCustomTitlebar = settingsStore.get(settings.showCustomTitlebar);
 
   if (showCustomTitlebar) {
     injectTitlebarStyles(mainWindow.webContents);
