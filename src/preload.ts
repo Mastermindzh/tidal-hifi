@@ -26,7 +26,7 @@ const staticTitle = "TIDAL Hi-Fi";
 
 // Build the draggable custom titlebar in this (isolated-world) preload, so no
 // window action is exposed to page scripts and no executeJavaScript is needed.
-if (settingsStore.get(settings.showCustomTitlebar) !== false) {
+if (settingsStore.get(settings.showCustomTitlebar)) {
   mountCustomTitlebar();
 }
 
