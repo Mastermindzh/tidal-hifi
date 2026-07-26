@@ -11,8 +11,6 @@
   --thf-titlebar-height: 36px;
 }
 
-$thf-btn-hover-bg: rgba(255, 255, 255, 0.12);
-
 /*
  * Reserve space for the titlebar by offsetting Tidal's main layout container.
  *
@@ -94,7 +92,7 @@ $thf-btn-hover-bg: rgba(255, 255, 255, 0.12);
       color 0.12s ease;
 
     &:hover {
-      background: $thf-btn-hover-bg;
+      background: rgba(255, 255, 255, 0.12);
     }
 
     &.thf-close:hover {
