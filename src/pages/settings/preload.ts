@@ -81,7 +81,7 @@ let adBlock: HTMLInputElement,
   trayIconPath: HTMLInputElement,
   updateFrequency: HTMLInputElement,
   windowTransparency: HTMLInputElement,
-  showTitlebar: HTMLInputElement,
+  showCustomTitlebar: HTMLInputElement,
   enableListenBrainz: HTMLInputElement,
   ListenBrainzAPI: HTMLInputElement,
   ListenBrainzToken: HTMLInputElement,
@@ -260,7 +260,7 @@ function refreshSettings() {
     trayIcon.checked = settingsStore.get(settings.trayIcon);
     trayIconPath.value = settingsStore.get(settings.trayIconPath) || "";
     windowTransparency.checked = settingsStore.get(settings.windowTransparency);
-    showTitlebar.checked = settingsStore.get(settings.showTitlebar) !== false;
+    showCustomTitlebar.checked = settingsStore.get(settings.showCustomTitlebar) !== false;
     // Validate tray icon path on load
     const validationElement = document.getElementById("trayIconPathValidation");
     if (validationElement) {
@@ -458,7 +458,7 @@ window.addEventListener("DOMContentLoaded", () => {
   userAgent = get("userAgent");
   controllerType = get<HTMLSelectElement>("controllerType");
   windowTransparency = get("windowTransparency");
-  showTitlebar = get("showTitlebar");
+  showCustomTitlebar = get("showCustomTitlebar");
 
   refreshSettings();
   addInputListener(adBlock, settings.adBlock);
@@ -493,7 +493,7 @@ window.addEventListener("DOMContentLoaded", () => {
   addTrayIconPathListener(trayIconPath, settings.trayIconPath);
   addInputListener(updateFrequency, settings.updateFrequency);
   addInputListener(windowTransparency, settings.windowTransparency);
-  addInputListener(showTitlebar, settings.showTitlebar);
+  addInputListener(showCustomTitlebar, settings.showCustomTitlebar);
   addInputListener(
     enableListenBrainz,
     settings.ListenBrainz.enabled,
