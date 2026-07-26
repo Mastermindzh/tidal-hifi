@@ -88,7 +88,7 @@ const mount = (): void => {
  * `executeJavaScript` string evaluation. Styling is applied separately from the
  * main process (see titlebar.ts) so it survives DOM replacement.
  */
-export const mountTitlebar = (enabled = true): void => {
+export const mountCustomTitlebar = (enabled = true): void => {
   if (!enabled) return;
 
   const start = () => {
@@ -110,7 +110,7 @@ export const mountTitlebar = (enabled = true): void => {
   }
 };
 
-export const unmountTitlebar = (): void => {
+export const unmountCustomTitlebar = (): void => {
   titlebarObserver?.disconnect();
   titlebarObserver = null;
   document.getElementById(BAR_ID)?.remove();
