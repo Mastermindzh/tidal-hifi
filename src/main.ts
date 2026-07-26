@@ -196,7 +196,7 @@ function configureUserAgent() {
 function createWindow({ x = 0, y = 0, backgroundColor = "white" } = {}) {
   // Transparency is opt-in and never enabled on macOS (it caused issues there).
   const transparent = isWindowTransparencyEnabled();
-  const showCustomTitlebar = settingsStore.get(settings.showTitlebar) !== false;
+  const showCustomTitlebar = settingsStore.get(settings.showCustomTitlebar) !== false;
   const isMac = process.platform === "darwin";
 
   // Create the browser window.
@@ -234,7 +234,7 @@ function createWindow({ x = 0, y = 0, backgroundColor = "white" } = {}) {
   mainWindow.webContents.on("did-finish-load", () => {
     injectThemeCss(app, mainWindow.webContents);
     // Same lifecycle hook, same technique: paint the custom titlebar.
-    if (settingsStore.get(settings.showTitlebar) !== false) {
+    if (settingsStore.get(settings.showCustomTitlebar) !== false) {
       injectTitlebarStyles(mainWindow.webContents);
     }
   });
@@ -489,9 +489,9 @@ ipcMain.on(globalEvents.storeChanged, () => {
   injectThemeCssIfChanged(app, mainWindow.webContents);
   refreshSettingsWindowTheme();
 
-  const showTitlebar = settingsStore.get(settings.showTitlebar) !== false;
+  const showCustomTitlebar = settingsStore.get(settings.showCustomTitlebar) !== false;
 
-  if (showTitlebar) {
+  if (showCustomTitlebar) {
     injectTitlebarStyles(mainWindow.webContents);
   } else {
     removeTitlebarStyles(mainWindow.webContents);
@@ -499,7 +499,7 @@ ipcMain.on(globalEvents.storeChanged, () => {
 
   // Notify the main renderer so it can re-apply settings that are otherwise only
   // read at startup (hotkeys, window title).
-  mainWindow.webContents.send(globalEvents.storeChanged, { showTitlebar });
+  mainWindow.webContents.send(globalEvents.storeChanged, { showCustomTitlebar });
 
   if (settingsStore.get(settings.enableDiscord) && !isRPCConnected()) {
     initRPC();
