@@ -1,4 +1,3 @@
-/* should be a sass file, too lazy to figure out if it all works without tweaking now :) */
 /*
  * Styles for the injected custom titlebar. This is a real stylesheet (read from
  * disk and applied via Chromium-level `insertCSS`) rather than an inline string,
@@ -8,15 +7,11 @@
  * is pushed down by the same height so nothing hides behind it.
  */
 
-$titlebar-height: 36px;
-$titlebar-bg: rgba(0, 0, 0, 0.85);
-$titlebar-fg: rgba(255, 255, 255, 0.85);
-$titlebar-hover: rgba(255, 255, 255, 0.12);
-$titlebar-close-hover: #e81123;
-
 :root {
-  --thf-titlebar-height: #{$titlebar-height};
+  --thf-titlebar-height: 36px;
 }
+
+$thf-btn-hover-bg: rgba(255, 255, 255, 0.12);
 
 /*
  * Reserve space for the titlebar by offsetting Tidal's main layout container.
@@ -56,8 +51,8 @@ $titlebar-close-hover: #e81123;
   height: var(--thf-titlebar-height);
   padding: 0 4px 0 12px;
 
-  background: $titlebar-bg;
-  color: $titlebar-fg;
+  background: rgba(0, 0, 0, 0.85);
+  color: rgba(255, 255, 255, 0.85);
   font-family: system-ui, "Segoe UI", sans-serif;
   user-select: none;
 
@@ -78,7 +73,6 @@ $titlebar-close-hover: #e81123;
   .thf-controls {
     display: flex;
     gap: 2px;
-
     /* ...but the buttons must stay clickable, so opt them out of dragging. */
     -webkit-app-region: no-drag;
   }
@@ -100,11 +94,11 @@ $titlebar-close-hover: #e81123;
       color 0.12s ease;
 
     &:hover {
-      background: $titlebar-hover;
+      background: $thf-btn-hover-bg;
     }
 
     &.thf-close:hover {
-      background: $titlebar-close-hover;
+      background: #e81123;
       color: #fff;
     }
 
