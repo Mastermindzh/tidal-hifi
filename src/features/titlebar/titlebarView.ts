@@ -88,9 +88,7 @@ const mount = (): void => {
  * `executeJavaScript` string evaluation. Styling is applied separately from the
  * main process (see titlebar.ts) so it survives DOM replacement.
  */
-export const mountCustomTitlebar = (enabled = true): void => {
-  if (!enabled) return;
-
+export const mountCustomTitlebar = (): void => {
   const start = () => {
     mount();
 
