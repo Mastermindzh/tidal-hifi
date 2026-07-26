@@ -209,15 +209,13 @@ function createWindow({ x = 0, y = 0, backgroundColor = "white" } = {}) {
     // A transparent window still needs a transparent base colour, otherwise the
     // opaque backgroundColor sits behind the page and shows through wherever the
     // (themed) CSS is transparent — defeating the point of a transparent theme.
-    backgroundColor: transparent || isMac ? "#00000000" : backgroundColor,
+    backgroundColor: transparent ? "#00000000" : backgroundColor,
     autoHideMenuBar: true,
     // Frameless so the injected custom titlebar replaces the native chrome.
     frame: isMac ? true : !showCustomTitlebar,
     titleBarStyle: isMac && showCustomTitlebar ? "hiddenInset" : "default",
     trafficLightPosition: isMac && showCustomTitlebar ? { x: 14, y: 13 } : undefined,
     transparent,
-    vibrancy: isMac && transparent ? "under-window" : undefined,
-    visualEffectState: isMac && transparent ? "active" : undefined,
     webPreferences: {
       ...windowPreferences,
       preload: path.join(__dirname, "preload.js"),
@@ -497,7 +495,7 @@ ipcMain.on(globalEvents.storeChanged, () => {
 
   // Notify the main renderer so it can re-apply settings that are otherwise only
   // read at startup (hotkeys, window title).
-  mainWindow.webContents.send(globalEvents.storeChanged, { showTitlebar });
+  mainWindow.webContents.send(globalEvents.storeChanged);
 
   if (settingsStore.get(settings.enableDiscord) && !isRPCConnected()) {
     initRPC();

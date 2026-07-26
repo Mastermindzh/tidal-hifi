@@ -1,31 +1,24 @@
 name: Release CI
-
 permissions:
   contents: write
-
 on:
   push:
-   branches:
-      - drm-fix
+    tags:
+      - "*"
   workflow_dispatch:
 
 jobs:
   quality:
     runs-on: ubuntu-latest
     steps:
-      - name: Update apt
+      - name: update apt
         run: sudo apt-get update
-
-      - name: Install Linux packaging tools
-        run: sudo apt-get install -y libarchive-tools rpm zip
-
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      - name: Install libarchive-tools
+        run: sudo apt-get install -y libarchive-tools
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
         with:
           node-version: 24.12.0
-          cache: npm
-
       - run: npm install
       - run: npm run lint
       - run: npm run compile
@@ -34,132 +27,99 @@ jobs:
     needs: quality
     runs-on: ubuntu-latest
     steps:
-      - name: Update apt
+      - name: update apt
         run: sudo apt-get update
-
-      - name: Install Linux packaging tools
-        run: sudo apt-get install -y libarchive-tools rpm zip
-
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      - name: Install libarchive-tools
+        run: sudo apt-get install -y libarchive-tools
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
         with:
           node-version: 24.12.0
-          cache: npm
-
       - run: npm install
-
-      - name: Build Linux packages
-        run: npm run build
-
+      - run: npm run build
       - name: Build unpacked and zip it
         run: |
           npm run build-unpacked
           cd dist/linux-unpacked
           zip -r ../tidal-hifi-unpacked-linux.zip .
           cd ../..
-
       - uses: actions/upload-artifact@v4
         with:
           name: linux-builds
-          path: |
-            dist/*.deb
-            dist/*.rpm
-            dist/*.pacman
-            dist/*.tar.gz
-            dist/*.zip
-            dist/*.AppImage
-            dist/*.freebsd
-          if-no-files-found: warn
+          path: dist/
 
   build_on_mac:
     needs: quality
     runs-on: macos-latest
-    env:
-      EVS_NO_ASK: "1"
-      EVS_ACCOUNT_NAME: ${{ secrets.EVS_ACCOUNT_NAME }}
-      EVS_PASSWD: ${{ secrets.EVS_PASSWD }}
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
         with:
           node-version: 24.12.0
-          cache: npm
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install EVS client
-        run: python3 -m pip install --upgrade pip castlabs-evs
-
       - run: npm install
-
-      - name: Build macOS package
-        run: npm run build-mac
-
+      - run: npm run build-mac
       - name: Zip the .app bundle
         run: |
-          if [ -d "dist/mac-arm64/tidal-hifi.app" ]; then
-            cd dist/mac-arm64
-            ditto -c -k --sequesterRsrc --keepParent tidal-hifi.app ../tidal-hifi-mac-arm64-app.zip
-            cd ../..
-          fi
-
+          cd dist/mac-arm64
+          zip -r ../tidal-hifi-mac-arm64-app.zip tidal-hifi.app
+          cd ../..
       - uses: actions/upload-artifact@v4
         with:
           name: mac-builds
-          path: |
-            dist/*.dmg
-            dist/*.zip
-            dist/tidal-hifi-mac-arm64-app.zip
-          if-no-files-found: warn
+          path: dist/
 
   build_on_windows:
     needs: quality
     runs-on: windows-latest
-    env:
-      EVS_NO_ASK: "1"
-      EVS_ACCOUNT_NAME: ${{ secrets.EVS_ACCOUNT_NAME }}
-      EVS_PASSWD: ${{ secrets.EVS_PASSWD }}
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
         with:
           node-version: 24.12.0
-          cache: npm
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install EVS client
-        run: python -m pip install --upgrade pip castlabs-evs
-
       - run: npm install
-
-      - name: Build Windows package
-        run: npm run build-win
-
+      - run: npm run build-win
       - uses: actions/upload-artifact@v4
         with:
           name: windows-builds
-          path: |
-            dist/*.msi
-            dist/*.exe
-          if-no-files-found: warn
+          path: dist/*.msi
+
+  build_and_publish_snap:
+    needs: quality
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    steps:
+      - name: update apt
+        run: sudo apt-get update
+      - name: Install libarchive-tools
+        run: sudo apt-get install -y libarchive-tools
+      - uses: actions/checkout@master
+      - uses: actions/setup-node@master
+        with:
+          node-version: 24.12.0
+      - run: npm install
+      - run: npm run build-snap
+      - name: Find snap file
+        id: find_snap
+        run: echo "snap_file=$(find dist -name '*.snap' -type f)" >> $GITHUB_OUTPUT
+      - name: Publish to Snap Store
+        uses: canonical/action-publish@v1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
+        with:
+          snap: ${{ steps.find_snap.outputs.snap_file }}
+          release: stable
+      - uses: actions/upload-artifact@v4
+        with:
+          name: snap-builds
+          path: dist/*.snap
 
   create_release:
     if: startsWith(github.ref, 'refs/tags/')
     needs:
-      - build_on_linux
-      - build_on_mac
-      - build_on_windows
+      [build_on_linux, build_on_mac, build_on_windows, build_and_publish_snap]
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@master
 
       - uses: actions/download-artifact@v4
         with:
@@ -174,13 +134,50 @@ jobs:
           tag_name: ${{ github.ref_name }}
           name: ${{ github.ref_name }}
           generate_release_notes: true
-          fail_on_unmatched_files: false
           files: |
             artifacts/linux-builds/*.deb
             artifacts/linux-builds/*.rpm
             artifacts/linux-builds/*.pacman
+            artifacts/linux-builds/*.tar.gz
+            artifacts/linux-builds/*.zip
             artifacts/linux-builds/*.AppImage
+            artifacts/linux-builds/*.freebsd
             artifacts/mac-builds/*.dmg
+            artifacts/mac-builds/*.zip
             artifacts/windows-builds/*.msi
+            artifacts/windows-builds/*.exe
+            artifacts/snap-builds/*.snap
+
+  publish_aur:
+    needs: create_release
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    env:
+      AUR_SSH_PRIVATE_KEY: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Skip AUR publish when no key is configured
+        if: env.AUR_SSH_PRIVATE_KEY == ''
+        run: echo "AUR_SSH_PRIVATE_KEY is not configured; skipping AUR publish."
+
+      - name: Generate AUR package files
+        if: env.AUR_SSH_PRIVATE_KEY != ''
+        run: ./scripts/generate-aur-package.sh "${{ github.ref_name }}" "${{ github.sha }}"
+
+      - name: Publish tidal-hifi-git to AUR
+        if: env.AUR_SSH_PRIVATE_KEY != ''
+        uses: KSXGitHub/github-actions-deploy-aur@v4.1.3
+        with:
+          pkgname: tidal-hifi-git
+          pkgbuild: .aur/PKGBUILD
+          assets: |
+            .aur/tidal-hifi.desktop
+            .aur/tidal-hifi.xml
+          updpkgsums: true
+          test: false
+          commit_username: tidal-hifi release bot
+          commit_email: info@rickvanlieshout.com
+          ssh_private_key: ${{ secrets.AUR_SSH_PRIVATE_KEY }}
           commit_message: Update tidal-hifi-git to ${{ github.ref_name }}
           ssh_keyscan_types: rsa,ecdsa,ed25519

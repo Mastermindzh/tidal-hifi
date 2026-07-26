@@ -318,18 +318,7 @@ function addIPCEventListeners() {
 
   ipcRenderer.on("globalEvent", globalEventHandler);
 
-  const storeChangedHandler = (
-    _event: Electron.IpcRendererEvent,
-    payload?: { showTitlebar?: boolean },
-  ) => {
-    reapplyLiveSettings();
-
-    if (payload?.showTitlebar === false) {
-      unmountTitlebar();
-    } else if (payload?.showTitlebar === true) {
-      mountTitlebar();
-    }
-  };
+  const storeChangedHandler = () => reapplyLiveSettings();
   ipcRenderer.on(globalEvents.storeChanged, storeChangedHandler);
 
   window.addEventListener("beforeunload", () => {

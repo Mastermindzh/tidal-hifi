@@ -102,7 +102,6 @@ export const mountCustomTitlebar = (): void => {
   if (document.body) {
     start();
   } else {
-    // Tidal is a React SPA that re-renders <body>; re-mount if it's stripped out.
     window.addEventListener("DOMContentLoaded", start, { once: true });
   }
 };
