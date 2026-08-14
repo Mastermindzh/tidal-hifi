@@ -6,17 +6,29 @@ This document lists known bugs and issues with Tidal Hi-Fi along with workaround
 
 <!-- toc -->
 
-- [Disable-sandboxing](#disable-sandboxing)
-- [White/Gray screen on login/launch](#whitegray-screen-on-loginlaunch)
-  - [Advanced setting](#advanced-setting)
-- [Subscribe button showing and/or account details not working](#subscribe-button-showing-andor-account-details-not-working)
-- [DRM not working on Windows (error S6007)](#drm-not-working-on-windows-error-s6007)
-- [Discord RPC not working with Flatpak and native Discord](#discord-rpc-not-working-with-flatpak-and-native-discord)
-- [Discord RPC not working between Flatpaks (TIDAL Hi-Fi + Discord/Vesktop)](#discord-rpc-not-working-between-flatpaks-tidal-hi-fi--discordvesktop)
-- [Volume resets on restart](#volume-resets-on-restart)
-- [Audio quality](#audio-quality)
+- [Known Issues](#known-issues)
+  - [Table of Contents](#table-of-contents)
+  - [Adblock taking +- 2 minutes to start](#adblock-taking---2-minutes-to-start)
+  - [Disable-sandboxing](#disable-sandboxing)
+  - [White/Gray screen on login/launch](#whitegray-screen-on-loginlaunch)
+    - [Advanced setting](#advanced-setting)
+  - [Subscribe button showing and/or account details not working](#subscribe-button-showing-andor-account-details-not-working)
+    - [2-minute (~110 second) startup delay](#2-minute-110-second-startup-delay)
+  - [DRM not working on Windows (error S6007)](#drm-not-working-on-windows-error-s6007)
+  - [Discord RPC not working with Flatpak and native Discord](#discord-rpc-not-working-with-flatpak-and-native-discord)
+  - [Discord RPC not working between Flatpaks (TIDAL Hi-Fi + Discord/Vesktop)](#discord-rpc-not-working-between-flatpaks-tidal-hi-fi--discordvesktop)
+  - [Volume resets on restart](#volume-resets-on-restart)
+  - [Audio quality](#audio-quality)
 
 <!-- tocstop -->
+
+## Adblock taking +- 2 minutes to start
+
+Due to changes with Tidal's ad serving the app will now timeout for 2 minutes on startup due to our URL filtering setup.
+To fix this turn off adblock:
+
+- open `~/.config/tidal-hifi/config.json` and replace `"adBlock": true` with `"adBlock": false`
+- or run `sed -i -e 's/\"adBlock\"\:\ true/\"adBlock\"\:\ false/g' ~/.config/tidal-hifi/config.json`
 
 ## Disable-sandboxing
 

@@ -109,6 +109,10 @@ package() {
     for iconPath in build/icons/[0-9]*x[0-9]*.png; do
         iconSize="\${iconPath##*/}"
         iconSize="\${iconSize%.png}"
+        # Only install icons whose name is a valid "WxH" size to avoid creating invalid hicolor directories.
+        if [[ ! "\$iconSize" =~ ^[0-9]+x[0-9]+\$ ]]; then
+            continue
+        fi
         install -Dm 644 "\$iconPath" "\${pkgdir}/usr/share/icons/hicolor/\$iconSize/apps/tidal-hifi.png"
     done
     install -Dm 644 "\${srcdir}/tidal-hifi.desktop" "\${pkgdir}/usr/share/applications/tidal-hifi.desktop"
