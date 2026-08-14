@@ -51,12 +51,24 @@ jobs:
   build_on_mac:
     needs: quality
     runs-on: macos-latest
+    env:
+      ENABLE_EVS_SIGNING: "true"
+      EVS_ACCOUNT_NAME: ${{ secrets.EVS_ACCOUNT_NAME }}
+      EVS_PASSWD: ${{ secrets.EVS_PASSWD }}
+      EVS_NO_ASK: "1"
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
           node-version: 24.12.0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
       - run: npm install
+      - name: Install castlabs EVS
+        run: python3 -m pip install --upgrade castlabs-evs
+      - name: Refresh EVS auth
+        run: python3 -m castlabs_evs.account -n reauth
       - run: npm run build-mac
       - name: Zip the .app bundle
         run: |
@@ -71,12 +83,24 @@ jobs:
   build_on_windows:
     needs: quality
     runs-on: windows-latest
+    env:
+      ENABLE_EVS_SIGNING: "true"
+      EVS_ACCOUNT_NAME: ${{ secrets.EVS_ACCOUNT_NAME }}
+      EVS_PASSWD: ${{ secrets.EVS_PASSWD }}
+      EVS_NO_ASK: "1"
     steps:
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
           node-version: 24.12.0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
       - run: npm install
+      - name: Install castlabs EVS
+        run: py -3 -m pip install --upgrade castlabs-evs
+      - name: Refresh EVS auth
+        run: py -3 -m castlabs_evs.account -n reauth
       - run: npm run build-win
       - uses: actions/upload-artifact@v4
         with:

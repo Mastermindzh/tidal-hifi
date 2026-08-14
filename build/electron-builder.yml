@@ -8,9 +8,3 @@ linux:
     - AppImage
     - snap
     - freebsd
-win:
-  target: msi
-  icon: icon.png
-  artifactName: "tidalhifi"
-  appId: com.rickvanlieshout.tidalhifi
-  executableName: tidalhifi
