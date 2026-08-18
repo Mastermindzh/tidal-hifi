@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### fixes
 
 - ListenBrainz submissions no longer fail with HTTP 400 - `music_service` is now sent as a bare domain instead of a full URL, and an empty `release_name` is omitted
+- SIGTRAP crash on launch on newer Linux kernels - `dbus-next` is now pinned to a fork that drops the native `usocket` module and uses Node's built-in `net.createConnection` for abstract/path sockets, fixing #1000 and #1002. This also removes the need for the `util.isError` compat shim (#977).
 
 ## [8.1.2]
 
