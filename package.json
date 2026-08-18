@@ -78,7 +78,7 @@
     "typescript": "^7.0.2"
   },
   "overrides": {
-    "dbus-next": "0.10.2"
+    "dbus-next": "github:JellyBrick/node-dbus-next#51037a46ef3f9333b1496206d0e272cffc070fb3"
   },
   "engines": {
     "node": ">=24.13.0",
