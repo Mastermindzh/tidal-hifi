@@ -22,6 +22,7 @@ export const settings = {
     root: "apiSettings",
     port: "apiSettings.port",
     hostname: "apiSettings.hostname",
+    remote: "apiSettings.remote",
   },
   customCSS: "customCSS",
   disableAltMenuBar: "disableAltMenuBar",

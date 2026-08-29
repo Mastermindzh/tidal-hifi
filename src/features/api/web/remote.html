@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a0a0f" />
+  <title>TIDAL Hi-Fi Remote</title>
+  <style>
+    :root {
+      --bg: #0a0a0f;
+      --bg-elevated: #15151f;
+      --surface: #1d1d2b;
+      --surface-hover: #262637;
+      --text: #f4f4f8;
+      --text-muted: #9a9ab0;
+      --accent: #00e0d5;
+      --accent-dim: rgba(0, 224, 213, 0.15);
+      --favorite: #ff5a7a;
+      --radius: 18px;
+      --radius-sm: 12px;
+      --shadow: 0 12px 40px rgba(0, 0, 0, 0.45);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      height: 100%;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: radial-gradient(120% 80% at 50% 0%, #16161f 0%, var(--bg) 60%);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      min-height: 100dvh;
+      padding: env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);
+      overflow-y: auto;
+    }
+
+    .player {
+      width: 100%;
+      max-width: 460px;
+      display: flex;
+      flex-direction: column;
+      padding: 20px 22px calc(28px + env(safe-area-inset-bottom));
+      gap: clamp(16px, 4vw, 22px);
+    }
+
+    /* Header */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .source {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .source .eyebrow {
+      font-size: 11px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+    }
+
+    .source .from {
+      font-size: 14px;
+      font-weight: 600;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .quality-badge {
+      flex-shrink: 0;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      color: var(--accent);
+      background: var(--accent-dim);
+      border: 1px solid rgba(0, 224, 213, 0.35);
+      padding: 6px 10px;
+      border-radius: 999px;
+      white-space: nowrap;
+    }
+
+    /* Artwork */
+    .artwork {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      background: var(--surface);
+    }
+
+    .artwork img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    /* Track meta */
+    .meta {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 0 4px;
+    }
+
+    .meta .title {
+      font-size: 22px;
+      font-weight: 700;
+      line-height: 1.2;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .meta .artist {
+      font-size: 15px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .meta .album {
+      font-size: 13px;
+      color: var(--text-muted);
+      opacity: 0.7;
+    }
+
+    /* Seek bar */
+    .seek {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .times {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 24px;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-runnable-track {
+      height: 6px;
+      border-radius: 999px;
+      background: linear-gradient(to right,
+          var(--accent) var(--fill, 0%),
+          var(--surface) var(--fill, 0%));
+    }
+
+    input[type="range"]::-moz-range-track {
+      height: 6px;
+      border-radius: 999px;
+      background: var(--surface);
+    }
+
+    input[type="range"]::-moz-range-progress {
+      height: 6px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      margin-top: -6px;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border: none;
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+    }
+
+    /* Transport */
+    .transport {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: clamp(5px, 3vw, 18px);
+    }
+
+    button.ctrl {
+      border: none;
+      background: transparent;
+      color: var(--text);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      border-radius: 50%;
+      transition:
+        transform 0.12s ease,
+        background 0.2s ease,
+        color 0.2s ease;
+    }
+
+    button.ctrl:active {
+      transform: scale(0.9);
+    }
+
+    button.ctrl svg {
+      width: 26px;
+      height: 26px;
+      fill: currentColor;
+    }
+
+    button.ctrl.secondary {
+      width: clamp(36px, 12vw, 48px);
+      height: clamp(36px, 12vw, 48px);
+      color: var(--text-muted);
+    }
+
+    button.ctrl.secondary.active {
+      color: var(--accent);
+      background: var(--accent-dim);
+    }
+
+    button.ctrl.secondary.favorite.active {
+      color: var(--favorite);
+      background: rgba(255, 90, 122, 0.14);
+    }
+
+    button.ctrl.skip {
+      width: clamp(44px, 14vw, 58px);
+      height: clamp(44px, 14vw, 58px);
+      color: var(--text);
+    }
+
+    button.ctrl.play {
+      width: clamp(56px, 18vw, 76px);
+      height: clamp(56px, 18vw, 76px);
+      background: #fff;
+      color: #0a0a0f;
+      box-shadow: var(--shadow);
+    }
+
+    button.ctrl.play svg {
+      width: clamp(30px, 8vw, 34px);
+      height: clamp(30px, 8vw, 34px);
+    }
+
+    .repeat-wrap {
+      position: relative;
+    }
+
+    .repeat-wrap .badge-one {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      font-size: 9px;
+      font-weight: 800;
+      background: var(--accent);
+      color: #0a0a0f;
+      border-radius: 999px;
+      padding: 0 4px;
+      line-height: 1.4;
+      display: none;
+    }
+
+    .repeat-wrap.one .badge-one {
+      display: block;
+    }
+
+    /* Volume */
+    .volume {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 4px 2px 0;
+    }
+
+    .volume svg {
+      width: 20px;
+      height: 20px;
+      fill: var(--text-muted);
+      flex-shrink: 0;
+    }
+
+    .toggles {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 6px;
+    }
+
+    /* Connection lost: dim the content while we keep retrying GET /current. */
+    .player.offline .artwork,
+    .player.offline .meta,
+    .player.offline .seek,
+    .player.offline .transport,
+    .player.offline .toggles {
+      opacity: 0.4;
+      transition: opacity 0.2s ease;
+    }
+
+    /* Very narrow phones: split into two centered rows. prev/play/next stay
+         together on top (play centered), repeat + shuffle drop below as a pair.
+         The zero-height ::after forces a deterministic line break between them. */
+    @media (max-width: 277px) {
+      .player {
+        padding: 16px 14px calc(22px + env(safe-area-inset-bottom));
+      }
+
+      .transport {
+        row-gap: 14px;
+      }
+
+      #prev {
+        order: 1;
+      }
+
+      .transport .play {
+        order: 2;
+      }
+
+      #next {
+        order: 3;
+      }
+
+      .transport::after {
+        content: "";
+        flex-basis: 100%;
+        height: 0;
+        order: 4;
+      }
+
+      .repeat-wrap {
+        order: 5;
+      }
+
+      #shuffle {
+        order: 6;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="player" id="player">
+    <header class="header">
+      <div class="source">
+        <span class="eyebrow">Playing from</span>
+        <span class="from" id="playingFrom">Daily Discovery</span>
+      </div>
+      <span class="quality-badge" id="quality">HI-RES · 24/96</span>
+    </header>
+
+    <div class="artwork">
+      <img id="art" alt="Album art" src="/current/image" />
+    </div>
+
+    <section class="meta">
+      <div class="title" id="title">Loading…</div>
+      <div class="artist" id="artist"></div>
+      <div class="album" id="album"></div>
+    </section>
+
+    <section class="seek">
+      <input type="range" id="seek" min="0" max="100" value="0" aria-label="Seek" />
+      <div class="times">
+        <span id="current">0:00</span>
+        <span id="duration">0:00</span>
+      </div>
+    </section>
+
+    <section class="transport">
+      <div class="repeat-wrap" id="repeatWrap">
+        <button class="ctrl secondary" id="repeat" aria-label="Repeat" aria-pressed="false">
+          <svg viewBox="0 0 24 24">
+            <path d="M7 7h10v3l4-4-4-4v3H5v6h2V7zm10 10H7v-3l-4 4 4 4v-3h12v-6h-2v4z" />
+          </svg>
+        </button>
+        <span class="badge-one">1</span>
+      </div>
+
+      <button class="ctrl skip" id="prev" aria-label="Previous">
+        <svg viewBox="0 0 24 24">
+          <path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z" />
+        </svg>
+      </button>
+
+      <button class="ctrl play" id="playpause" aria-label="Play/Pause">
+        <svg id="playIcon" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7L8 5z" />
+        </svg>
+      </button>
+
+      <button class="ctrl skip" id="next" aria-label="Next">
+        <svg viewBox="0 0 24 24">
+          <path d="M16 6h2v12h-2V6zM6 6l8.5 6L6 18V6z" />
+        </svg>
+      </button>
+
+      <button class="ctrl secondary" id="shuffle" aria-label="Shuffle" aria-pressed="false">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M10.59 9.17 5.41 4 4 5.41l5.17 5.17 1.42-1.41zM14.5 4l2.04 2.04L4 18.59 5.41 20 17.96 7.46 20 9.5V4h-5.5zm.33 9.41-1.41 1.41 3.13 3.13L14.5 20H20v-5.5l-2.04 2.04-3.13-3.13z" />
+        </svg>
+      </button>
+    </section>
+
+    <section class="toggles">
+      <button class="ctrl secondary favorite" id="favorite" aria-label="Favorite" aria-pressed="false">
+        <svg viewBox="0 0 24 24">
+          <path
+            d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+        </svg>
+      </button>
+
+      <div class="volume" style="flex: 1; margin: 0 16px">
+        <svg viewBox="0 0 24 24">
+          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4z" />
+        </svg>
+        <input type="range" id="volume" min="0" max="100" value="70" aria-label="Volume" />
+      </div>
+    </section>
+  </main>
+
+  <script src="/remote/remote.js" defer></script>
+</body>
+
+</html>

@@ -70,6 +70,8 @@ let adBlock: HTMLInputElement,
   playBackControl: HTMLInputElement,
   preventSleep: HTMLInputElement,
   port: HTMLInputElement,
+  remote: HTMLInputElement,
+  remoteUrlPort: HTMLElement,
   singleInstance: HTMLInputElement,
   skipArtists: HTMLInputElement,
   skippedArtists: HTMLInputElement,
@@ -252,6 +254,8 @@ function refreshSettings() {
     playBackControl.checked = settingsStore.get(settings.playBackControl);
     port.value = settingsStore.get(settings.apiSettings.port);
     preventSleep.checked = settingsStore.get(settings.preventSleep);
+    remote.checked = settingsStore.get(settings.apiSettings.remote);
+    remoteUrlPort.textContent = String(settingsStore.get(settings.apiSettings.port));
     singleInstance.checked = settingsStore.get(settings.singleInstance);
     skipArtists.checked = settingsStore.get(settings.skipArtists);
     skippedArtists.value = settingsStore.get<string, string[]>(settings.skippedArtists).join("\n");
@@ -440,6 +444,8 @@ window.addEventListener("DOMContentLoaded", () => {
   playBackControl = get("playBackControl");
   port = get("port");
   preventSleep = get("preventSleep");
+  remote = get("remote");
+  remoteUrlPort = get("remoteUrlPort");
   theme = get<HTMLSelectElement>("themesList");
   trayIcon = get("trayIcon");
   trayIconPath = get("trayIconPath");
@@ -489,7 +495,11 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(notifications, settings.notifications);
   addInputListener(playBackControl, settings.playBackControl);
   addInputListener(port, settings.apiSettings.port);
+  port.addEventListener("input", () => {
+    remoteUrlPort.textContent = port.value || "<port>";
+  });
   addInputListener(preventSleep, settings.preventSleep);
+  addInputListener(remote, settings.apiSettings.remote);
   addInputListener(skipArtists, settings.skipArtists);
   addTextAreaListener(skippedArtists, settings.skippedArtists);
   addInputListener(skipTracks, settings.skipTracks);

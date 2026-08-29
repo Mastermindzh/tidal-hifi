@@ -115,6 +115,10 @@
                   Disabled audio & visual ads, unlocked lyrics, suggested track, track info,
                   unlimited skips
                 </p>
+                <p>
+                  <strong>Note:</strong> depending on TIDAL's server-side changes, ad blocking can
+                  occasionally slow down startup. Disable this if the app is slow to load.
+                </p>
               </div>
               <label class="switch">
                 <input id="adBlock" type="checkbox" aria-label="Block ads" />
@@ -315,6 +319,22 @@
                   </div>
                   <label class="switch">
                     <input id="playBackControl" type="checkbox" aria-label="Playback control" />
+                    <span class="switch__slider"></span>
+                  </label>
+                </div>
+                <div class="group__option">
+                  <div class="group__content">
+                    <h4>Remote control player</h4>
+                    <p>
+                      Serve a mobile-friendly remote player to control
+                      playback from another device. <br />
+                      To reach it from your phone, set the API hostname above to
+                      <strong>0.0.0.0</strong> and open
+                      <code>http://&lt;your-pc-ip&gt;:<span id="remoteUrlPort">&lt;port&gt;</span>/remote</code>.
+                    </p>
+                  </div>
+                  <label class="switch">
+                    <input id="remote" type="checkbox" aria-label="Remote control player" />
                     <span class="switch__slider"></span>
                   </label>
                 </div>

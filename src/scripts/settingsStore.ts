@@ -44,6 +44,7 @@ const defaultSettings = {
   apiSettings: {
     port: 47836,
     hostname: "127.0.0.1",
+    remote: false,
   },
   customCSS: [],
   disableAltMenuBar: false,
@@ -188,6 +189,9 @@ const migrations: NonNullable<Store.Options<typeof defaultSettings>["migrations"
       { key: settings.preventSleep, value: true },
       { key: settings.advanced.notificationImageDownscaling, value: false },
     ]);
+  },
+  "8.2.0": (migrationStore) => {
+    buildMigration("8.2.0", migrationStore, [{ key: settings.apiSettings.remote, value: false }]);
   },
 };
 
