@@ -51,6 +51,8 @@ const defaultSettings = {
   disableBackgroundThrottle: true,
   disableHardwareMediaKeys: false,
   enableCustomHotkeys: false,
+  hideScrollbars: false,
+  openExternalLinksInBrowser: false,
   enableDiscord: false,
   discord: {
     showSong: true,
@@ -191,7 +193,11 @@ const migrations: NonNullable<Store.Options<typeof defaultSettings>["migrations"
     ]);
   },
   "8.2.0": (migrationStore) => {
-    buildMigration("8.2.0", migrationStore, [{ key: settings.apiSettings.remote, value: false }]);
+    buildMigration("8.2.0", migrationStore, [
+      { key: settings.apiSettings.remote, value: false },
+      { key: settings.hideScrollbars, value: false },
+      { key: settings.openExternalLinksInBrowser, value: false },
+    ]);
   },
 };
 

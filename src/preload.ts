@@ -127,6 +127,13 @@ function addHotKeys() {
       const newVolumeDown = Math.max(currentVolume - 0.1, 0.0);
       tidalController.setVolume(newVolumeDown);
     });
+    addHotkey(hotkeyConfig.seekBackward, () => {
+      const newTime = Math.max(tidalController.getCurrentTime() - 5, 0);
+      tidalController.setCurrentTime(newTime);
+    });
+    addHotkey(hotkeyConfig.seekForward, () => {
+      tidalController.setCurrentTime(tidalController.getCurrentTime() + 5);
+    });
     addHotkey(hotkeyConfig.expandNowPlaying, () => {
       clickElement("toggleNowPlaying");
     });

@@ -29,6 +29,8 @@ export const settings = {
   disableBackgroundThrottle: "disableBackgroundThrottle",
   disableHardwareMediaKeys: "disableHardwareMediaKeys",
   enableCustomHotkeys: "enableCustomHotkeys",
+  hideScrollbars: "hideScrollbars",
+  openExternalLinksInBrowser: "openExternalLinksInBrowser",
   enableDiscord: "enableDiscord",
   discord: {
     detailsPrefix: "discord.detailsPrefix",

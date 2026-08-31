@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### added
 
 - Remote control web player: an optional, mobile-friendly page served at `/remote` that controls playback (play/pause, next/previous, seek, volume, shuffle, repeat, favorite) from another device. Enable it with the new "Remote control player" API setting; set the API hostname to `0.0.0.0` to reach it from your phone.
+- Auto-hide scrollbars: a new UI setting that only shows scrollbars while hovering a scrollable area, mirroring the Tidal web player (#850)
+- Open external links in browser: a new UI setting that opens non-Tidal links (e.g. artist websites) in your default browser instead of a new app window (#463)
+- Seek hotkeys: configurable "Seek backward" (`shift+left`) and "Seek forward" (`shift+right`) shortcuts to rewind/fast-forward the current track by 5 seconds (#531)
 
 ### fixes
 

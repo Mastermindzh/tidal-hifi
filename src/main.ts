@@ -4,7 +4,7 @@ import "./utility/nodeCompat";
 
 import path from "node:path";
 import { initialize } from "@electron/remote/main";
-import { app, BrowserWindow, components, ipcMain, screen, session } from "electron";
+import { app, BrowserWindow, components, ipcMain, screen, session, shell } from "electron";
 
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
@@ -305,7 +305,11 @@ function createWindow({ x = 0, y = 0, backgroundColor = "white" } = {}) {
       mainWindow.setBounds(workArea);
     });
   }
-  mainWindow.webContents.setWindowOpenHandler(() => {
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (settingsStore.get(settings.openExternalLinksInBrowser) && isExternalUrl(url)) {
+      shell.openExternal(url);
+      return { action: "deny" };
+    }
     return {
       action: "allow",
       overrideBrowserWindowOptions: {
@@ -350,6 +354,24 @@ function registerSecondInstanceHandler() {
       mainWindow.focus();
     }
   });
+}
+
+/**
+ * Whether a new-window target should open in the system browser instead of an
+ * in-app Electron window. Only off-Tidal http(s) links qualify, so in-app Tidal
+ * popups keep working (issue #463).
+ */
+function isExternalUrl(url: string): boolean {
+  try {
+    const target = new URL(url);
+    if (target.protocol !== "https:" && target.protocol !== "http:") {
+      return false;
+    }
+    const host = target.hostname.replace(/^www\./, "");
+    return host !== "tidal.com" && !host.endsWith(".tidal.com");
+  } catch {
+    return false;
+  }
 }
 
 /**

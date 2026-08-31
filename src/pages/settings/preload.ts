@@ -59,6 +59,8 @@ let adBlock: HTMLInputElement,
   disableSandbox: HTMLInputElement,
   enableCustomHotkeys: HTMLInputElement,
   enableDiscord: HTMLInputElement,
+  hideScrollbars: HTMLInputElement,
+  openExternalLinksInBrowser: HTMLInputElement,
   gpuRasterization: HTMLInputElement,
   hotkeySearch: HTMLInputElement,
   hotkeysList: HTMLElement,
@@ -244,6 +246,8 @@ function refreshSettings() {
     disableSandbox.checked = settingsStore.get(settings.flags.disableSandbox);
     enableCustomHotkeys.checked = settingsStore.get(settings.enableCustomHotkeys);
     enableDiscord.checked = settingsStore.get(settings.enableDiscord);
+    hideScrollbars.checked = settingsStore.get(settings.hideScrollbars);
+    openExternalLinksInBrowser.checked = settingsStore.get(settings.openExternalLinksInBrowser);
     enableWaylandSupport.checked = settingsStore.get(settings.flags.enableWaylandSupport);
     gpuRasterization.checked = settingsStore.get(settings.flags.gpuRasterization);
     hostname.value = settingsStore.get(settings.apiSettings.hostname);
@@ -432,6 +436,8 @@ window.addEventListener("DOMContentLoaded", () => {
   disableSandbox = get("disableSandbox");
   enableCustomHotkeys = get("enableCustomHotkeys");
   enableDiscord = get("enableDiscord");
+  hideScrollbars = get("hideScrollbars");
+  openExternalLinksInBrowser = get("openExternalLinksInBrowser");
   enableWaylandSupport = get("enableWaylandSupport");
   gpuRasterization = get("gpuRasterization");
   hotkeySearch = get("hotkey-search");
@@ -486,6 +492,8 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(disableSandbox, settings.flags.disableSandbox);
   addInputListener(enableCustomHotkeys, settings.enableCustomHotkeys, switchesWithSettings.hotkeys);
   addInputListener(enableDiscord, settings.enableDiscord, switchesWithSettings.discord);
+  addInputListener(hideScrollbars, settings.hideScrollbars);
+  addInputListener(openExternalLinksInBrowser, settings.openExternalLinksInBrowser);
   addInputListener(enableWaylandSupport, settings.flags.enableWaylandSupport);
   addInputListener(gpuRasterization, settings.flags.gpuRasterization);
   addInputListener(hostname, settings.apiSettings.hostname);

@@ -101,6 +101,18 @@ export const DEFAULT_HOTKEY_ACTIONS: HotkeyAction[] = [
     defaultKey: "control+down",
   },
   {
+    id: "seekBackward",
+    name: "Seek backward",
+    description: "Rewind the current track by 5 seconds",
+    defaultKey: "shift+left",
+  },
+  {
+    id: "seekForward",
+    name: "Seek forward",
+    description: "Fast-forward the current track by 5 seconds",
+    defaultKey: "shift+right",
+  },
+  {
     id: "expandNowPlaying",
     name: "Expand now playing",
     description: "Expand the now playing section",
