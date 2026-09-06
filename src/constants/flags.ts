@@ -1,7 +1,8 @@
 export const flags: { [key: string]: { flag: string; value?: string }[] } = {
   gpuRasterization: [{ flag: "enable-gpu-rasterization", value: undefined }],
   disableHardwareMediaKeys: [{ flag: "disable-features", value: "HardwareMediaKeyHandling" }],
-  disableSandbox: [{ flag: "no-sandbox", value: undefined }],
+  // Applied through BrowserWindow's sandbox preference, not a Chromium switch.
+  disableSandbox: [],
   enableWaylandSupport: [
     { flag: "enable-features", value: "UseOzonePlatform" },
     { flag: "ozone-platform-hint", value: "auto" },
