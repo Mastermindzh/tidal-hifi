@@ -10,6 +10,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - ARM64 (aarch64) builds are now produced for Linux, enabled by castlabs Electron's official `linux-arm64` support. The `deb`, `rpm`, `pacman`, `tar.gz` and `AppImage` targets now ship both `x64` and `arm64` artifacts, and an arm64 snap is built and published from a native arm runner.
 
+### fixes
+
+- Discord RPC now automatically reconnects when the IPC socket drops (Discord restarting, the RPC bridge going away, etc.) instead of giving up. The client retries with a capped exponential backoff and re-publishes the current presence once the connection is restored (#1012)
+
 ### docs
 
 - Reworked the Discord RPC + Flatpak documentation: the unreliable Flatseal `xdg-run/discord-ipc-0` workaround for native Discord/Vesktop has been replaced with a recommendation to use the [discord-flatpak-rpc-bridge](https://github.com/Arcitec/discord-flatpak-rpc-bridge) (#1010)
