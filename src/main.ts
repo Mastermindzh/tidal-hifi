@@ -1,7 +1,3 @@
-// Restore `util.isError` (removed in Node 23+) before anything loads dbus-next /
-// usocket, which still call it. Must stay first. See ./utility/nodeCompat.
-import "./utility/nodeCompat";
-
 import path from "node:path";
 import { initialize } from "@electron/remote/main";
 import { app, BrowserWindow, components, ipcMain, screen, session } from "electron";

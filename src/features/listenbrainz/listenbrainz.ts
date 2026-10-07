@@ -53,8 +53,14 @@ export class ListenBrainz {
     const additional_info: Record<string, unknown> = {
       media_player: "Tidal Hi-Fi",
       submission_client: "Tidal Hi-Fi",
-      music_service: tidalUrl,
     };
+
+    // ListenBrainz expects `music_service` to be a bare domain (e.g. "tidal.com"),
+    // not a full URL. Sending a URL fails validation with HTTP 400.
+    const musicService = ListenBrainz.toDomain(tidalUrl);
+    if (musicService) {
+      additional_info.music_service = musicService;
+    }
 
     // ListenBrainz rejects the entire submission with HTTP 400 when `duration`
     // is present but not a positive integer, so only include it when known.
@@ -63,12 +69,31 @@ export class ListenBrainz {
       additional_info.duration = Math.round(normalizedDuration);
     }
 
-    return {
+    const track_metadata: Record<string, unknown> = {
       additional_info,
       artist_name: String(artists || ""),
       track_name: String(title || ""),
-      release_name: String(album || ""),
     };
+
+    // Optional fields must be omitted entirely when unknown otherwise it'll throw a 400
+    const release_name = String(album || "").trim();
+    if (release_name) {
+      track_metadata.release_name = release_name;
+    }
+
+    return track_metadata;
+  }
+
+  /**
+   * Extract the bare domain (hostname without a leading "www.") from a URL so it
+   * can be used as the ListenBrainz `music_service` value.
+   */
+  private static toDomain(url: string): string {
+    try {
+      return new URL(url).hostname.replace(/^www\./, "");
+    } catch {
+      return "";
+    }
   }
 
   /**
