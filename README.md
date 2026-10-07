@@ -51,7 +51,7 @@ The web version of [TIDAL](https://tidal.com) running in electron with Hi-Fi (Hi
 - Custom [integrations](#integrations)
   - [ListenBrainz](https://listenbrainz.org/?redirect=false) integration
   - Discord RPC integration (showing "now listening", "Browsing", etc)
-    - Flatpak version only works if both Discord and Tidal-HiFi are flatpaks
+    - For native Discord/Vesktop + Flatpak TIDAL Hi-Fi, use the [discord-flatpak-rpc-bridge](https://github.com/Arcitec/discord-flatpak-rpc-bridge) (see [known issues](./docs/known-issues.md#discord-rpc-not-working-with-native-discordvesktop-and-flatpak-tidal-hi-fi))
   - MPRIS integration
 - UI + Json config (`~/.config/tidal-hifi/`, or `~/.var/app/com.mastermindzh.tidal-hifi/` for Flatpak)
 

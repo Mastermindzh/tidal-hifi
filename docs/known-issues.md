@@ -15,7 +15,7 @@ This document lists known bugs and issues with Tidal Hi-Fi along with workaround
   - [Subscribe button showing and/or account details not working](#subscribe-button-showing-andor-account-details-not-working)
     - [2-minute (~110 second) startup delay](#2-minute-110-second-startup-delay)
   - [DRM not working on Windows (error S6007)](#drm-not-working-on-windows-error-s6007)
-  - [Discord RPC not working with Flatpak and native Discord](#discord-rpc-not-working-with-flatpak-and-native-discord)
+  - [Discord RPC not working with native Discord/Vesktop and Flatpak TIDAL Hi-Fi](#discord-rpc-not-working-with-native-discordvesktop-and-flatpak-tidal-hi-fi)
   - [Discord RPC not working between Flatpaks (TIDAL Hi-Fi + Discord/Vesktop)](#discord-rpc-not-working-between-flatpaks-tidal-hi-fi--discordvesktop)
   - [Volume resets on restart](#volume-resets-on-restart)
   - [Audio quality](#audio-quality)
@@ -83,17 +83,21 @@ Nothing I can do about that I'm afraid... Tidal is working on removing/changing 
 
 Until then you'll have to use the official app unfortunately.
 
-## Discord RPC not working with Flatpak and native Discord
+## Discord RPC not working with native Discord/Vesktop and Flatpak TIDAL Hi-Fi
 
-If you're running TIDAL Hi-Fi as a Flatpak and Discord as a native application (not Flatpak), Discord RPC integration may not work due to sandboxing.
+If you run TIDAL Hi-Fi as a Flatpak and Discord (or Vesktop) as a native application, Discord RPC can't reach the native Discord socket because of Flatpak sandboxing.
 
-**Fix**: Use Flatseal to grant TIDAL Hi-Fi access to the Discord socket:
+> Older versions of this document suggested poking a hole in the sandbox with Flatseal (`xdg-run/discord-ipc-0`). Don't do that, it is unreliable and is not something this project can support.
 
-1. Open Flatseal
-2. Navigate to TIDAL Hi-Fi → Filesystem → Other files
-3. Add a new entry: `xdg-run/discord-ipc-0`
+**Fix**: Install [discord-flatpak-rpc-bridge](https://github.com/Arcitec/discord-flatpak-rpc-bridge), which reliably bridges the native Discord/Vesktop RPC socket into Flatpak applications. It is lightweight and installs with a single command.
 
-This allows the Flatpak to communicate with the native Discord installation through the IPC socket.
+1. Enable Discord RPC in Discord/Vesktop (see the [bridge's supported applications](https://github.com/Arcitec/discord-flatpak-rpc-bridge#supported-applications))
+2. Enable Discord RPC in TIDAL Hi-Fi: Settings → Integrations → Discord RPC
+3. Install the bridge following its [installation instructions](https://github.com/Arcitec/discord-flatpak-rpc-bridge#installation)
+
+See the bridge's [How does it work](https://github.com/Arcitec/discord-flatpak-rpc-bridge#how-does-it-work) section for why this is the only reliable approach.
+
+> Notes: the bridge requires a systemd-based distro, and you must not run a Flatpak-based Discord client at the same time (it would conflict with the same socket paths). It installs a system-wide service via `install.sh`, so review the script first as you would with any third-party installer.
 
 ## Discord RPC not working between Flatpaks (TIDAL Hi-Fi + Discord/Vesktop)
 
