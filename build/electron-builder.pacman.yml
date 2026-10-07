@@ -1,4 +1,7 @@
 extends: ./build/electron-builder.base.yml
 linux:
   target:
-    - pacman
+    - target: pacman
+      arch:
+        - x64
+        - arm64
