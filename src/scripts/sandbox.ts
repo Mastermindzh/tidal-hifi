@@ -5,11 +5,9 @@ import { settingsStore } from "./settingsStore";
  * Whether Chromium's renderer sandbox should be turned off.
  *
  * Honours both the explicit `--no-sandbox` command-line switch and the
- * persisted `disableSandbox` flag (which also drives the `--no-sandbox`
- * Chromium switch). Tying the BrowserWindow `sandbox` preference to the same
- * control lets users who hit a blank window (broken /dev/shm, missing setuid
- * sandbox helper, etc.) recover by launching with `--no-sandbox` or toggling
- * the setting.
+ * persisted `disableSandbox` flag. The setting only controls BrowserWindow
+ * preferences; disabling Chromium's sandbox globally requires passing
+ * `--no-sandbox` at launch, before Linux zygotes are initialized.
  */
 export function isSandboxDisabled(): boolean {
   return (

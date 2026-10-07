@@ -9,7 +9,8 @@ import { Logger } from "../logger";
  * Set default Electron flags
  */
 export function setDefaultFlags(app: App) {
-  setFlag(app, "disable-seccomp-filter-sandbox");
+  // Linux zygotes start before our JavaScript. Changing their sandbox switches
+  // here leaves child processes with inconsistent sandbox state.
   setFlag(app, "enable-blink-features", "MiddleClickAutoscroll");
 }
 

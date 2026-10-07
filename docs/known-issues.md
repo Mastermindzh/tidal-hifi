@@ -54,7 +54,9 @@ For different installation methods:
 ### Advanced setting
 
 Under "Advanced" in the settings menu you'll find a section to toggle flags, there you can also toggle the sandbox flag.
-The default value of this flag is "true", which means the sandbox is disabled. Though note, this might not always work, if not use `--no-sandbox`.
+The default value of this flag is "true", which disables the renderer sandbox for the player, settings, and login windows. Restart the app after changing it.
+
+This setting does not disable Chromium's sandbox globally. If a sandbox-related startup issue persists, launch with `--no-sandbox` as shown above. Global sandbox switches must be supplied at launch: applying them from JavaScript after Linux's zygote processes have started can cause child-process crashes, including misleading `/dev/shm` permission errors.
 
 ![The flag as shown in the settings window](./images/disable-sandbox.png)
 
