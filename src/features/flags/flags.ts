@@ -9,7 +9,10 @@ import { Logger } from "../logger";
  * Set default Electron flags
  */
 export function setDefaultFlags(app: App) {
-  setFlag(app, "disable-seccomp-filter-sandbox");
+  // Display compositor workaround (#104). Scoped to the GPU process because
+  // disable-seccomp-filter-sandbox also reaches renderers forked from the
+  // already-sandboxed zygote, which then never finish loading.
+  setFlag(app, "disable-gpu-sandbox");
   setFlag(app, "enable-blink-features", "MiddleClickAutoscroll");
 }
 

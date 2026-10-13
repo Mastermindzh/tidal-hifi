@@ -54,7 +54,8 @@ For different installation methods:
 ### Advanced setting
 
 Under "Advanced" in the settings menu you'll find a section to toggle flags, there you can also toggle the sandbox flag.
-The default value of this flag is "true", which means the sandbox is disabled. Though note, this might not always work, if not use `--no-sandbox`.
+The default value of this flag is "true", which disables Electron's renderer sandbox for the TIDAL windows.
+It cannot turn off Chromium's process sandbox, because that is already running by the time the setting is read; if you still get a white/gray screen, use `--no-sandbox`.
 
 ![The flag as shown in the settings window](./images/disable-sandbox.png)
 

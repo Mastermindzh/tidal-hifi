@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### fixes
+
+- Gray screen on launch when TIDAL serves its DataDome device check - the `disableSandbox` setting and the default `disable-seccomp-filter-sandbox` switch were appended after Chromium had already started its sandboxed zygote, so the cross-site iframe's renderer crashed. The setting now only controls the BrowserWindow sandbox, and the compositor workaround from #104 uses `disable-gpu-sandbox` instead. Fixes #958, thanks to [zealsprince](https://github.com/zealsprince) for the strace write-up.
+
 ## [8.1.3]
 
 ### fixes
