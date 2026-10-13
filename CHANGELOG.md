@@ -4,7 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [2026-10-xx]
+## [9.0.0]
+
+### Breaking changes
+
+- **TIDAL Hi-Fi no longer disables Chromium's sandbox at runtime.** The `no-sandbox` and `disable-seccomp-filter-sandbox` switches were appended after Electron had already started its Linux zygote processes, leaving child processes in an inconsistent sandbox state (#1007).
+  - The packaged Linux desktop entries (deb, rpm, pacman, snap, AUR) now pass `--no-sandbox` at launch instead. Starting `tidal-hifi` from a terminal, running an AppImage or tar.gz directly, or using a custom launcher requires passing `--no-sandbox` yourself if you need it.
+  - The "Disable renderer sandbox" setting only affects the app's own windows and no longer disables Chromium's global sandbox.
+  - On Windows and macOS the global sandbox is now enabled.
 
 ### added
 
@@ -13,6 +20,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### fixes
 
 - Discord RPC now automatically reconnects when the IPC socket drops (Discord restarting, the RPC bridge going away, etc.) instead of giving up. The client retries with a capped exponential backoff and re-publishes the current presence once the connection is restored (#1012)
+- Gray/blank screen and renderer crashes on Linux (Wayland) caused by sandbox switches being appended after Electron startup - the switches are no longer added at runtime (#1007), and `--no-sandbox` is now passed at launch via the bundled desktop entries, the AUR `.desktop`, and the dev `start` script instead.
+
+### changed
+
+- The "Disable sandbox" advanced setting is now labelled "Disable renderer sandbox" and its help text clarifies that it only affects the app's own windows; Chromium's global sandbox is controlled by launching with `--no-sandbox` (which the packaged Linux desktop entries now do by default).
 
 ### docs
 

@@ -32,14 +32,16 @@ To fix this turn off adblock:
 
 ## Disable-sandboxing
 
+> Since the latest release the desktop entries (app menu shortcuts) installed by the deb, rpm, pacman, snap and AUR packages already start TIDAL Hi-Fi with `--no-sandbox`. You still need to pass it yourself when starting `tidal-hifi` from a terminal, running an AppImage or tar.gz directly, or using a custom launcher. Conversely, if you _want_ the sandbox enabled, remove `--no-sandbox` from your own copy of the `.desktop` entry.
+
 Various issues can be solved by disabling the sandbox, to do so simply pass `--no-sandbox` to `tidal-hifi`.
 You are disabling [some security concerns](https://www.electronjs.org/docs/latest/tutorial/sandbox), you should be aware of that.
 
 ## White/Gray screen on login/launch
 
-Some users may experience a white screen when launching Tidal Hi-Fi or during the login process. This is typically caused by security restrictions in the underlying Chromium engine. You can disable it permanently in the settings or following the steps below:
+Some users may experience a white or gray screen when launching Tidal Hi-Fi or during the login process. This is caused by Chromium's sandbox: on Linux (especially Wayland) the renderer can crash on a broken `/dev/shm` or a missing setuid sandbox helper.
 
-**Fix**: Run Tidal Hi-Fi from the command line with the `--no-sandbox` or `--disable-seccomp-filter-sandbox` flag:
+The packaged desktop entries now start with `--no-sandbox` by default, so this should no longer happen when launching from your app menu. If you still hit it (for example when starting from a terminal or running an AppImage directly), run Tidal Hi-Fi with the `--no-sandbox` flag:
 
 ```bash
 tidal-hifi --no-sandbox
@@ -49,7 +51,7 @@ For different installation methods:
 
 - **AppImage**: `./tidal-hifi-*.AppImage --no-sandbox`
 - **Flatpak**: `flatpak run com.mastermindzh.tidal-hifi --no-sandbox`
-- **From source**: `npm start -- --no-sandbox`
+- **From source**: `npm start` (the `start` script already passes `--no-sandbox`)
 
 ### Advanced setting
 

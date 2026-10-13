@@ -32,6 +32,7 @@ linux:
   executableName: tidal-hifi
   executableArgs:
     [
+      "--no-sandbox",
       "--ozone-platform-hint=auto",
       "--enable-features=WaylandWindowDecorations",
       "--enable-wayland-ime",

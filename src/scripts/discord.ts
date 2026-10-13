@@ -65,6 +65,9 @@ let lastStartTimestamp: number | undefined;
 const SEEK_TOLERANCE_SECONDS = 2;
 
 const updateActivity = () => {
+  // Requests on a dead socket never settle; onReady re-publishes once reconnected.
+  if (!rpc?.isConnected) return;
+
   const showIdle = settingsStore.get<string, boolean>(settings.discord.showIdle) ?? true;
   const isPausedAndHidden = mediaInfo.status === MediaStatus.paused && !showIdle;
 
@@ -212,6 +215,13 @@ const clearReconnectTimer = () => {
   }
 };
 
+const createClient = () => {
+  const client = new Client({ transport: { type: "ipc" }, clientId });
+  client.on("ready", onReady);
+  client.on("disconnected", onDisconnected);
+  return client;
+};
+
 /**
  * Queue a single reconnect attempt using an exponential backoff capped at MAX_RETRY_DELAY.
  * No-op when RPC is disabled or an attempt is already queued.
@@ -231,8 +241,11 @@ const scheduleReconnect = () => {
  * attempt with backoff; later drops are handled by the `disconnected` event.
  */
 const connect = async () => {
-  if (!rpc || connecting || rpc.isConnected) return;
+  if (!rpcEnabled || connecting || rpc?.isConnected) return;
   connecting = true;
+  // The library leaks listeners and caches the rejected promise of a failed attempt, so start fresh.
+  rpc?.removeAllListeners();
+  rpc = createClient();
   try {
     await rpc.login();
   } catch (error) {
@@ -249,9 +262,6 @@ const connect = async () => {
 export const initRPC = () => {
   rpcEnabled = true;
   currentRetryDelay = INITIAL_RETRY_DELAY;
-  rpc = new Client({ transport: { type: "ipc" }, clientId });
-  rpc.on("ready", onReady);
-  rpc.on("disconnected", onDisconnected);
 
   // Register IPC observers once; updateActivity is a no-op while disconnected.
   Object.values(globalEvents).forEach((event) => {
@@ -281,7 +291,8 @@ export const unRPC = () => {
       // Discord connection may already be closed; log for diagnostics but continue teardown.
       Logger.log("Clearing Discord activity during unRPC failed", { error });
     }
-    rpc.destroy();
+    rpc.removeAllListeners();
+    rpc.destroy().catch(() => {});
     rpc = null;
     lastActivityKey = "";
     lastStartTimestamp = undefined;

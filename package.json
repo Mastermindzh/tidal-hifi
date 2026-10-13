@@ -1,10 +1,10 @@
 {
   "name": "tidal-hifi",
-  "version": "8.2.0",
+  "version": "9.0.0",
   "description": "Tidal on Electron with widevine(hifi) support",
   "main": "ts-dist/main.js",
   "scripts": {
-    "start": "electron --inspect=0.0.0.0:5858 --remote-debugging-port=8315 --remote-allow-origins=* .",
+    "start": "electron --inspect=0.0.0.0:5858 --remote-debugging-port=8315 --remote-allow-origins=* --no-sandbox .",
     "watchStart": "nodemon --watch src --ext ts,html,scss --exec \"npm run compile && npm run start\"",
     "compile": "tsc && npm run sass-and-copy && npm run bundle-preloads",
     "bundle-preloads": "esbuild src/preload.ts src/pages/settings/preload.ts --bundle --platform=node --target=node20 --format=cjs --external:electron --external:electron-store --outbase=src --outdir=ts-dist --sourcemap",
