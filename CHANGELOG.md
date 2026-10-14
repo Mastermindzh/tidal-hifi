@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Discord RPC now automatically reconnects when the IPC socket drops (Discord restarting, the RPC bridge going away, etc.) instead of giving up. The client retries with a capped exponential backoff and re-publishes the current presence once the connection is restored (#1012)
 - Gray/blank screen and renderer crashes on Linux (Wayland) caused by sandbox switches being appended after Electron startup - the switches are no longer added at runtime (#1007), and `--no-sandbox` is now passed at launch via the bundled desktop entries, the AUR `.desktop`, and the dev `start` script instead.
+- tidal:// urls forwarded correctly when single-instance lock is on
 
 ### changed
 

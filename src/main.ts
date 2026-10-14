@@ -19,6 +19,7 @@ import { addAltKeyMenuBarHandler } from "./features/menuBar/altMenuBar";
 import { MprisService } from "./features/mpris/mprisService";
 import { SharingService } from "./features/sharingService/sharingService";
 import { injectThemeCss, injectThemeCssIfChanged } from "./features/theming/theming";
+import { isLaunchData, resolveLaunchTarget, type LaunchData } from "./features/tidal/launchTarget";
 import { tidalUrl } from "./features/tidal/url";
 import { injectTitlebarStyles } from "./features/titlebar/titlebar";
 import { isWindowTransparencyEnabled } from "./features/windowTransparency/windowTransparency";
@@ -73,6 +74,17 @@ registerSettingsBridge();
 
 setDefaultFlags(app);
 setManagedFlagsFromSettings(app);
+
+// Forward our argv explicitly: the `commandLine` Electron hands the running instance is the raw,
+// possibly reordered command line, so its argv[0] may be a bare `tidal-hifi`.
+const launchData: LaunchData = { argv: process.argv };
+const hasSingleInstanceLock = app.requestSingleInstanceLock(launchData);
+if (!hasSingleInstanceLock && !isMultipleInstancesAllowed()) {
+  app.quit();
+}
+
+// macOS delivers protocol URLs via `open-url`, possibly before the window exists.
+let pendingLaunchTarget: string | null = null;
 
 /**
  * Update the menuBarVisibility according to the store value
@@ -130,7 +142,7 @@ function gracefulExit(): void {
  * @returns true/false based on whether the current window is the main window
  */
 function isMainInstance() {
-  return app.requestSingleInstanceLock();
+  return hasSingleInstanceLock;
 }
 
 /**
@@ -141,38 +153,20 @@ function isMultipleInstancesAllowed() {
 }
 
 /**
- * @param args the arguments passed to the app
- * @returns the custom protocol url if it exists, otherwise null
+ * Load the launch target (if any) in the running main window and bring it to the front.
  */
-function getCustomProtocolUrl(args: string[]) {
-  const customProtocolArg = args.find((arg) => arg.startsWith(PROTOCOL_PREFIX));
-
-  if (!customProtocolArg) {
-    return null;
+function showLaunchTarget(target: string | null) {
+  if (!mainWindow) {
+    return;
   }
-
-  const relativePath = customProtocolArg.substring(PROTOCOL_PREFIX.length + 3);
-  const url = `${tidalUrl}/${relativePath}`;
-
-  // Validate that the constructed URL stays within the Tidal domain
-  try {
-    const parsed = new URL(url);
-    const tidalParsed = new URL(tidalUrl);
-    // Only ever navigate to web content; never file:, data:, etc.
-    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
-      Logger.log(`Blocked custom protocol URL with unexpected scheme: ${parsed.protocol}`);
-      return null;
-    }
-    if (parsed.hostname !== tidalParsed.hostname) {
-      Logger.log(`Blocked custom protocol URL with unexpected host: ${parsed.hostname}`);
-      return null;
-    }
-  } catch {
-    Logger.log(`Invalid custom protocol URL: ${url}`);
-    return null;
+  if (target) {
+    mainWindow.loadURL(target);
   }
-
-  return url;
+  if (mainWindow.isMinimized()) {
+    mainWindow.restore();
+  }
+  mainWindow.show();
+  mainWindow.focus();
 }
 
 /**
@@ -249,16 +243,10 @@ function createWindow({ x = 0, y = 0, backgroundColor = "white" } = {}) {
   mainWindow.on("maximize", sendMaximizeState);
   mainWindow.on("unmaximize", sendMaximizeState);
 
-  // find the custom protocol argument
-  const customProtocolUrl = getCustomProtocolUrl(process.argv);
-
-  if (customProtocolUrl) {
-    // load the url received from the custom protocol
-    mainWindow.loadURL(customProtocolUrl);
-  } else {
-    // load the Tidal website
-    mainWindow.loadURL(tidalUrl);
-  }
+  mainWindow.loadURL(
+    pendingLaunchTarget ?? resolveLaunchTarget(process.argv, tidalUrl) ?? tidalUrl,
+  );
+  pendingLaunchTarget = null;
 
   if (settingsStore.get(settings.disableBackgroundThrottle)) {
     // prevent setInterval lag
@@ -333,20 +321,30 @@ function registerSecondInstanceHandler() {
     return;
   }
 
-  app.on("second-instance", (_, commandLine) => {
-    const customProtocolUrl = getCustomProtocolUrl(commandLine);
-
-    if (customProtocolUrl) {
-      mainWindow.loadURL(customProtocolUrl);
-    }
-
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore();
-      mainWindow.show();
-      mainWindow.focus();
-    }
+  app.on("second-instance", (_event, commandLine, _workingDirectory, additionalData) => {
+    // Fall back to commandLine for launches from an older binary that doesn't forward its argv.
+    const args = isLaunchData(additionalData) ? additionalData.argv : commandLine;
+    const target = resolveLaunchTarget(args, tidalUrl);
+    Logger.log(
+      `[single-instance] new launch forwarded, target: ${target ? new URL(target).pathname : "none"}`,
+    );
+    showLaunchTarget(target);
   });
 }
+
+app.on("open-url", (event, url) => {
+  event.preventDefault();
+  const target = resolveLaunchTarget([url], tidalUrl);
+  if (!target) {
+    Logger.log("[open-url] ignored url that does not point to Tidal");
+    return;
+  }
+  if (mainWindow) {
+    showLaunchTarget(target);
+  } else {
+    pendingLaunchTarget = target;
+  }
+});
 
 /**
  * Cancel TIDAL ad/session requests when ad-blocking is enabled.
