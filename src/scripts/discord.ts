@@ -18,8 +18,17 @@ let rpc: Client | null = null;
 export const isRPCConnected = (): boolean => rpc !== null;
 
 const ACTIVITY_LISTENING = 2;
-const MAX_RETRIES = 5;
-const RETRY_DELAY = 10000;
+
+// Reconnect backoff. Discord (or the RPC bridge) can disappear at any time; when it does
+// the library emits `disconnected` and we keep retrying until it becomes reachable again.
+const INITIAL_RETRY_DELAY = 10_000;
+const MAX_RETRY_DELAY = 60_000;
+
+let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+let currentRetryDelay = INITIAL_RETRY_DELAY;
+// Whether the user wants RPC active. Guards reconnects so a torn-down client stays down.
+let rpcEnabled = false;
+let connecting = false;
 
 const observer = () => {
   if (rpc) {
@@ -56,6 +65,9 @@ let lastStartTimestamp: number | undefined;
 const SEEK_TOLERANCE_SECONDS = 2;
 
 const updateActivity = () => {
+  // Requests on a dead socket never settle; onReady re-publishes once reconnected.
+  if (!rpc?.isConnected) return;
+
   const showIdle = settingsStore.get<string, boolean>(settings.discord.showIdle) ?? true;
   const isPausedAndHidden = mediaInfo.status === MediaStatus.paused && !showIdle;
 
@@ -88,7 +100,14 @@ const updateActivity = () => {
   lastActivityKey = payloadKey;
   lastStartTimestamp = startTimestamp;
 
-  send()?.catch(() => {});
+  send()?.catch((error) => {
+    // A rejected send almost always means the socket died mid-session;
+    // reconnect instead of letting the presence silently go stale.
+    Logger.log("Failed to send activity to Discord", { error });
+    if (rpc && !rpc.isConnected) {
+      scheduleReconnect();
+    }
+  });
 };
 
 /**
@@ -168,29 +187,72 @@ const getActivity = (): SetActivity => {
 };
 
 /**
- * Try to login to RPC and retry if it errors
- * @param retryCount Max retry count
+ * Re-publish the current presence after a (re)connect. The dedupe keys are reset so the
+ * active track is pushed again even though its content hasn't changed since the drop.
  */
-const connectWithRetry = async (retryCount = 0) => {
-  if (!rpc) return;
+const onReady = () => {
+  Logger.log("Connected to Discord");
+  currentRetryDelay = INITIAL_RETRY_DELAY;
+  lastActivityKey = "";
+  lastStartTimestamp = undefined;
+  updateActivity();
+};
+
+/**
+ * Fired when the IPC socket closes (Discord quit, bridge dropped the connection, ...).
+ * Keep retrying so "presence" resumes automatically once Discord is reachable again.
+ */
+const onDisconnected = () => {
+  if (!rpcEnabled) return;
+  Logger.log("Disconnected from Discord, attempting to reconnect...");
+  scheduleReconnect();
+};
+
+const clearReconnectTimer = () => {
+  if (reconnectTimer) {
+    clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+  }
+};
+
+const createClient = () => {
+  const client = new Client({ transport: { type: "ipc" }, clientId });
+  client.on("ready", onReady);
+  client.on("disconnected", onDisconnected);
+  return client;
+};
+
+/**
+ * Queue a single reconnect attempt using an exponential backoff capped at MAX_RETRY_DELAY.
+ * No-op when RPC is disabled or an attempt is already queued.
+ */
+const scheduleReconnect = () => {
+  if (!rpcEnabled || reconnectTimer) return;
+  const delay = currentRetryDelay;
+  currentRetryDelay = Math.min(currentRetryDelay * 2, MAX_RETRY_DELAY);
+  reconnectTimer = setTimeout(() => {
+    reconnectTimer = null;
+    connect();
+  }, delay);
+};
+
+/**
+ * Attempt to (re)connect to the Discord IPC socket. A failed login reschedules another
+ * attempt with backoff; later drops are handled by the `disconnected` event.
+ */
+const connect = async () => {
+  if (!rpcEnabled || connecting || rpc?.isConnected) return;
+  connecting = true;
+  // The library leaks listeners and caches the rejected promise of a failed attempt, so start fresh.
+  rpc?.removeAllListeners();
+  rpc = createClient();
   try {
     await rpc.login();
-    Logger.log("Connected to Discord");
-    rpc.on("ready", updateActivity);
-
-    Object.values(globalEvents).forEach((event) => {
-      ipcMain.removeListener(event, observer);
-      ipcMain.on(event, observer);
-    });
-  } catch (_error) {
-    if (retryCount < MAX_RETRIES) {
-      Logger.log(
-        `Failed to connect to Discord, retrying in ${RETRY_DELAY / 1000} seconds... (Attempt ${retryCount + 1}/${MAX_RETRIES})`,
-      );
-      setTimeout(() => connectWithRetry(retryCount + 1), RETRY_DELAY);
-    } else {
-      Logger.log("Failed to connect to Discord after maximum retry attempts");
-    }
+  } catch (error) {
+    Logger.log(`Failed to connect to Discord, retrying in ${currentRetryDelay / 1000}s`, { error });
+    scheduleReconnect();
+  } finally {
+    connecting = false;
   }
 };
 
@@ -198,14 +260,25 @@ const connectWithRetry = async (retryCount = 0) => {
  * Set up the discord rpc and listen on globalEvents.updateInfo
  */
 export const initRPC = () => {
-  rpc = new Client({ transport: { type: "ipc" }, clientId });
-  connectWithRetry();
+  rpcEnabled = true;
+  currentRetryDelay = INITIAL_RETRY_DELAY;
+
+  // Register IPC observers once; updateActivity is a no-op while disconnected.
+  Object.values(globalEvents).forEach((event) => {
+    ipcMain.removeListener(event, observer);
+    ipcMain.on(event, observer);
+  });
+
+  connect();
 };
 
 /**
  * Remove any RPC connection with discord and remove the event listener on globalEvents.updateInfo
  */
 export const unRPC = () => {
+  rpcEnabled = false;
+  clearReconnectTimer();
+  currentRetryDelay = INITIAL_RETRY_DELAY;
   if (rpc) {
     // Remove observer first to prevent events during cleanup from triggering activity updates
     Object.values(globalEvents).forEach((event) => {
@@ -218,8 +291,10 @@ export const unRPC = () => {
       // Discord connection may already be closed; log for diagnostics but continue teardown.
       Logger.log("Clearing Discord activity during unRPC failed", { error });
     }
-    rpc.destroy();
+    rpc.removeAllListeners();
+    rpc.destroy().catch(() => {});
     rpc = null;
     lastActivityKey = "";
+    lastStartTimestamp = undefined;
   }
 };

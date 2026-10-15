@@ -670,13 +670,16 @@
             </div>
             <div class="group__option">
               <div class="group__content">
-                <h4>Disable sandbox (Fix white screen login)</h4>
+                <h4>Disable renderer sandbox</h4>
                 <p>
-                  Disables Electron's security sandbox to fix login white screen issues.
+                  Disables the sandbox for the player, settings, and login windows. Chromium's
+                  global sandbox is controlled separately by launching with --no-sandbox (the
+                  packaged Linux desktop entries already do this). Restart the app after changing
+                  this setting.
                 </p>
               </div>
               <label class="switch">
-                <input id="disableSandbox" type="checkbox" aria-label="Disable sandbox (fix white screen login)" />
+                <input id="disableSandbox" type="checkbox" aria-label="Disable renderer sandbox" />
                 <span class="switch__slider"></span>
               </label>
             </div>

@@ -1,12 +1,30 @@
 extends: ./build/electron-builder.base.yml
 linux:
   target:
-    - pacman
-    - tar.gz
-    - deb
-    - rpm
-    - AppImage
+    - target: pacman
+      arch:
+        - x64
+        - arm64
+    - target: tar.gz
+      arch:
+        - x64
+        - arm64
+    - target: deb
+      arch:
+        - x64
+        - arm64
+    - target: rpm
+      arch:
+        - x64
+        - arm64
+    - target: AppImage
+      arch:
+        - x64
+        - arm64
+    # snap is built for the host architecture only; cross-building/publishing
+    # arm64 snaps from an amd64 runner is not reliably supported.
     - snap
+    # castlabs does not provide a freebsd-arm64 Electron build.
     - freebsd
 win:
   target: msi

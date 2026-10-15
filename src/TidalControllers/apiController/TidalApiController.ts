@@ -1,6 +1,7 @@
 import { Logger } from "../../features/logger";
 import type { MediaInfo } from "../../models/mediaInfo";
 import type { MediaStatus } from "../../models/mediaStatus";
+import type { PlayMediaRequest } from "../../models/playableMedia";
 import type { RepeatStateType } from "../../models/repeatState";
 import { DomTidalController } from "../DomController/DomTidalController";
 import type { TidalController } from "../TidalController";
@@ -126,6 +127,9 @@ export class TidalApiController implements TidalController {
   playPause(): void {
     globalThis.alert("Method not implemented");
     throw new Error("Method not implemented.");
+  }
+  playMedia(request: PlayMediaRequest): Promise<void> {
+    return this.domMediaController.playMedia(request);
   }
 
   destroy(): void {

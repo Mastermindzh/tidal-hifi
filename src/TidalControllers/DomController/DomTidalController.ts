@@ -4,6 +4,7 @@ import { convertSecondsToClockFormat } from "../../features/time/parse";
 import type { AudioQuality } from "../../models/audioQuality";
 import type { MediaInfo } from "../../models/mediaInfo";
 import { MediaStatus } from "../../models/mediaStatus";
+import type { PlayMediaRequest } from "../../models/playableMedia";
 import { RepeatState, type RepeatStateType } from "../../models/repeatState";
 import { constrainPollingInterval } from "../../utility/pollingConstraints";
 import type { TidalController } from "../TidalController";
@@ -16,6 +17,7 @@ import {
   getElementAttribute,
   getElementText,
 } from "./domHelpers";
+import { playMediaViaDom } from "./playMedia";
 
 export class DomTidalController implements TidalController<DomControllerOptions> {
   private updateSubscriber!: (state: Partial<MediaInfo>) => void;
@@ -134,6 +136,9 @@ export class DomTidalController implements TidalController<DomControllerOptions>
   }
   toggleShuffle() {
     clickElement("shuffle");
+  }
+  playMedia(request: PlayMediaRequest) {
+    return playMediaViaDom(request);
   }
   getCurrentlyPlayingStatus() {
     const pause = getElement("pause");

@@ -1,4 +1,7 @@
 extends: ./build/electron-builder.base.yml
 linux:
   target:
-    - deb
+    - target: deb
+      arch:
+        - x64
+        - arm64

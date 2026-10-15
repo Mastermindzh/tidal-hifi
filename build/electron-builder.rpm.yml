@@ -1,4 +1,7 @@
 extends: ./build/electron-builder.base.yml
 linux:
   target:
-    - rpm
+    - target: rpm
+      arch:
+        - x64
+        - arm64
