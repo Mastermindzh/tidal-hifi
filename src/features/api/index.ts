@@ -8,6 +8,7 @@ import { settingsStore } from "../../scripts/settingsStore";
 import { addCurrentInfo } from "./features/current";
 import { addHealthEndpoint } from "./features/health";
 import { addPlaybackControl } from "./features/player";
+import { addRemoteControl } from "./features/remote";
 import { addSettingsAPI } from "./features/settings/settings";
 import { addLegacyApi } from "./legacy";
 import swaggerSpec from "./swagger.json";
@@ -36,6 +37,7 @@ export const startApi = (mainWindow: BrowserWindow) => {
   addPlaybackControl(expressApp, mainWindow);
   addCurrentInfo(expressApp);
   addSettingsAPI(expressApp, mainWindow);
+  addRemoteControl(expressApp);
 
   const expressInstance = expressApp.listen(port, hostname);
   expressInstance.on("error", (e: { code: string }) => {

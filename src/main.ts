@@ -1,6 +1,6 @@
 import path from "node:path";
 import { initialize } from "@electron/remote/main";
-import { app, BrowserWindow, components, ipcMain, screen, session } from "electron";
+import { app, BrowserWindow, components, ipcMain, screen, session, shell } from "electron";
 
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
@@ -289,7 +289,11 @@ function createWindow({ x = 0, y = 0, backgroundColor = "white" } = {}) {
       mainWindow.setBounds(workArea);
     });
   }
-  mainWindow.webContents.setWindowOpenHandler(() => {
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (settingsStore.get(settings.openExternalLinksInBrowser) && isExternalUrl(url)) {
+      shell.openExternal(url);
+      return { action: "deny" };
+    }
     return {
       action: "allow",
       overrideBrowserWindowOptions: {
@@ -347,6 +351,24 @@ app.on("open-url", (event, url) => {
 });
 
 /**
+ * Whether a new-window target should open in the system browser instead of an
+ * in-app Electron window. Only off-Tidal http(s) links qualify, so in-app Tidal
+ * popups keep working (issue #463).
+ */
+function isExternalUrl(url: string): boolean {
+  try {
+    const target = new URL(url);
+    if (target.protocol !== "https:" && target.protocol !== "http:") {
+      return false;
+    }
+    const host = target.hostname.replace(/^www\./, "");
+    return host !== "tidal.com" && !host.endsWith(".tidal.com");
+  } catch {
+    return false;
+  }
+}
+
+/**
  * Cancel TIDAL ad/session requests when ad-blocking is enabled.
  */
 function setupAdBlock() {
@@ -354,11 +376,12 @@ function setupAdBlock() {
     return;
   }
 
-  // TIDAL serves ads and account/session data from the same domain, so there
-  // is no `/users/<id>/...` request we can cancel without breaking startup:
-  // favorites, clients and subscription are all awaited by the web app before
-  // it renders, and cancelling any of them stalls startup for ~110s on an
-  // internal retry loop (issue #973).
+  // TIDAL serves ads and account/session data from the same domain. The
+  // top-level `/users/<id>?countryCode=...&deviceType=BROWSER` request became
+  // load-bearing for startup: cancelling it stalls the web app for ~110s on an
+  // internal retry loop (issue #973). Keep a narrow exception so that request
+  // always passes through while we still block the ad/account variant.
+  const startupExceptionPattern = /\/users\/\d+\?countryCode=.*deviceType=BROWSER/;
   const adRequestPatterns: RegExp[] = [
     /\/users\/.*\d\?country/, // original broad rule (blocked everything below)
     // /\/users\/\d+\/subscription\?country/, // subscription tier (drives the Subscribe button)
@@ -367,7 +390,8 @@ function setupAdBlock() {
   ];
   const filter = { urls: [`${tidalUrl}/*`] };
   session.defaultSession.webRequest.onBeforeRequest(filter, (details, callback) => {
-    if (adRequestPatterns.some((pattern) => pattern.test(details.url))) {
+    const isAdRequest = adRequestPatterns.some((pattern) => pattern.test(details.url));
+    if (isAdRequest && !startupExceptionPattern.test(details.url)) {
       Logger.log(`[adBlock] cancelling request: ${details.url}`);
       callback({ cancel: true });
     } else {

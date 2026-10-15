@@ -88,6 +88,13 @@
   background-color: #c8d0ea !important;
 }
 
+// --- Hotkey key bindings -----------------------------------------------------
+// `_base.scss` sets the kbd text colour to $bg-main, which is transparent in
+// this theme and makes the key label invisible against the accent background.
+.hotkey-binding kbd {
+  color: #11121a !important;
+}
+
 // --- Main window -------------------------------------------------------------
 // NOTE: we deliberately do NOT touch `--wave-color-solid-base-fill`
 // TIDAL also uses it as a *text* colour (primary buttons, active tab), so

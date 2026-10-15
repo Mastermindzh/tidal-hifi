@@ -59,6 +59,8 @@ let adBlock: HTMLInputElement,
   disableSandbox: HTMLInputElement,
   enableCustomHotkeys: HTMLInputElement,
   enableDiscord: HTMLInputElement,
+  hideScrollbars: HTMLInputElement,
+  openExternalLinksInBrowser: HTMLInputElement,
   gpuRasterization: HTMLInputElement,
   hotkeySearch: HTMLInputElement,
   hotkeysList: HTMLElement,
@@ -70,6 +72,8 @@ let adBlock: HTMLInputElement,
   playBackControl: HTMLInputElement,
   preventSleep: HTMLInputElement,
   port: HTMLInputElement,
+  remote: HTMLInputElement,
+  remoteUrlPort: HTMLElement,
   singleInstance: HTMLInputElement,
   skipArtists: HTMLInputElement,
   skippedArtists: HTMLInputElement,
@@ -242,6 +246,8 @@ function refreshSettings() {
     disableSandbox.checked = settingsStore.get(settings.flags.disableSandbox);
     enableCustomHotkeys.checked = settingsStore.get(settings.enableCustomHotkeys);
     enableDiscord.checked = settingsStore.get(settings.enableDiscord);
+    hideScrollbars.checked = settingsStore.get(settings.hideScrollbars);
+    openExternalLinksInBrowser.checked = settingsStore.get(settings.openExternalLinksInBrowser);
     enableWaylandSupport.checked = settingsStore.get(settings.flags.enableWaylandSupport);
     gpuRasterization.checked = settingsStore.get(settings.flags.gpuRasterization);
     hostname.value = settingsStore.get(settings.apiSettings.hostname);
@@ -252,6 +258,8 @@ function refreshSettings() {
     playBackControl.checked = settingsStore.get(settings.playBackControl);
     port.value = settingsStore.get(settings.apiSettings.port);
     preventSleep.checked = settingsStore.get(settings.preventSleep);
+    remote.checked = settingsStore.get(settings.apiSettings.remote);
+    remoteUrlPort.textContent = String(settingsStore.get(settings.apiSettings.port));
     singleInstance.checked = settingsStore.get(settings.singleInstance);
     skipArtists.checked = settingsStore.get(settings.skipArtists);
     skippedArtists.value = settingsStore.get<string, string[]>(settings.skippedArtists).join("\n");
@@ -428,6 +436,8 @@ window.addEventListener("DOMContentLoaded", () => {
   disableSandbox = get("disableSandbox");
   enableCustomHotkeys = get("enableCustomHotkeys");
   enableDiscord = get("enableDiscord");
+  hideScrollbars = get("hideScrollbars");
+  openExternalLinksInBrowser = get("openExternalLinksInBrowser");
   enableWaylandSupport = get("enableWaylandSupport");
   gpuRasterization = get("gpuRasterization");
   hotkeySearch = get("hotkey-search");
@@ -440,6 +450,8 @@ window.addEventListener("DOMContentLoaded", () => {
   playBackControl = get("playBackControl");
   port = get("port");
   preventSleep = get("preventSleep");
+  remote = get("remote");
+  remoteUrlPort = get("remoteUrlPort");
   theme = get<HTMLSelectElement>("themesList");
   trayIcon = get("trayIcon");
   trayIconPath = get("trayIconPath");
@@ -480,6 +492,8 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(disableSandbox, settings.flags.disableSandbox);
   addInputListener(enableCustomHotkeys, settings.enableCustomHotkeys, switchesWithSettings.hotkeys);
   addInputListener(enableDiscord, settings.enableDiscord, switchesWithSettings.discord);
+  addInputListener(hideScrollbars, settings.hideScrollbars);
+  addInputListener(openExternalLinksInBrowser, settings.openExternalLinksInBrowser);
   addInputListener(enableWaylandSupport, settings.flags.enableWaylandSupport);
   addInputListener(gpuRasterization, settings.flags.gpuRasterization);
   addInputListener(hostname, settings.apiSettings.hostname);
@@ -489,7 +503,11 @@ window.addEventListener("DOMContentLoaded", () => {
   addInputListener(notifications, settings.notifications);
   addInputListener(playBackControl, settings.playBackControl);
   addInputListener(port, settings.apiSettings.port);
+  port.addEventListener("input", () => {
+    remoteUrlPort.textContent = port.value || "<port>";
+  });
   addInputListener(preventSleep, settings.preventSleep);
+  addInputListener(remote, settings.apiSettings.remote);
   addInputListener(skipArtists, settings.skipArtists);
   addTextAreaListener(skippedArtists, settings.skippedArtists);
   addInputListener(skipTracks, settings.skipTracks);
