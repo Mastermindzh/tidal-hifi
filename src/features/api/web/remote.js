@@ -32,10 +32,11 @@ const hold = (key, ms = 1200) => {
 const holding = (key) => Date.now() < holdUntil[key];
 
 /** Fire-and-forget request that logs failures instead of throwing. */
-const request = (method, path) =>
+const request = (method, path) => {
   fetch(path, { method }).catch((error) => {
     console.error(`Remote API request failed: ${method} ${path}`, error);
   });
+};
 
 /** Media API client. One method per endpoint so handlers stay declarative. */
 const api = {
@@ -117,15 +118,21 @@ function updateLocalState(currentInfo) {
 }
 
 /** Fetch current media info and update the UI, or show the offline state. */
-async function poll() {
-  const info = await api.getCurrent();
-  if (info) {
-    updateLocalState(info);
-  } else {
-    state.online = false;
-    getById("player").classList.add("offline");
-    getById("playingFrom").textContent = "Reconnecting…";
-  }
+function poll() {
+  api
+    .getCurrent()
+    .then((info) => {
+      if (info) {
+        updateLocalState(info);
+      } else {
+        state.online = false;
+        getById("player").classList.add("offline");
+        getById("playingFrom").textContent = "Reconnecting…";
+      }
+    })
+    .catch((error) => {
+      console.error("Remote poll failed", error);
+    });
 }
 
 const POLL_MS = 1000;
