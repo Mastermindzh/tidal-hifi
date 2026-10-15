@@ -232,7 +232,7 @@ const scheduleReconnect = () => {
   currentRetryDelay = Math.min(currentRetryDelay * 2, MAX_RETRY_DELAY);
   reconnectTimer = setTimeout(() => {
     reconnectTimer = null;
-    connect();
+    void connect();
   }, delay);
 };
 
@@ -269,7 +269,7 @@ export const initRPC = () => {
     ipcMain.on(event, observer);
   });
 
-  connect();
+  void connect();
 };
 
 /**

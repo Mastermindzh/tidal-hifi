@@ -100,7 +100,7 @@ function addHotKeys() {
     addHotkey(hotkeyConfig.toggleRepeat, () => {
       tidalController.repeat();
     });
-    addHotkey(hotkeyConfig.shareTrackLink, async () => {
+    addHotkey(hotkeyConfig.shareTrackLink, () => {
       const url = getUniversalLink(getTrackURL(tidalController.getTrackId()));
       ipcRenderer.send(bridgeChannels.clipboardWriteText, url);
       ipcRenderer.send(bridgeChannels.notificationShow, {
@@ -320,7 +320,7 @@ function addIPCEventListeners() {
       case globalEvents.setLoopState: {
         const targetState = payload?.targetState;
         if (targetState === "off" || targetState === "single" || targetState === "all") {
-          setLoopState(targetState);
+          void setLoopState(targetState);
         }
         break;
       }
@@ -359,7 +359,7 @@ function updateMediaInfo(mediaInfo: MediaInfo, notify: boolean) {
  * send a desktop notification if enabled in settings
  * @param mediaInfo
  */
-async function sendNotification(mediaInfo: MediaInfo) {
+function sendNotification(mediaInfo: MediaInfo) {
   if (settingsStore.get(settings.notifications)) {
     ipcRenderer.send(bridgeChannels.notificationShow, {
       title: mediaInfo.title,
@@ -387,7 +387,7 @@ async function setLoopState(targetRepeatState: RepeatStateType) {
   for (let i = 0; i < calculatedDelta; i++) {
     tidalController.repeat();
     // Small delay to ensure the button click is registered in the UI
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500)); // NOSONAR: clicks must be spaced out
   }
 }
 

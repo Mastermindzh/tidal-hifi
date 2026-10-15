@@ -233,13 +233,12 @@ function currentThemeSignature(): string {
 export async function injectThemeCss(app: Electron.App, webContents: Electron.WebContents) {
   // Remove any previously-injected CSS so we don't accumulate stylesheets.
   const previousKeys = insertedCssKeys.get(webContents) ?? [];
-  for (const key of previousKeys) {
-    try {
-      await webContents.removeInsertedCSS(key);
-    } catch {
+  await Promise.all(
+    previousKeys.map((key) =>
       // Renderer may have already discarded the stylesheet (e.g. after navigation); ignore.
-    }
-  }
+      webContents.removeInsertedCSS(key).catch(() => undefined),
+    ),
+  );
 
   const newKeys: string[] = [];
 

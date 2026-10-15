@@ -59,7 +59,7 @@ export class DomTidalController implements TidalController<DomControllerOptions>
     }
 
     const constrainedInterval = constrainPollingInterval(options.refreshInterval);
-    this.pollingIntervalId = setInterval(async () => {
+    this.pollingIntervalId = setInterval(() => {
       const title = this.getTitle();
       const artistsArray = this.getArtists();
       const artistsString = this.getArtistsString();

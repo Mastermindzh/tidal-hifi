@@ -84,7 +84,7 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
       clearInterval(this.pollingIntervalId);
     }
     const constrainedInterval = constrainPollingInterval(options.refreshInterval);
-    this.pollingIntervalId = setInterval(async () => {
+    this.pollingIntervalId = setInterval(() => {
       const current = this.getCurrentTime();
       const duration = this.getDuration();
 

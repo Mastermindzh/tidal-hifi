@@ -48,7 +48,7 @@ export async function playMediaViaDom(request: PlayMediaRequest): Promise<void> 
       button.click();
       return;
     }
-    await delay(POLL_INTERVAL_MS);
+    await delay(POLL_INTERVAL_MS); // NOSONAR: polling, each iteration must wait for the previous one
   }
   throw new Error(`Timed out waiting for the play button of ${path}`);
 }

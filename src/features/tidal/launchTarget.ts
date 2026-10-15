@@ -25,7 +25,7 @@ export function resolveLaunchTarget(args: readonly string[], baseUrl: string): s
   for (const arg of args) {
     let candidate: string;
     if (arg.startsWith(PROTOCOL)) {
-      candidate = `${baseUrl.replace(/\/+$/, "")}/${arg.slice(PROTOCOL.length)}`;
+      candidate = `${base.origin}/${arg.slice(PROTOCOL.length)}`;
     } else if (arg.startsWith("https://")) {
       candidate = arg;
     } else {

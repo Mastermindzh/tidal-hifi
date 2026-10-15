@@ -345,7 +345,7 @@ window.addEventListener("DOMContentLoaded", () => {
     return document.getElementById(id) as T;
   }
 
-  getThemeFiles();
+  void getThemeFiles();
   handleFileUploads();
   setAppVersion();
 

@@ -227,10 +227,10 @@ function createWindow({ x = 0, y = 0, backgroundColor = "white" } = {}) {
   // Inject theme CSS via Chromium-level insertCSS on every page load.
   // This survives SPA hydration / DOM replacement that wipes preload-injected <style> elements.
   mainWindow.webContents.on("did-finish-load", () => {
-    injectThemeCss(app, mainWindow.webContents);
+    void injectThemeCss(app, mainWindow.webContents);
     // Same lifecycle hook, same technique: paint the custom titlebar.
     if (settingsStore.get(settings.showCustomTitlebar)) {
-      injectTitlebarStyles(mainWindow.webContents);
+      void injectTitlebarStyles(mainWindow.webContents);
     }
   });
 
@@ -518,7 +518,7 @@ ipcMain.on(globalEvents.storeChanged, () => {
 
   // Re-inject theme + custom CSS only when it actually changed, so appearance
   // changes apply live without flickering the window on unrelated settings.
-  injectThemeCssIfChanged(app, mainWindow.webContents);
+  void injectThemeCssIfChanged(app, mainWindow.webContents);
   refreshSettingsWindowTheme();
 
   // Notify the main renderer so it can re-apply settings that are otherwise only
@@ -581,6 +581,6 @@ ipcMain.handle(globalEvents.titlebarGetMaximized, () => {
   return mainWindow?.isMaximized() ?? false;
 });
 
-ipcMain.handle(globalEvents.getUniversalLink, async (_event, url) => {
+ipcMain.handle(globalEvents.getUniversalLink, (_event, url) => {
   return SharingService.getUniversalLink(url);
 });
