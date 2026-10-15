@@ -1,3 +1,4 @@
+import fs from "node:fs";
 import path from "node:path";
 import express, { type Router } from "express";
 
@@ -15,9 +16,11 @@ export const addRemoteControl = (expressApp: Router) => {
   }
 
   const webDir = path.join(__dirname, "..", "web");
+  // Read once at startup so requests never touch the file system.
+  const remoteHtml = fs.readFileSync(path.join(webDir, "remote.html"));
 
   expressApp.use("/remote", express.static(webDir));
   expressApp.get("/remote", (_req, res) => {
-    res.sendFile(path.join(webDir, "remote.html"));
+    res.type("html").send(remoteHtml);
   });
 };
