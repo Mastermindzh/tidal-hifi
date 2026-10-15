@@ -9,6 +9,7 @@ import { Logger } from "./features/logger";
 import { getTrackURL, getUniversalLink } from "./features/tidal/url";
 import { mountCustomTitlebar, setCustomTitlebarTitle } from "./features/titlebar/titlebarView";
 import { getEmptyMediaInfo, type MediaInfo } from "./models/mediaInfo";
+import { isPlayableMediaType } from "./models/playableMedia";
 import { RepeatState, type RepeatStateType } from "./models/repeatState";
 import { isSeekEvent } from "./models/seekEvent";
 import { addHotkey, removeHotkeys } from "./scripts/hotkeys";
@@ -300,6 +301,15 @@ function addIPCEventListeners() {
           }
         }
         break;
+      case globalEvents.playMedia: {
+        const { type, id } = payload ?? {};
+        if (typeof type === "string" && isPlayableMediaType(type) && typeof id === "string") {
+          tidalController
+            .playMedia({ type, id })
+            .catch((error) => Logger.log("[playMedia] failed", { error: String(error) }));
+        }
+        break;
+      }
       case globalEvents.setLoopState: {
         const targetState = payload?.targetState;
         if (targetState === "off" || targetState === "single" || targetState === "all") {

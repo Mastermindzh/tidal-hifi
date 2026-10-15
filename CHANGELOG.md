@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### added
 
+- API endpoints to play a track, album or playlist by its Tidal ID, replacing the current queue: `POST /player/play/track/{id}`, `/player/play/album/{id}` and `/player/play/playlist/{id}` (#727).
 - ARM64 (aarch64) builds are now produced for Linux, enabled by castlabs Electron's official `linux-arm64` support. The `deb`, `rpm`, `pacman`, `tar.gz` and `AppImage` targets now ship both `x64` and `arm64` artifacts, and an arm64 snap is built and published from a native arm runner.
 
 ### fixes

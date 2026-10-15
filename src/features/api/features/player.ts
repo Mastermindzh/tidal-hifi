@@ -3,6 +3,7 @@ import type { Request, Router } from "express";
 
 import { globalEvents } from "../../../constants/globalEvents";
 import { settings } from "../../../constants/settings";
+import { isPlayableMediaType, playableMediaTypes } from "../../../models/playableMedia";
 import { settingsStore } from "../../../scripts/settingsStore";
 import { handleWindowEvent } from "../helpers/handleWindowEvent";
 
@@ -73,6 +74,59 @@ export const addPlaybackControl = (expressApp: Router, mainWindow: BrowserWindow
      *               $ref: '#/components/schemas/OkResponse'
      */
     createPlayerAction("/play", globalEvents.play);
+
+    /**
+     * @swagger
+     * /player/play/{type}/{id}:
+     *   post:
+     *     summary: Play a track, album or playlist by its Tidal ID, replacing the current queue
+     *     tags: [player]
+     *     parameters:
+     *       - in: path
+     *         name: type
+     *         description: Type of media to play
+     *         required: true
+     *         schema:
+     *           type: string
+     *           enum: [track, album, playlist]
+     *       - in: path
+     *         name: id
+     *         description: Tidal ID of the media. Numeric for tracks and albums, a UUID for playlists.
+     *         required: true
+     *         schema:
+     *           type: string
+     *         examples:
+     *           track:
+     *             value: "15257936"
+     *           album:
+     *             value: "463900363"
+     *           playlist:
+     *             value: "36ea71a8-445e-41a4-82ab-6628c581535d"
+     *     responses:
+     *       200:
+     *         description: Ok
+     *         content:
+     *           text/plain:
+     *             schema:
+     *               $ref: '#/components/schemas/OkResponse'
+     *       400:
+     *         description: Invalid media type
+     *         content:
+     *           text/plain:
+     *             schema:
+     *               type: string
+     */
+    expressApp.post(createRoute("/play/:type/:id"), (req, res) => {
+      const { type, id } = req.params;
+      if (typeof type !== "string" || !isPlayableMediaType(type) || typeof id !== "string") {
+        res
+          .status(400)
+          .type("text/plain")
+          .send(`Invalid media type, expected one of: ${playableMediaTypes.join(", ")}`);
+        return;
+      }
+      windowEvent(res, globalEvents.playMedia, { type, id });
+    });
 
     /**
      * @swagger
