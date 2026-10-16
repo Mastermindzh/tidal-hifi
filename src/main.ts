@@ -1,6 +1,6 @@
 import path from "node:path";
 import { initialize } from "@electron/remote/main";
-import { app, BrowserWindow, components, ipcMain, screen, session } from "electron";
+import { app, BrowserWindow, components, ipcMain, screen, session, shell } from "electron";
 
 import { globalEvents } from "./constants/globalEvents";
 import { settings } from "./constants/settings";
@@ -19,6 +19,7 @@ import { addAltKeyMenuBarHandler } from "./features/menuBar/altMenuBar";
 import { MprisService } from "./features/mpris/mprisService";
 import { SharingService } from "./features/sharingService/sharingService";
 import { injectThemeCss, injectThemeCssIfChanged } from "./features/theming/theming";
+import { isLaunchData, resolveLaunchTarget, type LaunchData } from "./features/tidal/launchTarget";
 import { tidalUrl } from "./features/tidal/url";
 import { injectTitlebarStyles } from "./features/titlebar/titlebar";
 import { isWindowTransparencyEnabled } from "./features/windowTransparency/windowTransparency";
@@ -73,6 +74,17 @@ registerSettingsBridge();
 
 setDefaultFlags(app);
 setManagedFlagsFromSettings(app);
+
+// Forward our argv explicitly: the `commandLine` Electron hands the running instance is the raw,
+// possibly reordered command line, so its argv[0] may be a bare `tidal-hifi`.
+const launchData: LaunchData = { argv: process.argv };
+const hasSingleInstanceLock = app.requestSingleInstanceLock(launchData);
+if (!hasSingleInstanceLock && !isMultipleInstancesAllowed()) {
+  app.quit();
+}
+
+// macOS delivers protocol URLs via `open-url`, possibly before the window exists.
+let pendingLaunchTarget: string | null = null;
 
 /**
  * Update the menuBarVisibility according to the store value
@@ -130,7 +142,7 @@ function gracefulExit(): void {
  * @returns true/false based on whether the current window is the main window
  */
 function isMainInstance() {
-  return app.requestSingleInstanceLock();
+  return hasSingleInstanceLock;
 }
 
 /**
@@ -141,38 +153,20 @@ function isMultipleInstancesAllowed() {
 }
 
 /**
- * @param args the arguments passed to the app
- * @returns the custom protocol url if it exists, otherwise null
+ * Load the launch target (if any) in the running main window and bring it to the front.
  */
-function getCustomProtocolUrl(args: string[]) {
-  const customProtocolArg = args.find((arg) => arg.startsWith(PROTOCOL_PREFIX));
-
-  if (!customProtocolArg) {
-    return null;
+function showLaunchTarget(target: string | null) {
+  if (!mainWindow) {
+    return;
   }
-
-  const relativePath = customProtocolArg.substring(PROTOCOL_PREFIX.length + 3);
-  const url = `${tidalUrl}/${relativePath}`;
-
-  // Validate that the constructed URL stays within the Tidal domain
-  try {
-    const parsed = new URL(url);
-    const tidalParsed = new URL(tidalUrl);
-    // Only ever navigate to web content; never file:, data:, etc.
-    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") {
-      Logger.log(`Blocked custom protocol URL with unexpected scheme: ${parsed.protocol}`);
-      return null;
-    }
-    if (parsed.hostname !== tidalParsed.hostname) {
-      Logger.log(`Blocked custom protocol URL with unexpected host: ${parsed.hostname}`);
-      return null;
-    }
-  } catch {
-    Logger.log(`Invalid custom protocol URL: ${url}`);
-    return null;
+  if (target) {
+    mainWindow.loadURL(target);
   }
-
-  return url;
+  if (mainWindow.isMinimized()) {
+    mainWindow.restore();
+  }
+  mainWindow.show();
+  mainWindow.focus();
 }
 
 /**
@@ -233,10 +227,10 @@ function createWindow({ x = 0, y = 0, backgroundColor = "white" } = {}) {
   // Inject theme CSS via Chromium-level insertCSS on every page load.
   // This survives SPA hydration / DOM replacement that wipes preload-injected <style> elements.
   mainWindow.webContents.on("did-finish-load", () => {
-    injectThemeCss(app, mainWindow.webContents);
+    void injectThemeCss(app, mainWindow.webContents);
     // Same lifecycle hook, same technique: paint the custom titlebar.
     if (settingsStore.get(settings.showCustomTitlebar)) {
-      injectTitlebarStyles(mainWindow.webContents);
+      void injectTitlebarStyles(mainWindow.webContents);
     }
   });
 
@@ -249,16 +243,10 @@ function createWindow({ x = 0, y = 0, backgroundColor = "white" } = {}) {
   mainWindow.on("maximize", sendMaximizeState);
   mainWindow.on("unmaximize", sendMaximizeState);
 
-  // find the custom protocol argument
-  const customProtocolUrl = getCustomProtocolUrl(process.argv);
-
-  if (customProtocolUrl) {
-    // load the url received from the custom protocol
-    mainWindow.loadURL(customProtocolUrl);
-  } else {
-    // load the Tidal website
-    mainWindow.loadURL(tidalUrl);
-  }
+  mainWindow.loadURL(
+    pendingLaunchTarget ?? resolveLaunchTarget(process.argv, tidalUrl) ?? tidalUrl,
+  );
+  pendingLaunchTarget = null;
 
   if (settingsStore.get(settings.disableBackgroundThrottle)) {
     // prevent setInterval lag
@@ -301,7 +289,11 @@ function createWindow({ x = 0, y = 0, backgroundColor = "white" } = {}) {
       mainWindow.setBounds(workArea);
     });
   }
-  mainWindow.webContents.setWindowOpenHandler(() => {
+  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
+    if (settingsStore.get(settings.openExternalLinksInBrowser) && isExternalUrl(url)) {
+      shell.openExternal(url);
+      return { action: "deny" };
+    }
     return {
       action: "allow",
       overrideBrowserWindowOptions: {
@@ -333,19 +325,47 @@ function registerSecondInstanceHandler() {
     return;
   }
 
-  app.on("second-instance", (_, commandLine) => {
-    const customProtocolUrl = getCustomProtocolUrl(commandLine);
-
-    if (customProtocolUrl) {
-      mainWindow.loadURL(customProtocolUrl);
-    }
-
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore();
-      mainWindow.show();
-      mainWindow.focus();
-    }
+  app.on("second-instance", (_event, commandLine, _workingDirectory, additionalData) => {
+    // Fall back to commandLine for launches from an older binary that doesn't forward its argv.
+    const args = isLaunchData(additionalData) ? additionalData.argv : commandLine;
+    const target = resolveLaunchTarget(args, tidalUrl);
+    Logger.log(
+      `[single-instance] new launch forwarded, target: ${target ? new URL(target).pathname : "none"}`,
+    );
+    showLaunchTarget(target);
   });
+}
+
+app.on("open-url", (event, url) => {
+  event.preventDefault();
+  const target = resolveLaunchTarget([url], tidalUrl);
+  if (!target) {
+    Logger.log("[open-url] ignored url that does not point to Tidal");
+    return;
+  }
+  if (mainWindow) {
+    showLaunchTarget(target);
+  } else {
+    pendingLaunchTarget = target;
+  }
+});
+
+/**
+ * Whether a new-window target should open in the system browser instead of an
+ * in-app Electron window. Only off-Tidal http(s) links qualify, so in-app Tidal
+ * popups keep working (issue #463).
+ */
+function isExternalUrl(url: string): boolean {
+  try {
+    const target = new URL(url);
+    if (target.protocol !== "https:" && target.protocol !== "http:") {
+      return false;
+    }
+    const host = target.hostname.replace(/^www\./, "");
+    return host !== "tidal.com" && !host.endsWith(".tidal.com");
+  } catch {
+    return false;
+  }
 }
 
 /**
@@ -356,11 +376,12 @@ function setupAdBlock() {
     return;
   }
 
-  // TIDAL serves ads and account/session data from the same domain, so there
-  // is no `/users/<id>/...` request we can cancel without breaking startup:
-  // favorites, clients and subscription are all awaited by the web app before
-  // it renders, and cancelling any of them stalls startup for ~110s on an
-  // internal retry loop (issue #973).
+  // TIDAL serves ads and account/session data from the same domain. The
+  // top-level `/users/<id>?countryCode=...&deviceType=BROWSER` request became
+  // load-bearing for startup: cancelling it stalls the web app for ~110s on an
+  // internal retry loop (issue #973). Keep a narrow exception so that request
+  // always passes through while we still block the ad/account variant.
+  const startupExceptionPattern = /\/users\/\d+\?countryCode=.*deviceType=BROWSER/;
   const adRequestPatterns: RegExp[] = [
     /\/users\/.*\d\?country/, // original broad rule (blocked everything below)
     // /\/users\/\d+\/subscription\?country/, // subscription tier (drives the Subscribe button)
@@ -369,7 +390,8 @@ function setupAdBlock() {
   ];
   const filter = { urls: [`${tidalUrl}/*`] };
   session.defaultSession.webRequest.onBeforeRequest(filter, (details, callback) => {
-    if (adRequestPatterns.some((pattern) => pattern.test(details.url))) {
+    const isAdRequest = adRequestPatterns.some((pattern) => pattern.test(details.url));
+    if (isAdRequest && !startupExceptionPattern.test(details.url)) {
       Logger.log(`[adBlock] cancelling request: ${details.url}`);
       callback({ cancel: true });
     } else {
@@ -496,7 +518,7 @@ ipcMain.on(globalEvents.storeChanged, () => {
 
   // Re-inject theme + custom CSS only when it actually changed, so appearance
   // changes apply live without flickering the window on unrelated settings.
-  injectThemeCssIfChanged(app, mainWindow.webContents);
+  void injectThemeCssIfChanged(app, mainWindow.webContents);
   refreshSettingsWindowTheme();
 
   // Notify the main renderer so it can re-apply settings that are otherwise only
@@ -559,6 +581,6 @@ ipcMain.handle(globalEvents.titlebarGetMaximized, () => {
   return mainWindow?.isMaximized() ?? false;
 });
 
-ipcMain.handle(globalEvents.getUniversalLink, async (_event, url) => {
+ipcMain.handle(globalEvents.getUniversalLink, (_event, url) => {
   return SharingService.getUniversalLink(url);
 });

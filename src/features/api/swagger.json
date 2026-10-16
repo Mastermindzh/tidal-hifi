@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "TIDAL Hi-Fi API",
-    "version": "8.1.3",
+    "version": "9.0.0",
     "description": "",
     "license": {
       "name": "MIT",
@@ -182,6 +182,72 @@
               "text/plain": {
                 "schema": {
                   "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/player/play/{type}/{id}": {
+      "post": {
+        "summary": "Play a track, album or playlist by its Tidal ID, replacing the current queue",
+        "tags": [
+          "player"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "type",
+            "description": "Type of media to play",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "enum": [
+                "track",
+                "album",
+                "playlist"
+              ]
+            }
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "description": "Tidal ID of the media. Numeric for tracks and albums, a UUID for playlists.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "track": {
+                "value": "15257936"
+              },
+              "album": {
+                "value": "463900363"
+              },
+              "playlist": {
+                "value": "36ea71a8-445e-41a4-82ab-6628c581535d"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Ok",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/OkResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid media type",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
                 }
               }
             }

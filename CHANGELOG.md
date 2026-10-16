@@ -4,6 +4,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [9.0.0]
+
+### Breaking changes
+
+- **TIDAL Hi-Fi no longer disables Chromium's sandbox at runtime.** The `no-sandbox` and `disable-seccomp-filter-sandbox` switches were appended after Electron had already started its Linux zygote processes, leaving child processes in an inconsistent sandbox state (fixes #1007).
+  - The packaged Linux desktop entries (deb, rpm, pacman, snap, AUR) now pass `--no-sandbox` at launch instead. Starting `tidal-hifi` from a terminal, running an AppImage or tar.gz directly, or using a custom launcher requires passing `--no-sandbox` yourself if you need it.
+  - The "Disable renderer sandbox" setting only affects the app's own windows and no longer disables Chromium's global sandbox.
+  - On Windows and macOS the global sandbox is now enabled.
+
+### added
+
+- Remote control web player: an optional, mobile-friendly page served at `/remote` that controls playback (play/pause, next/previous, seek, volume, shuffle, repeat, favorite) from another device. Enable it with the new "Remote control player" API setting; set the API hostname to `0.0.0.0` to reach it from your phone.
+- Auto-hide scrollbars: a new UI setting that only shows scrollbars while hovering a scrollable area, mirroring the Tidal web player (fixes #850)
+- Open external links in browser: a new UI setting that opens non-Tidal links (e.g. artist websites) in your default browser instead of a new app window (fixes #463)
+- Seek hotkeys: configurable "Seek backward" (`shift+left`) and "Seek forward" (`shift+right`) shortcuts to rewind/fast-forward the current track by 5 seconds (#531)
+- API endpoints to play a track, album or playlist by its Tidal ID, replacing the current queue: `POST /player/play/track/{id}`, `/player/play/album/{id}` and `/player/play/playlist/{id}` (#727).
+- ARM64 (aarch64) builds are now produced for Linux, enabled by castlabs Electron's official `linux-arm64` support. The `deb`, `rpm`, `pacman`, `tar.gz` and `AppImage` targets now ship both `x64` and `arm64` artifacts, and an arm64 snap is built and published from a native arm runner.
+
+### fixes
+
+- Discord RPC now automatically reconnects when the IPC socket drops (Discord restarting, the RPC bridge going away, etc.) instead of giving up. The client retries with a capped exponential backoff and re-publishes the current presence once the connection is restored (fixes #1012)
+- Gray/blank screen and renderer crashes on Linux (Wayland) caused by sandbox switches being appended after Electron startup - the switches are no longer added at runtime (fixes #1007), and `--no-sandbox` is now passed at launch via the bundled desktop entries, the AUR `.desktop`, and the dev `start` script instead.
+- tidal:// urls forwarded correctly when single-instance lock is on
+- Adblock now has a note detailing the slow-down behavior for some users
+  - it now has an internal whitelist for some account URLs
+
+### changed
+
+- The "Disable sandbox" advanced setting is now labelled "Disable renderer sandbox" and its help text clarifies that it only affects the app's own windows; Chromium's global sandbox is controlled by launching with `--no-sandbox` (which the packaged Linux desktop entries now do by default).
+
+### docs
+
+- Reworked the Discord RPC + Flatpak documentation: the unreliable Flatseal `xdg-run/discord-ipc-0` workaround for native Discord/Vesktop has been replaced with a recommendation to use the [discord-flatpak-rpc-bridge](https://github.com/Arcitec/discord-flatpak-rpc-bridge) (#1010)
+
 ## [8.1.3]
 
 ### fixes

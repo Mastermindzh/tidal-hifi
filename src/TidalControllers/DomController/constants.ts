@@ -23,6 +23,8 @@ const BASE_SELECTORS = {
   mediaItem: "[data-type='mediaItem']",
   currentlyPlaying: "[class*='isPlayingIcon'], [data-test-is-playing='true']",
   tracklist_row: '[data-test="tracklist-row"]',
+  pagePlay: '*[data-test="play-all"]',
+  rowPlay: '*[data-test="play-button"]',
   volume: '*[data-test="volume"]',
   favorite: '*[data-test="footer-favorite-button"]',
   qualityBadge: '*[data-test^="quality-badge-"]',

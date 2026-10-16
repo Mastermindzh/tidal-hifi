@@ -20,6 +20,7 @@ export const globalEvents = {
   restartApp: "restartApp",
   volume: "volume",
   seek: "seek",
+  playMedia: "playMedia",
   setLoopState: "setLoopState",
   quit: "quit",
   titlebarMinimize: "titlebarMinimize",

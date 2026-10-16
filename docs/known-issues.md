@@ -15,7 +15,7 @@ This document lists known bugs and issues with Tidal Hi-Fi along with workaround
   - [Subscribe button showing and/or account details not working](#subscribe-button-showing-andor-account-details-not-working)
     - [2-minute (~110 second) startup delay](#2-minute-110-second-startup-delay)
   - [DRM not working on Windows (error S6007)](#drm-not-working-on-windows-error-s6007)
-  - [Discord RPC not working with Flatpak and native Discord](#discord-rpc-not-working-with-flatpak-and-native-discord)
+  - [Discord RPC not working with native Discord/Vesktop and Flatpak TIDAL Hi-Fi](#discord-rpc-not-working-with-native-discordvesktop-and-flatpak-tidal-hi-fi)
   - [Discord RPC not working between Flatpaks (TIDAL Hi-Fi + Discord/Vesktop)](#discord-rpc-not-working-between-flatpaks-tidal-hi-fi--discordvesktop)
   - [Volume resets on restart](#volume-resets-on-restart)
   - [Audio quality](#audio-quality)
@@ -32,14 +32,16 @@ To fix this turn off adblock:
 
 ## Disable-sandboxing
 
+> Since the latest release the desktop entries (app menu shortcuts) installed by the deb, rpm, pacman, snap and AUR packages already start TIDAL Hi-Fi with `--no-sandbox`. You still need to pass it yourself when starting `tidal-hifi` from a terminal, running an AppImage or tar.gz directly, or using a custom launcher. Conversely, if you _want_ the sandbox enabled, remove `--no-sandbox` from your own copy of the `.desktop` entry.
+
 Various issues can be solved by disabling the sandbox, to do so simply pass `--no-sandbox` to `tidal-hifi`.
 You are disabling [some security concerns](https://www.electronjs.org/docs/latest/tutorial/sandbox), you should be aware of that.
 
 ## White/Gray screen on login/launch
 
-Some users may experience a white screen when launching Tidal Hi-Fi or during the login process. This is typically caused by security restrictions in the underlying Chromium engine. You can disable it permanently in the settings or following the steps below:
+Some users may experience a white or gray screen when launching Tidal Hi-Fi or during the login process. This is caused by Chromium's sandbox: on Linux (especially Wayland) the renderer can crash on a broken `/dev/shm` or a missing setuid sandbox helper.
 
-**Fix**: Run Tidal Hi-Fi from the command line with the `--no-sandbox` or `--disable-seccomp-filter-sandbox` flag:
+The packaged desktop entries now start with `--no-sandbox` by default, so this should no longer happen when launching from your app menu. If you still hit it (for example when starting from a terminal or running an AppImage directly), run Tidal Hi-Fi with the `--no-sandbox` flag:
 
 ```bash
 tidal-hifi --no-sandbox
@@ -49,12 +51,14 @@ For different installation methods:
 
 - **AppImage**: `./tidal-hifi-*.AppImage --no-sandbox`
 - **Flatpak**: `flatpak run com.mastermindzh.tidal-hifi --no-sandbox`
-- **From source**: `npm start -- --no-sandbox`
+- **From source**: `npm start` (the `start` script already passes `--no-sandbox`)
 
 ### Advanced setting
 
 Under "Advanced" in the settings menu you'll find a section to toggle flags, there you can also toggle the sandbox flag.
-The default value of this flag is "true", which means the sandbox is disabled. Though note, this might not always work, if not use `--no-sandbox`.
+The default value of this flag is "true", which disables the renderer sandbox for the player, settings, and login windows. Restart the app after changing it.
+
+This setting does not disable Chromium's sandbox globally. If a sandbox-related startup issue persists, launch with `--no-sandbox` as shown above. Global sandbox switches must be supplied at launch: applying them from JavaScript after Linux's zygote processes have started can cause child-process crashes, including misleading `/dev/shm` permission errors.
 
 ![The flag as shown in the settings window](./images/disable-sandbox.png)
 
@@ -83,17 +87,21 @@ Nothing I can do about that I'm afraid... Tidal is working on removing/changing 
 
 Until then you'll have to use the official app unfortunately.
 
-## Discord RPC not working with Flatpak and native Discord
+## Discord RPC not working with native Discord/Vesktop and Flatpak TIDAL Hi-Fi
 
-If you're running TIDAL Hi-Fi as a Flatpak and Discord as a native application (not Flatpak), Discord RPC integration may not work due to sandboxing.
+If you run TIDAL Hi-Fi as a Flatpak and Discord (or Vesktop) as a native application, Discord RPC can't reach the native Discord socket because of Flatpak sandboxing.
 
-**Fix**: Use Flatseal to grant TIDAL Hi-Fi access to the Discord socket:
+> Older versions of this document suggested poking a hole in the sandbox with Flatseal (`xdg-run/discord-ipc-0`). Don't do that, it is unreliable and is not something this project can support.
 
-1. Open Flatseal
-2. Navigate to TIDAL Hi-Fi → Filesystem → Other files
-3. Add a new entry: `xdg-run/discord-ipc-0`
+**Fix**: Install [discord-flatpak-rpc-bridge](https://github.com/Arcitec/discord-flatpak-rpc-bridge), which reliably bridges the native Discord/Vesktop RPC socket into Flatpak applications. It is lightweight and installs with a single command.
 
-This allows the Flatpak to communicate with the native Discord installation through the IPC socket.
+1. Enable Discord RPC in Discord/Vesktop (see the [bridge's supported applications](https://github.com/Arcitec/discord-flatpak-rpc-bridge#supported-applications))
+2. Enable Discord RPC in TIDAL Hi-Fi: Settings → Integrations → Discord RPC
+3. Install the bridge following its [installation instructions](https://github.com/Arcitec/discord-flatpak-rpc-bridge#installation)
+
+See the bridge's [How does it work](https://github.com/Arcitec/discord-flatpak-rpc-bridge#how-does-it-work) section for why this is the only reliable approach.
+
+> Notes: the bridge requires a systemd-based distro, and you must not run a Flatpak-based Discord client at the same time (it would conflict with the same socket paths). It installs a system-wide service via `install.sh`, so review the script first as you would with any third-party installer.
 
 ## Discord RPC not working between Flatpaks (TIDAL Hi-Fi + Discord/Vesktop)
 

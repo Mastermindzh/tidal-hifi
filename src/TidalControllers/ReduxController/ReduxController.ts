@@ -4,9 +4,11 @@ import { convertSecondsToClockFormat } from "../../features/time/parse";
 import type { AudioQuality } from "../../models/audioQuality";
 import type { MediaInfo } from "../../models/mediaInfo";
 import { MediaStatus } from "../../models/mediaStatus";
+import type { PlayMediaRequest } from "../../models/playableMedia";
 import { RepeatState } from "../../models/repeatState";
 import { constrainPollingInterval } from "../../utility/pollingConstraints";
 import { getActivePlayer } from "../DomController/domHelpers";
+import { playMediaViaDom } from "../DomController/playMedia";
 import type { TidalController } from "../TidalController";
 import type { ReduxControllerOptions } from "./ReduxControllerOptions";
 import { ReduxStoreActions as Actions } from "./ReduxStoreActions";
@@ -82,7 +84,7 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
       clearInterval(this.pollingIntervalId);
     }
     const constrainedInterval = constrainPollingInterval(options.refreshInterval);
-    this.pollingIntervalId = setInterval(async () => {
+    this.pollingIntervalId = setInterval(() => {
       const current = this.getCurrentTime();
       const duration = this.getDuration();
 
@@ -301,6 +303,11 @@ export class ReduxController implements TidalController<ReduxControllerOptions> 
 
   toggleShuffle() {
     this.dispatchAction(Actions.toggleShuffle);
+  }
+
+  // Phase 1 uses the DOM; dispatching Tidal's own Redux action is a possible follow-up, but PlayOver's dev wanted to work on this
+  playMedia(request: PlayMediaRequest) {
+    return playMediaViaDom(request);
   }
 
   destroy(): void {

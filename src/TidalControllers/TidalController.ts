@@ -1,5 +1,6 @@
 import type { MediaInfo } from "../models/mediaInfo";
 import type { MediaStatus } from "../models/mediaStatus";
+import type { PlayMediaRequest } from "../models/playableMedia";
 import type { RepeatStateType } from "../models/repeatState";
 
 export interface TidalController<TBootstrapOptions = object> {
@@ -15,6 +16,11 @@ export interface TidalController<TBootstrapOptions = object> {
   next(): void;
   previous(): void;
   toggleShuffle(): void;
+
+  /**
+   * Start playback of the given media, replacing the current queue.
+   */
+  playMedia(request: PlayMediaRequest): Promise<void>;
 
   /**
    * Optional setup/startup/bootstrap for this controller

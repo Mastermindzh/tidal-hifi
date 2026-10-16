@@ -3,6 +3,7 @@ import { getTrackURL } from "../../features/tidal/url";
 import { convertSecondsToClockFormat } from "../../features/time/parse";
 import type { MediaInfo } from "../../models/mediaInfo";
 import { MediaStatus } from "../../models/mediaStatus";
+import type { PlayMediaRequest } from "../../models/playableMedia";
 import type { RepeatStateType } from "../../models/repeatState";
 import { constrainPollingInterval } from "../../utility/pollingConstraints";
 import type { DomControllerOptions } from "../DomController/DomControllerOptions";
@@ -259,6 +260,10 @@ export class MediaSessionController implements TidalController<MediaSessionContr
 
   toggleShuffle(): void {
     this.fallbackDomController.toggleShuffle();
+  }
+
+  playMedia(request: PlayMediaRequest): Promise<void> {
+    return this.fallbackDomController.playMedia(request);
   }
 
   toggleFavorite(): void {

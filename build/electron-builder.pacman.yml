@@ -1,4 +1,5 @@
 extends: ./build/electron-builder.base.yml
+# Host arch only: the AUR PKGBUILD uses this config and only ships linux-unpacked.
 linux:
   target:
     - pacman

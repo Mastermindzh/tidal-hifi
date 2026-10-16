@@ -9,6 +9,7 @@ import { Logger } from "./features/logger";
 import { getTrackURL, getUniversalLink } from "./features/tidal/url";
 import { mountCustomTitlebar, setCustomTitlebarTitle } from "./features/titlebar/titlebarView";
 import { getEmptyMediaInfo, type MediaInfo } from "./models/mediaInfo";
+import { isPlayableMediaType } from "./models/playableMedia";
 import { RepeatState, type RepeatStateType } from "./models/repeatState";
 import { isSeekEvent } from "./models/seekEvent";
 import { addHotkey, removeHotkeys } from "./scripts/hotkeys";
@@ -99,7 +100,7 @@ function addHotKeys() {
     addHotkey(hotkeyConfig.toggleRepeat, () => {
       tidalController.repeat();
     });
-    addHotkey(hotkeyConfig.shareTrackLink, async () => {
+    addHotkey(hotkeyConfig.shareTrackLink, () => {
       const url = getUniversalLink(getTrackURL(tidalController.getTrackId()));
       ipcRenderer.send(bridgeChannels.clipboardWriteText, url);
       ipcRenderer.send(bridgeChannels.notificationShow, {
@@ -126,6 +127,13 @@ function addHotKeys() {
       const currentVolume = tidalController.getVolume();
       const newVolumeDown = Math.max(currentVolume - 0.1, 0.0);
       tidalController.setVolume(newVolumeDown);
+    });
+    addHotkey(hotkeyConfig.seekBackward, () => {
+      const newTime = Math.max(tidalController.getCurrentTime() - 5, 0);
+      tidalController.setCurrentTime(newTime);
+    });
+    addHotkey(hotkeyConfig.seekForward, () => {
+      tidalController.setCurrentTime(tidalController.getCurrentTime() + 5);
     });
     addHotkey(hotkeyConfig.expandNowPlaying, () => {
       clickElement("toggleNowPlaying");
@@ -300,10 +308,19 @@ function addIPCEventListeners() {
           }
         }
         break;
+      case globalEvents.playMedia: {
+        const { type, id } = payload ?? {};
+        if (typeof type === "string" && isPlayableMediaType(type) && typeof id === "string") {
+          tidalController
+            .playMedia({ type, id })
+            .catch((error) => Logger.log("[playMedia] failed", { error: String(error) }));
+        }
+        break;
+      }
       case globalEvents.setLoopState: {
         const targetState = payload?.targetState;
         if (targetState === "off" || targetState === "single" || targetState === "all") {
-          setLoopState(targetState);
+          void setLoopState(targetState);
         }
         break;
       }
@@ -342,7 +359,7 @@ function updateMediaInfo(mediaInfo: MediaInfo, notify: boolean) {
  * send a desktop notification if enabled in settings
  * @param mediaInfo
  */
-async function sendNotification(mediaInfo: MediaInfo) {
+function sendNotification(mediaInfo: MediaInfo) {
   if (settingsStore.get(settings.notifications)) {
     ipcRenderer.send(bridgeChannels.notificationShow, {
       title: mediaInfo.title,
@@ -370,7 +387,7 @@ async function setLoopState(targetRepeatState: RepeatStateType) {
   for (let i = 0; i < calculatedDelta; i++) {
     tidalController.repeat();
     // Small delay to ensure the button click is registered in the UI
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500)); // NOSONAR: clicks must be spaced out
   }
 }
 

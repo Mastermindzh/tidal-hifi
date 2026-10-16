@@ -44,12 +44,15 @@ const defaultSettings = {
   apiSettings: {
     port: 47836,
     hostname: "127.0.0.1",
+    remote: false,
   },
   customCSS: [],
   disableAltMenuBar: false,
   disableBackgroundThrottle: true,
   disableHardwareMediaKeys: false,
   enableCustomHotkeys: false,
+  hideScrollbars: false,
+  openExternalLinksInBrowser: false,
   enableDiscord: false,
   discord: {
     showSong: true,
@@ -187,6 +190,13 @@ const migrations: NonNullable<Store.Options<typeof defaultSettings>["migrations"
     buildMigration("8.0.1", migrationStore, [
       { key: settings.preventSleep, value: true },
       { key: settings.advanced.notificationImageDownscaling, value: false },
+    ]);
+  },
+  "8.2.0": (migrationStore) => {
+    buildMigration("8.2.0", migrationStore, [
+      { key: settings.apiSettings.remote, value: false },
+      { key: settings.hideScrollbars, value: false },
+      { key: settings.openExternalLinksInBrowser, value: false },
     ]);
   },
 };

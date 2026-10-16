@@ -115,6 +115,10 @@
                   Disabled audio & visual ads, unlocked lyrics, suggested track, track info,
                   unlimited skips
                 </p>
+                <p>
+                  <strong>Note:</strong> depending on TIDAL's server-side changes, ad blocking can
+                  occasionally slow down startup. Disable this if the app is slow to load.
+                </p>
               </div>
               <label class="switch">
                 <input id="adBlock" type="checkbox" aria-label="Block ads" />
@@ -142,6 +146,27 @@
                 </div>
                 <label class="switch">
                   <input id="disableAltMenuBar" type="checkbox" aria-label="Disable alt key menu bar activation" />
+                  <span class="switch__slider"></span>
+                </label>
+              </div>
+              <div class="group__option">
+                <div class="group__content">
+                  <h4>Auto-hide scrollbars</h4>
+                  <p>Only show scrollbars while hovering a scrollable area, matching the Tidal web player.</p>
+                </div>
+                <label class="switch">
+                  <input id="hideScrollbars" type="checkbox" aria-label="Auto-hide scrollbars" />
+                  <span class="switch__slider"></span>
+                </label>
+              </div>
+              <div class="group__option">
+                <div class="group__content">
+                  <h4>Open external links in browser</h4>
+                  <p>Open non-Tidal links (e.g. artist websites) in your default browser instead of a new app window.
+                  </p>
+                </div>
+                <label class="switch">
+                  <input id="openExternalLinksInBrowser" type="checkbox" aria-label="Open external links in browser" />
                   <span class="switch__slider"></span>
                 </label>
               </div>
@@ -315,6 +340,22 @@
                   </div>
                   <label class="switch">
                     <input id="playBackControl" type="checkbox" aria-label="Playback control" />
+                    <span class="switch__slider"></span>
+                  </label>
+                </div>
+                <div class="group__option">
+                  <div class="group__content">
+                    <h4>Remote control player</h4>
+                    <p>
+                      Serve a mobile-friendly remote player to control
+                      playback from another device. <br />
+                      To reach it from your phone, set the API hostname above to
+                      <strong>0.0.0.0</strong> and open
+                      <code>http://&lt;your-pc-ip&gt;:<span id="remoteUrlPort">&lt;port&gt;</span>/remote</code>.
+                    </p>
+                  </div>
+                  <label class="switch">
+                    <input id="remote" type="checkbox" aria-label="Remote control player" />
                     <span class="switch__slider"></span>
                   </label>
                 </div>
@@ -629,13 +670,16 @@
             </div>
             <div class="group__option">
               <div class="group__content">
-                <h4>Disable sandbox (Fix white screen login)</h4>
+                <h4>Disable renderer sandbox</h4>
                 <p>
-                  Disables Electron's security sandbox to fix login white screen issues.
+                  Disables the sandbox for the player, settings, and login windows. Chromium's
+                  global sandbox is controlled separately by launching with --no-sandbox (the
+                  packaged Linux desktop entries already do this). Restart the app after changing
+                  this setting.
                 </p>
               </div>
               <label class="switch">
-                <input id="disableSandbox" type="checkbox" aria-label="Disable sandbox (fix white screen login)" />
+                <input id="disableSandbox" type="checkbox" aria-label="Disable renderer sandbox" />
                 <span class="switch__slider"></span>
               </label>
             </div>

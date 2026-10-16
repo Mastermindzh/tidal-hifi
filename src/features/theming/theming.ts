@@ -47,6 +47,44 @@ export function isSafeThemeName(name: string): boolean {
 const themesFolderName = "themes";
 
 /**
+ * CSS that keeps scrollbars transparent until the scrollable element is hovered.
+ * `!important` is required because Tidal styles its own scrollbars with
+ * higher-specificity class/id selectors that would otherwise win.
+ */
+const autoHideScrollbarCss = `
+* {
+  scrollbar-width: thin !important;
+  scrollbar-color: transparent transparent !important;
+}
+*:hover,
+*:focus-within {
+  scrollbar-color: rgba(255, 255, 255, 0.3) transparent !important;
+}
+::-webkit-scrollbar,
+*::-webkit-scrollbar {
+  width: 8px !important;
+  height: 8px !important;
+}
+::-webkit-scrollbar-track,
+*::-webkit-scrollbar-track {
+  background: transparent !important;
+}
+::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-thumb {
+  background: transparent !important;
+  border-radius: 8px !important;
+}
+:hover::-webkit-scrollbar-thumb,
+*:hover::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.3) !important;
+}
+::-webkit-scrollbar-thumb:hover,
+*::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.5) !important;
+}
+`;
+
+/**
  * The user-writable themes directory (~/.config/tidal-hifi/themes/).
  */
 export function getUserThemeDirectory(app: Electron.App): string {
@@ -181,7 +219,8 @@ const injectedThemeSignature = new WeakMap<Electron.WebContents, string>();
 function currentThemeSignature(): string {
   const themeId = settingsStore.get<string, string>(settings.theme);
   const customCSS = settingsStore.get<string, string[]>(settings.customCSS) ?? [];
-  return JSON.stringify([themeId, customCSS]);
+  const hideScrollbars = settingsStore.get<string, boolean>(settings.hideScrollbars) ?? false;
+  return JSON.stringify([themeId, customCSS, hideScrollbars]);
 }
 
 /**
@@ -194,13 +233,12 @@ function currentThemeSignature(): string {
 export async function injectThemeCss(app: Electron.App, webContents: Electron.WebContents) {
   // Remove any previously-injected CSS so we don't accumulate stylesheets.
   const previousKeys = insertedCssKeys.get(webContents) ?? [];
-  for (const key of previousKeys) {
-    try {
-      await webContents.removeInsertedCSS(key);
-    } catch {
+  await Promise.all(
+    previousKeys.map((key) =>
       // Renderer may have already discarded the stylesheet (e.g. after navigation); ignore.
-    }
-  }
+      webContents.removeInsertedCSS(key).catch(() => undefined),
+    ),
+  );
 
   const newKeys: string[] = [];
 
@@ -220,6 +258,10 @@ export async function injectThemeCss(app: Electron.App, webContents: Electron.We
   const customCSS = settingsStore.get<string, string[]>(settings.customCSS);
   if (customCSS?.length) {
     newKeys.push(await webContents.insertCSS(customCSS.join("\n")));
+  }
+
+  if (settingsStore.get<string, boolean>(settings.hideScrollbars)) {
+    newKeys.push(await webContents.insertCSS(autoHideScrollbarCss));
   }
 
   insertedCssKeys.set(webContents, newKeys);
