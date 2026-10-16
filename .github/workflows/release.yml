@@ -86,7 +86,6 @@ jobs:
   build_and_publish_snap:
     needs: quality
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: update apt
         run: sudo apt-get update
@@ -102,6 +101,7 @@ jobs:
         id: find_snap
         run: echo "snap_file=$(find dist -name '*.snap' -type f)" >> $GITHUB_OUTPUT
       - name: Publish to Snap Store
+        if: startsWith(github.ref, 'refs/tags/')
         uses: canonical/action-publish@v1
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
@@ -117,7 +117,6 @@ jobs:
     needs: quality
     # Must match the snap base (core22) because snapcraft runs in destructive mode.
     runs-on: ubuntu-22.04-arm
-    if: startsWith(github.ref, 'refs/tags/')
     steps:
       - name: update apt
         run: sudo apt-get update
@@ -127,6 +126,8 @@ jobs:
       # Pinned to 7.x: electron-builder still calls `snapcraft snap`, which newer snapcraft removed.
       - name: Install snapcraft
         run: sudo snap install snapcraft --classic --channel=7.x/stable
+      - name: Install gnome-42-2204
+        run: sudo snap install gnome-42-2204
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
@@ -135,10 +136,16 @@ jobs:
       - run: npm run build-snap
         env:
           SNAP_DESTRUCTIVE_MODE: "true"
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: snapcraft-logs-arm64
+          path: /home/runner/.local/state/snapcraft/log/
       - name: Find snap file
         id: find_snap
         run: echo "snap_file=$(find dist -name '*.snap' -type f)" >> $GITHUB_OUTPUT
       - name: Publish to Snap Store
+        if: startsWith(github.ref, 'refs/tags/')
         uses: canonical/action-publish@v1
         env:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.SNAPCRAFT_STORE_CREDENTIALS }}
