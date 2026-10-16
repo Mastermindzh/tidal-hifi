@@ -126,8 +126,9 @@ jobs:
       # Pinned to 7.x: electron-builder still calls `snapcraft snap`, which newer snapcraft removed.
       - name: Install snapcraft
         run: sudo snap install snapcraft --classic --channel=7.x/stable
-      - name: Install gnome-42-2204
-        run: sudo snap install gnome-42-2204
+      # snapcraft runs `snap install` for content providers without sudo, which fails on the runner.
+      - name: Install content provider snaps
+        run: sudo snap install gnome-42-2204 gtk-common-themes
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
