@@ -126,17 +126,18 @@ jobs:
       # Pinned to 7.x: electron-builder still calls `snapcraft snap`, which newer snapcraft removed.
       - name: Install snapcraft
         run: sudo snap install snapcraft --classic --channel=7.x/stable
-      # snapcraft runs `snap install` for content providers without sudo, which fails on the runner.
-      - name: Install content provider snaps
-        run: sudo snap install gnome-42-2204 gtk-common-themes
       - uses: actions/checkout@master
       - uses: actions/setup-node@master
         with:
           node-version: 24.12.0
       - run: npm install
-      - run: npm run build-snap
+      # snapcraft's destructive mode runs apt-get and snap install itself, so it needs root.
+      - run: sudo -E env "PATH=$PATH" "HOME=$HOME" npm run build-snap
         env:
           SNAP_DESTRUCTIVE_MODE: "true"
+      - name: Restore file ownership after root build
+        if: always()
+        run: sudo chown -R "$(id -u):$(id -g)" "$HOME"
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
