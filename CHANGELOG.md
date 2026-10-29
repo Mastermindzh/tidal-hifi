@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### changed
+
+- Migrated formatting from Prettier to oxfmt
+
 ## [9.0.0]
 
 ### Breaking changes
@@ -120,7 +126,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - **MPRIS `PropertiesChanged` is no longer emitted on every poll tick.**
   - Previously the full metadata object was reassigned on every ~500 ms polling cycle, which caused `org.freedesktop.DBus.Properties.PropertiesChanged` to fire continuously. The signal is now only emitted when the actual track changes (title / artists / album / trackId / artUrl / duration).
   - `currentInSeconds` (and the derived `current` clock string) are explicitly excluded from the metadata-change key. The current playback position is still served live to MPRIS clients via `org.mpris.MediaPlayer2.Player.Position` (`getPosition()` returns the in-memory `currentPosition` in microseconds), but consumers that were listening for `PropertiesChanged` to detect position updates will need to poll `Position` directly (which is the spec-correct behaviour anyway).
-  - **Custom `custom:*` MPRIS tags no longer live-update between track changes.** Because the entire metadata object (including the flattened `custom:*` fields derived from `MediaInfo`) is only re-published when the track-change key changes, any custom field that varies *within* a single track (e.g. `custom:status`, `custom:current`, `custom:currentInSeconds`, `custom:player.shuffle`, …) will keep the value it had at the moment the track started. If you depend on one of these fields updating mid-track, read the canonical MPRIS property instead (`PlaybackStatus`, `Position`, `Shuffle`, `LoopStatus`, `Volume`) — those are still updated on every poll.
+  - **Custom `custom:*` MPRIS tags no longer live-update between track changes.** Because the entire metadata object (including the flattened `custom:*` fields derived from `MediaInfo`) is only re-published when the track-change key changes, any custom field that varies _within_ a single track (e.g. `custom:status`, `custom:current`, `custom:currentInSeconds`, `custom:player.shuffle`, …) will keep the value it had at the moment the track started. If you depend on one of these fields updating mid-track, read the canonical MPRIS property instead (`PlaybackStatus`, `Position`, `Shuffle`, `LoopStatus`, `Volume`) — those are still updated on every poll.
 
 ### Fixes
 
@@ -135,15 +141,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - API: the current track now exposes an `audioQuality` block (Tidal quality tier, plus bit depth / sample rate / codec when the Redux controller is active) on `GET /current`, and a dedicated `GET /current/audio-quality` endpoint. ([#899](https://github.com/Mastermindzh/tidal-hifi/issues/899))
   - Example:
 
-      ```json
-      "audioQuality": {
-        "quality": "HI_RES_LOSSLESS",
-        "badgeText": "24-bit 96kHz",
-        "bitDepth": 24,
-        "sampleRate": 96000,
-        "codec": "FLAC"
-      },
-      ```
+    ```json
+    "audioQuality": {
+      "quality": "HI_RES_LOSSLESS",
+      "badgeText": "24-bit 96kHz",
+      "bitDepth": 24,
+      "sampleRate": 96000,
+      "codec": "FLAC"
+    },
+    ```
 
 - Auto-skip tracks by title keyword: a new "Skip tracks automatically" toggle lets you list keywords (e.g. `live`, `remix`) and any track whose title contains one (case-insensitive substring match) is skipped. Mirrors the existing "Skip artists automatically" feature, including REST endpoints under `/settings/skipped-tracks` (`GET`/`POST`/`POST .../delete`/`POST .../current`/`DELETE .../current`). ([#685](https://github.com/Mastermindzh/tidal-hifi/issues/685))
 
@@ -199,7 +205,7 @@ This release will be codenamed Mavy in honour of my late niece.
 - Improved flag system logging and early Logger initialization
 
 - **TEMP** When playing videos or uploaded songs the mpris integration broke.
-  - I have temporarily implemented a workaround that allows it to *restart* after crashing on songs it does support
+  - I have temporarily implemented a workaround that allows it to _restart_ after crashing on songs it does support
   - Mpris breaks on "syscall -> write" which is now logged and can be looked into at a later date.
 
 ## [6.1.0]

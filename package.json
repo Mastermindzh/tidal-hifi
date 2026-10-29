@@ -26,8 +26,8 @@
     "build-mac": "npm run builder -- -c ./build/electron-builder.yml -m",
     "build-base": "npm run builder -- -c ./build/electron-builder.base.yml",
     "prebuilder": "npm run compile",
-    "format": "prettier --write \"**/*.{ts,js,mjs,cjs,json,jsonc}\"",
-    "format:check": "prettier --check \"**/*.{ts,js,mjs,cjs,json,jsonc}\"",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
     "lint": "oxlint && npm run format:check",
     "lint-fix": "oxlint --fix && npm run format",
     "builder": "electron-builder --publish=never",
@@ -58,7 +58,6 @@
     "swagger-ui-express": "^5.0.1"
   },
   "devDependencies": {
-    "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^24.19.1",
@@ -71,8 +70,8 @@
     "markdown-toc": "^1.2.0",
     "node-abi": "^4.36.0",
     "nodemon": "^3.1.14",
+    "oxfmt": "0.75.0",
     "oxlint": "^1.87.0",
-    "prettier": "^3.9.9",
     "swagger-jsdoc": "^6.3.0",
     "tsc-watch": "^7.2.1",
     "typescript": "^7.0.2"

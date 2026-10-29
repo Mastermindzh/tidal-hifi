@@ -77,12 +77,12 @@ services:
     ports:
       - 9078:9078 # Web UI and API
     environment:
-      TZ: Europe/Amsterdam  # Change to your timezone
+      TZ: Europe/Amsterdam # Change to your timezone
       # Set if running on a different machine or domain
       BASE_URL: http://localhost:9078
       # Linux host permissions
-      PUID: 1000  # Your user ID (run `id -u` to find yours)
-      PGID: 1000  # Your group ID (run `id -g` to find yours)
+      PUID: 1000 # Your user ID (run `id -u` to find yours)
+      PGID: 1000 # Your group ID (run `id -g` to find yours)
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:9078/health"]
       interval: 30s

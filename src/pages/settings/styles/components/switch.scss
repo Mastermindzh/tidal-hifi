@@ -27,7 +27,7 @@
     cursor: pointer;
     position: absolute;
     inset: 0;
-    transition: .15s;
+    transition: 0.15s;
     background-color: var(--grey-darkest);
 
     &::before {
@@ -36,7 +36,7 @@
       left: 4px;
       width: 18px;
       height: 18px;
-      transition: .15s;
+      transition: 0.15s;
       border-radius: 50%;
       background-color: var(--black);
       content: "";
