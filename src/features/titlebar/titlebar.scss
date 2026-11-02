@@ -32,6 +32,13 @@
   transform: translateZ(0) !important;
 }
 
+/*
+ * Transform hides the queue behind it, we don't need it when nowPlaying is open as most stuff is hidden
+ */
+[class*="_mainContainer_"]:has([class*="_nowPlayingVisible_"]) {
+  transform: none !important;
+}
+
 [class*="_nowPlayingContainer_"] {
   margin-top: var(--thf-titlebar-height) !important;
 }
