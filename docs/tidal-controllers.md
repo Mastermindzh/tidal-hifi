@@ -40,13 +40,13 @@ You can switch between controller types in **Settings → Advanced → Controlle
 
 ### Choosing the Right Controller... Quick overview
 
-| Feature                  | MediaSession Controller     | DOM Controller          | API Controller    |
-| ------------------------ | --------------------------- | ----------------------- | ----------------- |
-| **Stability**            | ✅ Excellent                | ✅ Excellent            | ❌ In Development |
-| **Performance**          | ✅ Very Efficient           | ✅ Efficient            | ❌ Not Ready      |
-| **System Integration**   | ✅ Native                   | ✅ Custom               | ❓ Unknown        |
-| **Feature Completeness** | ✅ Full (with DOM fallback) | ⚠️ Missing album info   | ❌ Minimal        |
-| **Tidal Dependency**     | ⚠️ MediaSession API         | ⚠️ HTML Structure       | ❓ "Official" API |
+| Feature                  | MediaSession Controller     | DOM Controller        | API Controller    |
+| ------------------------ | --------------------------- | --------------------- | ----------------- |
+| **Stability**            | ✅ Excellent                | ✅ Excellent          | ❌ In Development |
+| **Performance**          | ✅ Very Efficient           | ✅ Efficient          | ❌ Not Ready      |
+| **System Integration**   | ✅ Native                   | ✅ Custom             | ❓ Unknown        |
+| **Feature Completeness** | ✅ Full (with DOM fallback) | ⚠️ Missing album info | ❌ Minimal        |
+| **Tidal Dependency**     | ⚠️ MediaSession API         | ⚠️ HTML Structure     | ❓ "Official" API |
 
 ### 1. Media Session Controller (Default)
 
@@ -163,4 +163,4 @@ The controller system is designed to be extensible and future-proof:
 
 ---
 
-*This documentation reflects Tidal Hi-Fi's controller system as of the current release. Features and behavior may change as controllers are improved and new ones are added.*
+_This documentation reflects Tidal Hi-Fi's controller system as of the current release. Features and behavior may change as controllers are improved and new ones are added._
