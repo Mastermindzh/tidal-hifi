@@ -26,9 +26,3 @@ linux:
     - snap
     # castlabs does not provide a freebsd-arm64 Electron build.
     - freebsd
-win:
-  target: msi
-  icon: icon.png
-  artifactName: "tidalhifi"
-  appId: com.rickvanlieshout.tidalhifi
-  executableName: tidalhifi

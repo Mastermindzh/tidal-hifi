@@ -1,0 +1,8 @@
+extends: ./build/electron-builder.base.yml
+afterSign: ./scripts/evs-sign.js
+win:
+  target: msi
+  icon: icon.png
+  artifactName: "tidalhifi"
+  appId: com.rickvanlieshout.tidalhifi
+  executableName: tidalhifi
