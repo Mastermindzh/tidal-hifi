@@ -1,4 +1,4 @@
-import type { BrowserWindow } from "electron";
+import { type BrowserWindow, ipcMain } from "electron";
 import Player from "mpris-service";
 
 import { globalEvents } from "../../constants/globalEvents";
@@ -90,8 +90,10 @@ export class MprisService {
         this.player = null; // Clean up previous instance
       }
 
+      const appId = process.env.FLATPAK_ID || "tidal-hifi";
+
       this.player = Player({
-        name: "tidal-hifi",
+        name: appId,
         identity: "Tidal Hi-Fi",
         supportedUriSchemes: ["file"],
         supportedMimeTypes: [
@@ -102,7 +104,7 @@ export class MprisService {
           "audio/wav",
         ],
         supportedInterfaces: ["player"],
-        desktopEntry: "tidal-hifi",
+        desktopEntry: appId,
       });
 
       this.setupEventListeners();
@@ -237,7 +239,7 @@ export class MprisService {
     if (!this.player) return;
 
     this.player.on("quit", () => {
-      this.sendToRenderer(globalEvents.quit);
+      ipcMain.emit(globalEvents.quit);
     });
   }
 
