@@ -64,7 +64,62 @@ let lastStartTimestamp: number | undefined;
 // Seconds the derived start timestamp can drift (rounding jitter) before we treat it as a seek.
 const SEEK_TOLERANCE_SECONDS = 2;
 
+// Discord's compact status shows a single field (`status_display_type`). When the
+// "cycle status" setting is on we alternate it between the artist (state) and the title
+// (details). 10 s keeps us well within Discord's rate limit of 5 updates per 20 s.
+const STATUS_DISPLAY_STATE = 1;
+const STATUS_DISPLAY_DETAILS = 2;
+const CYCLE_INTERVAL = 10_000;
+
+let cycleTimer: ReturnType<typeof setInterval> | null = null;
+let showTitleInStatus = false;
+let cycleTrackKey = "";
+
+const isCycleActive = () =>
+  (settingsStore.get<string, boolean>(settings.discord.cycleStatus) ?? false) &&
+  (settingsStore.get<string, boolean>(settings.discord.showSong) ?? false) &&
+  mediaInfo.status === MediaStatus.playing &&
+  !!mediaInfo.url;
+
+const onCycleTick = () => {
+  if (!isCycleActive()) {
+    // Reset so the status starts on the artist again once cycling resumes.
+    showTitleInStatus = false;
+    return;
+  }
+  showTitleInStatus = !showTitleInStatus;
+  updateActivity();
+};
+
+const startCycleTimer = () => {
+  stopCycleTimer();
+  cycleTimer = setInterval(onCycleTick, CYCLE_INTERVAL);
+};
+
+const stopCycleTimer = () => {
+  if (cycleTimer) {
+    clearInterval(cycleTimer);
+    cycleTimer = null;
+  }
+  showTitleInStatus = false;
+};
+
+/**
+ * Restart the cycle on every new track so it always begins on the artist and gets a
+ * full interval before flipping to the title.
+ */
+const syncCycleWithTrack = () => {
+  const trackKey = `${mediaInfo.url}|${mediaInfo.title}`;
+  if (trackKey === cycleTrackKey) return;
+  cycleTrackKey = trackKey;
+  if (cycleTimer) {
+    startCycleTimer();
+  }
+};
+
 const updateActivity = () => {
+  syncCycleWithTrack();
+
   // Requests on a dead socket never settle; onReady re-publishes once reconnected.
   if (!rpc?.isConnected) return;
 
@@ -126,8 +181,9 @@ const getFromStore = () => {
     settingsStore.get<string, string>(settings.discord.detailsPrefix) ?? "Listening to ";
   const buttonText =
     settingsStore.get<string, string>(settings.discord.buttonText) ?? "Play on TIDAL";
+  const cycleStatus = settingsStore.get<string, boolean>(settings.discord.cycleStatus) ?? false;
 
-  return { includeTimestamps, detailsPrefix, buttonText };
+  return { includeTimestamps, detailsPrefix, buttonText, cycleStatus };
 };
 
 const getActivity = (): SetActivity => {
@@ -139,9 +195,9 @@ const getActivity = (): SetActivity => {
   } else {
     const showSong = settingsStore.get<string, boolean>(settings.discord.showSong) ?? false;
     if (showSong) {
-      const { includeTimestamps, detailsPrefix, buttonText } = getFromStore();
+      const { includeTimestamps, detailsPrefix, buttonText, cycleStatus } = getFromStore();
       includeTimeStamps(includeTimestamps);
-      setPresenceFromMediaInfo(detailsPrefix, buttonText);
+      setPresenceFromMediaInfo(detailsPrefix, buttonText, cycleStatus);
     } else {
       presence.details =
         settingsStore.get<string, string>(settings.discord.usingText) ?? "Playing media on TIDAL";
@@ -150,14 +206,19 @@ const getActivity = (): SetActivity => {
 
   return presence;
 
-  function setPresenceFromMediaInfo(detailsPrefix: string, buttonText: string) {
+  function setPresenceFromMediaInfo(
+    detailsPrefix: string,
+    buttonText: string,
+    cycleStatus: boolean,
+  ) {
     // discord requires a minimum of 2 characters
     const title = pad(mediaInfo.title);
     const album = pad(mediaInfo.album);
     const artists = pad(mediaInfo.artists);
 
     if (mediaInfo.url) {
-      presence.statusDisplayType = 1;
+      presence.statusDisplayType =
+        cycleStatus && showTitleInStatus ? STATUS_DISPLAY_DETAILS : STATUS_DISPLAY_STATE;
       presence.details = `${detailsPrefix}${title}`;
       presence.state = artists || "unknown artist(s)";
       presence.largeImageKey = mediaInfo.image;
@@ -269,6 +330,7 @@ export const initRPC = () => {
     ipcMain.on(event, observer);
   });
 
+  startCycleTimer();
   void connect();
 };
 
@@ -278,6 +340,8 @@ export const initRPC = () => {
 export const unRPC = () => {
   rpcEnabled = false;
   clearReconnectTimer();
+  stopCycleTimer();
+  cycleTrackKey = "";
   currentRetryDelay = INITIAL_RETRY_DELAY;
   if (rpc) {
     // Remove observer first to prevent events during cleanup from triggering activity updates
