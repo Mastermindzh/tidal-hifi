@@ -56,6 +56,7 @@ const defaultSettings = {
   enableDiscord: false,
   discord: {
     showSong: true,
+    cycleStatus: false,
     showIdle: true,
     idleText: "Browsing Tidal",
     usingText: "Playing media on TIDAL",
@@ -198,6 +199,9 @@ const migrations: NonNullable<Store.Options<typeof defaultSettings>["migrations"
       { key: settings.hideScrollbars, value: false },
       { key: settings.openExternalLinksInBrowser, value: false },
     ]);
+  },
+  "9.1.0": (migrationStore) => {
+    buildMigration("9.1.0", migrationStore, [{ key: settings.discord.cycleStatus, value: false }]);
   },
 };
 
